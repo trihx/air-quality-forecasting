@@ -86,3 +86,25 @@ RULE: Test set = REAL data only
     Datasets: train=6116, val=774, test=604
       Epoch   1 | Train=0.7236 Val=0.2365 p=0/10
       Epoch  10 | Train=0.4216 Val=0.1966 p=1/10
+      Epoch  20 | Train=0.3107 Val=0.1663 p=2/10
+      Early stop epoch 28 (best=0.1573)
+    GRU 6h: MAE=4.389, MASE=0.651 (155s)
+
+  [C] Building Ensemble (6h)...
+    Common test points: 595
+    Stack 6h: MAE=4.776, MASE=0.807
+    Weights: LightGBM=0.709, GRU=-0.025
+    Weighted 6h: MAE=4.819, MASE=0.712 (w_lgbm=0.55)
+
+══════════════════════════════════════════════════════════════════════
+[2/4] HORIZON = 24h
+══════════════════════════════════════════════════════════════════════
+
+  [A] Training LightGBM (24h)...
+    LightGBM 24h: MAE=6.144, MASE=0.998 (2s)
+    Test: 755 total, 585 real
+
+  [B] Training GRU (24h)...
+    PyTorch initialized: device=mps
+    Datasets: train=6098, val=774, test=604
+      Epoch   1 | Train=0.6490 Val=0.2392 p=0/10
