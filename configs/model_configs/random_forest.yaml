@@ -1,0 +1,13 @@
+# Random Forest — PM2.5 Forecasting
+model_name: "RandomForest"
+model_class: "sklearn.ensemble.RandomForestRegressor"
+scaling_required: false  # Tree-based → NO scaling
+
+params:
+  n_estimators: 500
+  max_depth: 15
+  min_samples_split: 5
+  min_samples_leaf: 2
+  max_features: "sqrt"
+  n_jobs: -1
+  random_state: 42

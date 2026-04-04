@@ -1,0 +1,45 @@
+{
+  "raw_records": 209594,
+  "span_hours": 27647,
+  "hourly_total": 27649,
+  "hourly_with_data": 7183,
+  "hourly_missing": 20466,
+  "pct_missing": 74.0,
+  "gap_count": 110,
+  "gap_min_h": 2,
+  "gap_median_h": 15,
+  "gap_mean_h": 186,
+  "gap_max_h": 3470,
+  "gap_distribution": {
+    "≤2h (current fill)": {
+      "count": 1,
+      "hours_recoverable": 2,
+      "pct_of_missing": 0.0
+    },
+    "≤6h (short)": {
+      "count": 16,
+      "hours_recoverable": 70,
+      "pct_of_missing": 0.3
+    },
+    "≤12h (medium)": {
+      "count": 39,
+      "hours_recoverable": 285,
+      "pct_of_missing": 1.4
+    },
+    "≤24h (daily)": {
+      "count": 63,
+      "hours_recoverable": 656,
+      "pct_of_missing": 3.2
+    },
+    "≤48h (2 days)": {
+      "count": 67,
+      "hours_recoverable": 824,
+      "pct_of_missing": 4.0
+    },
+    "≤168h (1 week)": {
+      "count": 89,
+      "hours_recoverable": 3103,
+      "pct_of_missing": 15.2
+    }
+  }
+}

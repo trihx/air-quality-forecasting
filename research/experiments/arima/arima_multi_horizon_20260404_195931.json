@@ -1,0 +1,74 @@
+{
+  "1h": {
+    "Persistence": {
+      "mae": 2.5061,
+      "rmse": 4.0259,
+      "mase": 1.0
+    },
+    "ARIMA": {
+      "mae": 2.5638,
+      "rmse": 3.9255,
+      "mase": 1.023,
+      "order": "(2, 1, 1)",
+      "n_eval": 604,
+      "time_s": 33.6
+    },
+    "SARIMA": {
+      "mae": 3.2143,
+      "rmse": 4.6821,
+      "mase": 1.2826,
+      "order": "(1, 0, 0)",
+      "seasonal_order": "(2, 1, 0, 24)",
+      "n_eval": 101,
+      "time_s": 137.4
+    }
+  },
+  "6h": {
+    "Persistence": {
+      "mae": 6.8286,
+      "rmse": 9.1745,
+      "mase": 1.0
+    },
+    "ARIMA": {
+      "mae": 5.8433,
+      "rmse": 7.6852,
+      "mase": 0.8557,
+      "order": "(2, 1, 1)",
+      "n_eval": 599,
+      "time_s": 32.9
+    },
+    "SARIMA": {
+      "mae": 5.2066,
+      "rmse": 6.9079,
+      "mase": 0.7625,
+      "order": "(1, 0, 0)",
+      "seasonal_order": "(2, 1, 0, 24)",
+      "n_eval": 100,
+      "time_s": 136.7
+    }
+  },
+  "24h": {
+    "Persistence": {
+      "mae": 6.1279,
+      "rmse": 8.6197,
+      "mase": 1.0
+    },
+    "ARIMA": {
+      "mae": 5.5981,
+      "rmse": 7.3247,
+      "mase": 0.9135,
+      "order": "(2, 1, 1)",
+      "n_eval": 581,
+      "time_s": 31.5
+    },
+    "SARIMA": {
+      "mae": 4.9814,
+      "rmse": 6.5101,
+      "mase": 0.8129,
+      "order": "(1, 0, 0)",
+      "seasonal_order": "(2, 1, 0, 24)",
+      "n_eval": 97,
+      "time_s": 132.0
+    }
+  }
+}

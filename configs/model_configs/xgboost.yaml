@@ -1,0 +1,16 @@
+# XGBoost — PM2.5 Forecasting
+model_name: "XGBoost"
+model_class: "xgboost.XGBRegressor"
+scaling_required: false  # Tree-based → NO scaling
+
+params:
+  n_estimators: 1000
+  max_depth: 6
+  learning_rate: 0.01
+  subsample: 0.8
+  colsample_bytree: 0.8
+  min_child_weight: 3
+  reg_alpha: 0.1
+  reg_lambda: 1.0
+  early_stopping_rounds: 50
+  random_state: 42

@@ -1,0 +1,221 @@
+2026-04-04 16:44:25 | INFO     | logging:setup_logging:61 | Logging configured: level=INFO, log_dir=research/runs
+2026-04-04 16:44:25 | INFO     | run_ml:main:211 | 🚀 Level 2-3: ML Models Experiment
+2026-04-04 16:44:25 | INFO     | run_ml:main:220 | 📊 Loaded: 6,689 rows × 95 cols
+2026-04-04 16:44:25 | INFO     | splitter:temporal_train_val_test_split:55 | Temporal Split (NO shuffle):
+2026-04-04 16:44:25 | INFO     | splitter:temporal_train_val_test_split:56 |   Train: 5,351 rows [2022-03-24 08:00:00 → 2023-06-10 23:00:00]
+2026-04-04 16:44:25 | INFO     | splitter:temporal_train_val_test_split:57 |   Val:   669 rows [2023-06-11 00:00:00 → 2023-08-18 08:00:00]
+2026-04-04 16:44:25 | INFO     | splitter:temporal_train_val_test_split:58 |   Test:  669 rows [2023-08-18 09:00:00 → 2025-03-15 18:00:00]
+2026-04-04 16:44:25 | INFO     | run_ml:main:228 |   Train+Val: 6,020 rows, Test: 669 rows
+2026-04-04 16:44:25 | INFO     | run_ml:main:237 |   📏 Baseline target: MAE < 1.821
+2026-04-04 16:44:26 | INFO     | run_ml:main:243 | ============================================================
+2026-04-04 16:44:26 | INFO     | run_ml:main:244 | Training & Evaluating ML Models (Walk-Forward CV)
+2026-04-04 16:44:26 | INFO     | run_ml:main:245 | ============================================================
+2026-04-04 16:44:26 | INFO     | run_ml:main:248 | 
+--- Ridge ---
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 1: MAE=7.4101 (train=1005, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 2: MAE=9.8805 (train=2008, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 3: MAE=3.7631 (train=3011, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 4: MAE=2.8995 (train=4014, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 5: MAE=2.5512 (train=5017, val=1003)
+2026-04-04 16:44:26 | INFO     | run_ml:walk_forward_evaluate:184 |   Ridge CV: MAE=5.3009 ± 2.8675
+2026-04-04 16:44:26 | INFO     | metrics:evaluate_forecast:126 |   Ridge: MAE=2.8244, RMSE=4.5909, MASE=1.551 ❌
+2026-04-04 16:44:26 | INFO     | run_ml:main:248 | 
+--- Lasso ---
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 1: MAE=2.8745 (train=1005, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 2: MAE=8.0892 (train=2008, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 3: MAE=2.9988 (train=3011, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 4: MAE=2.5060 (train=4014, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 5: MAE=2.0732 (train=5017, val=1003)
+2026-04-04 16:44:26 | INFO     | run_ml:walk_forward_evaluate:184 |   Lasso CV: MAE=3.7084 ± 2.2140
+2026-04-04 16:44:26 | INFO     | metrics:evaluate_forecast:126 |   Lasso: MAE=1.9149, RMSE=3.187, MASE=1.0516 ❌
+2026-04-04 16:44:26 | INFO     | run_ml:main:248 | 
+--- ElasticNet ---
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 1: MAE=2.8117 (train=1005, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 2: MAE=8.3661 (train=2008, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 3: MAE=3.0377 (train=3011, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 4: MAE=2.5092 (train=4014, val=1003)
+2026-04-04 16:44:26 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 5: MAE=2.0845 (train=5017, val=1003)
+2026-04-04 16:44:26 | INFO     | run_ml:walk_forward_evaluate:184 |   ElasticNet CV: MAE=3.7618 ± 2.3242
+2026-04-04 16:44:26 | INFO     | metrics:evaluate_forecast:126 |   ElasticNet: MAE=2.0365, RMSE=3.3393, MASE=1.1183 ❌
+2026-04-04 16:44:26 | INFO     | run_ml:main:248 | 
+--- RandomForest ---
+2026-04-04 16:44:27 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 1: MAE=2.7395 (train=1005, val=1003)
+2026-04-04 16:44:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 2: MAE=4.4027 (train=2008, val=1003)
+2026-04-04 16:44:32 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 3: MAE=3.2008 (train=3011, val=1003)
+2026-04-04 16:44:36 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 4: MAE=2.8861 (train=4014, val=1003)
+2026-04-04 16:44:40 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 5: MAE=2.2076 (train=5017, val=1003)
+2026-04-04 16:44:40 | INFO     | run_ml:walk_forward_evaluate:184 |   RandomForest CV: MAE=3.0873 ± 0.7319
+2026-04-04 16:44:46 | INFO     | metrics:evaluate_forecast:126 |   RandomForest: MAE=2.6663, RMSE=3.6678, MASE=1.4641 ❌
+2026-04-04 16:44:46 | INFO     | run_ml:main:248 | 
+--- XGBoost ---
+2026-04-04 16:44:48 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 1: MAE=2.8139 (train=1005, val=1003)
+2026-04-04 16:44:50 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 2: MAE=4.8560 (train=2008, val=1003)
+2026-04-04 16:44:52 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 3: MAE=3.5105 (train=3011, val=1003)
+2026-04-04 16:44:54 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 4: MAE=3.8397 (train=4014, val=1003)
+2026-04-04 16:44:57 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 5: MAE=2.5432 (train=5017, val=1003)
+2026-04-04 16:44:57 | INFO     | run_ml:walk_forward_evaluate:184 |   XGBoost CV: MAE=3.5127 ± 0.8173
+2026-04-04 16:44:59 | INFO     | metrics:evaluate_forecast:126 |   XGBoost: MAE=3.3643, RMSE=4.3447, MASE=1.8475 ❌
+2026-04-04 16:44:59 | INFO     | run_ml:main:248 | 
+--- LightGBM ---
+2026-04-04 16:45:02 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 1: MAE=2.8418 (train=1005, val=1003)
+2026-04-04 16:45:06 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 2: MAE=4.4583 (train=2008, val=1003)
+2026-04-04 16:45:10 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 3: MAE=3.3375 (train=3011, val=1003)
+2026-04-04 16:45:14 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 4: MAE=3.5309 (train=4014, val=1003)
+2026-04-04 16:45:18 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 5: MAE=2.3192 (train=5017, val=1003)
+2026-04-04 16:45:18 | INFO     | run_ml:walk_forward_evaluate:184 |   LightGBM CV: MAE=3.2975 ± 0.7167
+2026-04-04 16:45:23 | INFO     | metrics:evaluate_forecast:126 |   LightGBM: MAE=2.2756, RMSE=3.2664, MASE=1.2496 ❌
+2026-04-04 16:45:23 | INFO     | run_ml:main:265 | 
+============================================================
+2026-04-04 16:45:23 | INFO     | run_ml:main:266 | 📋 ML Model Results (sorted by MAE)
+2026-04-04 16:45:23 | INFO     | run_ml:main:267 | ============================================================
+2026-04-04 16:45:23 | INFO     | run_ml:main:272 |   Lasso          | MAE=1.9149   | RMSE=3.187    | MASE=1.0516   ❌
+2026-04-04 16:45:23 | INFO     | run_ml:main:272 |   ElasticNet     | MAE=2.0365   | RMSE=3.3393   | MASE=1.1183   ❌
+2026-04-04 16:45:23 | INFO     | run_ml:main:272 |   LightGBM       | MAE=2.2756   | RMSE=3.2664   | MASE=1.2496   ❌
+2026-04-04 16:45:23 | INFO     | run_ml:main:272 |   RandomForest   | MAE=2.6663   | RMSE=3.6678   | MASE=1.4641   ❌
+2026-04-04 16:45:23 | INFO     | run_ml:main:272 |   Ridge          | MAE=2.8244   | RMSE=4.5909   | MASE=1.551    ❌
+2026-04-04 16:45:23 | INFO     | run_ml:main:272 |   XGBoost        | MAE=3.3643   | RMSE=4.3447   | MASE=1.8475   ❌
+2026-04-04 16:45:23 | INFO     | run_ml:main:305 | 
+💾 Results: research/experiments/ml_models/ml_results_20260404_164523.csv
+2026-04-04 16:45:23 | INFO     | run_ml:main:306 | 💾 JSON: research/experiments/ml_models/latest_results.json
+2026-04-04 16:45:23 | INFO     | run_ml:main:309 | 
+============================================================
+2026-04-04 16:45:23 | INFO     | run_ml:main:317 | 📊 Best ML: Lasso (MAE=1.9149)
+2026-04-04 16:45:23 | INFO     | run_ml:main:318 | ✅ ML Experiment Complete!
+2026-04-04 16:45:23 | INFO     | run_ml:main:319 | ============================================================
+2026-04-04 16:55:52 | INFO     | logging:setup_logging:61 | Logging configured: level=INFO, log_dir=research/runs
+2026-04-04 16:55:52 | INFO     | tune_and_select:main:215 | 🚀 Feature Selection + Optuna Hyperparameter Tuning
+2026-04-04 16:55:52 | INFO     | tune_and_select:main:216 | ============================================================
+2026-04-04 16:55:52 | INFO     | tune_and_select:main:221 | 📊 Loaded: 6,689 rows × 95 cols
+2026-04-04 16:55:52 | INFO     | splitter:temporal_train_val_test_split:55 | Temporal Split (NO shuffle):
+2026-04-04 16:55:52 | INFO     | splitter:temporal_train_val_test_split:56 |   Train: 5,351 rows [2022-03-24 08:00:00 → 2023-06-10 23:00:00]
+2026-04-04 16:55:52 | INFO     | splitter:temporal_train_val_test_split:57 |   Val:   669 rows [2023-06-11 00:00:00 → 2023-08-18 08:00:00]
+2026-04-04 16:55:52 | INFO     | splitter:temporal_train_val_test_split:58 |   Test:  669 rows [2023-08-18 09:00:00 → 2025-03-15 18:00:00]
+2026-04-04 16:55:52 | INFO     | tune_and_select:main:229 |   Train+Val: 6,020 rows, Test: 669 rows
+2026-04-04 16:55:52 | INFO     | tune_and_select:main:232 | 
+============================================================
+2026-04-04 16:55:52 | INFO     | tune_and_select:main:233 | PHASE 1: Feature Selection
+2026-04-04 16:55:52 | INFO     | tune_and_select:main:234 | ============================================================
+2026-04-04 16:55:52 | INFO     | tune_and_select:select_features_by_importance:48 | 🔍 Feature Selection: ranking 94 features...
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:60 |   Top 15 features (cumulative importance = 0.892):
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |      1. pm25_lag_1h                         0.8381
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |      2. pm25_lag_24h                        0.0061
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |      3. is_rush_hour                        0.0047
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |      4. pm25_pct_change_1h                  0.0046
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |      5. do_am_lag_3h                        0.0042
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |      6. do_am                               0.0039
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |      7. hour_cos                            0.0039
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |      8. pm25_roll_24h_mean                  0.0039
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |      9. hour_sin                            0.0038
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:62 |     10. co2                                 0.0037
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:64 |     ... + 5 more features
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:68 |   ❌ Dropped 79 low-importance features (sum imp = 0.1077)
+2026-04-04 16:55:55 | INFO     | tune_and_select:main:270 |   top_k= 15: Lasso CV MAE = 3.0452
+2026-04-04 16:55:55 | INFO     | tune_and_select:select_features_by_importance:48 | 🔍 Feature Selection: ranking 94 features...
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:60 |   Top 20 features (cumulative importance = 0.906):
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |      1. pm25_lag_1h                         0.8381
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |      2. pm25_lag_24h                        0.0061
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |      3. is_rush_hour                        0.0047
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |      4. pm25_pct_change_1h                  0.0046
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |      5. do_am_lag_3h                        0.0042
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |      6. do_am                               0.0039
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |      7. hour_cos                            0.0039
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |      8. pm25_roll_24h_mean                  0.0039
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |      9. hour_sin                            0.0038
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:62 |     10. co2                                 0.0037
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:64 |     ... + 10 more features
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:68 |   ❌ Dropped 74 low-importance features (sum imp = 0.0944)
+2026-04-04 16:55:58 | INFO     | tune_and_select:main:270 |   top_k= 20: Lasso CV MAE = 3.0392
+2026-04-04 16:55:58 | INFO     | tune_and_select:select_features_by_importance:48 | 🔍 Feature Selection: ranking 94 features...
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:60 |   Top 25 features (cumulative importance = 0.917):
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |      1. pm25_lag_1h                         0.8381
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |      2. pm25_lag_24h                        0.0061
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |      3. is_rush_hour                        0.0047
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |      4. pm25_pct_change_1h                  0.0046
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |      5. do_am_lag_3h                        0.0042
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |      6. do_am                               0.0039
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |      7. hour_cos                            0.0039
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |      8. pm25_roll_24h_mean                  0.0039
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |      9. hour_sin                            0.0038
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:62 |     10. co2                                 0.0037
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:64 |     ... + 15 more features
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:68 |   ❌ Dropped 69 low-importance features (sum imp = 0.0828)
+2026-04-04 16:56:00 | INFO     | tune_and_select:main:270 |   top_k= 25: Lasso CV MAE = 3.1191
+2026-04-04 16:56:00 | INFO     | tune_and_select:select_features_by_importance:48 | 🔍 Feature Selection: ranking 94 features...
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:60 |   Top 30 features (cumulative importance = 0.928):
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |      1. pm25_lag_1h                         0.8381
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |      2. pm25_lag_24h                        0.0061
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |      3. is_rush_hour                        0.0047
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |      4. pm25_pct_change_1h                  0.0046
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |      5. do_am_lag_3h                        0.0042
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |      6. do_am                               0.0039
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |      7. hour_cos                            0.0039
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |      8. pm25_roll_24h_mean                  0.0039
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |      9. hour_sin                            0.0038
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:62 |     10. co2                                 0.0037
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:64 |     ... + 20 more features
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:68 |   ❌ Dropped 64 low-importance features (sum imp = 0.0724)
+2026-04-04 16:56:03 | INFO     | tune_and_select:main:270 |   top_k= 30: Lasso CV MAE = 3.2122
+2026-04-04 16:56:03 | INFO     | tune_and_select:select_features_by_importance:48 | 🔍 Feature Selection: ranking 94 features...
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:60 |   Top 40 features (cumulative importance = 0.946):
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |      1. pm25_lag_1h                         0.8381
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |      2. pm25_lag_24h                        0.0061
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |      3. is_rush_hour                        0.0047
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |      4. pm25_pct_change_1h                  0.0046
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |      5. do_am_lag_3h                        0.0042
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |      6. do_am                               0.0039
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |      7. hour_cos                            0.0039
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |      8. pm25_roll_24h_mean                  0.0039
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |      9. hour_sin                            0.0038
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:62 |     10. co2                                 0.0037
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:64 |     ... + 30 more features
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:68 |   ❌ Dropped 54 low-importance features (sum imp = 0.0545)
+2026-04-04 16:56:06 | INFO     | tune_and_select:main:270 |   top_k= 40: Lasso CV MAE = 3.1111
+2026-04-04 16:56:06 | INFO     | tune_and_select:select_features_by_importance:48 | 🔍 Feature Selection: ranking 94 features...
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:60 |   Top 50 features (cumulative importance = 0.960):
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |      1. pm25_lag_1h                         0.8381
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |      2. pm25_lag_24h                        0.0061
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |      3. is_rush_hour                        0.0047
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |      4. pm25_pct_change_1h                  0.0046
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |      5. do_am_lag_3h                        0.0042
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |      6. do_am                               0.0039
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |      7. hour_cos                            0.0039
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |      8. pm25_roll_24h_mean                  0.0039
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |      9. hour_sin                            0.0038
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:62 |     10. co2                                 0.0037
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:64 |     ... + 40 more features
+2026-04-04 16:56:09 | INFO     | tune_and_select:select_features_by_importance:68 |   ❌ Dropped 44 low-importance features (sum imp = 0.0396)
+2026-04-04 16:56:09 | INFO     | tune_and_select:main:270 |   top_k= 50: Lasso CV MAE = 3.1677
+2026-04-04 16:56:09 | INFO     | tune_and_select:main:278 | 
+  ✅ Best feature count: top_k=20 (CV MAE=3.0392)
+2026-04-04 16:56:09 | INFO     | tune_and_select:main:284 | 
+============================================================
+2026-04-04 16:56:09 | INFO     | tune_and_select:main:285 | PHASE 2: Optuna Tuning (features=20)
+2026-04-04 16:56:09 | INFO     | tune_and_select:main:286 | ============================================================
+2026-04-04 16:56:09 | INFO     | tune_and_select:main:289 | 
+--- Lasso Tuning (100 trials) ---
+2026-04-04 16:56:12 | INFO     | tune_and_select:tune_lasso_optuna:115 |   🏆 Lasso best: MAE=3.0158, params={'alpha': 0.17357924569999886, 'max_iter': 9790}
+2026-04-04 16:56:12 | INFO     | tune_and_select:main:293 | 
+--- LightGBM Tuning (150 trials) ---
+2026-04-04 17:13:37 | INFO     | tune_and_select:tune_lightgbm_optuna:170 |   🏆 LightGBM best: MAE=2.8076, params={'n_estimators': 637, 'max_depth': 3, 'learning_rate': 0.01323736268126302, 'subsample': 0.7562089580280588, 'colsample_bytree': 0.9620938194660039, 'min_child_samples': 37, 'reg_alpha': 8.038370242397038, 'reg_lambda': 0.4627124256599643, 'num_leaves': 112}
+2026-04-04 17:13:37 | INFO     | tune_and_select:main:297 | 
+============================================================
+2026-04-04 17:13:37 | INFO     | tune_and_select:main:298 | PHASE 3: Final Evaluation on Test Set
+2026-04-04 17:13:37 | INFO     | tune_and_select:main:299 | ============================================================
+2026-04-04 17:13:37 | INFO     | metrics:evaluate_forecast:126 |   Lasso_tuned: MAE=2.0503, RMSE=3.2127, MASE=1.1259 ❌
+2026-04-04 17:13:38 | INFO     | metrics:evaluate_forecast:126 |   LightGBM_tuned: MAE=1.9365, RMSE=3.1026, MASE=1.0634 ❌
+2026-04-04 17:13:38 | INFO     | tune_and_select:main:329 | 
+--- Comparison: Tuned models on ALL features ---
+2026-04-04 17:13:38 | INFO     | metrics:evaluate_forecast:126 |   Lasso_tuned_all: MAE=1.9461, RMSE=3.1489, MASE=1.0687 ❌
+2026-04-04 17:13:39 | INFO     | metrics:evaluate_forecast:126 |   LightGBM_tuned_all: MAE=1.8744, RMSE=3.0696, MASE=1.0293 ❌
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:347 | 
+============================================================
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:348 | 📋 FINAL RESULTS — Feature Selection + Tuning
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:349 | ============================================================
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:350 |   Persistence baseline:  MAE=1.821, MASE=1.000
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:354 |   LightGBM_tuned_all     | MAE=1.8744   | MASE=1.0293   | ❌ MASE>1
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:354 |   LightGBM_tuned         | MAE=1.9365   | MASE=1.0634   | ❌ MASE>1
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:354 |   Lasso_tuned_all        | MAE=1.9461   | MASE=1.0687   | ❌ MASE>1
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:354 |   Lasso_tuned            | MAE=2.0503   | MASE=1.1259   | ❌ MASE>1
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:386 | 
+💾 Results saved: research/experiments/tuning/tuning_results_20260404_171339.json
+2026-04-04 17:13:39 | INFO     | tune_and_select:main:387 | ✅ Tuning Complete!

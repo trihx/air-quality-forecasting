@@ -1,0 +1,154 @@
+======================================================================
+LSTM/GRU MULTI-HORIZON EVALUATION
+Horizons: [1, 6, 24]h | Lookback: 72h | Device: mps
+Architecture: hidden=64, layers=2, dropout=0.2
+Training: epochs=100, batch=64, patience=10
+RULE: Test set = REAL data only
+======================================================================
+
+[1/5] Preparing Hybrid dataset...
+2026-04-04 20:03:15.732 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-04 20:03:15.732 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-04 20:03:15.847 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-04 20:03:15.861 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-04 20:03:15.861 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-04 20:03:15.877 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-04 20:03:15.880 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-04 20:03:15.882 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-04 20:03:15.885 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-04 20:03:15.890 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-04 20:03:15.893 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-04 20:03:15.896 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-04 20:03:15.896 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-04 20:03:15.904 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-04 20:03:26.804 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Features: ['pm25', 'nhiet_do', 'do_am', 'diem_suong', 'co2']
+  Data: 7742 rows × 5 features
+
+[2/5] Splitting data...
+  Train: 6193 | Val: 774 | Test: 775
+  Feature scaling: StandardScaler (fit on train only)
+
+══════════════════════════════════════════════════════════════════════
+[3/5] HORIZON = 1h
+══════════════════════════════════════════════════════════════════════
+  Evaluating Persistence baseline (1h)...
+    Persistence 1h: MAE=2.390, RMSE=3.847
+  Datasets: train=6121, val=774, test=604 (real only)
+
+  Training LSTM (1h)...
+    Parameters: 53,569
+    Epoch   1/100 | Train=0.4838 Val=0.1824 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.2070 Val=0.1550 LR=5.0e-04 patience=7/10
+    Epoch  20/100 | Train=0.1922 Val=0.1317 LR=5.0e-04 patience=2/10
+    Epoch  30/100 | Train=0.1767 Val=0.1348 LR=2.5e-04 patience=6/10
+    Early stopping at epoch 34 (best val_loss=0.1189)
+    ❌ LSTM 1h: MAE=3.730, MASE=1.560 (54s, 604 test points)
+
+  Training GRU (1h)...
+    Parameters: 40,705
+    Epoch   1/100 | Train=0.4581 Val=0.1086 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.2046 Val=0.0899 LR=1.0e-03 patience=1/10
+    Epoch  20/100 | Train=0.1897 Val=0.0812 LR=1.0e-03 patience=1/10
+    Epoch  30/100 | Train=0.1839 Val=0.0791 LR=5.0e-04 patience=1/10
+    Early stopping at epoch 39 (best val_loss=0.0766)
+    ❌ GRU 1h: MAE=2.805, MASE=1.173 (217s, 604 test points)
+
+  📊 Quick comparison (1h):
+    Persistence: 1.000 | LightGBM: 1.012 | SARIMA: 1.283
+    LSTM: 1.560 | GRU: 1.173
+
+══════════════════════════════════════════════════════════════════════
+[3/5] HORIZON = 6h
+══════════════════════════════════════════════════════════════════════
+  Evaluating Persistence baseline (6h)...
+    Persistence 6h: MAE=6.305, RMSE=8.594
+  Datasets: train=6116, val=774, test=604 (real only)
+
+  Training LSTM (6h)...
+    Parameters: 53,569
+    Epoch   1/100 | Train=0.7050 Val=0.2714 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.3820 Val=0.2153 LR=1.0e-03 patience=3/10
+    Early stopping at epoch 17 (best val_loss=0.1875)
+    ✅ LSTM 6h: MAE=5.765, MASE=0.914 (23s, 604 test points)
+
+  Training GRU (6h)...
+    Parameters: 40,705
+    Epoch   1/100 | Train=0.6955 Val=0.2684 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.4107 Val=0.2213 LR=1.0e-03 patience=3/10
+    Early stopping at epoch 17 (best val_loss=0.1644)
+    ✅ GRU 6h: MAE=5.119, MASE=0.812 (90s, 604 test points)
+
+  📊 Quick comparison (6h):
+    Persistence: 1.000 | LightGBM: 0.730 | SARIMA: 0.762
+    LSTM: 0.914 | GRU: 0.812
+
+══════════════════════════════════════════════════════════════════════
+[3/5] HORIZON = 24h
+══════════════════════════════════════════════════════════════════════
+  Evaluating Persistence baseline (24h)...
+    Persistence 24h: MAE=6.276, RMSE=8.777
+  Datasets: train=6098, val=774, test=604 (real only)
+
+  Training LSTM (24h)...
+    Parameters: 53,569
+    Epoch   1/100 | Train=0.6449 Val=0.2822 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.4254 Val=0.2054 LR=1.0e-03 patience=0/10
+    Epoch  20/100 | Train=0.2389 Val=0.2830 LR=5.0e-04 patience=10/10
+    Early stopping at epoch 20 (best val_loss=0.2054)
+    ✅ LSTM 24h: MAE=5.211, MASE=0.830 (28s, 604 test points)
+
+  Training GRU (24h)...
+    Parameters: 40,705
+    Epoch   1/100 | Train=0.6350 Val=0.2181 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.5002 Val=0.2595 LR=1.0e-03 patience=4/10
+    Epoch  20/100 | Train=0.3189 Val=0.2395 LR=5.0e-04 patience=9/10
+    Early stopping at epoch 21 (best val_loss=0.1668)
+    ✅ GRU 24h: MAE=4.562, MASE=0.727 (113s, 604 test points)
+
+  📊 Quick comparison (24h):
+    Persistence: 1.000 | LightGBM: 0.812 | SARIMA: 0.813
+    LSTM: 0.830 | GRU: 0.727
+
+══════════════════════════════════════════════════════════════════════
+[4/5] FULL MODEL COMPARISON SUMMARY
+══════════════════════════════════════════════════════════════════════
+
+Horizon    Model                     MAE     RMSE     MASE       Status
+───────────────────────────────────────────────────────────────────────────
+1h        Persistence             2.390    3.847    1.000     baseline
+1h        LSTM                    3.730    4.794    1.560     ❌ MASE>1
+1h        GRU                     2.805    3.971    1.173     ❌ MASE>1
+1h        SARIMA (ref)                —        —    1.283             
+1h        LightGBM (ref)              —        —    1.012             
+───────────────────────────────────────────────────────────────────────────
+6h        Persistence             6.305    8.594    1.000     baseline
+6h        LSTM                    5.765    7.717    0.914     ✅ BEATS!
+6h        GRU                     5.119    6.547    0.812     ✅ BEATS!
+6h        SARIMA (ref)                —        —    0.762             
+6h        LightGBM (ref)              —        —    0.730             
+───────────────────────────────────────────────────────────────────────────
+24h        Persistence             6.276    8.777    1.000     baseline
+24h        LSTM                    5.211    6.810    0.830     ✅ BEATS!
+24h        GRU                     4.562    6.766    0.727     ✅ BEATS!
+24h        SARIMA (ref)                —        —    0.813             
+24h        LightGBM (ref)              —        —    0.812             
+───────────────────────────────────────────────────────────────────────────
+
+[5/5] Saving results...
+  Results saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/dl/dl_multi_horizon_20260404_201212.json
+
+══════════════════════════════════════════════════════════════════════
+COMPLETE — Total: 537s (8.9 min)
+══════════════════════════════════════════════════════════════════════

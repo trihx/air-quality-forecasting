@@ -1,0 +1,44 @@
+# ============================================================
+# BASE CONFIGURATION — Time Series Forecasting PM2.5
+# ============================================================
+# Tất cả tham số mặc định. Override bằng model-specific configs.
+
+data:
+  raw_path: "dataset/raw/final_dataset.csv"
+  interim_path: "dataset/interim/"
+  processed_path: "dataset/processed/"
+  target_col: "pm25"
+  datetime_col: "ngay_tao"
+  feature_cols: ["nhiet_do", "do_am", "diem_suong", "co2"]
+
+preprocessing:
+  resample_freq: "1h"
+  interpolation_method: "linear"
+  max_gap_interpolate: "2h"
+  outlier_method: "iqr"
+  outlier_threshold: 3.0
+
+split:
+  train_ratio: 0.8
+  validation_ratio: 0.1
+  test_ratio: 0.1
+  shuffle: false  # NEVER shuffle for time series
+
+training:
+  random_state: 42
+  n_jobs: -1
+  cv_splits: 5
+
+forecasting:
+  horizons: [1, 6, 24]  # hours ahead
+  lookback_window: 168   # 7 days in hours
+
+evaluation:
+  primary_metric: "mae"
+  metrics: ["mae", "rmse", "mape", "mase", "r2"]
+  mase_threshold: 1.0  # MASE < 1.0 = better than naive
+
+logging:
+  level: "INFO"
+  log_dir: "research/runs"
+  format: "{time:YYYY-MM-DD HH:mm:ss} | {level:<8} | {module}:{function}:{line} | {message}"

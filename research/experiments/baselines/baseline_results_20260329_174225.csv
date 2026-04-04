@@ -1,0 +1,5 @@
+model,mae,rmse,mape,smape,mase,r2,pass_naive
+Persistence,1.821,3.3061,26.09,23.25,1.0,0.5921,❌
+SeasonalNaive,4.197,6.4176,63.69,52.38,2.3047,-0.537,❌
+HourlyMean,6.6278,7.6928,133.72,68.26,3.6396,-1.2085,❌
+HistoricalMean,7.7151,8.5016,163.11,76.4,4.2366,-1.6972,❌

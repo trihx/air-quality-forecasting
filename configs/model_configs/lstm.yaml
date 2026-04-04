@@ -1,0 +1,23 @@
+# LSTM — PM2.5 Forecasting
+model_name: "LSTM"
+model_class: "src.models.dl.lstm.LSTMModel"
+scaling_required: true  # Neural network → MUST scale
+
+params:
+  hidden_dim: 64
+  num_layers: 2
+  dropout: 0.2
+  bidirectional: false
+  sequence_length: 168  # 7 days lookback
+
+training:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.001
+  early_stopping_patience: 10
+  scheduler: "ReduceLROnPlateau"
+  scheduler_params:
+    factor: 0.5
+    patience: 5
+    min_lr: 0.00001
+  random_state: 42

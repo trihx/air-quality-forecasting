@@ -1,0 +1,50 @@
+{
+  "timestamp": "20260329_174225",
+  "n_train": 5351,
+  "n_val": 669,
+  "n_test": 669,
+  "results": [
+    {
+      "model": "Persistence",
+      "mae": 1.821,
+      "rmse": 3.3061,
+      "mape": 26.09,
+      "smape": 23.25,
+      "mase": 1.0,
+      "r2": 0.5921,
+      "pass_naive": "\u274c"
+    },
+    {
+      "model": "SeasonalNaive",
+      "mae": 4.197,
+      "rmse": 6.4176,
+      "mape": 63.69,
+      "smape": 52.38,
+      "mase": 2.3047,
+      "r2": -0.537,
+      "pass_naive": "\u274c"
+    },
+    {
+      "model": "HistoricalMean",
+      "mae": 7.7151,
+      "rmse": 8.5016,
+      "mape": 163.11,
+      "smape": 76.4,
+      "mase": 4.2366,
+      "r2": -1.6972,
+      "pass_naive": "\u274c"
+    },
+    {
+      "model": "HourlyMean",
+      "mae": 6.6278,
+      "rmse": 7.6928,
+      "mape": 133.72,
+      "smape": 68.26,
+      "mase": 3.6396,
+      "r2": -1.2085,
+      "pass_naive": "\u274c"
+    }
+  ],
+  "best_baseline": "Persistence",
+  "best_mae": 1.821
+}

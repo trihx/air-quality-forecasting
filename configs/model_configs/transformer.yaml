@@ -1,0 +1,23 @@
+# Transformer — PM2.5 Forecasting
+model_name: "Transformer"
+model_class: "src.models.dl.transformer.TransformerModel"
+scaling_required: true  # Neural network → MUST scale
+
+params:
+  d_model: 64
+  nhead: 4
+  num_encoder_layers: 3
+  dim_feedforward: 256
+  dropout: 0.1
+  sequence_length: 168
+
+training:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.0001
+  early_stopping_patience: 15
+  scheduler: "CosineAnnealingWarmRestarts"
+  scheduler_params:
+    T_0: 10
+    T_mult: 2
+  random_state: 42

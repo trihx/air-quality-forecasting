@@ -1,0 +1,41 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.idea
+.vscode
+
+# docs
+docs/
+
+# data
+dataset/
+
+# Lint & Quality tool caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Security
+*.key
+*.pem
+
+# OS
+.DS_Store

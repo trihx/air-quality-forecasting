@@ -1,0 +1,71 @@
+{
+  "1h": {
+    "Persistence": {
+      "mae": 2.3902,
+      "rmse": 3.8473,
+      "mase": 1.0
+    },
+    "LSTM": {
+      "mae": 3.73,
+      "rmse": 4.7943,
+      "mase": 1.5605,
+      "params": 53569,
+      "train_time_s": 53.7,
+      "n_test": 604
+    },
+    "GRU": {
+      "mae": 2.8046,
+      "rmse": 3.9707,
+      "mase": 1.1734,
+      "params": 40705,
+      "train_time_s": 217.4,
+      "n_test": 604
+    }
+  },
+  "6h": {
+    "Persistence": {
+      "mae": 6.3053,
+      "rmse": 8.5938,
+      "mase": 1.0
+    },
+    "LSTM": {
+      "mae": 5.7651,
+      "rmse": 7.7172,
+      "mase": 0.9143,
+      "params": 53569,
+      "train_time_s": 23.1,
+      "n_test": 604
+    },
+    "GRU": {
+      "mae": 5.1191,
+      "rmse": 6.547,
+      "mase": 0.8119,
+      "params": 40705,
+      "train_time_s": 90.3,
+      "n_test": 604
+    }
+  },
+  "24h": {
+    "Persistence": {
+      "mae": 6.2758,
+      "rmse": 8.7765,
+      "mase": 1.0
+    },
+    "LSTM": {
+      "mae": 5.2111,
+      "rmse": 6.8102,
+      "mase": 0.8304,
+      "params": 53569,
+      "train_time_s": 27.5,
+      "n_test": 604
+    },
+    "GRU": {
+      "mae": 4.5623,
+      "rmse": 6.7662,
+      "mase": 0.727,
+      "params": 40705,
+      "train_time_s": 112.7,
+      "n_test": 604
+    }
+  }
+}

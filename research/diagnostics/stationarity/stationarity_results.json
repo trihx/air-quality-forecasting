@@ -1,0 +1,164 @@
+{
+  "n_observations": 6857,
+  "date_range": {
+    "start": "2022-03-17 08:00:00",
+    "end": "2025-03-15 18:00:00"
+  },
+  "results": [
+    {
+      "test": "ADF",
+      "series": "Raw PM2.5",
+      "statistic": -6.343,
+      "p_value": 0.0,
+      "used_lag": 35,
+      "n_obs": 6821,
+      "critical_values": {
+        "1%": -3.4313,
+        "5%": -2.862,
+        "10%": -2.567
+      },
+      "is_stationary": true,
+      "interpretation": "STATIONARY (p=0.0000 < 0.05, reject H0)"
+    },
+    {
+      "test": "KPSS",
+      "series": "Raw PM2.5",
+      "regression": "c",
+      "statistic": 1.4064,
+      "p_value": 0.01,
+      "n_lags": 47,
+      "critical_values": {
+        "10%": 0.347,
+        "5%": 0.463,
+        "2.5%": 0.574,
+        "1%": 0.739
+      },
+      "is_stationary": false,
+      "interpretation": "NON-STATIONARY (p=0.0100 < 0.05, reject H0)"
+    },
+    {
+      "test": "ADF",
+      "series": "1st Diff (d=1)",
+      "statistic": -18.5486,
+      "p_value": 0.0,
+      "used_lag": 35,
+      "n_obs": 6820,
+      "critical_values": {
+        "1%": -3.4313,
+        "5%": -2.862,
+        "10%": -2.567
+      },
+      "is_stationary": true,
+      "interpretation": "STATIONARY (p=0.0000 < 0.05, reject H0)"
+    },
+    {
+      "test": "KPSS",
+      "series": "1st Diff (d=1)",
+      "regression": "c",
+      "statistic": 0.1018,
+      "p_value": 0.1,
+      "n_lags": 876,
+      "critical_values": {
+        "10%": 0.347,
+        "5%": 0.463,
+        "2.5%": 0.574,
+        "1%": 0.739
+      },
+      "is_stationary": true,
+      "interpretation": "STATIONARY (p=0.1000 >= 0.05, fail to reject H0)"
+    },
+    {
+      "test": "ADF",
+      "series": "Seasonal Diff (d=24h)",
+      "statistic": -13.0712,
+      "p_value": 0.0,
+      "used_lag": 35,
+      "n_obs": 6797,
+      "critical_values": {
+        "1%": -3.4313,
+        "5%": -2.862,
+        "10%": -2.567
+      },
+      "is_stationary": true,
+      "interpretation": "STATIONARY (p=0.0000 < 0.05, reject H0)"
+    },
+    {
+      "test": "KPSS",
+      "series": "Seasonal Diff (d=24h)",
+      "regression": "c",
+      "statistic": 0.0498,
+      "p_value": 0.1,
+      "n_lags": 42,
+      "critical_values": {
+        "10%": 0.347,
+        "5%": 0.463,
+        "2.5%": 0.574,
+        "1%": 0.739
+      },
+      "is_stationary": true,
+      "interpretation": "STATIONARY (p=0.1000 >= 0.05, fail to reject H0)"
+    },
+    {
+      "test": "ADF",
+      "series": "Log PM2.5",
+      "statistic": -6.2232,
+      "p_value": 0.0,
+      "used_lag": 35,
+      "n_obs": 6821,
+      "critical_values": {
+        "1%": -3.4313,
+        "5%": -2.862,
+        "10%": -2.567
+      },
+      "is_stationary": true,
+      "interpretation": "STATIONARY (p=0.0000 < 0.05, reject H0)"
+    },
+    {
+      "test": "KPSS",
+      "series": "Log PM2.5",
+      "regression": "c",
+      "statistic": 2.0256,
+      "p_value": 0.01,
+      "n_lags": 46,
+      "critical_values": {
+        "10%": 0.347,
+        "5%": 0.463,
+        "2.5%": 0.574,
+        "1%": 0.739
+      },
+      "is_stationary": false,
+      "interpretation": "NON-STATIONARY (p=0.0100 < 0.05, reject H0)"
+    },
+    {
+      "test": "ADF",
+      "series": "Log 1st Diff",
+      "statistic": -18.666,
+      "p_value": 0.0,
+      "used_lag": 35,
+      "n_obs": 6820,
+      "critical_values": {
+        "1%": -3.4313,
+        "5%": -2.862,
+        "10%": -2.567
+      },
+      "is_stationary": true,
+      "interpretation": "STATIONARY (p=0.0000 < 0.05, reject H0)"
+    },
+    {
+      "test": "KPSS",
+      "series": "Log 1st Diff",
+      "regression": "c",
+      "statistic": 0.0677,
+      "p_value": 0.1,
+      "n_lags": 555,
+      "critical_values": {
+        "10%": 0.347,
+        "5%": 0.463,
+        "2.5%": 0.574,
+        "1%": 0.739
+      },
+      "is_stationary": true,
+      "interpretation": "STATIONARY (p=0.1000 >= 0.05, fail to reject H0)"
+    }
+  ]
+}

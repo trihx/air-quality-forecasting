@@ -1,0 +1,189 @@
+2026-03-29 16:14:21 | INFO     | logging:setup_logging:61 | Logging configured: level=INFO, log_dir=research/runs
+2026-03-29 16:14:21 | INFO     | run_eda:main:23 | 🚀 Starting EDA Pipeline
+2026-03-29 16:14:21 | DEBUG    | path_validator:validate_path:33 | Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-03-29 16:14:21 | INFO     | loader:load_raw_data:46 | Loading data from final_dataset.csv
+2026-03-29 16:14:21 | WARNING  | loader:load_raw_data:60 | Dropped 3 rows with missing datetime (NaT)
+2026-03-29 16:14:21 | INFO     | loader:load_raw_data:67 | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-03-29 16:14:21 | DEBUG    | loader:load_raw_data:71 | Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:432 | --- STAGING Validation: 8 passed, 0 failed ---
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 209591 rows
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🟡 WARNING] temporal_consistency: Temporal issues: 0 negative diffs, 103 gaps >6h
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🔵 INFO] data_freshness: Data spans 1151 days (3.2 years)
+2026-03-29 16:14:21 | INFO     | cleaner:clean_data:45 | ============================================================
+2026-03-29 16:14:21 | INFO     | cleaner:clean_data:46 | Data Cleaning Pipeline Started
+2026-03-29 16:14:21 | INFO     | cleaner:clean_data:47 | ============================================================
+2026-03-29 16:14:21 | INFO     | cleaner:_remove_duplicates:104 | [1/7] No exact duplicates found
+2026-03-29 16:14:21 | INFO     | cleaner:_set_datetime_index:119 | [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-03-29 16:14:21 | INFO     | cleaner:_clip_physical_bounds:140 | [3/7] All values within physical bounds
+2026-03-29 16:14:21 | DEBUG    | cleaner:_handle_outliers:182 |   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-03-29 16:14:21 | DEBUG    | cleaner:_handle_outliers:182 |   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-03-29 16:14:21 | DEBUG    | cleaner:_handle_outliers:182 |   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-03-29 16:14:21 | DEBUG    | cleaner:_handle_outliers:182 |   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-03-29 16:14:21 | INFO     | cleaner:_handle_outliers:186 | [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-03-29 16:14:21 | INFO     | cleaner:_resample:198 | [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+2026-03-29 16:14:21 | INFO     | cleaner:_interpolate_gaps:233 | [6/7] Interpolated 1,193 values (method=linear, max_gap=2h, remaining NaN: 101,778)
+2026-03-29 16:14:21 | INFO     | cleaner:clean_data:88 | ============================================================
+2026-03-29 16:14:21 | INFO     | cleaner:clean_data:89 | Cleaning Complete: 209,591 → 6,857 rows (3.3% retained)
+2026-03-29 16:14:21 | INFO     | cleaner:clean_data:90 | Report: {'n_input': 209591, 'n_after_dedup': 209591, 'n_clipped': 0, 'n_outliers_replaced': 23336, 'n_after_resample': 27649, 'n_interpolated': np.int64(1193), 'n_dropped_nan': np.int64(20792), 'n_output': 6857, 'pct_retained': 3.3}
+2026-03-29 16:14:21 | INFO     | cleaner:clean_data:91 | ============================================================
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:432 | --- INTERMEDIATE Validation: 4 passed, 1 failed ---
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ❌ [🟡 WARNING] regular_frequency: Irregular frequency — check for gaps
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🟡 WARNING] sufficient_data: Data has 6,857 rows (min required: 1,000)
+2026-03-29 16:14:21 | INFO     | validator:_log_summary:435 |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-03-29 16:14:21 | INFO     | run_eda:main:49 | 💾 Cleaned data saved to dataset/interim/cleaned_hourly.csv (6,857 rows)
+2026-03-29 16:14:21 | INFO     | analyzer:run_full_eda:76 | ============================================================
+2026-03-29 16:14:21 | INFO     | analyzer:run_full_eda:77 | EDA Pipeline Started
+2026-03-29 16:14:21 | INFO     | analyzer:run_full_eda:78 | ============================================================
+2026-03-29 16:14:21 | INFO     | analyzer:_descriptive_stats:122 | [1/8] Descriptive Statistics
+2026-03-29 16:14:21 | DEBUG    | analyzer:_descriptive_stats:140 |   nhiet_do: mean=29.14, std=3.08
+2026-03-29 16:14:21 | DEBUG    | analyzer:_descriptive_stats:140 |   do_am: mean=75.54, std=12.96
+2026-03-29 16:14:21 | DEBUG    | analyzer:_descriptive_stats:140 |   diem_suong: mean=25.42, std=1.43
+2026-03-29 16:14:21 | DEBUG    | analyzer:_descriptive_stats:140 |   co2: mean=425.50, std=240.19
+2026-03-29 16:14:21 | DEBUG    | analyzer:_descriptive_stats:140 |   pm25: mean=13.18, std=9.48
+2026-03-29 16:14:21 | INFO     | analyzer:_plot_time_series:169 | [2/8] Time Series Plots
+2026-03-29 16:14:22 | INFO     | analyzer:_plot_distributions:216 | [3/8] Distribution Analysis
+2026-03-29 16:14:23 | INFO     | analyzer:_correlation_analysis:284 | [4/8] Correlation Analysis
+2026-03-29 16:14:23 | INFO     | analyzer:_correlation_analysis:315 |   nhiet_do → PM2.5: pearson=-0.213, spearman=-0.210
+2026-03-29 16:14:23 | INFO     | analyzer:_correlation_analysis:315 |   do_am → PM2.5: pearson=0.140, spearman=0.159
+2026-03-29 16:14:23 | INFO     | analyzer:_correlation_analysis:315 |   diem_suong → PM2.5: pearson=-0.151, spearman=-0.107
+2026-03-29 16:14:23 | INFO     | analyzer:_correlation_analysis:315 |   co2 → PM2.5: pearson=0.123, spearman=0.243
+2026-03-29 16:14:23 | INFO     | analyzer:_stationarity_tests:327 | [5/8] Stationarity Tests (ADF + KPSS)
+2026-03-29 16:14:23 | INFO     | analyzer:_stationarity_tests:367 |   nhiet_do: ADF p=0.0000, KPSS p=0.0100 → Inconclusive ⚠️ — conflicting results
+2026-03-29 16:14:23 | INFO     | analyzer:_stationarity_tests:367 |   do_am: ADF p=0.0000, KPSS p=0.0100 → Inconclusive ⚠️ — conflicting results
+2026-03-29 16:14:23 | INFO     | analyzer:_stationarity_tests:367 |   diem_suong: ADF p=0.0002, KPSS p=0.0100 → Inconclusive ⚠️ — conflicting results
+2026-03-29 16:14:24 | INFO     | analyzer:_stationarity_tests:367 |   co2: ADF p=0.0395, KPSS p=0.0100 → Inconclusive ⚠️ — conflicting results
+2026-03-29 16:14:24 | INFO     | analyzer:_stationarity_tests:367 |   pm25: ADF p=0.0000, KPSS p=0.0100 → Inconclusive ⚠️ — conflicting results
+2026-03-29 16:14:24 | INFO     | analyzer:_plot_acf_pacf:379 | [6/8] ACF/PACF Analysis
+2026-03-29 16:14:24 | INFO     | analyzer:_temporal_patterns:399 | [7/8] Temporal Patterns
+2026-03-29 16:14:24 | INFO     | analyzer:_temporal_patterns:479 |   Peak hour: 6h, Trough: 12h
+2026-03-29 16:14:24 | INFO     | analyzer:_temporal_patterns:480 |   Peak month: 4, Trough: 9
+2026-03-29 16:14:24 | INFO     | analyzer:_missing_analysis:492 | [8/8] Missing Values Analysis
+2026-03-29 16:14:24 | INFO     | analyzer:run_full_eda:108 | ============================================================
+2026-03-29 16:14:24 | INFO     | analyzer:run_full_eda:109 | EDA Complete — 10 charts saved to research/eda
+2026-03-29 16:14:24 | INFO     | analyzer:run_full_eda:110 | ============================================================
+2026-03-29 16:14:24 | INFO     | run_eda:main:67 | 📊 EDA results saved to research/eda/eda_results.json
+2026-03-29 16:14:24 | INFO     | run_eda:main:69 | ✅ EDA Pipeline Complete!
+2026-03-29 17:42:25 | INFO     | logging:setup_logging:61 | Logging configured: level=INFO, log_dir=research/runs
+2026-03-29 17:42:25 | INFO     | run_baselines:main:27 | 🚀 Level 0: Baseline Models Experiment
+2026-03-29 17:42:25 | INFO     | run_baselines:main:37 | 📊 Loaded Marts data: 6,689 rows × 95 cols
+2026-03-29 17:42:25 | INFO     | splitter:temporal_train_val_test_split:55 | Temporal Split (NO shuffle):
+2026-03-29 17:42:25 | INFO     | splitter:temporal_train_val_test_split:56 |   Train: 5,351 rows [2022-03-24 08:00:00 → 2023-06-10 23:00:00]
+2026-03-29 17:42:25 | INFO     | splitter:temporal_train_val_test_split:57 |   Val:   669 rows [2023-06-11 00:00:00 → 2023-08-18 08:00:00]
+2026-03-29 17:42:25 | INFO     | splitter:temporal_train_val_test_split:58 |   Test:  669 rows [2023-08-18 09:00:00 → 2025-03-15 18:00:00]
+2026-03-29 17:42:25 | INFO     | run_baselines:main:46 | ============================================================
+2026-03-29 17:42:25 | INFO     | run_baselines:main:47 | Training & Evaluating Baselines
+2026-03-29 17:42:25 | INFO     | run_baselines:main:48 | ============================================================
+2026-03-29 17:42:25 | INFO     | baselines:fit:45 |   Persistence: fitted, last_value=3.67
+2026-03-29 17:42:25 | INFO     | baselines:fit:45 |   Persistence: fitted, last_value=3.67
+2026-03-29 17:42:25 | INFO     | metrics:evaluate_forecast:126 |   Persistence: MAE=1.821, RMSE=3.3061, MASE=1.0 ❌
+2026-03-29 17:42:25 | INFO     | baselines:fit:72 |   SeasonalNaive: fitted, period=24h, seasonal_mean=6.31
+2026-03-29 17:42:25 | INFO     | metrics:evaluate_forecast:126 |   SeasonalNaive: MAE=4.197, RMSE=6.4176, MASE=2.3047 ❌
+2026-03-29 17:42:25 | INFO     | baselines:fit:100 |   HistoricalMean: fitted, mean=14.26 ± 9.49
+2026-03-29 17:42:25 | INFO     | metrics:evaluate_forecast:126 |   HistoricalMean: MAE=7.7151, RMSE=8.5016, MASE=4.2366 ❌
+2026-03-29 17:42:25 | INFO     | baselines:fit:119 |   HourlyMean: fitted, peak_hour=6, trough_hour=12
+2026-03-29 17:42:25 | INFO     | metrics:evaluate_forecast:126 |   HourlyMean: MAE=6.6278, RMSE=7.6928, MASE=3.6396 ❌
+2026-03-29 17:42:25 | INFO     | run_baselines:main:73 | ============================================================
+2026-03-29 17:42:25 | INFO     | run_baselines:main:74 | 📋 Baseline Results (sorted by MAE)
+2026-03-29 17:42:25 | INFO     | run_baselines:main:75 | ============================================================
+2026-03-29 17:42:25 | INFO     | run_baselines:main:77 |   Persistence      | MAE=1.821    | RMSE=3.3061   | MASE=1.0      ❌
+2026-03-29 17:42:25 | INFO     | run_baselines:main:77 |   SeasonalNaive    | MAE=4.197    | RMSE=6.4176   | MASE=2.3047   ❌
+2026-03-29 17:42:25 | INFO     | run_baselines:main:77 |   HourlyMean       | MAE=6.6278   | RMSE=7.6928   | MASE=3.6396   ❌
+2026-03-29 17:42:25 | INFO     | run_baselines:main:77 |   HistoricalMean   | MAE=7.7151   | RMSE=8.5016   | MASE=4.2366   ❌
+2026-03-29 17:42:25 | INFO     | run_baselines:main:91 | 💾 Results CSV: research/experiments/baselines/baseline_results_20260329_174225.csv
+2026-03-29 17:42:25 | INFO     | run_baselines:main:109 | 💾 Results JSON: research/experiments/baselines/latest_results.json
+2026-03-29 17:42:25 | INFO     | run_baselines:main:113 | ============================================================
+2026-03-29 17:42:25 | INFO     | run_baselines:main:114 | 🏆 Best Baseline: Persistence (MAE=1.821)
+2026-03-29 17:42:25 | INFO     | run_baselines:main:115 |    Any Level 1+ model must beat MAE < 1.821 to be useful
+2026-03-29 17:42:25 | INFO     | run_baselines:main:116 | ✅ Baseline Experiment Complete!
+2026-03-29 17:42:25 | INFO     | run_baselines:main:117 | ============================================================
+2026-03-29 17:46:34 | INFO     | logging:setup_logging:61 | Logging configured: level=INFO, log_dir=research/runs
+2026-03-29 17:46:34 | INFO     | run_ml:main:211 | 🚀 Level 2-3: ML Models Experiment
+2026-03-29 17:46:34 | INFO     | run_ml:main:220 | 📊 Loaded: 6,689 rows × 95 cols
+2026-03-29 17:46:34 | INFO     | splitter:temporal_train_val_test_split:55 | Temporal Split (NO shuffle):
+2026-03-29 17:46:34 | INFO     | splitter:temporal_train_val_test_split:56 |   Train: 5,351 rows [2022-03-24 08:00:00 → 2023-06-10 23:00:00]
+2026-03-29 17:46:34 | INFO     | splitter:temporal_train_val_test_split:57 |   Val:   669 rows [2023-06-11 00:00:00 → 2023-08-18 08:00:00]
+2026-03-29 17:46:34 | INFO     | splitter:temporal_train_val_test_split:58 |   Test:  669 rows [2023-08-18 09:00:00 → 2025-03-15 18:00:00]
+2026-03-29 17:46:34 | INFO     | run_ml:main:228 |   Train+Val: 6,020 rows, Test: 669 rows
+2026-03-29 17:46:34 | INFO     | run_ml:main:237 |   📏 Baseline target: MAE < 1.821
+2026-03-29 17:46:34 | INFO     | run_ml:main:243 | ============================================================
+2026-03-29 17:46:34 | INFO     | run_ml:main:244 | Training & Evaluating ML Models (Walk-Forward CV)
+2026-03-29 17:46:34 | INFO     | run_ml:main:245 | ============================================================
+2026-03-29 17:46:34 | INFO     | run_ml:main:248 | 
+--- Ridge ---
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 1: MAE=0.0507 (train=1005, val=1003)
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 2: MAE=0.0346 (train=2008, val=1003)
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 3: MAE=0.0097 (train=3011, val=1003)
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 4: MAE=0.0061 (train=4014, val=1003)
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 5: MAE=0.0049 (train=5017, val=1003)
+2026-03-29 17:46:34 | INFO     | run_ml:walk_forward_evaluate:184 |   Ridge CV: MAE=0.0212 ± 0.0183
+2026-03-29 17:46:34 | INFO     | metrics:evaluate_forecast:126 |   Ridge: MAE=0.0042, RMSE=0.0062, MASE=0.0023 ✅
+2026-03-29 17:46:34 | INFO     | run_ml:main:248 | 
+--- Lasso ---
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 1: MAE=0.1361 (train=1005, val=1003)
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 2: MAE=0.1610 (train=2008, val=1003)
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 3: MAE=0.1312 (train=3011, val=1003)
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 4: MAE=0.1535 (train=4014, val=1003)
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 5: MAE=0.1121 (train=5017, val=1003)
+2026-03-29 17:46:34 | INFO     | run_ml:walk_forward_evaluate:184 |   Lasso CV: MAE=0.1388 ± 0.0173
+2026-03-29 17:46:34 | INFO     | metrics:evaluate_forecast:126 |   Lasso: MAE=0.1063, RMSE=0.1319, MASE=0.0584 ✅
+2026-03-29 17:46:34 | INFO     | run_ml:main:248 | 
+--- ElasticNet ---
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 1: MAE=0.4209 (train=1005, val=1003)
+2026-03-29 17:46:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 2: MAE=1.1387 (train=2008, val=1003)
+2026-03-29 17:46:35 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 3: MAE=0.5277 (train=3011, val=1003)
+2026-03-29 17:46:35 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 4: MAE=0.4982 (train=4014, val=1003)
+2026-03-29 17:46:35 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 5: MAE=0.3492 (train=5017, val=1003)
+2026-03-29 17:46:35 | INFO     | run_ml:walk_forward_evaluate:184 |   ElasticNet CV: MAE=0.5869 ± 0.2828
+2026-03-29 17:46:35 | INFO     | metrics:evaluate_forecast:126 |   ElasticNet: MAE=0.3706, RMSE=0.5353, MASE=0.2035 ✅
+2026-03-29 17:46:35 | INFO     | run_ml:main:248 | 
+--- RandomForest ---
+2026-03-29 17:46:35 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 1: MAE=0.8925 (train=1005, val=1003)
+2026-03-29 17:46:37 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 2: MAE=3.5939 (train=2008, val=1003)
+2026-03-29 17:46:39 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 3: MAE=0.4646 (train=3011, val=1003)
+2026-03-29 17:46:42 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 4: MAE=0.4211 (train=4014, val=1003)
+2026-03-29 17:46:46 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 5: MAE=0.1457 (train=5017, val=1003)
+2026-03-29 17:46:46 | INFO     | run_ml:walk_forward_evaluate:184 |   RandomForest CV: MAE=1.1036 ± 1.2679
+2026-03-29 17:46:51 | INFO     | metrics:evaluate_forecast:126 |   RandomForest: MAE=0.1426, RMSE=0.383, MASE=0.0783 ✅
+2026-03-29 17:46:51 | INFO     | run_ml:main:248 | 
+--- XGBoost ---
+2026-03-29 17:46:53 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 1: MAE=0.5892 (train=1005, val=1003)
+2026-03-29 17:46:55 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 2: MAE=2.6493 (train=2008, val=1003)
+2026-03-29 17:46:57 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 3: MAE=0.4603 (train=3011, val=1003)
+2026-03-29 17:46:59 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 4: MAE=0.4362 (train=4014, val=1003)
+2026-03-29 17:47:01 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 5: MAE=0.1778 (train=5017, val=1003)
+2026-03-29 17:47:01 | INFO     | run_ml:walk_forward_evaluate:184 |   XGBoost CV: MAE=0.8626 ± 0.9033
+2026-03-29 17:47:03 | INFO     | metrics:evaluate_forecast:126 |   XGBoost: MAE=0.1889, RMSE=0.3948, MASE=0.1037 ✅
+2026-03-29 17:47:03 | INFO     | run_ml:main:248 | 
+--- LightGBM ---
+2026-03-29 17:47:05 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 1: MAE=0.5796 (train=1005, val=1003)
+2026-03-29 17:47:08 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 2: MAE=2.5904 (train=2008, val=1003)
+2026-03-29 17:47:11 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 3: MAE=0.4789 (train=3011, val=1003)
+2026-03-29 17:47:15 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 4: MAE=0.4333 (train=4014, val=1003)
+2026-03-29 17:47:19 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 5: MAE=0.1813 (train=5017, val=1003)
+2026-03-29 17:47:19 | INFO     | run_ml:walk_forward_evaluate:184 |   LightGBM CV: MAE=0.8527 ± 0.8787
+2026-03-29 17:47:23 | INFO     | metrics:evaluate_forecast:126 |   LightGBM: MAE=0.2206, RMSE=0.3838, MASE=0.1211 ✅
+2026-03-29 17:47:23 | INFO     | run_ml:main:265 | 
+============================================================
+2026-03-29 17:47:23 | INFO     | run_ml:main:266 | 📋 ML Model Results (sorted by MAE)
+2026-03-29 17:47:23 | INFO     | run_ml:main:267 | ============================================================
+2026-03-29 17:47:23 | INFO     | run_ml:main:272 |   Ridge          | MAE=0.0042   | RMSE=0.0062   | MASE=0.0023   ✅ 🏆 BEATS BASELINE
+2026-03-29 17:47:23 | INFO     | run_ml:main:272 |   Lasso          | MAE=0.1063   | RMSE=0.1319   | MASE=0.0584   ✅ 🏆 BEATS BASELINE
+2026-03-29 17:47:23 | INFO     | run_ml:main:272 |   RandomForest   | MAE=0.1426   | RMSE=0.383    | MASE=0.0783   ✅ 🏆 BEATS BASELINE
+2026-03-29 17:47:23 | INFO     | run_ml:main:272 |   XGBoost        | MAE=0.1889   | RMSE=0.3948   | MASE=0.1037   ✅ 🏆 BEATS BASELINE
+2026-03-29 17:47:23 | INFO     | run_ml:main:272 |   LightGBM       | MAE=0.2206   | RMSE=0.3838   | MASE=0.1211   ✅ 🏆 BEATS BASELINE
+2026-03-29 17:47:23 | INFO     | run_ml:main:272 |   ElasticNet     | MAE=0.3706   | RMSE=0.5353   | MASE=0.2035   ✅ 🏆 BEATS BASELINE
+2026-03-29 17:47:23 | INFO     | run_ml:main:305 | 
+💾 Results: research/experiments/ml_models/ml_results_20260329_174723.csv
+2026-03-29 17:47:23 | INFO     | run_ml:main:306 | 💾 JSON: research/experiments/ml_models/latest_results.json
+2026-03-29 17:47:23 | INFO     | run_ml:main:309 | 
+============================================================
+2026-03-29 17:47:23 | INFO     | run_ml:main:313 | 🏆 Best ML: Ridge (MAE=0.0042) — 99.8% better than baseline
+2026-03-29 17:47:23 | INFO     | run_ml:main:318 | ✅ ML Experiment Complete!
+2026-03-29 17:47:23 | INFO     | run_ml:main:319 | ============================================================

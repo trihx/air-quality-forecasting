@@ -1,0 +1,88 @@
+======================================================================
+ENSEMBLE STACKING — LightGBM + GRU
+Horizons: [1, 6, 24]h | Meta-learner: Ridge Regression
+Device: (lazy — set when GRU starts)
+RULE: Test set = REAL data only
+======================================================================
+
+[1/4] Preparing data...
+2026-04-04 20:40:17.332 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-04 20:40:17.332 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-04 20:40:17.445 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-04 20:40:17.460 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-04 20:40:17.461 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-04 20:40:17.476 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-04 20:40:17.480 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-04 20:40:17.481 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-04 20:40:17.484 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-04 20:40:17.490 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-04 20:40:17.493 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-04 20:40:17.497 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-04 20:40:17.497 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-04 20:40:17.504 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-04 20:40:29.056 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Building engineered features for LightGBM...
+2026-04-04 20:40:29.058 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-04 20:40:29.058 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-04 20:40:29.058 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-04 20:40:29.063 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-04 20:40:29.067 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-04 20:40:29.076 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-04 20:40:29.079 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-04 20:40:29.082 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-04 20:40:29.084 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-04 20:40:29.086 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-04 20:40:29.086 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-04 20:40:29.086 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 5 → 95 columns, 7,742 → 7,574 rows
+2026-04-04 20:40:29.086 | INFO     | src.features.builder:build_features:107 - ============================================================
+  LightGBM data: 7574 rows × 95 cols
+  GRU data: 7742 rows × 5 features
+
+══════════════════════════════════════════════════════════════════════
+[2/4] HORIZON = 1h
+══════════════════════════════════════════════════════════════════════
+
+  [A] Training LightGBM (1h)...
+    LightGBM 1h: MAE=3.912, MASE=1.569 (2s)
+    Test: 758 total, 600 real
+
+  [B] Training GRU (1h)...
+    PyTorch initialized: device=mps
+    Datasets: train=6121, val=774, test=604
+      Epoch   1 | Train=0.4665 Val=0.1242 p=0/10
+      Epoch  10 | Train=0.2107 Val=0.0905 p=2/10
+      Epoch  20 | Train=0.1944 Val=0.0839 p=3/10
+      Epoch  30 | Train=0.1860 Val=0.0811 p=8/10
+      Early stop epoch 32 (best=0.0801)
+    GRU 1h: MAE=2.754, MASE=0.408 (178s)
+
+  [C] Building Ensemble (1h)...
+    Common test points: 600
+    Stack 1h: MAE=3.101, MASE=1.355
+    Weights: LightGBM=1.066, GRU=-0.068
+    Weighted 1h: MAE=3.912, MASE=1.569 (w_lgbm=1.00)
+
+══════════════════════════════════════════════════════════════════════
+[2/4] HORIZON = 6h
+══════════════════════════════════════════════════════════════════════
+
+  [A] Training LightGBM (6h)...
+    LightGBM 6h: MAE=4.936, MASE=0.729 (2s)
+    Test: 757 total, 595 real
+
+  [B] Training GRU (6h)...
+    PyTorch initialized: device=mps
+    Datasets: train=6116, val=774, test=604
+      Epoch   1 | Train=0.7236 Val=0.2365 p=0/10
+      Epoch  10 | Train=0.4216 Val=0.1966 p=1/10

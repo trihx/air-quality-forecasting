@@ -1,0 +1,134 @@
+{
+  "1h": {
+    "Persistence": {
+      "mae": 2.3901,
+      "rmse": 3.8516,
+      "mase": 1.0,
+      "horizon": 1
+    },
+    "LightGBM_default": {
+      "model": "LightGBM_default_1h",
+      "mae": 2.5619,
+      "rmse": 3.5929,
+      "mape": 34.99,
+      "smape": 28.02,
+      "mase": 1.0719,
+      "r2": 0.6761,
+      "horizon": 1,
+      "pass_naive": "❌"
+    },
+    "LightGBM_tuned": {
+      "model": "LightGBM_tuned_1h",
+      "mae": 2.419,
+      "rmse": 3.5677,
+      "mape": 32.02,
+      "smape": 26.0,
+      "mase": 1.0121,
+      "r2": 0.6807,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "optuna_trials": 100,
+      "optuna_best_params": {
+        "n_estimators": 734,
+        "max_depth": 3,
+        "learning_rate": 0.010664991324400729,
+        "subsample": 0.5947702441130762,
+        "colsample_bytree": 0.728652837748792,
+        "min_child_samples": 50,
+        "reg_alpha": 0.008557594635078875,
+        "reg_lambda": 0.07942909874106158,
+        "num_leaves": 38
+      },
+      "optuna_best_cv_mae": 3.028969928911091,
+      "tune_time_s": 864.2
+    }
+  },
+  "6h": {
+    "Persistence": {
+      "mae": 6.9418,
+      "rmse": 9.5,
+      "mase": 1.0,
+      "horizon": 6
+    },
+    "LightGBM_default": {
+      "model": "LightGBM_default_6h",
+      "mae": 5.1476,
+      "rmse": 6.7645,
+      "mape": 70.85,
+      "smape": 48.07,
+      "mase": 0.7415,
+      "r2": 0.0054,
+      "horizon": 6,
+      "pass_naive": "✅"
+    },
+    "LightGBM_tuned": {
+      "model": "LightGBM_tuned_6h",
+      "mae": 5.0705,
+      "rmse": 6.6288,
+      "mape": 69.27,
+      "smape": 47.64,
+      "mase": 0.7304,
+      "r2": 0.0449,
+      "horizon": 6,
+      "pass_naive": "✅",
+      "optuna_trials": 100,
+      "optuna_best_params": {
+        "n_estimators": 659,
+        "max_depth": 3,
+        "learning_rate": 0.005239268272719696,
+        "subsample": 0.6254439295284856,
+        "colsample_bytree": 0.6051788284384131,
+        "min_child_samples": 41,
+        "reg_alpha": 0.00260204746191093,
+        "reg_lambda": 0.5464543219637938,
+        "num_leaves": 111
+      },
+      "optuna_best_cv_mae": 5.8353190141206195,
+      "tune_time_s": 820.0
+    }
+  },
+  "24h": {
+    "Persistence": {
+      "mae": 6.3572,
+      "rmse": 8.6794,
+      "mase": 1.0,
+      "horizon": 24
+    },
+    "LightGBM_default": {
+      "model": "LightGBM_default_24h",
+      "mae": 6.1401,
+      "rmse": 7.6264,
+      "mape": 100.09,
+      "smape": 55.65,
+      "mase": 0.9658,
+      "r2": -0.3615,
+      "horizon": 24,
+      "pass_naive": "✅"
+    },
+    "LightGBM_tuned": {
+      "model": "LightGBM_tuned_24h",
+      "mae": 5.1595,
+      "rmse": 6.6975,
+      "mape": 74.8,
+      "smape": 49.48,
+      "mase": 0.8116,
+      "r2": -0.0501,
+      "horizon": 24,
+      "pass_naive": "✅",
+      "optuna_trials": 100,
+      "optuna_best_params": {
+        "n_estimators": 449,
+        "max_depth": 3,
+        "learning_rate": 0.007992136456345776,
+        "subsample": 0.8134295281623216,
+        "colsample_bytree": 0.365878629407821,
+        "min_child_samples": 39,
+        "reg_alpha": 0.3161951993404526,
+        "reg_lambda": 0.3376151063334499,
+        "num_leaves": 24
+      },
+      "optuna_best_cv_mae": 6.039265631301058,
+      "tune_time_s": 721.7
+    }
+  }
+}

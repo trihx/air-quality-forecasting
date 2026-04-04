@@ -1,0 +1,97 @@
+{
+  "segment_only": {
+    "total": 7335,
+    "real": 7111,
+    "imputed": 224,
+    "imputed_pct": 3.1,
+    "time_seconds": 0.0,
+    "strategy": "segment_only",
+    "params": {
+      "max_gap_interp": 2
+    },
+    "n_features_rows": 7167,
+    "n_features_cols": 96,
+    "metrics": {
+      "model": "LightGBM_segment_only",
+      "mae": 2.6189,
+      "rmse": 3.5621,
+      "mape": 38.22,
+      "smape": 29.93,
+      "mase": 1.1132,
+      "r2": 0.6739,
+      "pass_naive": "❌"
+    }
+  },
+  "extended_interp": {
+    "total": 7386,
+    "real": 7101,
+    "imputed": 285,
+    "imputed_pct": 3.9,
+    "time_seconds": 0.0,
+    "strategy": "extended_interp",
+    "params": {
+      "max_gap_interp": 12
+    },
+    "n_features_rows": 7217,
+    "n_features_cols": 96,
+    "metrics": {
+      "model": "LightGBM_extended_interp",
+      "mae": 2.9768,
+      "rmse": 3.7602,
+      "mape": 47.74,
+      "smape": 35.0,
+      "mase": 1.3208,
+      "r2": 0.6215,
+      "pass_naive": "❌"
+    }
+  },
+  "ml_impute": {
+    "total": 7742,
+    "real": 7101,
+    "imputed": 641,
+    "imputed_pct": 8.3,
+    "time_seconds": 11.8,
+    "strategy": "ml_impute",
+    "params": {
+      "max_gap_ml": 24,
+      "knn_neighbors": 5
+    },
+    "n_features_rows": 7574,
+    "n_features_cols": 96,
+    "metrics": {
+      "model": "LightGBM_ml_impute",
+      "mae": 2.6057,
+      "rmse": 3.6897,
+      "mape": 35.16,
+      "smape": 27.92,
+      "mase": 1.0839,
+      "r2": 0.6584,
+      "pass_naive": "❌"
+    }
+  },
+  "hybrid": {
+    "total": 7742,
+    "real": 7101,
+    "imputed": 641,
+    "imputed_pct": 8.3,
+    "time_seconds": 11.5,
+    "strategy": "hybrid",
+    "params": {
+      "max_gap_interp": 6,
+      "max_gap_ml": 24,
+      "knn_neighbors": 5
+    },
+    "n_features_rows": 7574,
+    "n_features_cols": 96,
+    "metrics": {
+      "model": "LightGBM_hybrid",
+      "mae": 2.5619,
+      "rmse": 3.5929,
+      "mape": 34.99,
+      "smape": 28.02,
+      "mase": 1.0657,
+      "r2": 0.6761,
+      "pass_naive": "❌"
+    }
+  }
+}
