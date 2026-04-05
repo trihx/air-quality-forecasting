@@ -50,6 +50,15 @@
 - ✅ Dashboard updated with TFT in all charts/tables
 - ✅ Lint fixed: scripts clean, only HTML template E501 remaining
 
+### Phase 7: AI Chatbot — Trợ Lý Dự Án (2026-04-05)
+- ✅ RAG pipeline: ChromaDB + sentence-transformers (all-MiniLM-L6-v2)
+- ✅ LLM client: OpenAI SDK → LM Studio (port 8888)
+- ✅ Knowledge Base: auto-index docs + experiment JSONs + thesis
+- ✅ System prompt: ưu tiên phương pháp luận + chuẩn bị phản biện
+- ✅ Chat UI: Streamlit chat_message + streaming + preset defense questions
+- ✅ Files: `src/chatbot/{__init__,knowledge_base,llm_client,chat_page}.py`
+- Model: Gemma 4 E4B (Q4, ~4-5GB) hoặc Qwen3-8B
+
 ## Final Rankings (ALL 9 MODELS)
 
 ### h=1: TFT closest to Persistence

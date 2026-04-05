@@ -321,6 +321,8 @@ def sidebar():
             "📊 Khoảng Tin Cậy Dự Báo",
             # ── Phase 4: Ứng dụng ──
             "🔮 Dự Báo PM2.5",
+            # ── Công cụ hỗ trợ ──
+            "💬 Trợ Lý AI",
         ],
         index=0,
     )
@@ -852,6 +854,7 @@ def main():
         page_forecast,
         page_training,
     )
+    from src.chatbot.chat_page import page_ai_assistant
 
     results = load_experiment_results()
     page = sidebar()
@@ -867,6 +870,7 @@ def main():
         "🔍 Giải Thích Mô Hình (SHAP)": page_shap,
         "📊 Khoảng Tin Cậy Dự Báo": page_prediction_intervals,
         "🔮 Dự Báo PM2.5": page_forecast,
+        "💬 Trợ Lý AI": page_ai_assistant,
     }
 
     handler = page_map.get(page, page_overview)
