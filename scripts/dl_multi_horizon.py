@@ -292,9 +292,10 @@ def main() -> None:
 
     # Reference results from previous experiments
     ref_results = {
-        "1h": {"lgbm_mase": 1.012, "sarima_mase": 1.283},
-        "6h": {"lgbm_mase": 0.730, "sarima_mase": 0.762},
-        "24h": {"lgbm_mase": 0.812, "sarima_mase": 0.813},
+        # Reference from multi_horizon v2 (post-audit ground truth)
+        "1h": {"lgbm_mase": 1.492, "sarima_mase": 1.283},
+        "6h": {"lgbm_mase": 0.745, "sarima_mase": 0.762},
+        "24h": {"lgbm_mase": 0.842, "sarima_mase": 0.813},
     }
 
     all_results = {}

@@ -4,85 +4,69 @@
 
 ---
 
-## [2026-03-29] Data Leakage trong Feature Engineering
-- **Triệu chứng**: Ridge regression đạt MAE=0.004, R²=1.0 — kết quả "hoàn hảo" bất thường
-- **Nguyên nhân gốc rễ**: Nhiều features chứa thông tin target tại thời điểm t:
-  - `diff(1) = y[t] - y[t-1]` → chứa y[t]
-  - `pct_change(1)` → chứa y[t]
-  - `co2/pm25[t]` → chia cho target
-  - `pd.cut(pm25[t])` → binning target
-- **Giải pháp**: Sử dụng shifted values: `shift(1).diff()`, domain features dùng `pm25_lag_1h`
-- **Phòng tránh**:
-  - **Quy tắc vàng**: KHÔNG BAO GIỜ dùng giá trị target tại thời điểm t trong features
-  - Luôn chạy `tests/validation/test_leakage.py` sau khi thêm features mới
-  - R² > 0.99 = red flag → audit ngay
-  - Kiểm tra: `feature + other_feature = target` → leakage
-- **Files liên quan**: `src/features/temporal.py`, `src/features/builder.py`
-- **Đã cập nhật SKILL.md**: Chưa (cần bổ sung anti-leakage rules)
+## Archived (2026-03-29) — Tóm tắt 1 dòng
+<!-- Chi tiết: xem git log hoặc conversation logs -->
+- **Data Leakage**: `diff/pct_change/ratio/aqi_cat` chứa y[t] → fix: `shift(1).diff()`, dùng `pm25_lag_1h`. R²>0.99 = red flag.
+- **CSV Loading chậm**: Dùng `usecols`, cân nhắc parquet. Luôn `flush=True`.
+- **Stationarity**: PM2.5 = trend-stationary (ADF ✅, KPSS ❌). Luôn chạy CẢ hai.
+- **Unit test phải update**: Thay đổi logic → update test assertions. `shift(1).diff()` NaN tại iloc[1].
+- **Kill processes**: `pkill -f "python.*scripts/"` trước pipeline run.
 
-## [2026-03-29] CSV Loading quá chậm cho large marts data
-- **Triệu chứng**: `pd.read_csv()` treo >3 phút khi load 6689 rows × 95 cols
-- **Nguyên nhân gốc rễ**: Parse 95 cột float + datetime index, không dùng `usecols`
-- **Giải pháp**: Dùng `usecols` chỉ load cột cần thiết, hoặc convert sang parquet
-- **Phòng tránh**:
-  - Script audit/debug: luôn dùng `usecols` để load subset
-  - Production pipeline: cân nhắc parquet format cho tốc độ
-  - Luôn thêm `print(..., flush=True)` cho progress indication
-- **Files liên quan**: `scripts/leakage_audit.py`
-
-## [2026-03-29] Stationarity — PM2.5 là trend-stationary
-- **Triệu chứng**: ADF nói stationary nhưng KPSS nói non-stationary
-- **Nguyên nhân gốc rễ**: PM2.5 có trend nhẹ nhưng không có unit root → trend-stationary
-- **Giải pháp**: Differencing (d=1 hoặc d=24) loại bỏ trend → fully stationary
-- **Phòng tránh**: Luôn chạy CẢ ADF + KPSS, không dựa vào 1 test đơn lẻ
-- **Files liên quan**: `scripts/stationarity_check.py`
+---
 
 ## [2026-04-04] Leakage Impact — Kết quả thực tế sau fix
-- **Triệu chứng**: Sau fix leakage, KHÔNG ML model nào beat Persistence (MASE > 1.0)
-- **Nguyên nhân**: PM2.5 autocorrelation lag 1h = 0.89 → Persistence rất khó bị vượt
-- **Lesson**: Kết quả "tệ hơn" sau fix KHÔNG phải thất bại — đây là **kết quả trung thực**
-- **So sánh impact**: Ridge MAE tăng từ 0.004 → 2.824 (+700x). Leakage che giấu hoàn toàn performance thực.
-- **Phòng tránh**: Luôn chạy leakage audit TRƯỚC khi celebrate kết quả tốt
-- **Reference**: Kapoor & Narayanan (2023) — M4 Competition cũng cho thấy simple methods often unbeatable
-- **Files liên quan**: `scripts/rebuild_and_rerun.py`, `docs/PROJECT_WALKTHROUGH.md`
-
-## [2026-04-04] Unit test cần update khi thay đổi logic
-- **Triệu chứng**: `test_diff_value_correct` FAIL sau khi fix diff logic
-- **Nguyên nhân**: Test assert kết quả tại iloc[1], nhưng shift(1).diff(1) cho NaN tại iloc[1]
-- **Giải pháp**: Update test assert iloc[2] (= y[1] - y[0]) thay vì iloc[1]
-- **Lesson**: Khi thay đổi logic code → PHẢI update tất cả test liên quan
-- **Files liên quan**: `tests/unit/test_features.py`
-
-## [2026-04-04] Kill processes trước khi test/build
-- **Triệu chứng**: Tiến trình Python treo (CSV load timeout) gây conflict khi chạy tiếp
-- **Giải pháp**: `pkill -f "python.*scripts/" && pkill -f "pytest"` trước mỗi pipeline run
-- **Phòng tránh**: Thêm vào workflow standard
+- **Impact**: Ridge MAE: 0.004 → 2.824 (+700x). Persistence vẫn BEST ở h=1.
+- **Rule**: Luôn audit TRƯỚC khi celebrate. MASE<0.1 = 🚨 leakage.
+- **Reference**: Kapoor & Narayanan (2023), Hyndman & Koehler (2006)
 
 ## [2026-04-04] Result Validation Protocol — Validate-Before-Trust
-- **Triệu chứng**: Kết quả tốt bất thường (MASE=0.002) → leakage; hoặc kết quả "tệ" (MASE≈1.0 ở 1h) → chưa chắc là lỗi
-- **Nguyên tắc**: LUÔN đối chiếu kết quả với literature TRƯỚC khi kết luận
-- **Checklist validation**:
-  1. MAE PM2.5 phải trong 1.5-15 µg/m³ (hourly) — theo literature review
-  2. MASE < 0.1 → 🚨 RED FLAG: gần như chắc chắn leakage
-  3. MASE ≈ 1.0 ở 1h → ✅ Expected (autocorr=0.97, Persistence rất mạnh)
-  4. MASE < 1.0 ở 6h-24h → ✅ Expected (autocorr giảm, ML tìm được pattern)
-  5. Shuffle test: randomize target → retrain → MASE phải >> 1.0
-  6. GRU ≤ LSTM → ✅ Consistent with literature (simpler = less overfitting)
-- **Reference papers**:
-  - Hyndman & Koehler (2006): MASE formula
-  - Kapoor & Narayanan (2023): Shuffle test, leakage detection
-  - WHO PM2.5 Guidelines: plausible value range
-- **Test suite**: `tests/validation/test_result_validation.py` — 15+ tests
-- **Phòng tránh**: Chạy validation tests SAU MỖI experiment run
+- MAE PM2.5 phải trong 1.5-15 µg/m³ (hourly)
+- MASE ≈ 1.0 ở 1h → ✅ expected (autocorr=0.97)
+- MASE < 1.0 ở 6h-24h → ✅ expected
+- Shuffle test: randomize target → MASE >> 1.0
+- Test suite: `tests/validation/test_result_validation.py`
 
 ## [2026-04-04] PyTorch MPS + LightGBM = Silent Segfault
-- **Triệu chứng**: Script chết tĩnh (không exception, không traceback) khi LightGBM fit() sau torch MPS init
-- **Nguyên nhân**: `import torch` + `torch.device("mps")` ở top-level → khởi tạo MPS Metal backend → xung đột OpenMP/memory với LightGBM C++ backend
-- **Giải pháp**: **Lazy import torch** — chỉ import trong hàm GRU, SAU KHI LightGBM đã train xong
-- **Debug approach**: Viết script tách riêng từng step, chạy isolate → xác định bước crash
-- **Phòng tránh**:
-  - KHÔNG import torch ở top-level trong script đa mô hình
-  - Dùng factory pattern: `_make_gru_model()`, `_make_dataset_class()` → return class
-  - Kiểm tra import order khi kết hợp PyTorch + tree-based libraries
-- **Files liên quan**: `scripts/ensemble_multi_horizon.py`
+- **Nguyên nhân**: `import torch` top-level + MPS Metal → xung đột OpenMP với LightGBM
+- **Fix**: Lazy import torch trong hàm GRU, SAU KHI LightGBM train xong
+- **Rule**: KHÔNG import torch ở top-level trong script đa mô hình
 
+## [2026-04-04 21:52] Pipeline Audit — Multi-Horizon Target & Persistence Bugs
+- **Bug #1**: `multi_horizon_eval.py` h=1 dùng `TARGET_COL` (y[t]) → PHẢI `shift(-1)` (y[t+1])
+- **Bug #2**: Persistence dùng `pm25_lag_Xh` (= y[t-X]) → PHẢI dùng `df[TARGET_COL]` (y[t])
+- **Impact**: LightGBM h=1 MASE: 1.012 → **1.492**. Persistence MAE giờ consistent.
+- **Rule**: Khi tính multi-horizon forecast:
+  1. `target = df[TARGET_COL].shift(-h)` → y[t+h]
+  2. `persist = df[TARGET_COL]` → y[t] (LƯU TRƯỚC khi shift)
+  3. Dùng cùng persist_mae cho tất cả models cùng horizon
+  4. KHÔNG dùng lag features cho Persistence
+- **Scripts đúng từ đầu**: dl_multi_horizon.py, arima_multi_horizon.py
+- **Baseline-001** (MAE=1.821): HỢP LỆ cho h=1, nhưng trên cleaned_hourly (khác hybrid data)
+
+## [2026-04-05] MPS GPU + GRU Training Performance
+- **Lỗi**: GRU train ~6000 samples trong 1 batch trên CPU → treo >5 phút, không progress.
+- **Fix**: `torch.device("mps")` + DataLoader(batch_size=256) + ReduceLROnPlateau → 27s/horizon.
+- **Lỗi 2**: `ReduceLROnPlateau(verbose=False)` → TypeError (PyTorch mới bỏ param `verbose`). Xóa param.
+- **Lỗi 3**: GRU chỉ có 4 env features (thiếu pm25 target history) → MAE=13.8 (1h), quá tệ.
+  → Fix: thêm `pm25` vào input features → MAE converge hợp lý.
+- **Rule**: GRU permutation importance CHỈ có nghĩa khi model đã converge tốt (loss < 0.3).
+  Nếu Δ MAE âm toàn bộ → model chưa fit đủ → tăng epochs / thêm features.
+- **Hardware**: Apple Silicon M1 Pro — LUÔN dùng `torch.device("mps")`. Tốc độ ~5x so CPU.
+
+## [2026-04-05] Thesis Review — Đối Chiếu Bài Báo & Metric Consistency
+- **Lỗi 1**: Ghi "Cao nhất" cho R² bài Nam et al. thay vì giá trị cụ thể (R²=0.70) → LUÔN tìm số liệu gốc.
+- **Lỗi 2**: MAE h=1 ghi 1,874 (giá trị cũ từ pipeline leaky) thay vì 3,720 (pipeline v2 fixed).
+  → **Rule**: Sau pipeline audit, CẬP NHẬT TẤT CẢ tài liệu tham chiếu, không chỉ code.
+- **Lỗi 3**: Ensemble attribution sai — MASE 0,698 thuộc GRU đơn lẻ (trong ensemble run), không phải "GRU Ensemble (Stacking)".
+  → **Rule**: Luôn ghi rõ nguồn gốc metric: model nào, run nào, file JSON nào.
+- **Bài học**: Bảng trong thesis PHẢI cross-reference với JSON experiment files, không ghi từ trí nhớ.
+
+## [2026-04-05] TFT Sizing — Small Dataset Attention Trap
+- **Lỗi tiềm ẩn**: TFT hidden_dim=64 (giống GRU) → overfit nhanh trên 7.5K rows.
+- **Fix**: Giảm hidden_dim=32 + num_heads=4 → 25K params (vs GRU 41K). Stable training.
+- **Rule**: Transformer trên dataset <10K rows → hidden ≤ 32, heads ≤ 4. Tăng patience (15 vs 10).
+- **Insight**: TFT best tại short-horizon (h=1) nhờ Attention, yếu hơn GRU ở long-horizon do thiếu data.
+
+## [2026-04-05] Plotly + Streamlit — CHART_COLORS phải đủ cho N models
+- **Lỗi**: Thêm TFT (model thứ 7) nhưng CHART_COLORS chỉ có 6 → IndexError.
+- **Fix**: Đảm bảo CHART_COLORS list ≥ số models. Dùng `CHART_COLORS[i % len(CHART_COLORS)]` an toàn hơn.

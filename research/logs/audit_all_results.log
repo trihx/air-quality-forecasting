@@ -1,0 +1,28 @@
+======================================================================
+CROSS-REFERENCE AUDIT — All Experiment Results
+======================================================================
+
+[1/4] Loading data (unified pipeline)...
+2026-04-04 21:06:52.426 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-04 21:06:52.426 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-04 21:06:52.540 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-04 21:06:52.556 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-04 21:06:52.557 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-04 21:06:52.577 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-04 21:06:52.580 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-04 21:06:52.582 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-04 21:06:52.585 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-04 21:06:52.591 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-04 21:06:52.594 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-04 21:06:52.598 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-04 21:06:52.598 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-04 21:06:52.607 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+2026-04-04 21:07:04.628 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Hybrid data: 7742 rows
+
+[2/4] Auditing ALL data sources used across scripts...
+Traceback (most recent call last):
+  File "/Users/trihx/Desktop/time-series-forecasting/scripts/audit_all_results.py", line 52, in <module>
+    cleaned_path = Path("dataset/interim/cleaned_hourly.csv")
+                   ^^^^
+NameError: name 'Path' is not defined

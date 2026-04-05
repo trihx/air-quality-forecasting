@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0 -- /Users/trihx/Desktop/time-series-forecasting/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/trihx/Desktop/time-series-forecasting
+configfile: pyproject.toml
+plugins: cov-7.1.0
+collecting ... collected 16 items
+
+tests/validation/test_result_validation.py::TestMASEFormula::test_mase_equals_hand_calculation PASSED [  6%]
+tests/validation/test_result_validation.py::TestMASEFormula::test_mase_equals_1_for_naive PASSED [ 12%]
+tests/validation/test_result_validation.py::TestMASEFormula::test_mase_less_than_1_means_better PASSED [ 18%]
+tests/validation/test_result_validation.py::TestMASEFormula::test_mase_greater_than_1_means_worse PASSED [ 25%]
+tests/validation/test_result_validation.py::TestMetricProperties::test_mae_always_non_negative PASSED [ 31%]
+tests/validation/test_result_validation.py::TestMetricProperties::test_rmse_always_gte_mae PASSED [ 37%]
+tests/validation/test_result_validation.py::TestMetricProperties::test_perfect_prediction_gives_zero PASSED [ 43%]
+tests/validation/test_result_validation.py::TestPersistenceBaseline::test_persistence_h1_is_lag1 PASSED [ 50%]
+tests/validation/test_result_validation.py::TestPersistenceBaseline::test_persistence_h6_longer_horizon_higher_error PASSED [ 56%]
+tests/validation/test_result_validation.py::TestResultPlausibility::test_persistence_mae_in_literature_range PASSED [ 62%]
+tests/validation/test_result_validation.py::TestResultPlausibility::test_mase_patterns_match_theory PASSED [ 68%]
+tests/validation/test_result_validation.py::TestResultPlausibility::test_no_leakage_signal_in_mase PASSED [ 75%]
+tests/validation/test_result_validation.py::TestResultPlausibility::test_model_ranking_matches_literature PASSED [ 81%]
+tests/validation/test_result_validation.py::TestDataIntegrity::test_temporal_split_no_future_leak PASSED [ 87%]
+tests/validation/test_result_validation.py::TestDataIntegrity::test_test_real_only_reduces_size PASSED [ 93%]
+tests/validation/test_result_validation.py::TestShuffleValidation::test_shuffled_target_destroys_mase PASSED [100%]
+
+============================== 16 passed in 1.40s ==============================

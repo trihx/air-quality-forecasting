@@ -411,11 +411,12 @@ def _evaluate_horizon(df_feat, is_imp_feat, gru_feat, gru_tgt, gru_imp, horizon)
     gru_targets = tgt_scaler.inverse_transform(np.array(gru_targets_scaled).reshape(-1, 1)).flatten()
 
     gru_mae = float(np.mean(np.abs(gru_targets - gru_preds)))
-    # Use same persist_mae for GRU (roughly aligned test period)
-    gru_persist_mae = float(np.mean(np.abs(gru_targets - gru_tgt[gru_val_end:gru_val_end + len(gru_targets)][:len(gru_targets)])))
-    gru_mase = round(gru_mae / gru_persist_mae, 4) if gru_persist_mae > 0 else float("inf")
+    # Use the SAME persist_mae calculated correctly in LightGBM section
+    # Persistence MAE = mean(|y[t+h] - y[t]|) on real test data
+    persist_mae_ref = results["Persistence"]["mae"]
+    gru_mase = round(gru_mae / persist_mae_ref, 4) if persist_mae_ref > 0 else float("inf")
     results["GRU"] = {"mae": round(gru_mae, 4), "mase": gru_mase}
-    print(f"    GRU {horizon}h: MAE={gru_mae:.3f}, MASE={gru_mase:.3f} ({time.time()-t0:.0f}s)", flush=True)
+    print(f"    GRU {horizon}h: MAE={gru_mae:.3f}, MASE={gru_mase:.3f} (persist_ref={persist_mae_ref:.3f}) ({time.time()-t0:.0f}s)", flush=True)
 
     # ══════════════════════════════════════════════════════════════
     # C. Ensemble — Align predictions

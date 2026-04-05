@@ -1,0 +1,170 @@
+======================================================================
+PREDICTION INTERVALS — PM2.5 Multi-Horizon
+Methods: Conformal Prediction, Quantile Regression, MC Dropout
+Horizons: [1, 6, 24]h | Confidence: 90%
+======================================================================
+
+[1/4] Preparing data...
+2026-04-05 09:59:46.716 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-05 09:59:46.716 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-05 09:59:46.829 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-05 09:59:46.845 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 09:59:46.846 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-05 09:59:46.862 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-05 09:59:46.865 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 09:59:46.866 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-05 09:59:46.870 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-05 09:59:46.875 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-05 09:59:46.878 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-05 09:59:46.882 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-05 09:59:46.882 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-05 09:59:46.889 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-05 09:59:58.229 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Hybrid data: 7742 rows
+
+────────────────────────────────────────────────────────────
+  HORIZON = 1h
+────────────────────────────────────────────────────────────
+2026-04-05 09:59:58.230 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-05 09:59:58.230 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-05 09:59:58.230 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-05 09:59:58.235 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-05 09:59:58.239 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-05 09:59:58.246 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-05 09:59:58.249 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-05 09:59:58.251 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-05 09:59:58.255 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-05 09:59:58.257 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-05 09:59:58.257 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-05 09:59:58.257 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 6 → 96 columns, 7,742 → 7,574 rows
+2026-04-05 09:59:58.257 | INFO     | src.features.builder:build_features:107 - ============================================================
+
+  [Conformal] LightGBM h=1h (alpha=0.1)...
+    Conformal width: ±5.38 µg/m³
+    Coverage: 80.5% (target: 90%)
+    Avg interval width: 10.76 µg/m³
+    MAE: 3.663 µg/m³
+
+  [Quantile] LightGBM h=1h (alpha=0.1)...
+    Coverage: 86.2% (target: 90%)
+    Avg interval width: 16.04 µg/m³
+    MAE (median): 3.391 µg/m³
+
+  [MC Dropout] GRU h=1h (50 samples)...
+    Train=6121, Val=774, Test=604
+    Epoch 25/100: train=0.2004, val=0.0777
+    Epoch 50/100: train=0.1899, val=0.0742
+    Early stop epoch 53, val=0.0711
+    Coverage: 36.8% (target: 90%)
+    Avg interval width: 2.72 µg/m³
+    MAE (mean): 2.785 µg/m³
+
+────────────────────────────────────────────────────────────
+  HORIZON = 6h
+────────────────────────────────────────────────────────────
+2026-04-05 10:01:48.418 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-05 10:01:48.418 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-05 10:01:48.418 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-05 10:01:48.424 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-05 10:01:48.428 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-05 10:01:48.434 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-05 10:01:48.436 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-05 10:01:48.439 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-05 10:01:48.441 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-05 10:01:48.443 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-05 10:01:48.443 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-05 10:01:48.443 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 6 → 96 columns, 7,742 → 7,574 rows
+2026-04-05 10:01:48.443 | INFO     | src.features.builder:build_features:107 - ============================================================
+
+  [Conformal] LightGBM h=6h (alpha=0.1)...
+    Conformal width: ±7.10 µg/m³
+    Coverage: 76.0% (target: 90%)
+    Avg interval width: 14.20 µg/m³
+    MAE: 5.088 µg/m³
+
+  [Quantile] LightGBM h=6h (alpha=0.1)...
+    Coverage: 83.2% (target: 90%)
+    Avg interval width: 18.78 µg/m³
+    MAE (median): 4.809 µg/m³
+
+  [MC Dropout] GRU h=6h (50 samples)...
+    Train=6116, Val=774, Test=604
+    Epoch 25/100: train=0.3747, val=0.1464
+    Early stop epoch 27, val=0.1385
+    Coverage: 7.6% (target: 90%)
+    Avg interval width: 1.68 µg/m³
+    MAE (mean): 6.232 µg/m³
+
+────────────────────────────────────────────────────────────
+  HORIZON = 24h
+────────────────────────────────────────────────────────────
+2026-04-05 10:02:46.800 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-05 10:02:46.800 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-05 10:02:46.800 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-05 10:02:46.805 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-05 10:02:46.809 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-05 10:02:46.815 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-05 10:02:46.818 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-05 10:02:46.820 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-05 10:02:46.823 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-05 10:02:46.824 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-05 10:02:46.824 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-05 10:02:46.824 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 6 → 96 columns, 7,742 → 7,574 rows
+2026-04-05 10:02:46.824 | INFO     | src.features.builder:build_features:107 - ============================================================
+
+  [Conformal] LightGBM h=24h (alpha=0.1)...
+    Conformal width: ±7.44 µg/m³
+    Coverage: 77.8% (target: 90%)
+    Avg interval width: 14.88 µg/m³
+    MAE: 5.194 µg/m³
+
+  [Quantile] LightGBM h=24h (alpha=0.1)...
+    Coverage: 79.1% (target: 90%)
+    Avg interval width: 18.57 µg/m³
+    MAE (median): 4.883 µg/m³
+
+  [MC Dropout] GRU h=24h (50 samples)...
+    Train=6098, Val=774, Test=604
+    Epoch 25/100: train=0.4892, val=0.1616
+    Early stop epoch 31, val=0.1578
+    Coverage: 25.7% (target: 90%)
+    Avg interval width: 3.03 µg/m³
+    MAE (mean): 4.402 µg/m³
+
+[3/4] Plotting...
+    Saved: pi_conformal_prediction_LightGBM_1h.png
+    Saved: pi_conformal_prediction_LightGBM_6h.png
+    Saved: pi_conformal_prediction_LightGBM_24h.png
+
+══════════════════════════════════════════════════════════════════════
+[4/4] SUMMARY
+══════════════════════════════════════════════════════════════════════
+
+Method                    Model        Horizon  Coverage   Width      MAE     
+───────────────────────────────────────────────────────────────────────────
+conformal_prediction      LightGBM     1h      80.5%      10.76      3.663   
+quantile_regression       LightGBM     1h      86.2%      16.04      3.391   
+mc_dropout                GRU          1h      36.8%      2.72       2.785   
+conformal_prediction      LightGBM     6h      76.0%      14.20      5.088   
+quantile_regression       LightGBM     6h      83.2%      18.78      4.809   
+mc_dropout                GRU          6h      7.6%      1.68       6.232   
+conformal_prediction      LightGBM     24h      77.8%      14.88      5.194   
+quantile_regression       LightGBM     24h      79.1%      18.57      4.883   
+mc_dropout                GRU          24h      25.7%      3.03       4.402   
+
+  Results saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/prediction_intervals/prediction_intervals_20260405_100353.json
+
+══════════════════════════════════════════════════════════════════════
+COMPLETE — 247s (4.1 min)
+══════════════════════════════════════════════════════════════════════

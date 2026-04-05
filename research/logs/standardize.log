@@ -1,0 +1,97 @@
+======================================================================
+STANDARDIZE PERSISTENCE BASELINE
+Goal: Unified MASE denominator for ALL models
+======================================================================
+
+[1/4] Preparing Hybrid dataset...
+2026-04-05 16:46:15.288 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-05 16:46:15.288 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-05 16:46:15.415 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-05 16:46:15.434 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 16:46:15.435 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-05 16:46:15.457 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-05 16:46:15.461 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 16:46:15.463 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-05 16:46:15.465 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-05 16:46:15.470 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-05 16:46:15.474 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-05 16:46:15.478 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-05 16:46:15.478 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-05 16:46:15.487 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-05 16:46:26.889 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Total: 7742 rows | Train: 6193 | Val: 774 | Test: 775
+
+[2/4] Computing unified Persistence baselines...
+  h=1: Persistence MAE = 2.3902 (RMSE=3.8473, n=604)
+  h=6: Persistence MAE = 6.3053 (RMSE=8.5938, n=601)
+  h=24: Persistence MAE = 6.2758 (RMSE=8.7765, n=601)
+
+[3/4] Loading experiment results and recalculating MASE...
+
+  ── Horizon 1h (Persistence MAE = 2.3902) ──
+    LightGBM_tuned: MAE=3.7201 | MASE orig=1.4921 → unified=1.5564
+    LightGBM_default: MAE=4.2953 | MASE orig=1.7228 → unified=1.7970
+    ARIMA: MAE=2.5638 | MASE orig=1.0230 → unified=1.0726
+    SARIMA: MAE=3.2143 | MASE orig=1.2826 → unified=1.3448
+    LSTM: MAE=3.7300 | MASE orig=1.5605 → unified=1.5605
+    GRU: MAE=2.8046 | MASE orig=1.1734 → unified=1.1734
+    TFT: MAE=2.4599 | MASE orig=1.0291 → unified=1.0292
+    Ensemble_GRU: MAE=2.7227 | MASE orig=1.0921 → unified=1.1391
+    Ensemble_Stack: MAE=3.0994 | MASE orig=1.354 → unified=1.2967
+
+  ── Horizon 6h (Persistence MAE = 6.3053) ──
+    LightGBM_tuned: MAE=5.0463 | MASE orig=0.7450 → unified=0.8003
+    LightGBM_default: MAE=5.1476 | MASE orig=0.7600 → unified=0.8164
+    ARIMA: MAE=5.8433 | MASE orig=0.8557 → unified=0.9267
+    SARIMA: MAE=5.2066 | MASE orig=0.7625 → unified=0.8257
+    LSTM: MAE=5.7651 | MASE orig=0.9143 → unified=0.9143
+    GRU: MAE=5.1191 | MASE orig=0.8119 → unified=0.8119
+    TFT: MAE=5.1806 | MASE orig=0.8216 → unified=0.8216
+    Ensemble_GRU: MAE=4.7294 | MASE orig=0.6982 → unified=0.7501
+    Ensemble_Stack: MAE=4.7873 | MASE orig=0.8093 → unified=0.7593
+
+  ── Horizon 24h (Persistence MAE = 6.2758) ──
+    LightGBM_tuned: MAE=5.1785 | MASE orig=0.8416 → unified=0.8252
+    LightGBM_default: MAE=6.1401 | MASE orig=0.9979 → unified=0.9784
+    ARIMA: MAE=5.5981 | MASE orig=0.9135 → unified=0.8920
+    SARIMA: MAE=4.9814 | MASE orig=0.8129 → unified=0.7937
+    LSTM: MAE=5.2111 | MASE orig=0.8304 → unified=0.8303
+    GRU: MAE=4.5623 | MASE orig=0.7270 → unified=0.7270
+    TFT: MAE=5.0933 | MASE orig=0.8116 → unified=0.8116
+    Ensemble_GRU: MAE=4.4922 | MASE orig=0.7301 → unified=0.7158
+    Ensemble_Stack: MAE=4.3669 | MASE orig=0.7844 → unified=0.6958
+
+════════════════════════════════════════════════════════════════════════════════
+[4/4] UNIFIED COMPARISON TABLE
+════════════════════════════════════════════════════════════════════════════════
+
+Model                       1h MAE  1h MASE   6h MAE  6h MASE  24h MAE  24h MASE
+────────────────────────────────────────────────────────────────────────────────
+Persistence                  2.390    1.000    6.305    1.000    6.276    1.000
+ARIMA                        2.564    1.073    5.843    0.927    5.598    0.892
+SARIMA                       3.214    1.345    5.207    0.826    4.981    0.794
+LightGBM_tuned               3.720    1.556    5.046    0.800    5.178    0.825
+LSTM                         3.730    1.560    5.765    0.914    5.211    0.830
+GRU                          2.805    1.173    5.119    0.812    4.562    0.727
+TFT                          2.460    1.029    5.181    0.822    5.093    0.812
+Ensemble_GRU                 2.723    1.139    4.729    0.750    4.492    0.716
+Ensemble_Stack               3.099    1.297    4.787    0.759    4.367    0.696
+────────────────────────────────────────────────────────────────────────────────
+
+📊 Persistence MAE comparison:
+  h=1: Unified=2.3902 | ML=2.4931⚠️ | DL=2.3902✅ | TFT=2.3902✅ | ARIMA=2.5061⚠️
+  h=6: Unified=6.3053 | ML=6.7734⚠️ | DL=6.3053✅ | TFT=6.3053✅ | ARIMA=6.8286⚠️
+  h=24: Unified=6.2758 | ML=6.1532⚠️ | DL=6.2758✅ | TFT=6.2758✅ | ARIMA=6.1279⚠️
+
+💾 Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/standardized_metrics.json

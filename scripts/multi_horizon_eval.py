@@ -142,28 +142,30 @@ def _evaluate_horizon(df_feat: pd.DataFrame, horizon: int) -> dict:
     print(f"\n  Creating {horizon}h-ahead target...", flush=True)
     df = df_feat.copy()
 
-    # Shift target: predict pm25 at time (t + horizon)
-    # At row t, features are available, target = pm25[t + horizon]
-    if horizon > 1:
-        df[f"target_{horizon}h"] = df[TARGET_COL].shift(-horizon)
-        target_col = f"target_{horizon}h"
-    else:
-        target_col = TARGET_COL  # 1h ahead is already the current setup
+    # FIXED: ALWAYS shift target for ALL horizons including h=1
+    # At row t: features are from time t, target = pm25[t + horizon]
+    df[f"target_{horizon}h"] = df[TARGET_COL].shift(-horizon)
+    target_col = f"target_{horizon}h"
+
+    # Save pm25[t] for Persistence BEFORE any filtering
+    # Persistence: ŷ[t+h] = y[t] (use current value to predict future)
+    df["_persist_value"] = df[TARGET_COL]  # pm25[t]
 
     # Drop rows where shifted target is NaN (end of series)
     df = df.dropna(subset=[target_col])
     print(f"  Dataset after shift: {len(df):,} rows", flush=True)
 
     # ── Features and target ──
-    exclude_cols = ["is_imputed", TARGET_COL, f"target_{horizon}h"] if horizon > 1 else ["is_imputed", TARGET_COL]
+    exclude_cols = ["is_imputed", TARGET_COL, "_persist_value",
+                    f"target_{horizon}h"] + [f"target_{h}h" for h in HORIZONS]
     feature_cols = [c for c in df.columns
                     if c not in exclude_cols
-                    and c not in [f"target_{h}h" for h in HORIZONS]
                     and df[c].dtype in ("float64", "float32", "int64")]
 
     X = df[feature_cols].fillna(0)
     y = df[target_col]
     is_imputed = df["is_imputed"]
+    persist_values = df["_persist_value"]  # pm25[t] for Persistence
 
     # ── Temporal split (80/10/10) ──
     n = len(df)
@@ -176,11 +178,13 @@ def _evaluate_horizon(df_feat: pd.DataFrame, horizon: int) -> dict:
     X_test = X.iloc[val_end:]
     y_test = y.iloc[val_end:]
     test_imputed = is_imputed.iloc[val_end:]
+    test_persist = persist_values.iloc[val_end:]  # pm25[t] for test set
 
     # Filter test to REAL data only
     test_real_mask = ~test_imputed.values
     X_test_real = X_test[test_real_mask]
     y_test_real = y_test[test_real_mask]
+    persist_test_real = test_persist[test_real_mask]  # pm25[t] for real test
 
     print(f"  Train: {len(X_train):,} rows", flush=True)
     print(f"  Test (real only): {len(X_test_real):,}/{len(X_test):,} rows", flush=True)
@@ -189,29 +193,19 @@ def _evaluate_horizon(df_feat: pd.DataFrame, horizon: int) -> dict:
         print(f"  ⚠️ Too few real test samples, using all test data", flush=True)
         X_test_real = X_test
         y_test_real = y_test
+        persist_test_real = test_persist
 
     # ── A. Persistence Baseline ──
+    # FIXED: Persistence = |y[t+h] - y[t]| (predict future = current value)
+    # y_test_real = y[t+h] (shifted target), persist_test_real = y[t] (current)
     print(f"\n  Evaluating Persistence baseline ({horizon}h)...", flush=True)
-    # Persistence at horizon h: predict pm25[t+h] = pm25[t]
-    # pm25[t] is not directly in features (anti-leakage uses t-1)
-    # For persistence: y_pred = pm25[t] = pm25_lag_1h[t+1] ≈ pm25_lag_{lag}
-    # Best approximation: use pm25_lag_1h as "current" value
-    if f"pm25_lag_{horizon}h" in X_test_real.columns:
-        # Direct lag available (e.g., pm25_lag_6h, pm25_lag_24h)
-        y_persistence = X_test_real[f"pm25_lag_{horizon}h"].values
-        print(f"    Using pm25_lag_{horizon}h as persistence", flush=True)
-    elif "pm25_lag_1h" in X_test_real.columns:
-        # Fallback to lag_1h (most recent known value)
-        y_persistence = X_test_real["pm25_lag_1h"].values
-        print(f"    Using pm25_lag_1h as persistence (best available)", flush=True)
-    else:
-        y_persistence = np.full(len(y_test_real), float(y_train.mean()))
-        print(f"    Using mean as persistence fallback", flush=True)
+    y_persistence = persist_test_real.values  # pm25[t] = prediction
 
-    # Evaluate persistence
-    naive_for_mase = y_persistence  # persistence IS the naive baseline
     persist_mae = float(np.mean(np.abs(y_test_real.values - y_persistence)))
     persist_rmse = float(np.sqrt(np.mean((y_test_real.values - y_persistence) ** 2)))
+
+    # Naive reference for MASE = Persistence itself
+    naive_for_mase = y_persistence
 
     results["Persistence"] = {
         "mae": round(persist_mae, 4),
@@ -220,6 +214,7 @@ def _evaluate_horizon(df_feat: pd.DataFrame, horizon: int) -> dict:
         "horizon": horizon,
     }
     print(f"    Persistence {horizon}h: MAE={persist_mae:.3f}, RMSE={persist_rmse:.3f}", flush=True)
+    print(f"    (y_true=pm25[t+{horizon}], y_persist=pm25[t], n={len(y_test_real)})", flush=True)
 
     # ── B. LightGBM Default ──
     print(f"\n  Training LightGBM (default params)...", flush=True)

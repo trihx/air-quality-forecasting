@@ -1,0 +1,205 @@
+{
+  "_metadata": {
+    "description": "Tổng hợp cấu hình tham số tối ưu của tất cả mô hình trong pipeline PM2.5 forecasting",
+    "generated": "2026-04-05",
+    "pipeline_version": "v2 (post-audit)",
+    "tuning_method": "Optuna (Bayesian TPE) cho ML, Manual + Early Stopping cho DL",
+    "data": "Hybrid imputation (Spline≤6h + KNN 6-24h), 7742 rows, train/val/test = 80/10/10"
+  },
+
+  "baseline": {
+    "Persistence": {
+      "description": "Naive forecast: y_hat[t+h] = y[t] (current value as prediction)",
+      "params": "None — parameter-free baseline",
+      "results": {
+        "1h": {"MAE": 2.493, "MASE": 1.000},
+        "6h": {"MAE": 6.773, "MASE": 1.000},
+        "24h": {"MAE": 6.153, "MASE": 1.000}
+      }
+    }
+  },
+
+  "statistical": {
+    "SARIMA": {
+      "description": "Seasonal ARIMA — auto_arima (pmdarima)",
+      "params": {
+        "order": "auto-selected per horizon",
+        "seasonal_order": "auto-selected (m=24 for hourly seasonality)",
+        "enforce_stationarity": true,
+        "enforce_invertibility": true
+      },
+      "results": {
+        "6h": {"MAE": 5.163, "MASE": 0.762},
+        "24h": {"MAE": 5.105, "MASE": 0.813}
+      }
+    }
+  },
+
+  "machine_learning": {
+    "Lasso": {
+      "description": "L1-regularized linear regression — baseline ML",
+      "tuning": "Optuna 100 trials, 5-fold TimeSeriesSplit",
+      "best_params": {
+        "alpha": 0.174,
+        "max_iter": 9790
+      },
+      "results": {
+        "1h": {"MAE": 2.050}
+      }
+    },
+    "LightGBM_single_horizon": {
+      "description": "Single-horizon (1h) tuning — dùng làm reference",
+      "tuning": "Optuna 100 trials, 5-fold TimeSeriesSplit",
+      "best_params": {
+        "n_estimators": 637,
+        "max_depth": 3,
+        "learning_rate": 0.01324,
+        "subsample": 0.756,
+        "colsample_bytree": 0.962,
+        "min_child_samples": 37,
+        "reg_alpha": 8.038,
+        "reg_lambda": 0.463,
+        "num_leaves": 112
+      }
+    },
+    "LightGBM_multi_horizon": {
+      "description": "Multi-horizon tuning — Optuna riêng cho từng horizon",
+      "tuning": "Optuna 100 trials per horizon, 5-fold TimeSeriesSplit",
+      "best_params_per_horizon": {
+        "1h": {
+          "n_estimators": 375,
+          "max_depth": 3,
+          "learning_rate": 0.01333,
+          "subsample": 0.868,
+          "colsample_bytree": 0.660,
+          "min_child_samples": 48,
+          "reg_alpha": 0.008,
+          "reg_lambda": 0.0001,
+          "num_leaves": 76
+        },
+        "6h": {
+          "n_estimators": 481,
+          "max_depth": 3,
+          "learning_rate": 0.00678,
+          "subsample": 0.538,
+          "colsample_bytree": 0.473,
+          "min_child_samples": 17,
+          "reg_alpha": 0.055,
+          "reg_lambda": 0.808,
+          "num_leaves": 48
+        },
+        "24h": {
+          "n_estimators": 137,
+          "max_depth": 3,
+          "learning_rate": 0.02627,
+          "subsample": 0.902,
+          "colsample_bytree": 0.346,
+          "min_child_samples": 43,
+          "reg_alpha": 0.428,
+          "reg_lambda": 0.004,
+          "num_leaves": 79
+        }
+      },
+      "results": {
+        "1h": {"MAE": 3.720, "MASE": 1.492},
+        "6h": {"MAE": 5.046, "MASE": 0.745},
+        "24h": {"MAE": 5.179, "MASE": 0.842}
+      }
+    }
+  },
+
+  "deep_learning": {
+    "LSTM": {
+      "description": "Long Short-Term Memory — stacked 2-layer",
+      "tuning": "Manual + Early Stopping (patience=10)",
+      "hyperparams": {
+        "lookback": 72,
+        "hidden_dim": 64,
+        "num_layers": 2,
+        "dropout": 0.2,
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "max_epochs": 100,
+        "early_stopping_patience": 10,
+        "optimizer": "Adam",
+        "loss": "MSELoss",
+        "device": "MPS (Apple Silicon M1 Pro)"
+      },
+      "input_features": ["pm25", "nhiet_do", "do_am", "diem_suong", "co2"],
+      "total_params": 53569
+    },
+    "GRU": {
+      "description": "Gated Recurrent Unit — stacked 2-layer (best DL model)",
+      "tuning": "Manual + Early Stopping (patience=10)",
+      "hyperparams": {
+        "lookback": 72,
+        "hidden_dim": 64,
+        "num_layers": 2,
+        "dropout": 0.2,
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "max_epochs": 100,
+        "early_stopping_patience": 10,
+        "optimizer": "Adam",
+        "loss": "MSELoss",
+        "device": "MPS (Apple Silicon M1 Pro)"
+      },
+      "input_features": ["pm25", "nhiet_do", "do_am", "diem_suong", "co2"],
+      "total_params": 40705,
+      "results": {
+        "1h": {"MAE": 3.164, "MASE": 1.269},
+        "6h": {"MAE": 5.129, "MASE": 0.757},
+        "24h": {"MAE": 4.562, "MASE": 0.727}
+      }
+    }
+  },
+
+  "ensemble": {
+    "GRU_ensemble": {
+      "description": "GRU 5-member ensemble (seeds 42,123,456,789,2024) — mean aggregation",
+      "hyperparams": "Same as GRU single model, 5 independent runs with different seeds",
+      "aggregation": "Mean of 5 predictions",
+      "results": {
+        "6h": {"MAE": 4.729, "MASE": 0.698},
+        "24h": {"MAE": 4.580, "MASE": 0.730}
+      }
+    }
+  },
+
+  "best_model_per_horizon": {
+    "1h": "Persistence (MAE=2.493, MASE=1.000) — no model beats high autocorrelation",
+    "6h": "GRU_ensemble (MAE=4.729, MASE=0.698) — 30.2% improvement over Persistence",
+    "24h": "GRU (MAE=4.562, MASE=0.727) — 27.3% improvement over Persistence"
+  },
+
+  "hyperparameter_tuning_strategy": {
+    "ML_models": {
+      "method": "Optuna (Bayesian TPE sampler)",
+      "n_trials": "50-100 per model per horizon",
+      "cv_strategy": "TimeSeriesSplit(n_splits=5) — respects temporal order",
+      "objective": "minimize MAE on validation fold",
+      "search_space": {
+        "LightGBM": {
+          "n_estimators": "[100, 1000]",
+          "max_depth": "[3, 10]",
+          "learning_rate": "[0.001, 0.3] (log-uniform)",
+          "subsample": "[0.5, 1.0]",
+          "colsample_bytree": "[0.3, 1.0]",
+          "min_child_samples": "[5, 50]",
+          "reg_alpha": "[1e-3, 10] (log-uniform)",
+          "reg_lambda": "[1e-5, 10] (log-uniform)",
+          "num_leaves": "[16, 128]"
+        },
+        "Lasso": {
+          "alpha": "[0.001, 10] (log-uniform)",
+          "max_iter": "[1000, 10000]"
+        }
+      }
+    },
+    "DL_models": {
+      "method": "Manual configuration + Early Stopping",
+      "rationale": "GRU/LSTM hyperparams set based on literature and hardware constraints (M1 Pro). Optuna for DL is expensive (~hours) and diminishing returns for this dataset size (7742 rows).",
+      "future_improvement": "Có thể dùng Optuna cho DL nếu dataset lớn hơn hoặc có GPU mạnh hơn"
+    }
+  }
+}

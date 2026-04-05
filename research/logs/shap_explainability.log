@@ -1,0 +1,251 @@
+======================================================================
+SHAP EXPLAINABILITY ANALYSIS
+Horizons: [1, 6, 24]h | Models: LightGBM (SHAP) + GRU (Permutation)
+======================================================================
+
+[1/4] Preparing Hybrid dataset...
+2026-04-05 07:57:38.559 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-05 07:57:38.559 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-05 07:57:38.685 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-05 07:57:38.702 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 07:57:38.703 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-05 07:57:38.723 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-05 07:57:38.726 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 07:57:38.728 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-05 07:57:38.732 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-05 07:57:38.738 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-05 07:57:38.742 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-05 07:57:38.747 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-05 07:57:38.747 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-05 07:57:38.757 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-05 07:57:50.847 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Hybrid data: 7742 rows
+
+[2/4] Building features...
+2026-04-05 07:57:50.848 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-05 07:57:50.848 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-05 07:57:50.848 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-05 07:57:50.854 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-05 07:57:50.858 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-05 07:57:50.866 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-05 07:57:50.870 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-05 07:57:50.872 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-05 07:57:50.876 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-05 07:57:50.879 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-05 07:57:50.879 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-05 07:57:50.879 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 5 → 95 columns, 7,742 → 7,574 rows
+2026-04-05 07:57:50.879 | INFO     | src.features.builder:build_features:107 - ============================================================
+  Features: 7574 rows × 96 cols
+
+[3/4] Computing SHAP values (LightGBM)...
+
+────────────────────────────────────────────────────────────
+  HORIZON = 1h
+────────────────────────────────────────────────────────────
+  Training LightGBM (1h)...
+    MAE=3.931 (n_test=600)
+  Computing SHAP values...
+    SHAP computed for 500 samples (0.2s)
+
+  Top-15 SHAP features (1h):
+    pm25_lag_1h                              SHAP=3.4203
+    co2                                      SHAP=1.1996
+    pm25_roll_24h_mean                       SHAP=0.9881
+    pm25_lag_24h                             SHAP=0.5624
+    do_am                                    SHAP=0.4691
+    co2_lag_1h                               SHAP=0.4584
+    hour_cos                                 SHAP=0.4436
+    hour_sin                                 SHAP=0.3980
+    pm25_roll_24h_min                        SHAP=0.3765
+    diem_suong_lag_12h                       SHAP=0.3265
+    diem_suong_lag_1h                        SHAP=0.2424
+    diem_suong                               SHAP=0.2397
+    pm25_pct_change_1h                       SHAP=0.2078
+    pm25_lag_168h                            SHAP=0.1946
+    do_am_lag_168h                           SHAP=0.1889
+    Saved: shap_bar_1h.png
+    Saved: shap_beeswarm_1h.png
+    Saved: 3 dependence plots
+
+  SHAP vs Built-in importance (1h):
+    Feature                              SHAP rank  Built-in rank
+    pm25_lag_1h                                  1              1
+    co2                                          2             13
+    pm25_roll_24h_mean                           3             22
+    pm25_lag_24h                                 4              4
+    do_am                                        5              2
+    co2_lag_1h                                   6             61
+    hour_cos                                     7             16
+    hour_sin                                     8              3
+    pm25_roll_24h_min                            9             37
+    diem_suong_lag_12h                          10             41
+
+────────────────────────────────────────────────────────────
+  HORIZON = 6h
+────────────────────────────────────────────────────────────
+  Training LightGBM (6h)...
+    MAE=5.147 (n_test=595)
+  Computing SHAP values...
+    SHAP computed for 500 samples (0.2s)
+
+  Top-15 SHAP features (6h):
+    pm25_roll_24h_mean                       SHAP=2.3513
+    hour_sin                                 SHAP=1.9002
+    pm25_roll_24h_min                        SHAP=1.1803
+    co2_lag_48h                              SHAP=0.5887
+    pm25_roll_6h_min                         SHAP=0.5109
+    diem_suong_lag_6h                        SHAP=0.4289
+    hour_cos                                 SHAP=0.3898
+    nhiet_do_lag_6h                          SHAP=0.3149
+    co2_pm25_ratio                           SHAP=0.2890
+    co2_lag_168h                             SHAP=0.2763
+    pm25_roll_12h_min                        SHAP=0.2724
+    pm25_roll_48h_min                        SHAP=0.2594
+    pm25_roll_48h_mean                       SHAP=0.2415
+    co2_lag_2h                               SHAP=0.2315
+    pm25_roll_168h_min                       SHAP=0.2314
+    Saved: shap_bar_6h.png
+    Saved: shap_beeswarm_6h.png
+    Saved: 3 dependence plots
+
+  SHAP vs Built-in importance (6h):
+    Feature                              SHAP rank  Built-in rank
+    pm25_roll_24h_mean                           1              5
+    hour_sin                                     2              2
+    pm25_roll_24h_min                            3              7
+    co2_lag_48h                                  4             21
+    pm25_roll_6h_min                             5             33
+    diem_suong_lag_6h                            6             37
+    hour_cos                                     7             42
+    nhiet_do_lag_6h                              8             16
+    co2_pm25_ratio                               9             46
+    co2_lag_168h                                10             19
+
+────────────────────────────────────────────────────────────
+  HORIZON = 24h
+────────────────────────────────────────────────────────────
+  Training LightGBM (24h)...
+    MAE=5.960 (n_test=585)
+  Computing SHAP values...
+    SHAP computed for 500 samples (0.2s)
+
+  Top-15 SHAP features (24h):
+    pm25_lag_1h                              SHAP=2.2038
+    hour_cos                                 SHAP=0.9082
+    pm25_lag_24h                             SHAP=0.6557
+    diem_suong_lag_1h                        SHAP=0.5337
+    diem_suong_lag_24h                       SHAP=0.3941
+    co2_lag_168h                             SHAP=0.3670
+    pm25_roll_24h_std                        SHAP=0.3487
+    co2_lag_12h                              SHAP=0.3186
+    diem_suong_lag_12h                       SHAP=0.3052
+    pm25_roll_168h_mean                      SHAP=0.2992
+    diem_suong_lag_48h                       SHAP=0.2889
+    pm25_roll_168h_min                       SHAP=0.2776
+    month_cos                                SHAP=0.2690
+    do_am_lag_6h                             SHAP=0.2662
+    pm25_roll_24h_min                        SHAP=0.2585
+    Saved: shap_bar_24h.png
+    Saved: shap_beeswarm_24h.png
+    Saved: 3 dependence plots
+
+  SHAP vs Built-in importance (24h):
+    Feature                              SHAP rank  Built-in rank
+    pm25_lag_1h                                  1             16
+    hour_cos                                     2             25
+    pm25_lag_24h                                 3              7
+    diem_suong_lag_1h                            4             58
+    diem_suong_lag_24h                           5             30
+    co2_lag_168h                                 6             23
+    pm25_roll_24h_std                            7             15
+    co2_lag_12h                                  8             20
+    diem_suong_lag_12h                           9             40
+    pm25_roll_168h_mean                         10              4
+
+[4/4] Permutation importance (GRU)...
+
+  GRU Permutation Importance (1h) — 🚀 MPS GPU
+    Train: 6121, Test(real): 604
+    Training GRU (20 epochs, batch=256)...
+      Epoch 5/20: loss=0.7708
+      Epoch 10/20: loss=0.6985
+      Epoch 15/20: loss=0.6577
+      Epoch 20/20: loss=0.5997
+    Training done (28.3s)
+    Baseline MAE: 13.788
+    Computing permutation importance (5 rounds)...
+      nhiet_do             Δ MAE=+0.125 (+0.9%)
+      do_am                Δ MAE=+0.340 (+2.5%)
+      diem_suong           Δ MAE=-0.158 (-1.1%)
+      co2                  Δ MAE=+0.396 (+2.9%)
+
+    GRU Permutation Ranking (1h):
+      1. co2                  Δ MAE=+0.3957
+      2. do_am                Δ MAE=+0.3399
+      3. nhiet_do             Δ MAE=+0.1249
+      4. diem_suong           Δ MAE=-0.1583
+    Saved: gru_permutation_1h.png
+    ✅ Done (29.1s)
+
+  GRU Permutation Importance (6h) — 🚀 MPS GPU
+    Train: 6121, Test(real): 601
+    Training GRU (20 epochs, batch=256)...
+      Epoch 5/20: loss=0.8213
+      Epoch 10/20: loss=0.7244
+      Epoch 15/20: loss=0.6408
+      Epoch 20/20: loss=0.5988
+    Training done (26.4s)
+    Baseline MAE: 6.468
+    Computing permutation importance (5 rounds)...
+      nhiet_do             Δ MAE=-0.536 (-8.3%)
+      do_am                Δ MAE=-0.608 (-9.4%)
+      diem_suong           Δ MAE=-0.091 (-1.4%)
+      co2                  Δ MAE=-0.344 (-5.3%)
+
+    GRU Permutation Ranking (6h):
+      1. diem_suong           Δ MAE=-0.0909
+      2. co2                  Δ MAE=-0.3440
+      3. nhiet_do             Δ MAE=-0.5360
+      4. do_am                Δ MAE=-0.6084
+    Saved: gru_permutation_6h.png
+    ✅ Done (26.9s)
+
+  GRU Permutation Importance (24h) — 🚀 MPS GPU
+    Train: 6121, Test(real): 601
+    Training GRU (20 epochs, batch=256)...
+      Epoch 5/20: loss=0.7836
+      Epoch 10/20: loss=0.7392
+      Epoch 15/20: loss=0.6739
+      Epoch 20/20: loss=0.5626
+    Training done (26.3s)
+    Baseline MAE: 20.259
+    Computing permutation importance (5 rounds)...
+      nhiet_do             Δ MAE=-3.702 (-18.3%)
+      do_am                Δ MAE=-3.632 (-17.9%)
+      diem_suong           Δ MAE=-0.061 (-0.3%)
+      co2                  Δ MAE=-0.107 (-0.5%)
+
+    GRU Permutation Ranking (24h):
+      1. diem_suong           Δ MAE=-0.0611
+      2. co2                  Δ MAE=-0.1068
+      3. do_am                Δ MAE=-3.6316
+      4. nhiet_do             Δ MAE=-3.7019
+    Saved: gru_permutation_24h.png
+    ✅ Done (26.9s)
+
+══════════════════════════════════════════════════════════════════════
+COMPLETE — Total: 106s (1.8 min)
+Figures saved to: /Users/trihx/Desktop/time-series-forecasting/research/figures/shap
+══════════════════════════════════════════════════════════════════════
+  Results JSON: /Users/trihx/Desktop/time-series-forecasting/research/figures/shap/shap_results.json

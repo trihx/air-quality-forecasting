@@ -1,0 +1,129 @@
+======================================================================
+MODEL EXPORT — GRU (TorchScript) + LightGBM (Native)
+Horizons: [1, 6, 24]h
+======================================================================
+2026-04-05 10:13:42.731 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-05 10:13:42.732 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-05 10:13:42.879 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-05 10:13:42.897 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 10:13:42.898 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-05 10:13:42.916 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-05 10:13:42.921 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 10:13:42.923 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-05 10:13:42.926 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-05 10:13:42.931 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-05 10:13:42.934 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-05 10:13:42.938 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-05 10:13:42.938 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-05 10:13:42.949 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-05 10:13:53.818 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+
+────────────────────────────────────────────────────────────
+  HORIZON = 1h
+────────────────────────────────────────────────────────────
+
+  [GRU → TorchScript] h=1h...
+    Train=6120, Val=773
+    Epoch 25/100 val=0.0940
+    Early stop epoch 32
+    ✅ Saved: /Users/trihx/Desktop/time-series-forecasting/models/exported/gru_1h.pt (171.6 KB)
+    ✅ Scalers: scalers_1h.json
+
+  [LightGBM → Native] h=1h...
+2026-04-05 10:14:55.008 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-05 10:14:55.008 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-05 10:14:55.008 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-05 10:14:55.015 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-05 10:14:55.021 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-05 10:14:55.030 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-05 10:14:55.034 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-05 10:14:55.037 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-05 10:14:55.040 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-05 10:14:55.042 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-05 10:14:55.042 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-05 10:14:55.042 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 6 → 96 columns, 7,742 → 7,574 rows
+2026-04-05 10:14:55.042 | INFO     | src.features.builder:build_features:107 - ============================================================
+    ✅ Saved: /Users/trihx/Desktop/time-series-forecasting/models/exported/lgbm_1h.txt (256.2 KB)
+    ✅ Features: lgbm_1h_features.json
+
+────────────────────────────────────────────────────────────
+  HORIZON = 6h
+────────────────────────────────────────────────────────────
+
+  [GRU → TorchScript] h=6h...
+    Train=6115, Val=773
+    Epoch 25/100 val=0.1330
+    Early stop epoch 35
+    ✅ Saved: /Users/trihx/Desktop/time-series-forecasting/models/exported/gru_6h.pt (172.2 KB)
+    ✅ Scalers: scalers_6h.json
+
+  [LightGBM → Native] h=6h...
+2026-04-05 10:16:01.021 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-05 10:16:01.022 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-05 10:16:01.022 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-05 10:16:01.028 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-05 10:16:01.034 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-05 10:16:01.043 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-05 10:16:01.046 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-05 10:16:01.049 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-05 10:16:01.052 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-05 10:16:01.054 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-05 10:16:01.055 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-05 10:16:01.055 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 6 → 96 columns, 7,742 → 7,574 rows
+2026-04-05 10:16:01.055 | INFO     | src.features.builder:build_features:107 - ============================================================
+    ✅ Saved: /Users/trihx/Desktop/time-series-forecasting/models/exported/lgbm_6h.txt (253.2 KB)
+    ✅ Features: lgbm_6h_features.json
+
+────────────────────────────────────────────────────────────
+  HORIZON = 24h
+────────────────────────────────────────────────────────────
+
+  [GRU → TorchScript] h=24h...
+    Train=6097, Val=773
+    Early stop epoch 21
+    ✅ Saved: /Users/trihx/Desktop/time-series-forecasting/models/exported/gru_24h.pt (172.4 KB)
+    ✅ Scalers: scalers_24h.json
+
+  [LightGBM → Native] h=24h...
+2026-04-05 10:16:41.040 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-05 10:16:41.040 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-05 10:16:41.040 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-05 10:16:41.047 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-05 10:16:41.053 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-05 10:16:41.062 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-05 10:16:41.066 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-05 10:16:41.068 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-05 10:16:41.072 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-05 10:16:41.074 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-05 10:16:41.074 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-05 10:16:41.074 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 6 → 96 columns, 7,742 → 7,574 rows
+2026-04-05 10:16:41.074 | INFO     | src.features.builder:build_features:107 - ============================================================
+    ✅ Saved: /Users/trihx/Desktop/time-series-forecasting/models/exported/lgbm_24h.txt (255.2 KB)
+    ✅ Features: lgbm_24h_features.json
+
+══════════════════════════════════════════════════════════════════════
+EXPORT SUMMARY
+══════════════════════════════════════════════════════════════════════
+  GRU          TorchScript        1h → gru_1h.pt (171.6 KB)
+  LightGBM     Native (.txt)      1h → lgbm_1h.txt (256.2 KB)
+  GRU          TorchScript        6h → gru_6h.pt (172.2 KB)
+  LightGBM     Native (.txt)      6h → lgbm_6h.txt (253.2 KB)
+  GRU          TorchScript        24h → gru_24h.pt (172.4 KB)
+  LightGBM     Native (.txt)      24h → lgbm_24h.txt (255.2 KB)
+
+  Manifest: /Users/trihx/Desktop/time-series-forecasting/models/exported/manifest.json
+
+══════════════════════════════════════════════════════════════════════
+COMPLETE — 179s (3.0 min)
+══════════════════════════════════════════════════════════════════════

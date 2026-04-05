@@ -1,0 +1,101 @@
+======================================================================
+TEMPORAL FUSION TRANSFORMER — Multi-Horizon Evaluation
+Horizons: [1, 6, 24]h | Lookback: 72h
+Architecture: hidden=32, heads=4, dropout=0.1
+Training: epochs=100, batch=128, patience=15
+======================================================================
+
+[1/4] Building TFT components...
+
+[2/4] Preparing data...
+2026-04-05 10:20:41.894 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-05 10:20:41.894 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-05 10:20:42.019 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-05 10:20:42.036 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 10:20:42.037 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-05 10:20:42.055 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-05 10:20:42.059 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 10:20:42.061 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-05 10:20:42.064 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-05 10:20:42.070 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-05 10:20:42.073 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-05 10:20:42.077 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-05 10:20:42.078 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-05 10:20:42.086 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-05 10:20:54.207 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Data: 7742 rows
+
+══════════════════════════════════════════════════════════════════════
+[3/4] HORIZON = 1h
+══════════════════════════════════════════════════════════════════════
+
+  Training TFT (1h) on mps...
+    Persistence 1h: MAE=2.390
+    Train=6121, Val=774, Test=604 (real only)
+    TFT Parameters: 25,089
+    Epoch   1/100 train=0.5549 val=0.0993 lr=1.0e-03 patience=0/15
+    Epoch  20/100 train=0.1665 val=0.0832 lr=5.0e-04 patience=6/15
+    Early stop epoch 29 (best val=0.0727)
+    ❌ TFT 1h: MAE=2.460 RMSE=3.666 MASE=1.029 (38s, 604 pts)
+
+  📊 Comparison (1h):
+    Persistence: 1.000 | LightGBM: 1.492 | GRU: 1.173 | TFT: 1.029
+
+══════════════════════════════════════════════════════════════════════
+[3/4] HORIZON = 6h
+══════════════════════════════════════════════════════════════════════
+
+  Training TFT (6h) on mps...
+    Persistence 6h: MAE=6.305
+    Train=6116, Val=774, Test=604 (real only)
+    TFT Parameters: 25,089
+    Epoch   1/100 train=0.8598 val=0.2199 lr=1.0e-03 patience=0/15
+    Epoch  20/100 train=0.2939 val=0.1929 lr=5.0e-04 patience=0/15
+    Epoch  40/100 train=0.2008 val=0.1801 lr=2.5e-04 patience=9/15
+    Early stop epoch 46 (best val=0.1592)
+    ✅ TFT 6h: MAE=5.181 RMSE=6.687 MASE=0.822 (52s, 604 pts)
+
+  📊 Comparison (6h):
+    Persistence: 1.000 | LightGBM: 0.745 | GRU: 0.812 | TFT: 0.822
+
+══════════════════════════════════════════════════════════════════════
+[3/4] HORIZON = 24h
+══════════════════════════════════════════════════════════════════════
+
+  Training TFT (24h) on mps...
+    Persistence 24h: MAE=6.276
+    Train=6098, Val=774, Test=604 (real only)
+    TFT Parameters: 25,089
+    Epoch   1/100 train=0.7260 val=0.2508 lr=1.0e-03 patience=0/15
+    Early stop epoch 18 (best val=0.1770)
+    ✅ TFT 24h: MAE=5.093 RMSE=6.725 MASE=0.812 (20s, 604 pts)
+
+  📊 Comparison (24h):
+    Persistence: 1.000 | LightGBM: 0.842 | GRU: 0.727 | TFT: 0.812
+
+══════════════════════════════════════════════════════════════════════
+[4/4] FINAL COMPARISON SUMMARY
+══════════════════════════════════════════════════════════════════════
+
+Horizon    Persist    LightGBM   GRU        TFT        Best        
+──────────────────────────────────────────────────────────────
+1h        1.000      1.492      1.173      1.029      Persistence 
+6h        1.000      0.745      0.812      0.822      LightGBM    
+24h        1.000      0.842      0.727      0.812      GRU         
+
+  Results saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/tft/tft_multi_horizon_20260405_102245.json
+
+══════════════════════════════════════════════════════════════════════
+COMPLETE — 125s (2.1 min)
+══════════════════════════════════════════════════════════════════════

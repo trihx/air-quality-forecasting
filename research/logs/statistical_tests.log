@@ -1,0 +1,222 @@
+======================================================================
+STATISTICAL SIGNIFICANCE & RESIDUAL DIAGNOSTICS
+======================================================================
+
+[1/4] Preparing data...
+2026-04-05 08:21:57.606 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-05 08:21:57.606 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-05 08:21:57.718 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-05 08:21:57.733 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 08:21:57.734 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-05 08:21:57.750 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-05 08:21:57.752 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 08:21:57.754 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-05 08:21:57.757 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-05 08:21:57.762 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-05 08:21:57.765 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-05 08:21:57.769 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-05 08:21:57.770 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-05 08:21:57.778 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-05 08:22:09.212 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+2026-04-05 08:22:09.213 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-05 08:22:09.213 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-05 08:22:09.213 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-05 08:22:09.219 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-05 08:22:09.222 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-05 08:22:09.230 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-05 08:22:09.233 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-05 08:22:09.235 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-05 08:22:09.238 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-05 08:22:09.240 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-05 08:22:09.240 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-05 08:22:09.240 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 5 → 95 columns, 7,742 → 7,574 rows
+2026-04-05 08:22:09.240 | INFO     | src.features.builder:build_features:107 - ============================================================
+  Features: 7574 rows × 96 cols
+
+[2/4] Generating predictions...
+
+────────────────────────────────────────────────────────────
+  HORIZON = 1h
+────────────────────────────────────────────────────────────
+  Training LightGBM (1h)...
+    LightGBM MAE=3.931, Persistence MAE=2.493
+  Training GRU (1h)...
+      GRU Epoch 25/50: loss=0.2983
+      GRU Epoch 50/50: loss=0.2253
+    GRU pred: 604, LightGBM test: 600, common: 600
+
+────────────────────────────────────────────────────────────
+  HORIZON = 6h
+────────────────────────────────────────────────────────────
+  Training LightGBM (6h)...
+    LightGBM MAE=5.147, Persistence MAE=6.773
+  Training GRU (6h)...
+      GRU Epoch 25/50: loss=0.3481
+      GRU Epoch 50/50: loss=0.2139
+    GRU pred: 601, LightGBM test: 595, common: 595
+
+────────────────────────────────────────────────────────────
+  HORIZON = 24h
+────────────────────────────────────────────────────────────
+  Training LightGBM (24h)...
+    LightGBM MAE=5.960, Persistence MAE=6.153
+  Training GRU (24h)...
+      GRU Epoch 25/50: loss=0.4638
+      GRU Epoch 50/50: loss=0.2687
+    GRU pred: 601, LightGBM test: 585, common: 585
+
+[3/4] Diebold-Mariano Tests...
+
+  DM Test (1h): GRU vs Persistence
+    DM stat = 13.7290, p = 0.000000
+    Mean |e_GRU| - |e_Persist| = 2.4306
+    Significant (α=0.05)? ✅ YES
+
+  DM Test (1h): LightGBM vs Persistence
+    DM stat = 9.4002, p = 0.000000
+    Mean |e_LGB| - |e_Persist| = 1.4376
+    Significant (α=0.05)? ✅ YES
+
+  DM Test (1h): GRU vs LightGBM
+    DM stat = 8.0114, p = 0.000000
+    Mean |e_GRU| - |e_LGB| = 0.9930
+    Significant (α=0.05)? ✅ YES
+
+  DM Test (6h): GRU vs Persistence
+    DM stat = -4.4113, p = 0.000012
+    Mean |e_GRU| - |e_Persist| = -1.7929
+    Significant (α=0.05)? ✅ YES
+
+  DM Test (6h): LightGBM vs Persistence
+    DM stat = -3.3903, p = 0.000745
+    Mean |e_LGB| - |e_Persist| = -1.6266
+    Significant (α=0.05)? ✅ YES
+
+  DM Test (6h): GRU vs LightGBM
+    DM stat = -0.4910, p = 0.623621
+    Mean |e_GRU| - |e_LGB| = -0.1663
+    Significant (α=0.05)? ❌ NO
+
+  DM Test (24h): GRU vs Persistence
+    DM stat = -2.5137, p = 0.012215
+    Mean |e_GRU| - |e_Persist| = -1.0731
+    Significant (α=0.05)? ✅ YES
+
+  DM Test (24h): LightGBM vs Persistence
+    DM stat = -0.3092, p = 0.757286
+    Mean |e_LGB| - |e_Persist| = -0.1929
+    Significant (α=0.05)? ❌ NO
+
+  DM Test (24h): GRU vs LightGBM
+    DM stat = -2.0263, p = 0.043188
+    Mean |e_GRU| - |e_LGB| = -0.8802
+    Significant (α=0.05)? ✅ YES
+
+[4/4] Residual Diagnostics...
+
+  Residual Diagnostics (1h) — GRU
+    Mean=-2.350, Std=5.749
+    Skewness=1.476, Kurtosis=3.818
+    Ljung-Box(lag=6): Q=519.35, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=12): Q=520.24, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=24): Q=632.29, p=0.0000 → ✅ autocorr
+    Shapiro-Wilk: W=0.9062, p=0.000000
+    Jarque-Bera:  JB=582.31, p=0.000000
+    Saved: diagnostics_1h_GRU.png
+
+  Residual Diagnostics (1h) — LightGBM
+    Mean=-1.333, Std=5.116
+    Skewness=1.382, Kurtosis=4.704
+    Ljung-Box(lag=6): Q=322.60, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=12): Q=330.89, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=24): Q=336.26, p=0.0000 → ✅ autocorr
+    Shapiro-Wilk: W=0.9031, p=0.000000
+    Jarque-Bera:  JB=744.32, p=0.000000
+    Saved: diagnostics_1h_LightGBM.png
+
+  Residual Diagnostics (1h) — Persistence
+    Mean=0.105, Std=4.013
+    Skewness=-0.127, Kurtosis=7.454
+    Ljung-Box(lag=6): Q=17.75, p=0.0069 → ✅ autocorr
+    Ljung-Box(lag=12): Q=30.67, p=0.0022 → ✅ autocorr
+    Ljung-Box(lag=24): Q=51.76, p=0.0008 → ✅ autocorr
+    Shapiro-Wilk: W=0.8755, p=0.000000
+    Jarque-Bera:  JB=1390.78, p=0.000000
+    Saved: diagnostics_1h_Persistence.png
+
+  Residual Diagnostics (6h) — GRU
+    Mean=0.675, Std=6.697
+    Skewness=1.373, Kurtosis=2.615
+    Ljung-Box(lag=6): Q=706.39, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=12): Q=707.03, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=24): Q=772.06, p=0.0000 → ✅ autocorr
+    Shapiro-Wilk: W=0.9054, p=0.000000
+    Jarque-Bera:  JB=356.45, p=0.000000
+    Saved: diagnostics_6h_GRU.png
+
+  Residual Diagnostics (6h) — LightGBM
+    Mean=-0.905, Std=6.711
+    Skewness=1.099, Kurtosis=2.230
+    Ljung-Box(lag=6): Q=728.41, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=12): Q=740.10, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=24): Q=769.44, p=0.0000 → ✅ autocorr
+    Shapiro-Wilk: W=0.9351, p=0.000000
+    Jarque-Bera:  JB=242.95, p=0.000000
+    Saved: diagnostics_6h_LightGBM.png
+
+  Residual Diagnostics (6h) — Persistence
+    Mean=1.017, Std=9.070
+    Skewness=0.099, Kurtosis=1.268
+    Ljung-Box(lag=6): Q=669.74, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=12): Q=763.57, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=24): Q=873.08, p=0.0000 → ✅ autocorr
+    Shapiro-Wilk: W=0.9821, p=0.000001
+    Jarque-Bera:  JB=40.83, p=0.000000
+    Saved: diagnostics_6h_Persistence.png
+
+  Residual Diagnostics (24h) — GRU
+    Mean=0.777, Std=7.108
+    Skewness=1.376, Kurtosis=3.839
+    Ljung-Box(lag=6): Q=807.95, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=12): Q=809.54, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=24): Q=853.70, p=0.0000 → ✅ autocorr
+    Shapiro-Wilk: W=0.9192, p=0.000000
+    Jarque-Bera:  JB=543.92, p=0.000000
+    Saved: diagnostics_24h_GRU.png
+
+  Residual Diagnostics (24h) — LightGBM
+    Mean=-3.037, Std=6.763
+    Skewness=1.259, Kurtosis=2.693
+    Ljung-Box(lag=6): Q=894.74, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=12): Q=932.84, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=24): Q=945.22, p=0.0000 → ✅ autocorr
+    Shapiro-Wilk: W=0.9234, p=0.000000
+    Jarque-Bera:  JB=331.23, p=0.000000
+    Saved: diagnostics_24h_LightGBM.png
+
+  Residual Diagnostics (24h) — Persistence
+    Mean=0.552, Std=8.619
+    Skewness=-0.159, Kurtosis=2.164
+    Ljung-Box(lag=6): Q=935.15, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=12): Q=980.43, p=0.0000 → ✅ autocorr
+    Ljung-Box(lag=24): Q=1345.83, p=0.0000 → ✅ autocorr
+    Shapiro-Wilk: W=0.9665, p=0.000000
+    Jarque-Bera:  JB=116.64, p=0.000000
+    Saved: diagnostics_24h_Persistence.png
+
+══════════════════════════════════════════════════════════════════════
+COMPLETE — Total: 220s (3.7 min)
+Results: /Users/trihx/Desktop/time-series-forecasting/research/diagnostics/statistical_tests/statistical_tests_results.json
+Figures: /Users/trihx/Desktop/time-series-forecasting/research/diagnostics/statistical_tests/figures
+══════════════════════════════════════════════════════════════════════

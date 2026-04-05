@@ -1,0 +1,47 @@
+{
+  "1h": {
+    "Persistence": {
+      "mae": 2.3902,
+      "rmse": 0,
+      "mase": 1.0
+    },
+    "TFT": {
+      "mae": 2.4599,
+      "rmse": 3.6656,
+      "mase": 1.0291,
+      "params": 25089,
+      "train_time_s": 37.9,
+      "n_test": 604
+    }
+  },
+  "6h": {
+    "Persistence": {
+      "mae": 6.3053,
+      "rmse": 0,
+      "mase": 1.0
+    },
+    "TFT": {
+      "mae": 5.1806,
+      "rmse": 6.6866,
+      "mase": 0.8216,
+      "params": 25089,
+      "train_time_s": 52.2,
+      "n_test": 604
+    }
+  },
+  "24h": {
+    "Persistence": {
+      "mae": 6.2758,
+      "rmse": 0,
+      "mase": 1.0
+    },
+    "TFT": {
+      "mae": 5.0933,
+      "rmse": 6.7252,
+      "mase": 0.8116,
+      "params": 25089,
+      "train_time_s": 20.5,
+      "n_test": 604
+    }
+  }
+}

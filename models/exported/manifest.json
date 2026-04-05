@@ -1,0 +1,41 @@
+{
+  "exported_at": "2026-04-05T10:16:41.677997",
+  "models": [
+    {
+      "model": "GRU",
+      "format": "TorchScript",
+      "horizon": 1,
+      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/gru_1h.pt"
+    },
+    {
+      "model": "LightGBM",
+      "format": "Native (.txt)",
+      "horizon": 1,
+      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/lgbm_1h.txt"
+    },
+    {
+      "model": "GRU",
+      "format": "TorchScript",
+      "horizon": 6,
+      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/gru_6h.pt"
+    },
+    {
+      "model": "LightGBM",
+      "format": "Native (.txt)",
+      "horizon": 6,
+      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/lgbm_6h.txt"
+    },
+    {
+      "model": "GRU",
+      "format": "TorchScript",
+      "horizon": 24,
+      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/gru_24h.pt"
+    },
+    {
+      "model": "LightGBM",
+      "format": "Native (.txt)",
+      "horizon": 24,
+      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/lgbm_24h.txt"
+    }
+  ]
+}

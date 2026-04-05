@@ -1,0 +1,405 @@
+{
+  "diebold_mariano": {
+    "1h": {
+      "GRU_vs_Persistence": {
+        "dm_statistic": 13.729,
+        "p_value": 0.0,
+        "n_samples": 600,
+        "mean_loss_diff": 2.4306,
+        "significant_0.05": "True",
+        "significant_0.01": "True"
+      },
+      "LightGBM_vs_Persistence": {
+        "dm_statistic": 9.4002,
+        "p_value": 0.0,
+        "n_samples": 600,
+        "mean_loss_diff": 1.4376,
+        "significant_0.05": "True",
+        "significant_0.01": "True"
+      },
+      "GRU_vs_LightGBM": {
+        "dm_statistic": 8.0114,
+        "p_value": 0.0,
+        "n_samples": 600,
+        "mean_loss_diff": 0.993,
+        "significant_0.05": "True",
+        "significant_0.01": "True"
+      }
+    },
+    "6h": {
+      "GRU_vs_Persistence": {
+        "dm_statistic": -4.4113,
+        "p_value": 1.2e-05,
+        "n_samples": 595,
+        "mean_loss_diff": -1.7929,
+        "significant_0.05": "True",
+        "significant_0.01": "True"
+      },
+      "LightGBM_vs_Persistence": {
+        "dm_statistic": -3.3903,
+        "p_value": 0.000745,
+        "n_samples": 595,
+        "mean_loss_diff": -1.6266,
+        "significant_0.05": "True",
+        "significant_0.01": "True"
+      },
+      "GRU_vs_LightGBM": {
+        "dm_statistic": -0.491,
+        "p_value": 0.623621,
+        "n_samples": 595,
+        "mean_loss_diff": -0.1663,
+        "significant_0.05": "False",
+        "significant_0.01": "False"
+      }
+    },
+    "24h": {
+      "GRU_vs_Persistence": {
+        "dm_statistic": -2.5137,
+        "p_value": 0.012215,
+        "n_samples": 585,
+        "mean_loss_diff": -1.0731,
+        "significant_0.05": "True",
+        "significant_0.01": "False"
+      },
+      "LightGBM_vs_Persistence": {
+        "dm_statistic": -0.3092,
+        "p_value": 0.757286,
+        "n_samples": 585,
+        "mean_loss_diff": -0.1929,
+        "significant_0.05": "False",
+        "significant_0.01": "False"
+      },
+      "GRU_vs_LightGBM": {
+        "dm_statistic": -2.0263,
+        "p_value": 0.043188,
+        "n_samples": 585,
+        "mean_loss_diff": -0.8802,
+        "significant_0.05": "True",
+        "significant_0.01": "False"
+      }
+    }
+  },
+  "residual_diagnostics": {
+    "1h": {
+      "GRU": {
+        "n": 600,
+        "mean": -2.3495,
+        "std": 5.7492,
+        "skewness": 1.4761,
+        "kurtosis": 3.818,
+        "ljung_box": {
+          "lag_6": {
+            "statistic": 519.3502,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_12": {
+            "statistic": 520.2385,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_24": {
+            "statistic": 632.2924,
+            "p_value": 0.0,
+            "autocorrelated": true
+          }
+        },
+        "normality": {
+          "shapiro_wilk": {
+            "statistic": 0.9062,
+            "p_value": 0.0
+          },
+          "jarque_bera": {
+            "statistic": 582.3144,
+            "p_value": 0.0
+          },
+          "is_normal_0.05": false
+        }
+      },
+      "LightGBM": {
+        "n": 600,
+        "mean": -1.3331,
+        "std": 5.1155,
+        "skewness": 1.3821,
+        "kurtosis": 4.7045,
+        "ljung_box": {
+          "lag_6": {
+            "statistic": 322.6033,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_12": {
+            "statistic": 330.8929,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_24": {
+            "statistic": 336.2638,
+            "p_value": 0.0,
+            "autocorrelated": true
+          }
+        },
+        "normality": {
+          "shapiro_wilk": {
+            "statistic": 0.9031,
+            "p_value": 0.0
+          },
+          "jarque_bera": {
+            "statistic": 744.3198,
+            "p_value": 0.0
+          },
+          "is_normal_0.05": false
+        }
+      },
+      "Persistence": {
+        "n": 600,
+        "mean": 0.1047,
+        "std": 4.013,
+        "skewness": -0.1274,
+        "kurtosis": 7.4543,
+        "ljung_box": {
+          "lag_6": {
+            "statistic": 17.7485,
+            "p_value": 0.006892,
+            "autocorrelated": true
+          },
+          "lag_12": {
+            "statistic": 30.6723,
+            "p_value": 0.00221,
+            "autocorrelated": true
+          },
+          "lag_24": {
+            "statistic": 51.7574,
+            "p_value": 0.000841,
+            "autocorrelated": true
+          }
+        },
+        "normality": {
+          "shapiro_wilk": {
+            "statistic": 0.8755,
+            "p_value": 0.0
+          },
+          "jarque_bera": {
+            "statistic": 1390.7809,
+            "p_value": 0.0
+          },
+          "is_normal_0.05": false
+        }
+      }
+    },
+    "6h": {
+      "GRU": {
+        "n": 595,
+        "mean": 0.6752,
+        "std": 6.6972,
+        "skewness": 1.3728,
+        "kurtosis": 2.6153,
+        "ljung_box": {
+          "lag_6": {
+            "statistic": 706.3922,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_12": {
+            "statistic": 707.0297,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_24": {
+            "statistic": 772.061,
+            "p_value": 0.0,
+            "autocorrelated": true
+          }
+        },
+        "normality": {
+          "shapiro_wilk": {
+            "statistic": 0.9054,
+            "p_value": 0.0
+          },
+          "jarque_bera": {
+            "statistic": 356.4507,
+            "p_value": 0.0
+          },
+          "is_normal_0.05": false
+        }
+      },
+      "LightGBM": {
+        "n": 595,
+        "mean": -0.9054,
+        "std": 6.7112,
+        "skewness": 1.0986,
+        "kurtosis": 2.2297,
+        "ljung_box": {
+          "lag_6": {
+            "statistic": 728.4097,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_12": {
+            "statistic": 740.0999,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_24": {
+            "statistic": 769.4439,
+            "p_value": 0.0,
+            "autocorrelated": true
+          }
+        },
+        "normality": {
+          "shapiro_wilk": {
+            "statistic": 0.9351,
+            "p_value": 0.0
+          },
+          "jarque_bera": {
+            "statistic": 242.9535,
+            "p_value": 0.0
+          },
+          "is_normal_0.05": false
+        }
+      },
+      "Persistence": {
+        "n": 595,
+        "mean": 1.0169,
+        "std": 9.0703,
+        "skewness": 0.0994,
+        "kurtosis": 1.2679,
+        "ljung_box": {
+          "lag_6": {
+            "statistic": 669.7436,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_12": {
+            "statistic": 763.5732,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_24": {
+            "statistic": 873.0755,
+            "p_value": 0.0,
+            "autocorrelated": true
+          }
+        },
+        "normality": {
+          "shapiro_wilk": {
+            "statistic": 0.9821,
+            "p_value": 1e-06
+          },
+          "jarque_bera": {
+            "statistic": 40.8322,
+            "p_value": 0.0
+          },
+          "is_normal_0.05": false
+        }
+      }
+    },
+    "24h": {
+      "GRU": {
+        "n": 585,
+        "mean": 0.777,
+        "std": 7.108,
+        "skewness": 1.3761,
+        "kurtosis": 3.8393,
+        "ljung_box": {
+          "lag_6": {
+            "statistic": 807.9509,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_12": {
+            "statistic": 809.5362,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_24": {
+            "statistic": 853.6984,
+            "p_value": 0.0,
+            "autocorrelated": true
+          }
+        },
+        "normality": {
+          "shapiro_wilk": {
+            "statistic": 0.9192,
+            "p_value": 0.0
+          },
+          "jarque_bera": {
+            "statistic": 543.9163,
+            "p_value": 0.0
+          },
+          "is_normal_0.05": false
+        }
+      },
+      "LightGBM": {
+        "n": 585,
+        "mean": -3.037,
+        "std": 6.7626,
+        "skewness": 1.2589,
+        "kurtosis": 2.6925,
+        "ljung_box": {
+          "lag_6": {
+            "statistic": 894.7402,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_12": {
+            "statistic": 932.8372,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_24": {
+            "statistic": 945.2237,
+            "p_value": 0.0,
+            "autocorrelated": true
+          }
+        },
+        "normality": {
+          "shapiro_wilk": {
+            "statistic": 0.9234,
+            "p_value": 0.0
+          },
+          "jarque_bera": {
+            "statistic": 331.2263,
+            "p_value": 0.0
+          },
+          "is_normal_0.05": false
+        }
+      },
+      "Persistence": {
+        "n": 585,
+        "mean": 0.5521,
+        "std": 8.6188,
+        "skewness": -0.1586,
+        "kurtosis": 2.1644,
+        "ljung_box": {
+          "lag_6": {
+            "statistic": 935.149,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_12": {
+            "statistic": 980.4287,
+            "p_value": 0.0,
+            "autocorrelated": true
+          },
+          "lag_24": {
+            "statistic": 1345.8319,
+            "p_value": 0.0,
+            "autocorrelated": true
+          }
+        },
+        "normality": {
+          "shapiro_wilk": {
+            "statistic": 0.9665,
+            "p_value": 0.0
+          },
+          "jarque_bera": {
+            "statistic": 116.6434,
+            "p_value": 0.0
+          },
+          "is_normal_0.05": false
+        }
+      }
+    }
+  }
+}

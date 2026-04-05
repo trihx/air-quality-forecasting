@@ -1,0 +1,50 @@
+2026-04-05 09:30:25.492 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-05 09:30:25.493 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-05 09:30:25.604 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-05 09:30:25.620 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 09:30:25.620 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-05 09:30:25.620 | INFO     | src.data.cleaner:clean_data:45 - ============================================================
+2026-04-05 09:30:25.620 | INFO     | src.data.cleaner:clean_data:46 - Data Cleaning Pipeline Started
+2026-04-05 09:30:25.620 | INFO     | src.data.cleaner:clean_data:47 - ============================================================
+2026-04-05 09:30:25.636 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-05 09:30:25.639 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-05 09:30:25.641 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-05 09:30:25.644 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-05 09:30:25.651 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-05 09:30:25.653 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-05 09:30:25.657 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-05 09:30:25.657 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-05 09:30:25.668 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+2026-04-05 09:30:25.694 | INFO     | src.data.cleaner:_interpolate_gaps:233 - [6/7] Interpolated 1,193 values (method=linear, max_gap=2h, remaining NaN: 101,778)
+2026-04-05 09:30:25.695 | INFO     | src.data.cleaner:clean_data:88 - ============================================================
+2026-04-05 09:30:25.695 | INFO     | src.data.cleaner:clean_data:89 - Cleaning Complete: 209,591 → 6,857 rows (3.3% retained)
+2026-04-05 09:30:25.695 | INFO     | src.data.cleaner:clean_data:90 - Report: {'n_input': 209591, 'n_after_dedup': 209591, 'n_clipped': 0, 'n_outliers_replaced': 23336, 'n_after_resample': 27649, 'n_interpolated': np.int64(1193), 'n_dropped_nan': np.int64(20792), 'n_output': 6857, 'pct_retained': 3.3}
+2026-04-05 09:30:25.695 | INFO     | src.data.cleaner:clean_data:91 - ============================================================
+======================================================================
+  COMPLETE METRICS TABLE FOR THESIS
+======================================================================
+
+[1/3] Loading data...
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 6,857 rows, 0 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 0 NaN remaining
+    [D-Hybrid] Phase 2: No medium gaps to fill
+    [D-Hybrid] Phase 3: Dropping 0 rows with gaps >24h
+  [Imputer] Output: 6,857 rows (6,857 real + 0 imputed)
+  [Imputer] Dropped 0 rows with unfillable gaps
+  [Imputer] Imputed ratio: 0.0%
+2026-04-05 09:30:25.698 | INFO     | src.data.imputer:impute_missing_data:108 - Imputation [hybrid]: 6,857 rows (6,857 real + 0 imputed, 0 dropped)
+2026-04-05 09:30:25.698 | INFO     | src.features.builder:build_features:58 - ============================================================
+2026-04-05 09:30:25.698 | INFO     | src.features.builder:build_features:59 - Feature Engineering Pipeline Started
+2026-04-05 09:30:25.698 | INFO     | src.features.builder:build_features:60 - ============================================================
+2026-04-05 09:30:25.704 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-05 09:30:25.708 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-05 09:30:25.714 | INFO     | src.features.temporal:create_rolling_features:103 - Created 24 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max'])
+2026-04-05 09:30:25.718 | INFO     | src.features.temporal:create_ewm_features:136 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-05 09:30:25.720 | INFO     | src.features.temporal:create_diff_features:172 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-05 09:30:25.724 | INFO     | src.features.builder:_create_domain_features:145 - Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)
+2026-04-05 09:30:25.726 | INFO     | src.features.builder:build_features:98 - Dropped 168 warmup rows with NaN
+2026-04-05 09:30:25.726 | INFO     | src.features.builder:build_features:103 - ============================================================
+2026-04-05 09:30:25.726 | INFO     | src.features.builder:build_features:104 - Feature Engineering Complete: 6 → 96 columns, 6,857 → 6,689 rows
+2026-04-05 09:30:25.726 | INFO     | src.features.builder:build_features:107 - ============================================================

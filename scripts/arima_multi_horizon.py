@@ -88,10 +88,11 @@ def main() -> None:
     print(f"{'═' * 70}", flush=True)
 
     # Include LightGBM results from previous experiment for comparison
+    # Reference from multi_horizon v2 (post-audit ground truth)
     lgbm_results = {
-        "1h": {"mae": 2.419, "mase": 1.012},
-        "6h": {"mae": 5.071, "mase": 0.730},
-        "24h": {"mae": 5.160, "mase": 0.812},
+        "1h": {"mae": 3.720, "mase": 1.492},
+        "6h": {"mae": 5.046, "mase": 0.745},
+        "24h": {"mae": 5.179, "mase": 0.842},
     }
 
     print(f"\n{'Horizon':<10} {'Model':<25} {'MAE':>8} {'RMSE':>8} {'MASE':>8} {'Status':>12}", flush=True)

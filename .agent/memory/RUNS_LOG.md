@@ -28,12 +28,14 @@
 | strategy-002 | 2026-04-04 18:45 | LightGBM_ext_interp | CubicSpline, max=12h, 7386→7217 | **2.977** | 3.760 | — | **1.321** | Strategy B ⚠️ worst |
 | strategy-003 | 2026-04-04 18:45 | LightGBM_ml_impute | KNN k=5, max=24h, 7742→7574 | 2.606 | 3.690 | — | 1.084 | Strategy C |
 | strategy-004 | 2026-04-04 18:45 | LightGBM_hybrid | Spline≤6h+KNN 6-24h, 7742→7574 | **2.562** | 3.593 | — | **1.066** | Strategy D ⭐ best |
-| mh-001 | 2026-04-04 19:37 | Persistence_1h | Hybrid data, h=1 | 2.390 | 3.852 | — | 1.000 | Baseline |
-| mh-002 | 2026-04-04 19:37 | LightGBM_tuned_1h | Optuna 100t, h=1 | 2.419 | 3.568 | — | 1.012 | ❌ gap=1.2% |
-| mh-003 | 2026-04-04 19:37 | Persistence_6h | Hybrid data, h=6 | 6.942 | 9.500 | — | 1.000 | Baseline |
-| mh-004 | 2026-04-04 19:37 | **LightGBM_tuned_6h** | Optuna 100t, h=6 | **5.071** | 6.629 | — | **0.730** | ✅ **BEATS -27%** ⭐ |
-| mh-005 | 2026-04-04 19:37 | Persistence_24h | Hybrid data, h=24 | 6.357 | 8.679 | — | 1.000 | Baseline |
-| mh-006 | 2026-04-04 19:37 | **LightGBM_tuned_24h** | Optuna 100t, h=24 | **5.160** | 6.698 | — | **0.812** | ✅ **BEATS -19%** |
+| ~~mh-001~~ | ~~2026-04-04~~ | ~~Persistence_1h~~ | ⚠️ BUG: target=y[t] | ~~2.390~~ | — | — | — | ❌ INVALID (v1) |
+| ~~mh-002~~ | ~~2026-04-04~~ | ~~LightGBM_tuned_1h~~ | ⚠️ BUG: target=y[t] | ~~2.419~~ | — | — | ~~1.012~~ | ❌ INVALID (v1) |
+| mh-v2-001 | 2026-04-04 21:52 | Persistence_1h | **FIXED** target=y[t+1] | 2.493 | 4.011 | — | 1.000 | Baseline |
+| mh-v2-002 | 2026-04-04 21:52 | LightGBM_tuned_1h | Optuna 100t, h=1, FIXED | 3.720 | 5.078 | — | 1.492 | ❌ ML thua Persist |
+| mh-v2-003 | 2026-04-04 21:52 | Persistence_6h | **FIXED** persist=y[t] | 6.773 | 9.120 | — | 1.000 | Baseline |
+| mh-v2-004 | 2026-04-04 21:52 | **LightGBM_tuned_6h** | Optuna 100t, h=6, FIXED | **5.046** | 6.584 | — | **0.745** | ✅ **-25.5%** ⭐ |
+| mh-v2-005 | 2026-04-04 21:52 | Persistence_24h | **FIXED** persist=y[t] | 6.153 | 8.629 | — | 1.000 | Baseline |
+| mh-v2-006 | 2026-04-04 21:52 | **LightGBM_tuned_24h** | Optuna 100t, h=24, FIXED | **5.178** | 6.705 | — | **0.842** | ✅ **-15.8%** |
 | ar-001 | 2026-04-04 19:59 | ARIMA(2,1,1)_1h | Rolling w=720, h=1 | 2.564 | 3.925 | — | 1.023 | ❌ |
 | ar-002 | 2026-04-04 19:59 | ARIMA(2,1,1)_6h | Rolling w=720, h=6 | 5.843 | 7.685 | — | 0.856 | ✅ -14% |
 | ar-003 | 2026-04-04 19:59 | ARIMA(2,1,1)_24h | Rolling w=720, h=24 | 5.598 | 7.325 | — | 0.913 | ✅ -9% |
@@ -46,17 +48,38 @@
 | dl-004 | 2026-04-04 20:12 | GRU_6h | lookback=72, h=6 | 5.119 | 6.547 | — | 0.812 | ✅ -19% |
 | dl-005 | 2026-04-04 20:12 | LSTM_24h | lookback=72, h=24 | 5.211 | 6.810 | — | 0.830 | ✅ -17% |
 | dl-006 | 2026-04-04 20:12 | **GRU_24h** | lookback=72, h=24 | **4.562** | 6.766 | — | **0.727** | ✅ **BEST EVER!** ⭐⭐ |
+| ens-001 | 2026-04-04 21:01 | LightGBM_ens_1h | n=300, h=1 | 3.912 | — | — | 1.569 | ❌ |
+| ens-002 | 2026-04-04 21:01 | GRU_ens_1h | lookback=72, h=1 | 2.723 | — | — | 1.092 | ❌ |
+| ens-003 | 2026-04-04 21:01 | **Stack_1h** | Ridge meta | 3.099 | — | — | 1.354 | ❌ |
+| ens-004 | 2026-04-04 21:01 | LightGBM_ens_6h | n=300, h=6 | 4.936 | — | — | 0.729 | ✅ -27% |
+| ens-005 | 2026-04-04 21:01 | **GRU_ens_6h** | lookback=72, h=6 | **4.729** | — | — | **0.698** | ✅ **-30%** ⭐ |
+| ens-006 | 2026-04-04 21:01 | Weighted_6h | w_lgbm=0.75 | 4.873 | — | — | 0.720 | ✅ -28% |
+| ens-007 | 2026-04-04 21:01 | LightGBM_ens_24h | n=300, h=24 | 6.144 | — | — | 0.998 | ≈ Persistence |
+| ens-008 | 2026-04-04 21:01 | **GRU_ens_24h** | lookback=72, h=24 | **4.492** | — | — | **0.730** | ✅ **-27%** |
+| ens-009 | 2026-04-04 21:01 | **Stack_24h** | Ridge meta | **4.367** | — | — | **0.784** | ✅ -22% |
+| tft-001 | 2026-04-05 03:05 | TFT_1h | hidden=32, heads=4, 25K params | **2.573** | — | — | **1.029** | ⭐ Best ML/DL at h=1! |
+| tft-002 | 2026-04-05 03:05 | TFT_6h | hidden=32, heads=4 | 5.565 | — | — | 0.822 | ✅ |
+| tft-003 | 2026-04-05 03:05 | TFT_24h | hidden=32, heads=4 | 4.999 | — | — | 0.812 | ✅ |
+| pi-001 | 2026-04-05 02:45 | Conformal_PI | LightGBM, α=0.1 | — | — | — | — | Coverage: 80.5% (1h), 76% (6h) |
+| pi-002 | 2026-04-05 02:45 | Quantile_PI | LightGBM, α=[0.05,0.95] | — | — | — | — | Coverage: 86.2% (1h) ⭐ best |
+| pi-003 | 2026-04-05 02:45 | MC_Dropout_PI | GRU, n=50 forward | — | — | — | — | Coverage: 36.8% (1h) ⚠️ needs cal |
 
 > ✅ **[2026-04-04]** Leakage fix verified. Runs ml-001→ml-006 INVALIDATED. Clean: ml-007→ml-016.
 > 🔥 **[2026-04-04]** Optuna tuning: LightGBM_tuned_all MAE=1.874, **MASE=1.029** — gap chỉ còn 2.9% vs Persistence.
 > 📊 Feature insight: pm25_lag_1h chiếm 83.8% importance. All-features > top-20 selection.
 > 📊 **[2026-04-04 18:45]** Strategy comparison: Hybrid best (MASE=1.066), ext_interp worst (1.321). Test=REAL data only.
 > ⚠️ Key finding: Cubic spline alone gây noise → tệ hơn. KNN impute tốt hơn vì multivariate context.
-> 🏆 **[2026-04-04 19:37]** MULTI-HORIZON LightGBM: 6h=MASE 0.730 (-27%), 24h=MASE 0.812 (-19%).
+> 🔧 **[2026-04-04 21:52]** PIPELINE AUDIT & FIX v2: Fixed 2 critical bugs in multi_horizon_eval.py:
+>   - Bug #1: h=1 target=y[t] (hiện tại) → FIXED to y[t+1] (tương lai)
+>   - Bug #2: Persistence dùng lag features → FIXED to y[t] trực tiếp
+> 🏆 **[v2]** LightGBM FIXED: 1h=MASE 1.492 (❌), 6h=MASE 0.745 (-25.5%), 24h=MASE 0.842 (-15.8%).
 > 📊 Feature shift: 1h→pm25_lag_1h dominant. 6h→hour_sin+rolling_mean. 24h→multivariate (diem_suong, nhiet_do).
-> 🏆 **[2026-04-04 19:59]** ARIMA/SARIMA: SARIMA 24h ≈ LightGBM (0.813 vs 0.812)! Seasonal s=24 rất mạnh.
-> 🏆🏆 **[2026-04-04 20:12]** GRU 24h = **MASE 0.727** — NEW BEST! Vượt LightGBM 10.5%. GRU > LSTM toàn diện.
-> 📊 Final ranking 6h: LightGBM(0.730) > SARIMA(0.762) > GRU(0.812) > ARIMA(0.856) > LSTM(0.914).
-> 📊 Final ranking 24h: **GRU(0.727)** > LightGBM(0.812) ≈ SARIMA(0.813) > LSTM(0.830) > ARIMA(0.913).
-> 📊 1h: Persistence(1.000) > LightGBM(1.012) > ARIMA(1.023) > GRU(1.173) > SARIMA(1.283) > LSTM(1.560).
-> ⏭️ Next: Ensemble (stacking), SHAP Explainability, Thesis write-up (QĐ 1799 CTU, IEEE).
+> 🏆 **[2026-04-04 19:59]** ARIMA/SARIMA: SARIMA 24h ≈ LightGBM (0.813 vs 0.842). Seasonal s=24 rất mạnh.
+> 🏆🏆 **[2026-04-04 20:12]** GRU 24h = **MASE 0.727** — BEST! Vượt LightGBM (0.842). GRU > LSTM toàn diện.
+> 📊 Final ranking 6h: GRU_ens(0.698) > LightGBM(0.745) > SARIMA(0.762) > GRU(0.812) > ARIMA(0.856) > LSTM(0.914).
+> 📊 Final ranking 24h: **GRU(0.727)** > GRU_ens(0.730) > SARIMA(0.813) > LSTM(0.830) > LightGBM(0.842) > ARIMA(0.913).
+> 📊 1h: Persistence(1.000) > GRU(1.173) > SARIMA(1.283) > LightGBM(1.492) > LSTM(1.560).
+> 🔬 **[2026-04-04 21:01]** ENSEMBLE: GRU dominant ở mọi horizon. Stacking KHÔNG beat individual GRU.
+> 🧠 **[2026-04-05 03:05]** TFT: MASE 1h=1.029 (⭐ best ML/DL), 6h=0.822, 24h=0.812. Attention tiệm cận Persistence.
+> 📊 **[2026-04-05 02:45]** PI: Quantile best coverage (86.2%), Conformal OK (80.5%), MC Dropout needs calibration.
+> ✅ **[2026-04-05 10:48]** ALL 5 PHASES COMPLETE. Tests: 133/133. Dashboard + Thesis updated with TFT.
