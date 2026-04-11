@@ -58,8 +58,12 @@ def prepare_data():
     df, _ = _handle_outliers(df, method="iqr", threshold=3.0)
     df = _resample(df, freq="1h")
     df_hybrid = impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5, verbose=True,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
+        verbose=True,
     )
     return df_hybrid
 
@@ -109,7 +113,7 @@ def export_gru(df_hybrid, horizon):
 
         def __getitem__(self, idx):
             i = self.indices[idx]
-            x = torch.FloatTensor(self.feats[i:i + self.lb])
+            x = torch.FloatTensor(self.feats[i : i + self.lb])
             y = torch.FloatTensor([self.tgts[i + self.lb + self.h - 1]])
             return x, y
 
@@ -119,12 +123,17 @@ def export_gru(df_hybrid, horizon):
             super().__init__()
             drop_gru = drop if layers > 1 else 0
             self.gru = nn.GRU(
-                input_dim, hidden, layers,
-                dropout=drop_gru, batch_first=True,
+                input_dim,
+                hidden,
+                layers,
+                dropout=drop_gru,
+                batch_first=True,
             )
             self.fc = nn.Sequential(
-                nn.Linear(hidden, hidden // 2), nn.ReLU(),
-                nn.Dropout(drop), nn.Linear(hidden // 2, 1),
+                nn.Linear(hidden, hidden // 2),
+                nn.ReLU(),
+                nn.Dropout(drop),
+                nn.Linear(hidden // 2, 1),
             )
 
         def forward(self, x):
@@ -235,10 +244,17 @@ def export_lgbm(df_hybrid, horizon):
     X_train, y_train = X[:train_end], y_target[:train_end]
 
     model = lgb.LGBMRegressor(
-        n_estimators=300, max_depth=3, learning_rate=0.01,
-        subsample=0.8, colsample_bytree=0.6,
-        min_child_samples=30, reg_alpha=0.05, reg_lambda=0.5,
-        num_leaves=64, verbose=-1, n_jobs=-1,
+        n_estimators=300,
+        max_depth=3,
+        learning_rate=0.01,
+        subsample=0.8,
+        colsample_bytree=0.6,
+        min_child_samples=30,
+        reg_alpha=0.05,
+        reg_lambda=0.5,
+        num_leaves=64,
+        verbose=-1,
+        n_jobs=-1,
     )
     model.fit(X_train, y_train)
 
@@ -293,18 +309,22 @@ def main():
         size = Path(e["path"]).stat().st_size / 1024
         name = Path(e["path"]).name
         print(
-            f"  {e['model']:<12} {e['format']:<18} "
-            f"{e['horizon']}h → {name} ({size:.1f} KB)",
+            f"  {e['model']:<12} {e['format']:<18} {e['horizon']}h → {name} ({size:.1f} KB)",
             flush=True,
         )
 
     # Save manifest
     manifest = EXPORT_DIR / "manifest.json"
     with open(manifest, "w") as f:
-        json.dump({
-            "exported_at": datetime.now().isoformat(),
-            "models": exported,
-        }, f, indent=2, ensure_ascii=False)
+        json.dump(
+            {
+                "exported_at": datetime.now().isoformat(),
+                "models": exported,
+            },
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
     print(f"\n  Manifest: {manifest}", flush=True)
 
     elapsed = time.time() - t_start

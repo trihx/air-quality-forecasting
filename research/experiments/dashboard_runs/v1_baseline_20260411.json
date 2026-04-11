@@ -1,0 +1,298 @@
+{
+  "version": "v1_baseline",
+  "timestamp": "2026-04-11T18:40:00+07:00",
+  "description": "Baseline trước khi tích hợp RC improvements. Features: 95 cols (lag, rolling, ewm, diff, calendar, domain). Không có Fourier, không có log transform, không có linear models.",
+  "feature_set": {
+    "lag": true,
+    "rolling": true,
+    "ewm": true,
+    "diff": true,
+    "calendar": true,
+    "domain": true,
+    "fourier": false,
+    "interaction": false,
+    "log_transform": false
+  },
+  "models_included": [
+    "Persistence",
+    "ARIMA",
+    "SARIMA",
+    "LightGBM_tuned",
+    "LightGBM_default",
+    "LSTM",
+    "GRU",
+    "TFT",
+    "Ensemble_GRU",
+    "Ensemble_Stack"
+  ],
+  "data": {
+    "_metadata": {
+      "description": "Standardized metrics with unified Persistence baseline",
+      "generated": "2026-04-05",
+      "unified_test": "val_end to end, real-only, consistent across all models",
+      "note": "mase_unified uses common Persistence MAE; mase_original uses each run's own Persistence"
+    },
+    "unified_persistence": {
+      "1h": {
+        "mae": 2.3902,
+        "rmse": 3.8473,
+        "n_samples": 604
+      },
+      "6h": {
+        "mae": 6.3053,
+        "rmse": 8.5938,
+        "n_samples": 601
+      },
+      "24h": {
+        "mae": 6.2758,
+        "rmse": 8.7765,
+        "n_samples": 601
+      }
+    },
+    "results": {
+      "1h": {
+        "Persistence": {
+          "mae": 2.3902,
+          "rmse": 3.8473,
+          "mase": 1.0,
+          "n_test": 604,
+          "source": "unified"
+        },
+        "LightGBM_tuned": {
+          "mae": 3.7201,
+          "rmse": 5.0781,
+          "mase_original": 1.4921,
+          "mase_unified": 1.5564,
+          "original_persist_mae": 2.4931,
+          "source": "multi_horizon_215251"
+        },
+        "LightGBM_default": {
+          "mae": 4.2953,
+          "rmse": 5.5491,
+          "mase_original": 1.7228,
+          "mase_unified": 1.797,
+          "original_persist_mae": 2.4931,
+          "source": "multi_horizon_215251"
+        },
+        "ARIMA": {
+          "mae": 2.5638,
+          "rmse": 3.9255,
+          "mase_original": 1.023,
+          "mase_unified": 1.0726,
+          "original_persist_mae": 2.5061,
+          "source": "arima_195931"
+        },
+        "SARIMA": {
+          "mae": 3.2143,
+          "rmse": 4.6821,
+          "mase_original": 1.2826,
+          "mase_unified": 1.3448,
+          "original_persist_mae": 2.5061,
+          "source": "arima_195931"
+        },
+        "LSTM": {
+          "mae": 3.73,
+          "rmse": 4.7943,
+          "mase_original": 1.5605,
+          "mase_unified": 1.5605,
+          "original_persist_mae": 2.3902,
+          "source": "dl_201212"
+        },
+        "GRU": {
+          "mae": 2.8046,
+          "rmse": 3.9707,
+          "mase_original": 1.1734,
+          "mase_unified": 1.1734,
+          "original_persist_mae": 2.3902,
+          "source": "dl_201212"
+        },
+        "TFT": {
+          "mae": 2.4599,
+          "rmse": 3.6656,
+          "mase_original": 1.0291,
+          "mase_unified": 1.0292,
+          "original_persist_mae": 2.3902,
+          "source": "tft_102245"
+        },
+        "Ensemble_GRU": {
+          "mae": 2.7227,
+          "rmse": null,
+          "mase_original": 1.0921,
+          "mase_unified": 1.1391,
+          "original_persist_mae": 2.4931,
+          "source": "ensemble_210135"
+        },
+        "Ensemble_Stack": {
+          "mae": 3.0994,
+          "rmse": null,
+          "mase_original": 1.354,
+          "mase_unified": 1.2967,
+          "original_persist_mae": 2.4931,
+          "source": "ensemble_210135"
+        }
+      },
+      "6h": {
+        "Persistence": {
+          "mae": 6.3053,
+          "rmse": 8.5938,
+          "mase": 1.0,
+          "n_test": 601,
+          "source": "unified"
+        },
+        "LightGBM_tuned": {
+          "mae": 5.0463,
+          "rmse": 6.5836,
+          "mase_original": 0.745,
+          "mase_unified": 0.8003,
+          "original_persist_mae": 6.7734,
+          "source": "multi_horizon_215251"
+        },
+        "LightGBM_default": {
+          "mae": 5.1476,
+          "rmse": 6.7645,
+          "mase_original": 0.76,
+          "mase_unified": 0.8164,
+          "original_persist_mae": 6.7734,
+          "source": "multi_horizon_215251"
+        },
+        "ARIMA": {
+          "mae": 5.8433,
+          "rmse": 7.6852,
+          "mase_original": 0.8557,
+          "mase_unified": 0.9267,
+          "original_persist_mae": 6.8286,
+          "source": "arima_195931"
+        },
+        "SARIMA": {
+          "mae": 5.2066,
+          "rmse": 6.9079,
+          "mase_original": 0.7625,
+          "mase_unified": 0.8257,
+          "original_persist_mae": 6.8286,
+          "source": "arima_195931"
+        },
+        "LSTM": {
+          "mae": 5.7651,
+          "rmse": 7.7172,
+          "mase_original": 0.9143,
+          "mase_unified": 0.9143,
+          "original_persist_mae": 6.3053,
+          "source": "dl_201212"
+        },
+        "GRU": {
+          "mae": 5.1191,
+          "rmse": 6.547,
+          "mase_original": 0.8119,
+          "mase_unified": 0.8119,
+          "original_persist_mae": 6.3053,
+          "source": "dl_201212"
+        },
+        "TFT": {
+          "mae": 5.1806,
+          "rmse": 6.6866,
+          "mase_original": 0.8216,
+          "mase_unified": 0.8216,
+          "original_persist_mae": 6.3053,
+          "source": "tft_102245"
+        },
+        "Ensemble_GRU": {
+          "mae": 4.7294,
+          "rmse": null,
+          "mase_original": 0.6982,
+          "mase_unified": 0.7501,
+          "original_persist_mae": 6.7734,
+          "source": "ensemble_210135"
+        },
+        "Ensemble_Stack": {
+          "mae": 4.7873,
+          "rmse": null,
+          "mase_original": 0.8093,
+          "mase_unified": 0.7593,
+          "original_persist_mae": 6.7734,
+          "source": "ensemble_210135"
+        }
+      },
+      "24h": {
+        "Persistence": {
+          "mae": 6.2758,
+          "rmse": 8.7765,
+          "mase": 1.0,
+          "n_test": 601,
+          "source": "unified"
+        },
+        "LightGBM_tuned": {
+          "mae": 5.1785,
+          "rmse": 6.7049,
+          "mase_original": 0.8416,
+          "mase_unified": 0.8252,
+          "original_persist_mae": 6.1532,
+          "source": "multi_horizon_215251"
+        },
+        "LightGBM_default": {
+          "mae": 6.1401,
+          "rmse": 7.6264,
+          "mase_original": 0.9979,
+          "mase_unified": 0.9784,
+          "original_persist_mae": 6.1532,
+          "source": "multi_horizon_215251"
+        },
+        "ARIMA": {
+          "mae": 5.5981,
+          "rmse": 7.3247,
+          "mase_original": 0.9135,
+          "mase_unified": 0.892,
+          "original_persist_mae": 6.1279,
+          "source": "arima_195931"
+        },
+        "SARIMA": {
+          "mae": 4.9814,
+          "rmse": 6.5101,
+          "mase_original": 0.8129,
+          "mase_unified": 0.7937,
+          "original_persist_mae": 6.1279,
+          "source": "arima_195931"
+        },
+        "LSTM": {
+          "mae": 5.2111,
+          "rmse": 6.8102,
+          "mase_original": 0.8304,
+          "mase_unified": 0.8303,
+          "original_persist_mae": 6.2758,
+          "source": "dl_201212"
+        },
+        "GRU": {
+          "mae": 4.5623,
+          "rmse": 6.7662,
+          "mase_original": 0.727,
+          "mase_unified": 0.727,
+          "original_persist_mae": 6.2758,
+          "source": "dl_201212"
+        },
+        "TFT": {
+          "mae": 5.0933,
+          "rmse": 6.7252,
+          "mase_original": 0.8116,
+          "mase_unified": 0.8116,
+          "original_persist_mae": 6.2758,
+          "source": "tft_102245"
+        },
+        "Ensemble_GRU": {
+          "mae": 4.4922,
+          "rmse": null,
+          "mase_original": 0.7301,
+          "mase_unified": 0.7158,
+          "original_persist_mae": 6.1532,
+          "source": "ensemble_210135"
+        },
+        "Ensemble_Stack": {
+          "mae": 4.3669,
+          "rmse": null,
+          "mase_original": 0.7844,
+          "mase_unified": 0.6958,
+          "original_persist_mae": 6.1532,
+          "source": "ensemble_210135"
+        }
+      }
+    }
+  }
+}

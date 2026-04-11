@@ -72,3 +72,12 @@
 - **3 methods**: Conformal (agnostic), Quantile Regression (LightGBM native), MC Dropout (GRU).
 - **Best**: Quantile coverage 86.2% (1h). MC Dropout quá narrow (36.8%) do dropout=0.2 nhỏ.
 - **Kết luận**: Quantile = recommended. MC Dropout cần calibration hoặc tăng dropout rate.
+
+## [2026-04-05] AI Chatbot — RAG + Local LLM
+- **Architecture**: RAG (ChromaDB + multilingual embeddings) → Context injection → LM Studio (local LLM)
+- **Embedding**: `paraphrase-multilingual-MiniLM-L12-v2` — hỗ trợ Vietnamese, 50+ languages
+- **LLM**: Gemma 4 E4B (4.5GB Q4) hoặc Qwen3-8B, chạy qua LM Studio port 8888
+- **System prompt**: Ưu tiên phương pháp luận → quy trình → quyết định → kết quả (chuẩn bị phản biện)
+- **Knowledge sources**: 11 markdown docs + 9 experiment dirs + standardized_metrics.json → ~243 chunks
+- **Gotcha**: `all-MiniLM-L6-v2` = English-only → câu hỏi Việt match kém. PHẢI dùng multilingual.
+

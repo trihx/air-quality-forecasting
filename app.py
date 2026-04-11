@@ -848,33 +848,49 @@ def page_hyperparams(results):
 
 
 def main():
-    from pages import (
-        page_actual_vs_predicted,
-        page_experiment_runs,
-        page_forecast,
-        page_training,
-    )
-    from src.chatbot.chat_page import page_ai_assistant
-
     results = load_experiment_results()
     page = sidebar()
 
-    page_map = {
+    # ── Pages defined in app.py (always available, no extra import) ──
+    local_pages = {
         "🏠 Tổng Quan": page_overview,
         "📊 EDA & Khám Phá Dữ Liệu": page_eda,
         "⚙️ Cấu Hình & Hyperparameters": page_hyperparams,
-        "🏋️ Huấn Luyện Mô Hình": page_training,
-        "📋 Lịch Sử Thí Nghiệm": page_experiment_runs,
         "📈 Kết Quả Multi-Horizon": page_multi_horizon,
-        "📉 Actual vs Predicted": page_actual_vs_predicted,
         "🔍 Giải Thích Mô Hình (SHAP)": page_shap,
         "📊 Khoảng Tin Cậy Dự Báo": page_prediction_intervals,
-        "🔮 Dự Báo PM2.5": page_forecast,
-        "💬 Trợ Lý AI": page_ai_assistant,
     }
 
-    handler = page_map.get(page, page_overview)
-    handler(results)
+    if page in local_pages:
+        local_pages[page](results)
+        return
+
+    # ── Lazy import: pages.py (numpy, plotly heavy) ──
+    if page in ("🏋️ Huấn Luyện Mô Hình", "📋 Lịch Sử Thí Nghiệm",
+                "📉 Actual vs Predicted", "🔮 Dự Báo PM2.5"):
+        from pages import (
+            page_actual_vs_predicted,
+            page_experiment_runs,
+            page_forecast,
+            page_training,
+        )
+        pages_map = {
+            "🏋️ Huấn Luyện Mô Hình": page_training,
+            "📋 Lịch Sử Thí Nghiệm": page_experiment_runs,
+            "📉 Actual vs Predicted": page_actual_vs_predicted,
+            "🔮 Dự Báo PM2.5": page_forecast,
+        }
+        pages_map[page](results)
+        return
+
+    # ── Lazy import: chatbot (sentence_transformers ~4s first load) ──
+    if page == "💬 Trợ Lý AI":
+        from src.chatbot.chat_page import page_ai_assistant
+        page_ai_assistant(results)
+        return
+
+    # Fallback
+    page_overview(results)
 
 
 if __name__ == "__main__":

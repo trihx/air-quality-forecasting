@@ -20,9 +20,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from loguru import logger
 from sklearn.model_selection import TimeSeriesSplit
-
 from src.data.cleaner import (
     _clip_physical_bounds,
     _handle_outliers,
@@ -30,8 +28,8 @@ from src.data.cleaner import (
     _resample,
     _set_datetime_index,
 )
-from src.data.imputer import impute_missing_data, split_real_imputed
-from src.data.loader import FEATURE_COLS, TARGET_COL, load_raw_data
+from src.data.imputer import impute_missing_data
+from src.data.loader import TARGET_COL, load_raw_data
 from src.evaluation.metrics import evaluate_forecast
 from src.features.builder import build_features
 
@@ -100,7 +98,7 @@ def main() -> None:
         print("─" * 75, flush=True)
 
     # ── Step 5: Save ──
-    print(f"\n[5/5] Saving results...", flush=True)
+    print("\n[5/5] Saving results...", flush=True)
     _save_results(all_results)
 
     total_time = time.time() - t_start
@@ -119,8 +117,11 @@ def _prepare_hybrid_data() -> pd.DataFrame:
     df = _resample(df, freq="1h")
 
     df_hybrid = impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
         verbose=True,
     )
     return df_hybrid
@@ -156,11 +157,10 @@ def _evaluate_horizon(df_feat: pd.DataFrame, horizon: int) -> dict:
     print(f"  Dataset after shift: {len(df):,} rows", flush=True)
 
     # ── Features and target ──
-    exclude_cols = ["is_imputed", TARGET_COL, "_persist_value",
-                    f"target_{horizon}h"] + [f"target_{h}h" for h in HORIZONS]
-    feature_cols = [c for c in df.columns
-                    if c not in exclude_cols
-                    and df[c].dtype in ("float64", "float32", "int64")]
+    exclude_cols = ["is_imputed", TARGET_COL, "_persist_value", f"target_{horizon}h"] + [
+        f"target_{h}h" for h in HORIZONS
+    ]
+    feature_cols = [c for c in df.columns if c not in exclude_cols and df[c].dtype in ("float64", "float32", "int64")]
 
     X = df[feature_cols].fillna(0)
     y = df[target_col]
@@ -190,7 +190,7 @@ def _evaluate_horizon(df_feat: pd.DataFrame, horizon: int) -> dict:
     print(f"  Test (real only): {len(X_test_real):,}/{len(X_test):,} rows", flush=True)
 
     if len(X_test_real) < 10:
-        print(f"  ⚠️ Too few real test samples, using all test data", flush=True)
+        print("  ⚠️ Too few real test samples, using all test data", flush=True)
         X_test_real = X_test
         y_test_real = y_test
         persist_test_real = test_persist
@@ -205,7 +205,6 @@ def _evaluate_horizon(df_feat: pd.DataFrame, horizon: int) -> dict:
     persist_rmse = float(np.sqrt(np.mean((y_test_real.values - y_persistence) ** 2)))
 
     # Naive reference for MASE = Persistence itself
-    naive_for_mase = y_persistence
 
     results["Persistence"] = {
         "mae": round(persist_mae, 4),
@@ -217,11 +216,17 @@ def _evaluate_horizon(df_feat: pd.DataFrame, horizon: int) -> dict:
     print(f"    (y_true=pm25[t+{horizon}], y_persist=pm25[t], n={len(y_test_real)})", flush=True)
 
     # ── B. LightGBM Default ──
-    print(f"\n  Training LightGBM (default params)...", flush=True)
+    print("\n  Training LightGBM (default params)...", flush=True)
     lgbm_default = lgb.LGBMRegressor(
-        n_estimators=500, learning_rate=0.05, num_leaves=31,
-        min_child_samples=20, subsample=0.8, colsample_bytree=0.8,
-        random_state=42, verbose=-1, n_jobs=-1,
+        n_estimators=500,
+        learning_rate=0.05,
+        num_leaves=31,
+        min_child_samples=20,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        random_state=42,
+        verbose=-1,
+        n_jobs=-1,
     )
     lgbm_default.fit(X_train, y_train)
     y_pred_default = lgbm_default.predict(X_test_real)
@@ -277,8 +282,7 @@ def _evaluate_horizon(df_feat: pd.DataFrame, horizon: int) -> dict:
     def _progress_callback(study, trial):
         if (trial.number + 1) % 20 == 0 or trial.number == 0:
             print(
-                f"    Trial {trial.number + 1}/{OPTUNA_TRIALS}: "
-                f"MAE={trial.value:.4f} (best={study.best_value:.4f})",
+                f"    Trial {trial.number + 1}/{OPTUNA_TRIALS}: MAE={trial.value:.4f} (best={study.best_value:.4f})",
                 flush=True,
             )
 

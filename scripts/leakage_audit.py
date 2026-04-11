@@ -1,12 +1,13 @@
 """Quick leakage audit — verifies specific leakage hypotheses."""
 
-import sys
 import numpy as np
 import pandas as pd
+
 
 def p(msg):
     """Print with immediate flush."""
     print(msg, flush=True)
+
 
 p("=" * 60)
 p("DATA LEAKAGE AUDIT")
@@ -15,10 +16,17 @@ p("=" * 60)
 p("\n⏳ Loading marts data...")
 # Only load needed columns for speed
 needed = [
-    "pm25", "pm25_lag_1h", "pm25_diff_1h", "pm25_diff_24h",
-    "pm25_pct_change_1h", "pm25_pct_change_24h",
-    "co2_pm25_ratio", "pm25_aqi_cat",
-    "nhiet_do", "co2", "pm25_ewm_12h_mean",
+    "pm25",
+    "pm25_lag_1h",
+    "pm25_diff_1h",
+    "pm25_diff_24h",
+    "pm25_pct_change_1h",
+    "pm25_pct_change_24h",
+    "co2_pm25_ratio",
+    "pm25_aqi_cat",
+    "nhiet_do",
+    "co2",
+    "pm25_ewm_12h_mean",
 ]
 df = pd.read_csv(
     "dataset/processed/marts_features.csv",
@@ -32,8 +40,8 @@ p(f"✅ Loaded: {len(df):,} rows, {len(df.columns)} cols")
 # 1. DIFF LEAKAGE
 p("\n--- [1/6] Checking diff_1h leakage ---")
 d = df["pm25_diff_1h"]
-l = df["pm25_lag_1h"]
-recon = d + l
+lag_val = df["pm25_lag_1h"]
+recon = d + lag_val
 valid = recon.notna()
 m = bool(np.allclose(recon[valid], t[valid], rtol=1e-10))
 p(f"  pm25 = diff_1h + lag_1h? => {m}")
@@ -45,8 +53,8 @@ else:
 # 2. PCT_CHANGE LEAKAGE
 p("\n--- [2/6] Checking pct_change_1h leakage ---")
 pc = df["pm25_pct_change_1h"]
-recon2 = l * (1 + pc)
-valid2 = recon2.notna() & (l != 0)
+recon2 = lag_val * (1 + pc)
+valid2 = recon2.notna() & (lag_val != 0)
 m2 = bool(np.allclose(recon2[valid2], t[valid2], rtol=1e-8))
 p(f"  pm25 = lag_1h * (1+pct_change)? => {m2}")
 if m2:
@@ -82,8 +90,7 @@ else:
 
 # 5. Key correlations
 p("\n--- [5/6] Key feature correlations ---")
-for c in ["pm25_lag_1h", "pm25_diff_1h", "pm25_pct_change_1h",
-          "co2_pm25_ratio", "pm25_aqi_cat", "nhiet_do", "co2"]:
+for c in ["pm25_lag_1h", "pm25_diff_1h", "pm25_pct_change_1h", "co2_pm25_ratio", "pm25_aqi_cat", "nhiet_do", "co2"]:
     if c in df.columns:
         corr = float(df[c].corr(t))
         flag = " ⚠️" if abs(corr) > 0.95 else ""

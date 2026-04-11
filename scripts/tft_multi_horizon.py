@@ -43,10 +43,10 @@ HORIZONS = [1, 6, 24]
 
 # Architecture
 LOOKBACK = 72
-HIDDEN_DIM = 32        # Smaller than GRU (64) to avoid overfit on small dataset
-NUM_HEADS = 4          # Multi-head attention heads
+HIDDEN_DIM = 32  # Smaller than GRU (64) to avoid overfit on small dataset
+NUM_HEADS = 4  # Multi-head attention heads
 DROPOUT = 0.1
-BATCH_SIZE = 128       # Balanced for M1 Pro MPS
+BATCH_SIZE = 128  # Balanced for M1 Pro MPS
 LEARNING_RATE = 1e-3
 EPOCHS = 100
 PATIENCE = 15
@@ -74,6 +74,7 @@ def _build_model_components():
 
     class GatedLinearUnit(nn.Module):
         """GLU activation: splits input, applies sigmoid gate."""
+
         def __init__(self, input_dim, output_dim):
             super().__init__()
             self.fc = nn.Linear(input_dim, output_dim)
@@ -84,6 +85,7 @@ def _build_model_components():
 
     class GatedResidualNetwork(nn.Module):
         """GRN: core building block of TFT."""
+
         def __init__(self, input_dim, hidden_dim, output_dim, dropout=0.1, context_dim=None):
             super().__init__()
             self.fc1 = nn.Linear(input_dim, hidden_dim)
@@ -110,39 +112,31 @@ def _build_model_components():
 
     class VariableSelectionNetwork(nn.Module):
         """VSN: learns which variables are important."""
+
         def __init__(self, input_dim, num_vars, hidden_dim, dropout=0.1, context_dim=None):
             super().__init__()
             self.num_vars = num_vars
             self.var_dim = input_dim // num_vars
 
             # Per-variable GRNs
-            self.var_grns = nn.ModuleList([
-                GatedResidualNetwork(self.var_dim, hidden_dim, hidden_dim, dropout)
-                for _ in range(num_vars)
-            ])
+            self.var_grns = nn.ModuleList(
+                [GatedResidualNetwork(self.var_dim, hidden_dim, hidden_dim, dropout) for _ in range(num_vars)]
+            )
 
             # Softmax weights
-            self.weight_grn = GatedResidualNetwork(
-                input_dim, hidden_dim, num_vars, dropout, context_dim=context_dim
-            )
+            self.weight_grn = GatedResidualNetwork(input_dim, hidden_dim, num_vars, dropout, context_dim=context_dim)
 
         def forward(self, x, context=None):
             # x: (batch, seq, input_dim) or (batch, input_dim)
             has_time = x.dim() == 3
 
             # Variable selection weights
-            flat = (
-                x.reshape(x.shape[0] * x.shape[1], -1)
-                if has_time else x
-            )
+            flat = x.reshape(x.shape[0] * x.shape[1], -1) if has_time else x
 
-            ctx = (
-                context.repeat(x.shape[1], 1)
-                if (context is not None and has_time)
-                else context
-            )
+            ctx = context.repeat(x.shape[1], 1) if (context is not None and has_time) else context
             weights = torch.softmax(
-                self.weight_grn(flat, context=ctx), dim=-1,
+                self.weight_grn(flat, context=ctx),
+                dim=-1,
             )
 
             # Process each variable through its GRN
@@ -150,10 +144,7 @@ def _build_model_components():
             for i, grn in enumerate(self.var_grns):
                 start = i * self.var_dim
                 end = start + self.var_dim
-                var_input = (
-                    x[:, :, start:end].reshape(-1, self.var_dim)
-                    if has_time else x[:, start:end]
-                )
+                var_input = x[:, :, start:end].reshape(-1, self.var_dim) if has_time else x[:, start:end]
                 var_outputs.append(grn(var_input))
 
             var_outputs = torch.stack(var_outputs, dim=-1)  # (batch*seq, hidden, num_vars)
@@ -167,6 +158,7 @@ def _build_model_components():
 
     class InterpretableMultiHeadAttention(nn.Module):
         """Multi-head attention with interpretable weights."""
+
         def __init__(self, d_model, num_heads, dropout=0.1):
             super().__init__()
             self.d_model = d_model
@@ -209,6 +201,7 @@ def _build_model_components():
         5. Gated skip connections
         6. Dense output
         """
+
         def __init__(self, temporal_dim, static_dim, hidden_dim, num_heads, dropout):
             super().__init__()
             self.hidden_dim = hidden_dim
@@ -221,8 +214,11 @@ def _build_model_components():
 
             # LSTM encoder (replaces full VSN for simplicity on small data)
             self.lstm = nn.LSTM(
-                hidden_dim, hidden_dim, num_layers=1,
-                batch_first=True, dropout=0,
+                hidden_dim,
+                hidden_dim,
+                num_layers=1,
+                batch_first=True,
+                dropout=0,
             )
 
             # Post-LSTM gate
@@ -257,9 +253,7 @@ def _build_model_components():
             lstm_enriched = self.post_lstm_norm(gated + temporal_emb)
 
             # Self-attention
-            attn_out, attn_weights = self.attention(
-                lstm_enriched, lstm_enriched, lstm_enriched
-            )
+            attn_out, attn_weights = self.attention(lstm_enriched, lstm_enriched, lstm_enriched)
             attn_out = self.post_attn_gate(attn_out)
             enriched = self.post_attn_norm(attn_out + lstm_enriched)
 
@@ -271,6 +265,7 @@ def _build_model_components():
 
     class TFTDataset(Dataset):
         """Dataset providing temporal features + static (calendar) features."""
+
         def __init__(self, temporal, static, targets, lookback, horizon, mask=None):
             self.temporal = temporal
             self.static = static
@@ -289,8 +284,9 @@ def _build_model_components():
 
         def __getitem__(self, idx):
             import torch
+
             i = self.indices[idx]
-            t = self.temporal[i:i + self.lookback]
+            t = self.temporal[i : i + self.lookback]
             s = self.static[i + self.lookback - 1]  # Static at prediction time
             y = self.targets[i + self.lookback + self.horizon - 1]
             return torch.FloatTensor(t), torch.FloatTensor(s), torch.FloatTensor([y])
@@ -317,8 +313,12 @@ def prepare_data():
     df = _resample(df, freq="1h")
 
     df_hybrid = impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5, verbose=True,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
+        verbose=True,
     )
 
     # Add static calendar features
@@ -350,9 +350,7 @@ def evaluate_horizon(df_hybrid, horizon, components):
     static = df_hybrid[static_cols].values
     target = df_hybrid[TARGET_COL].values
     is_imputed = (
-        df_hybrid["is_imputed"].values
-        if "is_imputed" in df_hybrid.columns
-        else np.zeros(len(df_hybrid), dtype=bool)
+        df_hybrid["is_imputed"].values if "is_imputed" in df_hybrid.columns else np.zeros(len(df_hybrid), dtype=bool)
     )
 
     n = len(temporal)
@@ -474,14 +472,14 @@ def evaluate_horizon(df_hybrid, horizon, components):
         if (ep + 1) % 20 == 0 or ep == 0:
             lr = optimizer.param_groups[0]["lr"]
             print(
-                f"    Epoch {ep+1:3d}/{EPOCHS} "
+                f"    Epoch {ep + 1:3d}/{EPOCHS} "
                 f"train={tl:.4f} val={vl:.4f} "
                 f"lr={lr:.1e} patience={patience_counter}/{PATIENCE}",
                 flush=True,
             )
 
         if patience_counter >= PATIENCE:
-            print(f"    Early stop epoch {ep+1} (best val={best_val:.4f})", flush=True)
+            print(f"    Early stop epoch {ep + 1} (best val={best_val:.4f})", flush=True)
             break
 
     train_time = time.time() - t0
@@ -516,8 +514,11 @@ def evaluate_horizon(df_hybrid, horizon, components):
     return {
         "Persistence": {"mae": round(persist_mae, 4), "rmse": 0, "mase": 1.0},
         "TFT": {
-            "mae": round(mae, 4), "rmse": round(rmse, 4), "mase": mase,
-            "params": n_params, "train_time_s": round(train_time, 1),
+            "mae": round(mae, 4),
+            "rmse": round(rmse, 4),
+            "mase": mase,
+            "params": n_params,
+            "train_time_s": round(train_time, 1),
             "n_test": len(all_preds),
         },
     }
@@ -567,8 +568,7 @@ def main():
         tft_mase = results_h.get("TFT", {}).get("mase", 99)
         print(f"\n  📊 Comparison ({h}h):", flush=True)
         print(
-            f"    Persistence: 1.000 | LightGBM: {r['lgbm_mase']:.3f} "
-            f"| GRU: {r['gru_mase']:.3f} | TFT: {tft_mase:.3f}",
+            f"    Persistence: 1.000 | LightGBM: {r['lgbm_mase']:.3f} | GRU: {r['gru_mase']:.3f} | TFT: {tft_mase:.3f}",
             flush=True,
         )
 
@@ -589,9 +589,7 @@ def main():
         best = min(vals, key=vals.get)
         tft_str = f"{tft_mase:.3f}" if isinstance(tft_mase, float) else "—"
         print(
-            f"{h}h{'':<7} {'1.000':<10} "
-            f"{r['lgbm_mase']:<10.3f} {r['gru_mase']:<10.3f} "
-            f"{tft_str:<10} {best:<12}",
+            f"{h}h{'':<7} {'1.000':<10} {r['lgbm_mase']:<10.3f} {r['gru_mase']:<10.3f} {tft_str:<10} {best:<12}",
             flush=True,
         )
 

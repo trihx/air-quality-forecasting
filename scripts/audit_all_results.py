@@ -9,17 +9,22 @@ Checks:
 3. Model ranking plausibility
 4. Flag any suspicious discrepancies (>10% difference)
 """
-import sys
+
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from pathlib import Path
-
 from src.data.cleaner import (
-    _clip_physical_bounds, _handle_outliers,
-    _remove_duplicates, _resample, _set_datetime_index,
+    _clip_physical_bounds,
+    _handle_outliers,
+    _remove_duplicates,
+    _resample,
+    _set_datetime_index,
 )
 from src.data.imputer import impute_missing_data
 from src.data.loader import TARGET_COL, load_raw_data
@@ -38,13 +43,18 @@ df, _ = _clip_physical_bounds(df)
 df, _ = _handle_outliers(df, method="iqr", threshold=3.0)
 df = _resample(df, freq="1h")
 df_hybrid = impute_missing_data(
-    df, strategy="hybrid", max_gap_interp=6, max_gap_ml=24,
-    knn_neighbors=5, verbose=False,
+    df,
+    strategy="hybrid",
+    max_gap_interp=6,
+    max_gap_ml=24,
+    knn_neighbors=5,
+    verbose=False,
 )
 print(f"  Hybrid data: {len(df_hybrid)} rows", flush=True)
 
 is_imputed = df_hybrid["is_imputed"].values.copy()
 target = df_hybrid[TARGET_COL].values
+n = len(df_hybrid)
 
 # ── 2. Audit ALL data sources ──
 print("\n[2/4] Auditing ALL data sources used across scripts...", flush=True)
@@ -58,6 +68,7 @@ if cleaned_path.exists():
     # Baseline-001 used run_ml.py → temporal_split → pm25_lag_1h as naive
     # This was on FEATURE-ENGINEERED data from cleaned_hourly
     from src.evaluation.splitter import temporal_train_val_test_split
+
     df_feat_clean = build_features(df_cleaned, drop_na=True)
     X_tr_c, X_val_c, X_te_c, y_tr_c, y_val_c, y_te_c = temporal_train_val_test_split(df_feat_clean)
 
@@ -77,18 +88,21 @@ print(f"  Source B (hybrid): {len(df_hybrid)} rows", flush=True)
 
 # Source C: hybrid + features (used by LightGBM in ensemble/multi_horizon)
 df_features = build_features(df_hybrid.drop(columns=["is_imputed"], errors="ignore"), drop_na=True)
-is_imp_feat = is_imputed[n - len(df_features):]
+is_imp_feat = is_imputed[n - len(df_features) :]
 print(f"  Source C (hybrid+features): {len(df_features)} rows", flush=True)
 
 print("\n  === KEY DIFFERENCE ===", flush=True)
-print(f"  Baseline-001 test data: cleaned_hourly ({len(df_cleaned) if cleaned_path.exists() else 'N/A'} rows, no imputation)", flush=True)
+print(
+    f"  Baseline-001 test data: cleaned_hourly ({len(df_cleaned) if cleaned_path.exists() else 'N/A'} rows, no imputation)",
+    flush=True,
+)
 print(f"  Multi-horizon test data: hybrid ({n} rows, with imputation)", flush=True)
-print(f"  → Different datasets → Different Persistence MAE is EXPECTED", flush=True)
+print("  → Different datasets → Different Persistence MAE is EXPECTED", flush=True)
 
 # ── 3. Compute unified Persistence for EACH data source ──
 print("\n[3/4] Computing Persistence baselines (all sources)...", flush=True)
 
-n = len(df_hybrid)
+# n already set above (line 57)
 train_end = int(n * 0.8)
 val_end = int(n * 0.9)
 
@@ -116,7 +130,8 @@ for h in HORIZONS:
     p_rmse = float(np.sqrt(np.mean((y_true - y_persist) ** 2)))
 
     persist_results[h] = {
-        "mae": p_mae, "rmse": p_rmse,
+        "mae": p_mae,
+        "rmse": p_rmse,
         "n_test_real": len(y_true),
     }
     print(f"  Persistence {h}h: MAE={p_mae:.4f}, RMSE={p_rmse:.4f}, n={len(y_true)}", flush=True)
@@ -133,8 +148,11 @@ recorded_persist = {
 
 print("\n  Persistence MAE comparison:", flush=True)
 print(f"  {'Script':<30} {'h=1':>10} {'h=6':>10} {'h=24':>10}", flush=True)
-print(f"  {'-'*60}", flush=True)
-print(f"  {'AUDIT (this script)':<30} {persist_results[1]['mae']:>10.4f} {persist_results[6]['mae']:>10.4f} {persist_results[24]['mae']:>10.4f}", flush=True)
+print(f"  {'-' * 60}", flush=True)
+print(
+    f"  {'AUDIT (this script)':<30} {persist_results[1]['mae']:>10.4f} {persist_results[6]['mae']:>10.4f} {persist_results[24]['mae']:>10.4f}",
+    flush=True,
+)
 
 for script, vals in recorded_persist.items():
     parts = []
@@ -156,7 +174,7 @@ print("\n  === Root Cause Analysis ===", flush=True)
 
 # Reason 1: Different feature sets → different data after dropna
 df_features = build_features(df_hybrid.drop(columns=["is_imputed"], errors="ignore"), drop_na=True)
-is_imp_feat = is_imputed[n - len(df_features):]
+is_imp_feat = is_imputed[n - len(df_features) :]
 
 print(f"\n  Raw data: {n} rows", flush=True)
 print(f"  After features (dropna warmup): {len(df_features)} rows", flush=True)
@@ -173,14 +191,14 @@ gru_tr = int(n * 0.8)
 gru_val = int(n * 0.9)
 gru_test = n - gru_val
 
-print(f"\n  LightGBM data: {n_feat} rows → train={lgbm_tr}, val={lgbm_val-lgbm_tr}, test={lgbm_test}", flush=True)
-print(f"  GRU data:      {n} rows → train={gru_tr}, val={gru_val-gru_tr}, test={gru_test}", flush=True)
+print(f"\n  LightGBM data: {n_feat} rows → train={lgbm_tr}, val={lgbm_val - lgbm_tr}, test={lgbm_test}", flush=True)
+print(f"  GRU data:      {n} rows → train={gru_tr}, val={gru_val - gru_tr}, test={gru_test}", flush=True)
 
 # Compute Persistence for LightGBM test set
 df_lgbm = df_features.copy()
-df_lgbm["_is_imputed"] = is_imp_feat[:len(df_lgbm)]
+df_lgbm["_is_imputed"] = is_imp_feat[: len(df_lgbm)]
 
-print(f"\n  === Persistence per test set ===", flush=True)
+print("\n  === Persistence per test set ===", flush=True)
 for h in HORIZONS:
     # LightGBM Persistence (on feature-engineered data)
     df_temp = df_lgbm.copy()
@@ -202,14 +220,17 @@ for h in HORIZONS:
 
     diff = abs(lgbm_p_mae - gru_p_mae) / gru_p_mae * 100
     flag = "⚠️ DIFFERENT" if diff > 5 else "✅ CONSISTENT"
-    print(f"  h={h}: LightGBM_persist={lgbm_p_mae:.4f}, GRU_persist={gru_p_mae:.4f}, diff={diff:.1f}% {flag}", flush=True)
+    print(
+        f"  h={h}: LightGBM_persist={lgbm_p_mae:.4f}, GRU_persist={gru_p_mae:.4f}, diff={diff:.1f}% {flag}", flush=True
+    )
 
 # ── Summary ──
 print(f"\n{'=' * 70}", flush=True)
 print("AUDIT SUMMARY", flush=True)
 print(f"{'=' * 70}", flush=True)
 
-print("""
+print(
+    """
 ROOT CAUSE of discrepancies:
   LightGBM and GRU use DIFFERENT test sets because:
   - LightGBM: 7,574 rows (after feature warmup dropna) → test = last 10%
@@ -226,11 +247,13 @@ RECOMMENDATIONS:
   2. ⚠️ Cross-script: compare MAE directly, not MASE
   3. ✅ Model RANKINGS are reliable (relative ordering within each horizon)
   4. ✅ Ensemble conclusion stands: stacking doesn't beat best individual model
-""", flush=True)
+""",
+    flush=True,
+)
 
 # ── Recorded Model Results with Audit Notes ──
 print("FINAL MODEL RANKING (by MAE — directly comparable):", flush=True)
-print(f"{'='*70}", flush=True)
+print(f"{'=' * 70}", flush=True)
 
 rankings = {
     "1h": [
@@ -270,6 +293,6 @@ for h_key, models in rankings.items():
     for rank, (name, mae_val, source) in enumerate(models_sorted, 1):
         print(f"    {rank}. {name:<20} MAE={mae_val:.3f}  ({source})", flush=True)
 
-print(f"\n{'='*70}", flush=True)
+print(f"\n{'=' * 70}", flush=True)
 print("AUDIT COMPLETE", flush=True)
-print(f"{'='*70}", flush=True)
+print(f"{'=' * 70}", flush=True)

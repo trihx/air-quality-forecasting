@@ -14,16 +14,16 @@ from __future__ import annotations
 import json
 import time
 import warnings
-from datetime import datetime
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from loguru import logger
-
 from src.data.cleaner import (
-    _clip_physical_bounds, _handle_outliers,
-    _remove_duplicates, _resample, _set_datetime_index,
+    _clip_physical_bounds,
+    _handle_outliers,
+    _remove_duplicates,
+    _resample,
+    _set_datetime_index,
 )
 from src.data.imputer import impute_missing_data
 from src.data.loader import TARGET_COL, load_raw_data
@@ -49,7 +49,7 @@ def main() -> None:
     # ── 1. Prepare data ──
     print("\n[1/4] Preparing Hybrid dataset...", flush=True)
     df_hybrid = _prepare_hybrid_data()
-    is_imputed = df_hybrid["is_imputed"].values.copy()
+    df_hybrid["is_imputed"].values.copy()
     n = len(df_hybrid)
     print(f"  Hybrid data: {n} rows", flush=True)
 
@@ -100,8 +100,12 @@ def _prepare_hybrid_data() -> pd.DataFrame:
     df, _ = _handle_outliers(df, method="iqr", threshold=3.0)
     df = _resample(df, freq="1h")
     return impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5, verbose=True,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
+        verbose=True,
     )
 
 
@@ -118,9 +122,7 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
         df = df.dropna(subset=["target"])
 
         exclude = ["is_imputed", TARGET_COL, "target", "_persist"]
-        feature_cols = [c for c in df.columns
-                        if c not in exclude
-                        and df[c].dtype in ("float64", "float32", "int64")]
+        feature_cols = [c for c in df.columns if c not in exclude and df[c].dtype in ("float64", "float32", "int64")]
 
         X = df[feature_cols].fillna(0)
         y = df["target"]
@@ -140,9 +142,15 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
         # ── Train ──
         print(f"  Training LightGBM ({horizon}h)...", flush=True)
         model = LGBMRegressor(
-            n_estimators=300, learning_rate=0.05, max_depth=8,
-            num_leaves=31, subsample=0.8, colsample_bytree=0.8,
-            min_child_samples=20, verbose=-1, n_jobs=-1,
+            n_estimators=300,
+            learning_rate=0.05,
+            max_depth=8,
+            num_leaves=31,
+            subsample=0.8,
+            colsample_bytree=0.8,
+            min_child_samples=20,
+            verbose=-1,
+            n_jobs=-1,
         )
         model.fit(X_train, y_train)
 
@@ -151,7 +159,7 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
         print(f"    MAE={mae:.3f} (n_test={len(y_test_real)})", flush=True)
 
         # ── SHAP TreeExplainer ──
-        print(f"  Computing SHAP values...", flush=True)
+        print("  Computing SHAP values...", flush=True)
         t0 = time.time()
         explainer = shap.TreeExplainer(model)
 
@@ -159,7 +167,7 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
         n_explain = min(500, len(X_test_real))
         X_explain = X_test_real.iloc[:n_explain]
         shap_values = explainer.shap_values(X_explain)
-        print(f"    SHAP computed for {n_explain} samples ({time.time()-t0:.1f}s)", flush=True)
+        print(f"    SHAP computed for {n_explain} samples ({time.time() - t0:.1f}s)", flush=True)
 
         # ── Mean absolute SHAP ──
         mean_abs_shap = np.abs(shap_values).mean(axis=0)
@@ -171,13 +179,13 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
 
         # ── Save SHAP summary plot ──
         import matplotlib
+
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
 
         # Summary bar plot
         fig, ax = plt.subplots(figsize=(10, 8))
-        shap.summary_plot(shap_values, X_explain, plot_type="bar",
-                          max_display=20, show=False)
+        shap.summary_plot(shap_values, X_explain, plot_type="bar", max_display=20, show=False)
         plt.title(f"SHAP Feature Importance — LightGBM {horizon}h", fontsize=14)
         plt.tight_layout()
         bar_path = FIGURES_DIR / f"shap_bar_{horizon}h.png"
@@ -187,8 +195,7 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
 
         # Beeswarm plot
         fig, ax = plt.subplots(figsize=(10, 8))
-        shap.summary_plot(shap_values, X_explain,
-                          max_display=20, show=False)
+        shap.summary_plot(shap_values, X_explain, max_display=20, show=False)
         plt.title(f"SHAP Beeswarm — LightGBM {horizon}h", fontsize=14)
         plt.tight_layout()
         bee_path = FIGURES_DIR / f"shap_beeswarm_{horizon}h.png"
@@ -200,14 +207,13 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
         top3 = shap_importance.head(3).index.tolist()
         for feat in top3:
             fig, ax = plt.subplots(figsize=(8, 5))
-            shap.dependence_plot(feat, shap_values, X_explain,
-                                 show=False, ax=ax)
+            shap.dependence_plot(feat, shap_values, X_explain, show=False, ax=ax)
             plt.title(f"SHAP Dependence — {feat} ({horizon}h)", fontsize=12)
             plt.tight_layout()
             dep_path = FIGURES_DIR / f"shap_dep_{horizon}h_{feat}.png"
             plt.savefig(dep_path, dpi=150, bbox_inches="tight")
             plt.close()
-        print(f"    Saved: 3 dependence plots", flush=True)
+        print("    Saved: 3 dependence plots", flush=True)
 
         # ── Built-in importance comparison ──
         builtin_imp = pd.Series(model.feature_importances_, index=feature_cols).sort_values(ascending=False)
@@ -215,8 +221,8 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
         # Compare top-10 SHAP vs built-in
         print(f"\n  SHAP vs Built-in importance ({horizon}h):", flush=True)
         print(f"    {'Feature':<35s} {'SHAP rank':>10} {'Built-in rank':>14}", flush=True)
-        shap_ranks = {f: i+1 for i, f in enumerate(shap_importance.index)}
-        builtin_ranks = {f: i+1 for i, f in enumerate(builtin_imp.index)}
+        shap_ranks = {f: i + 1 for i, f in enumerate(shap_importance.index)}
+        builtin_ranks = {f: i + 1 for i, f in enumerate(builtin_imp.index)}
         for feat in shap_importance.head(10).index:
             sr = shap_ranks.get(feat, "—")
             br = builtin_ranks.get(feat, "—")
@@ -230,6 +236,7 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
 
     except Exception as e:
         import traceback
+
         print(f"  ❌ SHAP error ({horizon}h): {e}", flush=True)
         traceback.print_exc()
         return None
@@ -280,7 +287,7 @@ def _permutation_gru(df_hybrid: pd.DataFrame, horizon: int) -> None:
         # Create sequences (vectorized for speed)
         valid_range = n - horizon - lookback
         indices = np.arange(lookback, lookback + valid_range)
-        X_all = np.stack([feat_norm[i - lookback:i] for i in indices])
+        X_all = np.stack([feat_norm[i - lookback : i] for i in indices])
         y_all = target_norm[indices + horizon]
         imp_all = is_imputed[indices + horizon]
 
@@ -316,7 +323,10 @@ def _permutation_gru(df_hybrid: pd.DataFrame, horizon: int) -> None:
         model = GRUModel(len(feat_cols)).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-            optimizer, mode="min", factor=0.5, patience=5,
+            optimizer,
+            mode="min",
+            factor=0.5,
+            patience=5,
         )
         loss_fn = nn.MSELoss()
 
@@ -342,7 +352,7 @@ def _permutation_gru(df_hybrid: pd.DataFrame, horizon: int) -> None:
             scheduler.step(avg_loss)
             if (epoch + 1) % 10 == 0:
                 lr = optimizer.param_groups[0]["lr"]
-                print(f"      Epoch {epoch+1}/{n_epochs}: loss={avg_loss:.4f}, lr={lr:.1e}", flush=True)
+                print(f"      Epoch {epoch + 1}/{n_epochs}: loss={avg_loss:.4f}, lr={lr:.1e}", flush=True)
             # Early stopping on train loss plateau
             if avg_loss < best_loss - 1e-4:
                 best_loss = avg_loss
@@ -350,7 +360,7 @@ def _permutation_gru(df_hybrid: pd.DataFrame, horizon: int) -> None:
             else:
                 patience_counter += 1
             if patience_counter >= 10:
-                print(f"      Early stop at epoch {epoch+1} (no improvement for 10 epochs)", flush=True)
+                print(f"      Early stop at epoch {epoch + 1} (no improvement for 10 epochs)", flush=True)
                 break
 
         train_time = time.time() - t0
@@ -367,7 +377,7 @@ def _permutation_gru(df_hybrid: pd.DataFrame, horizon: int) -> None:
         print(f"    Baseline MAE: {baseline_mae:.3f}", flush=True)
 
         # Permutation importance per feature
-        print(f"    Computing permutation importance (5 rounds)...", flush=True)
+        print("    Computing permutation importance (5 rounds)...", flush=True)
         perm_importance = {}
 
         for fi, feat in enumerate(feat_cols):
@@ -398,6 +408,7 @@ def _permutation_gru(df_hybrid: pd.DataFrame, horizon: int) -> None:
 
         # Save plot
         import matplotlib
+
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
 
@@ -424,10 +435,10 @@ def _permutation_gru(df_hybrid: pd.DataFrame, horizon: int) -> None:
 
     except Exception as e:
         import traceback
+
         print(f"  ❌ GRU Permutation error ({horizon}h): {e}", flush=True)
         traceback.print_exc()
 
 
 if __name__ == "__main__":
     main()
-

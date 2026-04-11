@@ -19,12 +19,10 @@ from datetime import datetime
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 from sklearn.linear_model import Ridge
 from sklearn.preprocessing import StandardScaler
 
 # NOTE: torch is lazy-imported in GRU section to avoid MPS/OpenMP conflict with LightGBM
-
 from src.data.cleaner import (
     _clip_physical_bounds,
     _handle_outliers,
@@ -66,6 +64,7 @@ def _init_torch():
     """Lazy init torch + MPS device."""
     global DEVICE
     import torch
+
     DEVICE = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
     print(f"    PyTorch initialized: device={DEVICE}", flush=True)
     return torch
@@ -110,11 +109,14 @@ def _make_gru_model():
     class GRUModel(nn.Module):
         def __init__(self, input_dim, hidden_dim, num_layers, dropout):
             super().__init__()
-            self.gru = nn.GRU(input_dim, hidden_dim, num_layers,
-                              dropout=dropout if num_layers > 1 else 0, batch_first=True)
+            self.gru = nn.GRU(
+                input_dim, hidden_dim, num_layers, dropout=dropout if num_layers > 1 else 0, batch_first=True
+            )
             self.fc = nn.Sequential(
-                nn.Linear(hidden_dim, hidden_dim // 2), nn.ReLU(),
-                nn.Dropout(dropout), nn.Linear(hidden_dim // 2, 1),
+                nn.Linear(hidden_dim, hidden_dim // 2),
+                nn.ReLU(),
+                nn.Dropout(dropout),
+                nn.Linear(hidden_dim // 2, 1),
             )
 
         def forward(self, x):
@@ -128,6 +130,7 @@ def train_gru(model, train_loader, val_loader):
     """Train GRU with early stopping."""
     import torch
     import torch.nn as nn
+
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=5)
     criterion = nn.MSELoss()
@@ -143,7 +146,8 @@ def train_gru(model, train_loader, val_loader):
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
-            t_loss += loss.item(); n += 1
+            t_loss += loss.item()
+            n += 1
         t_loss /= max(n, 1)
 
         model.eval()
@@ -151,20 +155,26 @@ def train_gru(model, train_loader, val_loader):
         with torch.no_grad():
             for xb, yb in val_loader:
                 xb, yb = xb.to(DEVICE), yb.to(DEVICE)
-                v_loss += criterion(model(xb), yb).item(); nv += 1
+                v_loss += criterion(model(xb), yb).item()
+                nv += 1
         v_loss /= max(nv, 1)
         scheduler.step(v_loss)
 
         if v_loss < best_val:
-            best_val = v_loss; best_state = model.state_dict().copy(); patience_cnt = 0
+            best_val = v_loss
+            best_state = model.state_dict().copy()
+            patience_cnt = 0
         else:
             patience_cnt += 1
 
         if (epoch + 1) % 10 == 0 or epoch == 0:
-            print(f"      Epoch {epoch+1:3d} | Train={t_loss:.4f} Val={v_loss:.4f} p={patience_cnt}/{PATIENCE}", flush=True)
+            print(
+                f"      Epoch {epoch + 1:3d} | Train={t_loss:.4f} Val={v_loss:.4f} p={patience_cnt}/{PATIENCE}",
+                flush=True,
+            )
 
         if patience_cnt >= PATIENCE:
-            print(f"      Early stop epoch {epoch+1} (best={best_val:.4f})", flush=True)
+            print(f"      Early stop epoch {epoch + 1} (best={best_val:.4f})", flush=True)
             break
 
     if best_state:
@@ -182,7 +192,7 @@ def main():
     print("=" * 70, flush=True)
     print("ENSEMBLE STACKING — LightGBM + GRU", flush=True)
     print(f"Horizons: {HORIZONS}h | Meta-learner: Ridge Regression", flush=True)
-    print(f"Device: (lazy — set when GRU starts)", flush=True)
+    print("Device: (lazy — set when GRU starts)", flush=True)
     print("RULE: Test set = REAL data only", flush=True)
     print("=" * 70, flush=True)
 
@@ -195,7 +205,7 @@ def main():
     print("  Building engineered features for LightGBM...", flush=True)
     df_features = build_features(df_hybrid.drop(columns=["is_imputed"], errors="ignore"), drop_na=True)
     # Align is_imputed after feature building (dropped warmup rows)
-    is_imputed_feat = is_imputed[len(is_imputed) - len(df_features):]
+    is_imputed_feat = is_imputed[len(is_imputed) - len(df_features) :]
 
     # GRU raw features
     gru_features = df_hybrid[GRU_FEATURES].values
@@ -213,8 +223,11 @@ def main():
         print(f"{'═' * 70}", flush=True)
 
         results_h = _evaluate_horizon(
-            df_features, is_imputed_feat,
-            gru_features, gru_target, gru_imputed,
+            df_features,
+            is_imputed_feat,
+            gru_features,
+            gru_target,
+            gru_imputed,
             h,
         )
         all_results[f"{h}h"] = results_h
@@ -224,7 +237,6 @@ def main():
     print("[3/4] ENSEMBLE RESULTS SUMMARY", flush=True)
     print(f"{'═' * 70}", flush=True)
 
-    ref = {"1h": {"lgbm": 1.012, "gru": 1.173}, "6h": {"lgbm": 0.730, "gru": 0.812}, "24h": {"lgbm": 0.812, "gru": 0.727}}
 
     print(f"\n{'Hz':<6} {'Model':<25} {'MAE':>8} {'MASE':>8} {'vs Best':>10}", flush=True)
     print("─" * 65, flush=True)
@@ -232,34 +244,42 @@ def main():
     for h in HORIZONS:
         hk = f"{h}h"
         p = all_results[hk].get("Persistence", {})
-        print(f"{hk:<6} {'Persistence':<25} {p.get('mae',0):>8.3f} {'1.000':>8} {'baseline':>10}", flush=True)
+        print(f"{hk:<6} {'Persistence':<25} {p.get('mae', 0):>8.3f} {'1.000':>8} {'baseline':>10}", flush=True)
 
         lgbm = all_results[hk].get("LightGBM", {})
         if lgbm:
-            print(f"{hk:<6} {'LightGBM':<25} {lgbm.get('mae',0):>8.3f} {lgbm.get('mase',0):>8.3f} {'':>10}", flush=True)
+            print(
+                f"{hk:<6} {'LightGBM':<25} {lgbm.get('mae', 0):>8.3f} {lgbm.get('mase', 0):>8.3f} {'':>10}", flush=True
+            )
 
         gru = all_results[hk].get("GRU", {})
         if gru:
-            print(f"{hk:<6} {'GRU':<25} {gru.get('mae',0):>8.3f} {gru.get('mase',0):>8.3f} {'':>10}", flush=True)
+            print(f"{hk:<6} {'GRU':<25} {gru.get('mae', 0):>8.3f} {gru.get('mase', 0):>8.3f} {'':>10}", flush=True)
 
         ens = all_results[hk].get("Ensemble_Stack", {})
         if ens:
             best_individual = min(lgbm.get("mase", 99), gru.get("mase", 99))
             delta = ((ens["mase"] - best_individual) / best_individual) * 100
             status = f"{'✅' if delta < 0 else '❌'} {delta:+.1f}%"
-            print(f"{hk:<6} {'⭐ Ensemble (Stack)':<25} {ens.get('mae',0):>8.3f} {ens.get('mase',0):>8.3f} {status:>10}", flush=True)
+            print(
+                f"{hk:<6} {'⭐ Ensemble (Stack)':<25} {ens.get('mae', 0):>8.3f} {ens.get('mase', 0):>8.3f} {status:>10}",
+                flush=True,
+            )
 
         ens_w = all_results[hk].get("Ensemble_Weighted", {})
         if ens_w:
             best_individual = min(lgbm.get("mase", 99), gru.get("mase", 99))
             delta = ((ens_w["mase"] - best_individual) / best_individual) * 100
             status = f"{'✅' if delta < 0 else '❌'} {delta:+.1f}%"
-            print(f"{hk:<6} {'⭐ Ensemble (Weighted)':<25} {ens_w.get('mae',0):>8.3f} {ens_w.get('mase',0):>8.3f} {status:>10}", flush=True)
+            print(
+                f"{hk:<6} {'⭐ Ensemble (Weighted)':<25} {ens_w.get('mae', 0):>8.3f} {ens_w.get('mase', 0):>8.3f} {status:>10}",
+                flush=True,
+            )
 
         print("─" * 65, flush=True)
 
     # ── Save ──
-    print(f"\n[4/4] Saving results...", flush=True)
+    print("\n[4/4] Saving results...", flush=True)
     _save_results(all_results)
 
     total = time.time() - t_start
@@ -294,7 +314,7 @@ def _evaluate_horizon(df_feat, is_imp_feat, gru_feat, gru_tgt, gru_imp, horizon)
         # Create target: shift by horizon
         df_lgbm = df_feat.copy()
         # Carry is_imputed through as a column for alignment
-        df_lgbm["_is_imputed"] = is_imp_feat[:len(df_lgbm)]
+        df_lgbm["_is_imputed"] = is_imp_feat[: len(df_lgbm)]
         df_lgbm["target"] = df_lgbm[TARGET_COL].shift(-horizon)
         df_lgbm = df_lgbm.dropna(subset=["target"])
 
@@ -308,24 +328,29 @@ def _evaluate_horizon(df_feat, is_imp_feat, gru_feat, gru_tgt, gru_imp, horizon)
         val_end = int(n * 0.9)
 
         X_tr, y_tr = X[:tr_end], y[:tr_end]
-        X_val, y_val = X[tr_end:val_end], y[tr_end:val_end]
+        X_val, _y_val = X[tr_end:val_end], y[tr_end:val_end]
         X_te, y_te = X[val_end:], y[val_end:]
 
         # Real test mask
         real_test_mask = ~imp_aligned[val_end:]
 
         lgbm = LGBMRegressor(
-            n_estimators=300, learning_rate=0.05, max_depth=8,
-            num_leaves=31, subsample=0.8, colsample_bytree=0.8,
-            min_child_samples=20, verbose=-1,
+            n_estimators=300,
+            learning_rate=0.05,
+            max_depth=8,
+            num_leaves=31,
+            subsample=0.8,
+            colsample_bytree=0.8,
+            min_child_samples=20,
+            verbose=-1,
         )
         lgbm.fit(X_tr, y_tr)
 
-        lgbm_pred_val = lgbm.predict(X_val)
+        lgbm.predict(X_val)
         lgbm_pred_test = lgbm.predict(X_te)
 
         # Persistence baseline (from test set)
-        persist_test = df_lgbm[TARGET_COL].values[val_end:val_end + len(X_te)]
+        persist_test = df_lgbm[TARGET_COL].values[val_end : val_end + len(X_te)]
 
         # Apply real mask
         y_te_real = y_te[real_test_mask]
@@ -339,10 +364,13 @@ def _evaluate_horizon(df_feat, is_imp_feat, gru_feat, gru_tgt, gru_imp, horizon)
         lgbm_mae = float(np.mean(np.abs(y_te_real - lgbm_pred_real)))
         lgbm_mase = round(lgbm_mae / persist_mae, 4) if persist_mae > 0 else float("inf")
         results["LightGBM"] = {"mae": round(lgbm_mae, 4), "mase": lgbm_mase}
-        print(f"    LightGBM {horizon}h: MAE={lgbm_mae:.3f}, MASE={lgbm_mase:.3f} ({time.time()-t0:.0f}s)", flush=True)
+        print(
+            f"    LightGBM {horizon}h: MAE={lgbm_mae:.3f}, MASE={lgbm_mase:.3f} ({time.time() - t0:.0f}s)", flush=True
+        )
         print(f"    Test: {len(y_te)} total, {len(y_te_real)} real", flush=True)
     except Exception as e:
         import traceback
+
         print(f"    ❌ LightGBM ERROR: {e}", flush=True)
         traceback.print_exc()
         return results
@@ -356,6 +384,7 @@ def _evaluate_horizon(df_feat, is_imp_feat, gru_feat, gru_tgt, gru_imp, horizon)
     # Lazy init torch
     torch = _init_torch()
     from torch.utils.data import DataLoader
+
     TimeSeriesDataset = _make_dataset_class()
     GRUModel = _make_gru_model()
 
@@ -370,7 +399,7 @@ def _evaluate_horizon(df_feat, is_imp_feat, gru_feat, gru_tgt, gru_imp, horizon)
     gru_scaled[gru_tr_end:] = scaler.transform(gru_feat[gru_tr_end:])
 
     tgt_scaler = StandardScaler()
-    tgt_scaled = tgt_scaler.fit_transform(gru_tgt[:gru_tr_end].reshape(-1, 1)).flatten()
+    tgt_scaler.fit_transform(gru_tgt[:gru_tr_end].reshape(-1, 1)).flatten()
     tgt_all_scaled = tgt_scaler.transform(gru_tgt.reshape(-1, 1)).flatten()
 
     # Real mask for GRU test
@@ -416,7 +445,10 @@ def _evaluate_horizon(df_feat, is_imp_feat, gru_feat, gru_tgt, gru_imp, horizon)
     persist_mae_ref = results["Persistence"]["mae"]
     gru_mase = round(gru_mae / persist_mae_ref, 4) if persist_mae_ref > 0 else float("inf")
     results["GRU"] = {"mae": round(gru_mae, 4), "mase": gru_mase}
-    print(f"    GRU {horizon}h: MAE={gru_mae:.3f}, MASE={gru_mase:.3f} (persist_ref={persist_mae_ref:.3f}) ({time.time()-t0:.0f}s)", flush=True)
+    print(
+        f"    GRU {horizon}h: MAE={gru_mae:.3f}, MASE={gru_mase:.3f} (persist_ref={persist_mae_ref:.3f}) ({time.time() - t0:.0f}s)",
+        flush=True,
+    )
 
     # ══════════════════════════════════════════════════════════════
     # C. Ensemble — Align predictions
@@ -429,7 +461,7 @@ def _evaluate_horizon(df_feat, is_imp_feat, gru_feat, gru_tgt, gru_imp, horizon)
     print(f"    Common test points: {n_common}", flush=True)
 
     if n_common < 10:
-        print(f"    ⚠️ Too few common points, skipping ensemble", flush=True)
+        print("    ⚠️ Too few common points, skipping ensemble", flush=True)
         return results
 
     lgbm_aligned = lgbm_pred_real[:n_common]
@@ -477,7 +509,7 @@ def _evaluate_horizon(df_feat, is_imp_feat, gru_feat, gru_tgt, gru_imp, horizon)
     results["Ensemble_Weighted"] = {
         "mae": round(blend_mae, 4),
         "mase": blend_mase,
-        "best_weight": f"LightGBM={best_w:.2f}, GRU={1-best_w:.2f}",
+        "best_weight": f"LightGBM={best_w:.2f}, GRU={1 - best_w:.2f}",
     }
     print(f"    Weighted {horizon}h: MAE={blend_mae:.3f}, MASE={blend_mase:.3f} (w_lgbm={best_w:.2f})", flush=True)
 
@@ -493,9 +525,12 @@ def _save_results(all_results):
     path = OUTPUT_DIR / f"ensemble_{ts}.json"
 
     def conv(obj):
-        if isinstance(obj, (np.integer,)): return int(obj)
-        if isinstance(obj, (np.floating,)): return float(obj)
-        if isinstance(obj, np.ndarray): return obj.tolist()
+        if isinstance(obj, (np.integer,)):
+            return int(obj)
+        if isinstance(obj, (np.floating,)):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
         return obj
 
     with open(path, "w") as f:

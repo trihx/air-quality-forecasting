@@ -4,7 +4,6 @@ Run: uv run python scripts/audit_leakage.py
 """
 
 import pandas as pd
-import numpy as np
 from statsmodels.tsa.stattools import adfuller, kpss
 
 
@@ -87,12 +86,12 @@ def main():
     # Verify pm25_lag_1h = pm25 shifted by 1
     if "pm25_lag_1h" in df.columns:
         expected = df[target].shift(1)
-        match = df["pm25_lag_1h"].equals(expected)
+        df["pm25_lag_1h"].equals(expected)
         match_pct = (df["pm25_lag_1h"].dropna() == expected.dropna()).mean() * 100
         print(f"   pm25_lag_1h == pm25.shift(1): match={match_pct:.1f}%")
         r = float(df["pm25_lag_1h"].corr(df[target]))
         print(f"   pm25_lag_1h correlation with target: r={r:.4f}")
-        print(f"   ✅  Lag features are correctly shifted (use past data only)")
+        print("   ✅  Lag features are correctly shifted (use past data only)")
 
     # ============================================================
     # 5. SUMMARY
@@ -106,11 +105,11 @@ def main():
     print(f"   Total features:  {len(feature_cols)}")
     print(f"   🔴 Leaky features: {len(leaky_unique)}")
     print(f"   ✅ Clean features:  {clean_count}")
-    print(f"\n   Features to REMOVE:")
+    print("\n   Features to REMOVE:")
     for c in leaky_unique:
         print(f"      - {c}")
-    print(f"\n   IMPACT: Models are 'cheating' by seeing current-time data.")
-    print(f"   ACTION: Remove leaky features and re-train all models.")
+    print("\n   IMPACT: Models are 'cheating' by seeing current-time data.")
+    print("   ACTION: Remove leaky features and re-train all models.")
 
     # ============================================================
     # STATIONARITY TESTS

@@ -2,12 +2,11 @@
 
 Outputs:
 - Gap distribution statistics
-- Segment analysis 
+- Segment analysis
 - Recommendations for imputation strategy
 """
 
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -63,7 +62,7 @@ def main() -> None:
     gs = gap_sizes.values  # array of gap lengths in hours
 
     print(f"  Total gaps: {len(gs)}", flush=True)
-    print(f"  Gap stats (hours):", flush=True)
+    print("  Gap stats (hours):", flush=True)
     print(f"    Min:    {gs.min()}", flush=True)
     print(f"    Median: {int(np.median(gs))}", flush=True)
     print(f"    Mean:   {int(gs.mean())}", flush=True)
@@ -88,9 +87,7 @@ def main() -> None:
         cumulative = hours_recoverable
         pct_recovery = cumulative / n_nan * 100 if n_nan > 0 else 0
         print(
-            f"    {label:25s}: {count:4d} gaps, "
-            f"{hours_recoverable:6,}h recoverable "
-            f"({pct_recovery:.1f}% of missing)",
+            f"    {label:25s}: {count:4d} gaps, {hours_recoverable:6,}h recoverable ({pct_recovery:.1f}% of missing)",
             flush=True,
         )
         gap_distribution[label] = {
@@ -102,8 +99,7 @@ def main() -> None:
     long_gaps = int((gs > 168).sum())
     long_hours = int(gs[gs > 168].sum())
     print(
-        f"    {'>168h (>1 week)':25s}: {long_gaps:4d} gaps, "
-        f"{long_hours:6,}h UNRECOVERABLE",
+        f"    {'>168h (>1 week)':25s}: {long_gaps:4d} gaps, {long_hours:6,}h UNRECOVERABLE",
         flush=True,
     )
 
@@ -134,16 +130,15 @@ def main() -> None:
         segs = breaks.cumsum()
         seg_sizes = segs.value_counts().sort_values(ascending=False)
         print(f"  Continuous segments: {len(seg_sizes)}", flush=True)
-        print(f"  Segment sizes (hours):", flush=True)
+        print("  Segment sizes (hours):", flush=True)
         print(f"    Min:    {seg_sizes.min()}", flush=True)
         print(f"    Median: {int(seg_sizes.median())}", flush=True)
         print(f"    Max:    {seg_sizes.max()}", flush=True)
-        print(f"  Top 5 largest segments:", flush=True)
+        print("  Top 5 largest segments:", flush=True)
         for i, (seg_id, n) in enumerate(seg_sizes.head(5).items()):
             s = df_c[segs == seg_id]
             print(
-                f"    #{i + 1}: {n} hours "
-                f"({s.index.min().date()} → {s.index.max().date()})",
+                f"    #{i + 1}: {n} hours ({s.index.min().date()} → {s.index.max().date()})",
                 flush=True,
             )
     else:

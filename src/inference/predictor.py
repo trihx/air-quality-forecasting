@@ -11,12 +11,13 @@ Usage:
 
 from __future__ import annotations
 
+import contextlib
 import json
 from datetime import datetime
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
+import pandas as pd  # noqa: TC002
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 EXPORT_DIR = PROJECT_ROOT / "models" / "exported"
@@ -41,9 +42,10 @@ class GRUPredictor:
 
         # Lazy import torch to avoid MPS/CUDA conflicts
         import torch
+
         self.torch = torch
 
-        # Load model (CPU for inference)
+        # Default to CPU, can be overridden in predict()
         self.model = torch.jit.load(str(self.model_path), map_location="cpu")
         self.model.eval()
 
@@ -56,11 +58,13 @@ class GRUPredictor:
         self.tgt_scale = sc["target_scaler_scale"]
         self.features = sc["features"]
 
-    def predict(self, recent_data: pd.DataFrame) -> dict:
+    def predict(self, recent_data: pd.DataFrame, device: str = "cpu") -> dict:
         """Predict PM2.5 from recent data.
 
         Args:
             recent_data: DataFrame with at least LOOKBACK rows and FEATURE_COLS.
+            device: Torch device string ('cpu', 'mps', 'cuda').
+                    MPS = Apple Silicon GPU acceleration.
 
         Returns:
             Dict with predicted_pm25, model, horizon, timestamp.
@@ -74,9 +78,7 @@ class GRUPredictor:
             raise ValueError(f"Missing columns: {missing}")
 
         if len(recent_data) < LOOKBACK:
-            raise ValueError(
-                f"Need at least {LOOKBACK} rows, got {len(recent_data)}"
-            )
+            raise ValueError(f"Need at least {LOOKBACK} rows, got {len(recent_data)}")
 
         # Take last LOOKBACK rows
         window = recent_data[self.features].tail(LOOKBACK).values.astype(np.float64)
@@ -84,10 +86,25 @@ class GRUPredictor:
         # Scale features
         scaled = (window - self.feat_mean) / self.feat_scale
 
+        # Move model & data to target device for GPU acceleration
+        target_device = torch.device(device)
+        try:
+            model = self.model.to(target_device)
+            x = torch.FloatTensor(scaled).unsqueeze(0).to(target_device)
+        except (RuntimeError, AssertionError):
+            # Fallback to CPU if device not available
+            model = self.model.to("cpu")
+            x = torch.FloatTensor(scaled).unsqueeze(0)
+            device = "cpu"
+
         # Predict
-        x = torch.FloatTensor(scaled).unsqueeze(0)  # (1, lookback, n_features)
         with torch.no_grad():
-            pred_scaled = self.model(x).item()
+            pred_scaled = model(x).cpu().item()
+
+        # Free GPU memory if used
+        if device == "mps":
+            with contextlib.suppress(AttributeError):
+                torch.mps.empty_cache()
 
         # Inverse scale
         pred_pm25 = pred_scaled * self.tgt_scale + self.tgt_mean
@@ -99,6 +116,7 @@ class GRUPredictor:
             "timestamp": datetime.now().isoformat(),
             "input_rows": len(recent_data),
             "last_pm25": round(float(recent_data["pm25"].iloc[-1]), 2),
+            "device": device,
         }
 
 
@@ -141,9 +159,7 @@ class LightGBMPredictor:
         if self.feature_names:
             available = [c for c in self.feature_names if c in feature_row.columns]
             if len(available) < len(self.feature_names) * 0.8:
-                raise ValueError(
-                    f"Too few matching features: {len(available)}/{len(self.feature_names)}"
-                )
+                raise ValueError(f"Too few matching features: {len(available)}/{len(self.feature_names)}")
             row = feature_row[available].tail(1).values
         else:
             row = feature_row.tail(1).values
@@ -181,8 +197,11 @@ def get_latest_data(n_rows: int = LOOKBACK) -> pd.DataFrame:
     df, _ = _handle_outliers(df, method="iqr", threshold=3.0)
     df = _resample(df, freq="1h")
     df_hybrid = impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
         verbose=False,
     )
     return df_hybrid.tail(n_rows)
@@ -202,6 +221,9 @@ def get_suggestion_values() -> dict:
         }
     except Exception:
         return {
-            "pm25": 10.0, "nhiet_do": 28.0, "do_am": 75.0,
-            "diem_suong": 24.0, "co2": 400.0,
+            "pm25": 10.0,
+            "nhiet_do": 28.0,
+            "do_am": 75.0,
+            "diem_suong": 24.0,
+            "co2": 400.0,
         }

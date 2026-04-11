@@ -19,7 +19,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-
 from src.data.cleaner import (
     _clip_physical_bounds,
     _handle_outliers,
@@ -56,7 +55,7 @@ def main() -> None:
     train_end = int(n * 0.8)
     val_end = int(n * 0.9)
 
-    print(f"  Total: {n} rows | Train: {train_end} | Val: {val_end-train_end} | Test: {n-val_end}", flush=True)
+    print(f"  Total: {n} rows | Train: {train_end} | Val: {val_end - train_end} | Test: {n - val_end}", flush=True)
 
     # ── Step 2: Compute unified Persistence for each horizon ──
     print("\n[2/4] Computing unified Persistence baselines...", flush=True)
@@ -74,7 +73,7 @@ def main() -> None:
                 ml_true.append(actual)
                 ml_persist.append(persist)
 
-        ml_persist_mae = float(np.mean(np.abs(np.array(ml_true) - np.array(ml_persist))))
+        float(np.mean(np.abs(np.array(ml_true) - np.array(ml_persist))))
 
         # DL test: same but skip first LOOKBACK samples (need lookback window)
         # DL Persistence iterates from val_end, checking i+h not imputed
@@ -92,7 +91,7 @@ def main() -> None:
                 dl_true.append(actual)
                 dl_persist.append(persist)
 
-        dl_persist_mae = float(np.mean(np.abs(np.array(dl_true) - np.array(dl_persist))))
+        float(np.mean(np.abs(np.array(dl_true) - np.array(dl_persist))))
 
         # UNIFIED: Use the same set for all models
         # Since DL script Persistence actually iterates from val_end (same as ML),
@@ -107,12 +106,8 @@ def main() -> None:
                 unified_true.append(actual)
                 unified_persist_vals.append(persist)
 
-        unified_mae = float(np.mean(np.abs(
-            np.array(unified_true) - np.array(unified_persist_vals)
-        )))
-        unified_rmse = float(np.sqrt(np.mean(
-            (np.array(unified_true) - np.array(unified_persist_vals)) ** 2
-        )))
+        unified_mae = float(np.mean(np.abs(np.array(unified_true) - np.array(unified_persist_vals))))
+        unified_rmse = float(np.sqrt(np.mean((np.array(unified_true) - np.array(unified_persist_vals)) ** 2)))
 
         unified_persist[h] = {
             "mae": round(unified_mae, 4),
@@ -120,8 +115,9 @@ def main() -> None:
             "n_samples": len(unified_true),
         }
 
-        print(f"  h={h}: Persistence MAE = {unified_mae:.4f} "
-              f"(RMSE={unified_rmse:.4f}, n={len(unified_true)})", flush=True)
+        print(
+            f"  h={h}: Persistence MAE = {unified_mae:.4f} (RMSE={unified_rmse:.4f}, n={len(unified_true)})", flush=True
+        )
 
     # ── Step 3: Load all experiment results and recalculate MASE ──
     print("\n[3/4] Loading experiment results and recalculating MASE...", flush=True)
@@ -171,8 +167,11 @@ def main() -> None:
                         "original_persist_mae": orig_persist,
                         "source": "multi_horizon_215251",
                     }
-                    print(f"    {model_key}: MAE={orig_mae:.4f} | "
-                          f"MASE orig={orig.get('mase'):.4f} → unified={new_mase:.4f}", flush=True)
+                    print(
+                        f"    {model_key}: MAE={orig_mae:.4f} | "
+                        f"MASE orig={orig.get('mase'):.4f} → unified={new_mase:.4f}",
+                        flush=True,
+                    )
 
         # ── ARIMA / SARIMA ──
         if h_key in arima_results:
@@ -190,8 +189,11 @@ def main() -> None:
                         "original_persist_mae": orig_persist,
                         "source": "arima_195931",
                     }
-                    print(f"    {model_key}: MAE={orig_mae:.4f} | "
-                          f"MASE orig={orig.get('mase'):.4f} → unified={new_mase:.4f}", flush=True)
+                    print(
+                        f"    {model_key}: MAE={orig_mae:.4f} | "
+                        f"MASE orig={orig.get('mase'):.4f} → unified={new_mase:.4f}",
+                        flush=True,
+                    )
 
         # ── DL: LSTM, GRU ──
         if h_key in dl_results:
@@ -209,26 +211,30 @@ def main() -> None:
                         "original_persist_mae": orig_persist,
                         "source": "dl_201212",
                     }
-                    print(f"    {model_key}: MAE={orig_mae:.4f} | "
-                          f"MASE orig={orig.get('mase'):.4f} → unified={new_mase:.4f}", flush=True)
+                    print(
+                        f"    {model_key}: MAE={orig_mae:.4f} | "
+                        f"MASE orig={orig.get('mase'):.4f} → unified={new_mase:.4f}",
+                        flush=True,
+                    )
 
         # ── TFT ──
-        if h_key in tft_results:
-            if "TFT" in tft_results[h_key]:
-                orig = tft_results[h_key]["TFT"]
-                orig_mae = orig["mae"]
-                orig_persist = tft_results[h_key]["Persistence"]["mae"]
-                new_mase = round(orig_mae / persist_mae, 4)
-                h_results["TFT"] = {
-                    "mae": orig_mae,
-                    "rmse": orig.get("rmse"),
-                    "mase_original": orig.get("mase"),
-                    "mase_unified": new_mase,
-                    "original_persist_mae": orig_persist,
-                    "source": "tft_102245",
-                }
-                print(f"    TFT: MAE={orig_mae:.4f} | "
-                      f"MASE orig={orig.get('mase'):.4f} → unified={new_mase:.4f}", flush=True)
+        if h_key in tft_results and "TFT" in tft_results[h_key]:
+            orig = tft_results[h_key]["TFT"]
+            orig_mae = orig["mae"]
+            orig_persist = tft_results[h_key]["Persistence"]["mae"]
+            new_mase = round(orig_mae / persist_mae, 4)
+            h_results["TFT"] = {
+                "mae": orig_mae,
+                "rmse": orig.get("rmse"),
+                "mase_original": orig.get("mase"),
+                "mase_unified": new_mase,
+                "original_persist_mae": orig_persist,
+                "source": "tft_102245",
+            }
+            print(
+                f"    TFT: MAE={orig_mae:.4f} | MASE orig={orig.get('mase'):.4f} → unified={new_mase:.4f}",
+                flush=True,
+            )
 
         # ── Ensemble: GRU, Stack ──
         if h_key in ensemble_results:
@@ -247,8 +253,11 @@ def main() -> None:
                         "original_persist_mae": orig_persist,
                         "source": "ensemble_210135",
                     }
-                    print(f"    {label}: MAE={orig_mae:.4f} | "
-                          f"MASE orig={orig.get('mase', 'N/A')} → unified={new_mase:.4f}", flush=True)
+                    print(
+                        f"    {label}: MAE={orig_mae:.4f} | "
+                        f"MASE orig={orig.get('mase', 'N/A')} → unified={new_mase:.4f}",
+                        flush=True,
+                    )
 
         standardized[h_key] = h_results
 
@@ -257,8 +266,10 @@ def main() -> None:
     print("[4/4] UNIFIED COMPARISON TABLE", flush=True)
     print(f"{'═' * 80}", flush=True)
 
-    print(f"\n{'Model':<25} {'1h MAE':>8} {'1h MASE':>8} {'6h MAE':>8} {'6h MASE':>8} "
-          f"{'24h MAE':>8} {'24h MASE':>9}", flush=True)
+    print(
+        f"\n{'Model':<25} {'1h MAE':>8} {'1h MASE':>8} {'6h MAE':>8} {'6h MASE':>8} {'24h MAE':>8} {'24h MASE':>9}",
+        flush=True,
+    )
     print("─" * 80, flush=True)
 
     # Collect all model names
@@ -268,8 +279,15 @@ def main() -> None:
 
     # Order: Persist, ARIMA, SARIMA, LightGBM_tuned, LSTM, GRU, TFT, Ensemble_GRU, Ensemble_Stack
     model_order = [
-        "Persistence", "ARIMA", "SARIMA", "LightGBM_tuned",
-        "LSTM", "GRU", "TFT", "Ensemble_GRU", "Ensemble_Stack",
+        "Persistence",
+        "ARIMA",
+        "SARIMA",
+        "LightGBM_tuned",
+        "LSTM",
+        "GRU",
+        "TFT",
+        "Ensemble_GRU",
+        "Ensemble_Stack",
     ]
 
     for model in model_order:
@@ -294,8 +312,10 @@ def main() -> None:
         u_mae = unified_persist[h]["mae"]
         print(f"  h={h}: Unified={u_mae:.4f}", end="", flush=True)
         for source_name, source_data in [
-            ("ML", ml_results), ("DL", dl_results),
-            ("TFT", tft_results), ("ARIMA", arima_results),
+            ("ML", ml_results),
+            ("DL", dl_results),
+            ("TFT", tft_results),
+            ("ARIMA", arima_results),
         ]:
             if h_key in source_data and "Persistence" in source_data[h_key]:
                 orig = source_data[h_key]["Persistence"]["mae"]
@@ -331,8 +351,11 @@ def _prepare_hybrid_data() -> pd.DataFrame:
     df = _resample(df, freq="1h")
 
     df_hybrid = impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
         verbose=True,
     )
     return df_hybrid

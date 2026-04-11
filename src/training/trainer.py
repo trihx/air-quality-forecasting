@@ -55,8 +55,11 @@ def _prepare_hybrid_data():
     df, _ = _handle_outliers(df, method="iqr", threshold=3.0)
     df = _resample(df, freq="1h")
     return impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
         verbose=False,
     )
 
@@ -121,9 +124,7 @@ class LightGBMTrainer:
             progress_callback(1, 5, "Building features...")
 
         df_feat = build_features(df_hybrid)
-        self._feature_cols = [
-            c for c in df_feat.columns if c not in [TARGET_COL, "is_imputed"]
-        ]
+        self._feature_cols = [c for c in df_feat.columns if c not in [TARGET_COL, "is_imputed"]]
 
         X = df_feat[self._feature_cols].values
         y = df_feat[TARGET_COL].values
@@ -149,10 +150,12 @@ class LightGBMTrainer:
 
         self.model = lgb.LGBMRegressor(
             **self.params,
-            verbose=-1, n_jobs=-1,
+            verbose=-1,
+            n_jobs=-1,
         )
         self.model.fit(
-            X_train, y_train,
+            X_train,
+            y_train,
             eval_set=[(X_val, y_val)],
             callbacks=[lgb.log_evaluation(0)],
         )
@@ -167,9 +170,7 @@ class LightGBMTrainer:
 
         # Persistence baseline
         y_orig = y[valid]
-        persist_mae = float(np.mean(np.abs(
-            y_test_real - y_orig[val_end:][real_mask]
-        )))
+        persist_mae = float(np.mean(np.abs(y_test_real - y_orig[val_end:][real_mask])))
 
         mae = float(mean_absolute_error(y_test_real, y_pred_real))
         rmse = float(np.sqrt(mean_squared_error(y_test_real, y_pred_real)))
@@ -293,8 +294,7 @@ class GRUTrainer:
         class SeqDS(Dataset):
             def __init__(self, feats, tgts, lb_, h_):
                 self.feats, self.tgts = feats, tgts
-                self.indices = [i for i in range(len(feats) - lb_ - h_)
-                                if i + lb_ + h_ - 1 < len(tgts)]
+                self.indices = [i for i in range(len(feats) - lb_ - h_) if i + lb_ + h_ - 1 < len(tgts)]
                 self.lb_, self.h_ = lb_, h_
 
             def __len__(self):
@@ -302,7 +302,7 @@ class GRUTrainer:
 
             def __getitem__(self, idx):
                 i = self.indices[idx]
-                x = torch.FloatTensor(self.feats[i:i + self.lb_])
+                x = torch.FloatTensor(self.feats[i : i + self.lb_])
                 y = torch.FloatTensor([self.tgts[i + self.lb_ + self.h_ - 1]])
                 return x, y
 
@@ -320,16 +320,16 @@ class GRUTrainer:
         hidden = self.params.get("hidden_dim", 64)
         layers = self.params.get("num_layers", 2)
         drop = self.params.get("dropout", 0.2)
-        drop_gru = drop if layers > 1 else 0
 
         class GRUModel(nn.Module):
             def __init__(self, in_dim, hid, lay, dr):
                 super().__init__()
-                self.gru = nn.GRU(in_dim, hid, lay, dropout=dr if lay > 1 else 0,
-                                  batch_first=True)
+                self.gru = nn.GRU(in_dim, hid, lay, dropout=dr if lay > 1 else 0, batch_first=True)
                 self.fc = nn.Sequential(
-                    nn.Linear(hid, hid // 2), nn.ReLU(),
-                    nn.Dropout(dr), nn.Linear(hid // 2, 1),
+                    nn.Linear(hid, hid // 2),
+                    nn.ReLU(),
+                    nn.Dropout(dr),
+                    nn.Linear(hid // 2, 1),
                 )
 
             def forward(self, x):
@@ -339,9 +339,7 @@ class GRUTrainer:
         model = GRUModel(len(available), hidden, layers, drop).to(device)
         lr = self.params.get("learning_rate", 1e-3)
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-            optimizer, mode="min", factor=0.5, patience=5
-        )
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=5)
         criterion = nn.MSELoss()
 
         epochs = self.params.get("epochs", 100)

@@ -7,14 +7,12 @@ Uses sentence-transformers for embedding, ChromaDB for vector storage.
 
 import json
 import logging
-import os
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# Project root
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+# Project root (src/chatbot/knowledge_base.py → chatbot → src → project_root)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Knowledge sources — ordered by importance
 KNOWLEDGE_SOURCES = [
@@ -74,14 +72,16 @@ def _load_markdown_docs() -> list[dict]:
                 content = full_path.read_text(encoding="utf-8")
                 chunks = _chunk_text(content)
                 for i, chunk in enumerate(chunks):
-                    docs.append({
-                        "content": chunk,
-                        "metadata": {
-                            "source": rel_path,
-                            "type": source_type,
-                            "chunk_index": i,
-                        },
-                    })
+                    docs.append(
+                        {
+                            "content": chunk,
+                            "metadata": {
+                                "source": rel_path,
+                                "type": source_type,
+                                "chunk_index": i,
+                            },
+                        }
+                    )
                 logger.info(f"Loaded {len(chunks)} chunks from {rel_path}")
             except Exception as e:
                 logger.warning(f"Failed to load {rel_path}: {e}")
@@ -105,14 +105,16 @@ def _load_experiment_results() -> list[dict]:
 
                 chunks = _chunk_text(content, chunk_size=1500, overlap=300)
                 for i, chunk in enumerate(chunks):
-                    docs.append({
-                        "content": chunk,
-                        "metadata": {
-                            "source": str(json_file.relative_to(PROJECT_ROOT)),
-                            "type": "experiment",
-                            "chunk_index": i,
-                        },
-                    })
+                    docs.append(
+                        {
+                            "content": chunk,
+                            "metadata": {
+                                "source": str(json_file.relative_to(PROJECT_ROOT)),
+                                "type": "experiment",
+                                "chunk_index": i,
+                            },
+                        }
+                    )
             except Exception as e:
                 logger.warning(f"Failed to load {json_file}: {e}")
 
@@ -125,14 +127,16 @@ def _load_experiment_results() -> list[dict]:
             content += json.dumps(data, indent=2, ensure_ascii=False)
             chunks = _chunk_text(content, chunk_size=2000, overlap=400)
             for i, chunk in enumerate(chunks):
-                docs.append({
-                    "content": chunk,
-                    "metadata": {
-                        "source": "research/experiments/standardized_metrics.json",
-                        "type": "metrics",
-                        "chunk_index": i,
-                    },
-                })
+                docs.append(
+                    {
+                        "content": chunk,
+                        "metadata": {
+                            "source": "research/experiments/standardized_metrics.json",
+                            "type": "metrics",
+                            "chunk_index": i,
+                        },
+                    }
+                )
         except Exception as e:
             logger.warning(f"Failed to load standardized_metrics.json: {e}")
 
@@ -143,14 +147,16 @@ def _load_experiment_results() -> list[dict]:
             data = json.loads(best_cfg.read_text(encoding="utf-8"))
             content = "# Best Model Configurations\n\n"
             content += json.dumps(data, indent=2, ensure_ascii=False)
-            docs.append({
-                "content": content,
-                "metadata": {
-                    "source": "research/best_models_configs.json",
-                    "type": "config",
-                    "chunk_index": 0,
-                },
-            })
+            docs.append(
+                {
+                    "content": content,
+                    "metadata": {
+                        "source": "research/best_models_configs.json",
+                        "type": "config",
+                        "chunk_index": 0,
+                    },
+                }
+            )
         except Exception as e:
             logger.warning(f"Failed to load best_models_configs.json: {e}")
 
@@ -160,7 +166,7 @@ def _load_experiment_results() -> list[dict]:
 class KnowledgeBase:
     """Vector-based knowledge base using ChromaDB + sentence-transformers."""
 
-    def __init__(self, persist_dir: Optional[str] = None):
+    def __init__(self, persist_dir: str | None = None):
         self._persist_dir = persist_dir or str(CHROMA_DIR)
         self._collection = None
         self._client = None
@@ -174,7 +180,7 @@ class KnowledgeBase:
             )
 
             embedding_fn = SentenceTransformerEmbeddingFunction(
-                model_name="all-MiniLM-L6-v2",
+                model_name="paraphrase-multilingual-MiniLM-L12-v2",
             )
 
             self._client = chromadb.PersistentClient(path=self._persist_dir)
@@ -209,15 +215,13 @@ class KnowledgeBase:
         collection = self._get_collection()
 
         if collection.count() > 0 and not force:
-            logger.info(
-                f"Index already exists with {collection.count()} docs. "
-                "Use force=True to rebuild."
-            )
+            logger.info(f"Index already exists with {collection.count()} docs. Use force=True to rebuild.")
             return collection.count()
 
         # Clear existing
         if force and collection.count() > 0:
             self._client.delete_collection("pm25_knowledge")
+            self._collection = None  # Reset reference
             collection = self._get_collection()
 
         # Load all knowledge
@@ -242,7 +246,7 @@ class KnowledgeBase:
         logger.info(f"Indexed {total} document chunks into ChromaDB")
         return total
 
-    def search(self, query: str, n_results: int = 5) -> list[dict]:
+    def search(self, query: str, n_results: int = 8) -> list[dict]:
         """
         Search for relevant context given a query.
 
@@ -261,20 +265,24 @@ class KnowledgeBase:
         if results and results["documents"]:
             for i, doc in enumerate(results["documents"][0]):
                 meta = results["metadatas"][0][i] if results["metadatas"] else {}
-                distance = (
-                    results["distances"][0][i] if results["distances"] else 1.0
-                )
-                docs.append({
-                    "content": doc,
-                    "source": meta.get("source", "unknown"),
-                    "type": meta.get("type", "unknown"),
-                    "score": 1 - distance,  # cosine similarity
-                })
+                distance = results["distances"][0][i] if results["distances"] else 1.0
+                score = 1 - distance  # cosine similarity
+                # Only include docs with reasonable similarity
+                if score > 0.1:
+                    docs.append(
+                        {
+                            "content": doc,
+                            "source": meta.get("source", "unknown"),
+                            "type": meta.get("type", "unknown"),
+                            "score": score,
+                        }
+                    )
+                    logger.debug(f"RAG match: score={score:.3f} src={meta.get('source')}")
         return docs
 
 
 # Singleton instance
-_kb_instance: Optional[KnowledgeBase] = None
+_kb_instance: KnowledgeBase | None = None
 
 
 def get_knowledge_base() -> KnowledgeBase:

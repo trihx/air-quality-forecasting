@@ -23,8 +23,6 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from sklearn.preprocessing import StandardScaler
-from torch.utils.data import DataLoader, Dataset
-
 from src.data.cleaner import (
     _clip_physical_bounds,
     _handle_outliers,
@@ -34,6 +32,7 @@ from src.data.cleaner import (
 )
 from src.data.imputer import impute_missing_data
 from src.data.loader import TARGET_COL, load_raw_data
+from torch.utils.data import DataLoader, Dataset
 
 warnings.filterwarnings("ignore")
 
@@ -43,14 +42,14 @@ OUTPUT_DIR = PROJECT_ROOT / "research" / "experiments" / "dl"
 HORIZONS = [1, 6, 24]
 
 # Model hyperparameters
-LOOKBACK = 72        # 3 days of history as input sequence
-HIDDEN_DIM = 64      # LSTM/GRU hidden dimension
-NUM_LAYERS = 2       # stacked layers
-DROPOUT = 0.2        # dropout between layers
+LOOKBACK = 72  # 3 days of history as input sequence
+HIDDEN_DIM = 64  # LSTM/GRU hidden dimension
+NUM_LAYERS = 2  # stacked layers
+DROPOUT = 0.2  # dropout between layers
 BATCH_SIZE = 64
 LEARNING_RATE = 1e-3
-EPOCHS = 100         # max epochs (early stopping will trigger earlier)
-PATIENCE = 10        # early stopping patience
+EPOCHS = 100  # max epochs (early stopping will trigger earlier)
+PATIENCE = 10  # early stopping patience
 
 # Features to use (multivariate)
 FEATURE_COLS = ["pm25", "nhiet_do", "do_am", "diem_suong", "co2"]
@@ -171,7 +170,10 @@ def train_model(
     """Train with early stopping on validation loss."""
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode="min", factor=0.5, patience=5,
+        optimizer,
+        mode="min",
+        factor=0.5,
+        patience=5,
     )
     criterion = nn.MSELoss()
 
@@ -284,11 +286,11 @@ def main() -> None:
 
     # Scale target separately for inverse transform
     target_scaler = StandardScaler()
-    target_scaled = target_scaler.fit_transform(target[:train_end].reshape(-1, 1)).flatten()
+    target_scaler.fit_transform(target[:train_end].reshape(-1, 1)).flatten()
     target_all_scaled = target_scaler.transform(target.reshape(-1, 1)).flatten()
 
     print(f"  Train: {train_end} | Val: {val_end - train_end} | Test: {n - val_end}", flush=True)
-    print(f"  Feature scaling: StandardScaler (fit on train only)", flush=True)
+    print("  Feature scaling: StandardScaler (fit on train only)", flush=True)
 
     # Reference results from previous experiments
     ref_results = {
@@ -306,8 +308,14 @@ def main() -> None:
         print(f"{'═' * 70}", flush=True)
 
         results_h = _evaluate_horizon(
-            features_scaled, target_all_scaled, target, is_imputed,
-            train_end, val_end, h, target_scaler,
+            features_scaled,
+            target_all_scaled,
+            target,
+            is_imputed,
+            train_end,
+            val_end,
+            h,
+            target_scaler,
         )
         all_results[f"{h}h"] = results_h
 
@@ -332,19 +340,28 @@ def main() -> None:
 
         # Persistence
         p = all_results[h_key].get("Persistence", {})
-        print(f"{h}h{'':<7} {'Persistence':<20} {p.get('mae', 0):>8.3f} {p.get('rmse', 0):>8.3f} {'1.000':>8} {'baseline':>12}", flush=True)
+        print(
+            f"{h}h{'':<7} {'Persistence':<20} {p.get('mae', 0):>8.3f} {p.get('rmse', 0):>8.3f} {'1.000':>8} {'baseline':>12}",
+            flush=True,
+        )
 
         # LSTM
         lstm = all_results[h_key].get("LSTM", {})
         if lstm:
             s = "✅ BEATS!" if lstm.get("mase", 99) < 1.0 else "❌ MASE>1"
-            print(f"{h}h{'':<7} {'LSTM':<20} {lstm.get('mae', 0):>8.3f} {lstm.get('rmse', 0):>8.3f} {lstm.get('mase', 0):>8.3f} {s:>12}", flush=True)
+            print(
+                f"{h}h{'':<7} {'LSTM':<20} {lstm.get('mae', 0):>8.3f} {lstm.get('rmse', 0):>8.3f} {lstm.get('mase', 0):>8.3f} {s:>12}",
+                flush=True,
+            )
 
         # GRU
         gru = all_results[h_key].get("GRU", {})
         if gru:
             s = "✅ BEATS!" if gru.get("mase", 99) < 1.0 else "❌ MASE>1"
-            print(f"{h}h{'':<7} {'GRU':<20} {gru.get('mae', 0):>8.3f} {gru.get('rmse', 0):>8.3f} {gru.get('mase', 0):>8.3f} {s:>12}", flush=True)
+            print(
+                f"{h}h{'':<7} {'GRU':<20} {gru.get('mae', 0):>8.3f} {gru.get('rmse', 0):>8.3f} {gru.get('mase', 0):>8.3f} {s:>12}",
+                flush=True,
+            )
 
         # References
         r = ref_results[h_key]
@@ -353,7 +370,7 @@ def main() -> None:
         print("─" * 75, flush=True)
 
     # ── Save ──
-    print(f"\n[5/5] Saving results...", flush=True)
+    print("\n[5/5] Saving results...", flush=True)
     _save_results(all_results)
 
     total_time = time.time() - t_start
@@ -372,8 +389,11 @@ def _prepare_hybrid_data() -> pd.DataFrame:
     df = _resample(df, freq="1h")
 
     df_hybrid = impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
         verbose=True,
     )
     return df_hybrid
@@ -396,7 +416,7 @@ def _evaluate_horizon(
 
     # ── Persistence baseline ──
     print(f"  Evaluating Persistence baseline ({horizon}h)...", flush=True)
-    test_start = val_end + LOOKBACK  # need lookback history
+    val_end + LOOKBACK  # need lookback history
     y_true_list = []
     y_persist_list = []
 
@@ -424,32 +444,33 @@ def _evaluate_horizon(
 
     train_dataset = TimeSeriesDataset(features_scaled, target_scaled, LOOKBACK, horizon)
     # Filter train to only use indices within training range
-    train_dataset.valid_indices = [
-        i for i in train_dataset.valid_indices if i + LOOKBACK + horizon - 1 < train_end
-    ]
+    train_dataset.valid_indices = [i for i in train_dataset.valid_indices if i + LOOKBACK + horizon - 1 < train_end]
 
     val_dataset = TimeSeriesDataset(features_scaled, target_scaled, LOOKBACK, horizon)
     val_dataset.valid_indices = [
-        i for i in val_dataset.valid_indices
-        if train_end <= i + LOOKBACK + horizon - 1 < val_end
+        i for i in val_dataset.valid_indices if train_end <= i + LOOKBACK + horizon - 1 < val_end
     ]
 
     test_dataset = TimeSeriesDataset(
-        features_scaled, target_scaled, LOOKBACK, horizon,
+        features_scaled,
+        target_scaled,
+        LOOKBACK,
+        horizon,
         real_mask=real_mask_test,
     )
-    test_dataset.valid_indices = [
-        i for i in test_dataset.valid_indices if i + LOOKBACK + horizon - 1 >= val_end
-    ]
+    test_dataset.valid_indices = [i for i in test_dataset.valid_indices if i + LOOKBACK + horizon - 1 >= val_end]
 
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-    print(f"  Datasets: train={len(train_dataset)}, val={len(val_dataset)}, test={len(test_dataset)} (real only)", flush=True)
+    print(
+        f"  Datasets: train={len(train_dataset)}, val={len(val_dataset)}, test={len(test_dataset)} (real only)",
+        flush=True,
+    )
 
     if len(train_dataset) < BATCH_SIZE:
-        print(f"  ⚠️ Too few training samples, skipping", flush=True)
+        print("  ⚠️ Too few training samples, skipping", flush=True)
         return results
 
     # ── Train LSTM ──
@@ -477,16 +498,12 @@ def _evaluate_horizon(
                 all_targets.extend(y_batch.numpy().flatten())
 
         if len(all_preds) == 0:
-            print(f"    ⚠️ No predictions generated", flush=True)
+            print("    ⚠️ No predictions generated", flush=True)
             continue
 
         # Inverse transform to original scale
-        preds_original = target_scaler.inverse_transform(
-            np.array(all_preds).reshape(-1, 1)
-        ).flatten()
-        targets_original = target_scaler.inverse_transform(
-            np.array(all_targets).reshape(-1, 1)
-        ).flatten()
+        preds_original = target_scaler.inverse_transform(np.array(all_preds).reshape(-1, 1)).flatten()
+        targets_original = target_scaler.inverse_transform(np.array(all_targets).reshape(-1, 1)).flatten()
 
         mae = float(np.mean(np.abs(targets_original - preds_original)))
         rmse = float(np.sqrt(np.mean((targets_original - preds_original) ** 2)))

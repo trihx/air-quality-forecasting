@@ -128,3 +128,107 @@ def evaluate_forecast(
     )
 
     return results
+
+
+def classification_metrics(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    threshold: float = 35.0,
+) -> dict[str, float]:
+    """Classification metrics for threshold exceedance.
+
+    Evaluates how well the model predicts PM2.5 exceeding a threshold.
+    Inspired by RC's multi-threshold classification (25, 35, 50 µg/m³).
+
+    Args:
+        y_true: Actual PM2.5 values (µg/m³).
+        y_pred: Predicted PM2.5 values (µg/m³).
+        threshold: PM2.5 threshold for exceedance classification.
+
+    Returns:
+        Dictionary with precision, recall, f1, brier_score, n_exceed.
+    """
+    y_true = np.asarray(y_true, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+
+    y_true_class = (y_true > threshold).astype(int)
+    y_pred_class = (y_pred > threshold).astype(int)
+    n_exceed = int(y_true_class.sum())
+
+    results: dict[str, float] = {"threshold": threshold, "n_exceed": n_exceed}
+
+    if n_exceed == 0:
+        logger.warning(f"No samples exceed threshold {threshold} µg/m³")
+        results.update({"precision": float("nan"), "recall": float("nan"), "f1": float("nan"), "brier_score": float("nan")})
+        return results
+
+    # Precision, Recall, F1 — manual calc to avoid sklearn import
+    tp = int(((y_true_class == 1) & (y_pred_class == 1)).sum())
+    fp = int(((y_true_class == 0) & (y_pred_class == 1)).sum())
+    fn = int(((y_true_class == 1) & (y_pred_class == 0)).sum())
+
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+
+    # Brier Score — mean squared error of binary classification
+    brier = float(np.mean((y_true_class - y_pred_class) ** 2))
+
+    results.update({
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
+        "f1": round(f1, 4),
+        "brier_score": round(brier, 4),
+    })
+    return results
+
+
+def evaluate_forecast_full(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    y_naive: np.ndarray,
+    model_name: str = "Model",
+    horizon: int | None = None,
+    thresholds: list[float] | None = None,
+) -> dict[str, float | str | dict]:
+    """Full evaluation: regression + classification metrics.
+
+    Extends evaluate_forecast() with threshold classification metrics.
+
+    Args:
+        y_true: Actual values.
+        y_pred: Model predictions.
+        y_naive: Naive baseline predictions.
+        model_name: Name for logging.
+        horizon: Forecast horizon (h).
+        thresholds: PM2.5 thresholds for classification. Default: [25, 35, 50].
+
+    Returns:
+        Dictionary with regression metrics + classification per threshold.
+    """
+    if thresholds is None:
+        thresholds = [25.0, 35.0, 50.0]
+
+    # Regression metrics
+    results = evaluate_forecast(
+        y_true=y_true,
+        y_pred=y_pred,
+        y_naive=y_naive,
+        model_name=model_name,
+        horizon=horizon,
+    )
+
+    # Classification metrics per threshold
+    clf_results = {}
+    for thresh in thresholds:
+        clf = classification_metrics(y_true, y_pred, threshold=thresh)
+        clf_results[f"threshold_{int(thresh)}"] = clf
+        if clf["n_exceed"] > 0:
+            logger.info(
+                f"    {model_name} @ {thresh}µg/m³: "
+                f"P={clf['precision']:.3f} R={clf['recall']:.3f} F1={clf['f1']:.3f} "
+                f"Brier={clf['brier_score']:.4f} (n={clf['n_exceed']})"
+            )
+
+    results["classification"] = clf_results
+    return results

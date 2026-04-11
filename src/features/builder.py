@@ -13,6 +13,7 @@ from loguru import logger
 from src.data.loader import FEATURE_COLS, TARGET_COL
 from src.data.validator import DataValidator
 from src.features.calendar import create_calendar_features
+from src.features.fourier import create_fourier_features
 from src.features.temporal import (
     create_diff_features,
     create_ewm_features,
@@ -29,12 +30,15 @@ def build_features(
     ewm_spans: list[int] | None = None,
     include_feature_lags: bool = True,
     include_feature_rolling: bool = False,
+    include_fourier: bool = True,
+    fourier_order: int = 3,
     drop_na: bool = True,
 ) -> pd.DataFrame:
     """Build all features and produce Marts-ready DataFrame.
 
     Pipeline:
     1. Calendar features (hour, month, cyclical)
+    1.5. Fourier features (daily + weekly seasonality)
     2. Lag features (target + optionally features)
     3. Rolling window statistics
     4. EWM features
@@ -47,6 +51,8 @@ def build_features(
         lag_hours: Custom lag periods. None = use defaults from SKILL.md.
         rolling_windows: Custom rolling windows. None = use defaults.
         rolling_funcs: Custom aggregation functions. None = use defaults.
+        include_fourier: Include Fourier features for seasonality.
+        fourier_order: Number of Fourier harmonics (default 3 → 12 features).
         ewm_spans: Custom EWM spans. None = use defaults.
         include_feature_lags: Create lags for FEATURE_COLS too.
         include_feature_rolling: Create rolling for FEATURE_COLS too.
@@ -64,6 +70,10 @@ def build_features(
 
     # 1. Calendar features
     df = create_calendar_features(df)
+
+    # 1.5. Fourier features (daily + weekly seasonality)
+    if include_fourier:
+        df = create_fourier_features(df, order=fourier_order)
 
     # 2. Lag features
     df = create_lag_features(
@@ -142,7 +152,32 @@ def _create_domain_features(df: pd.DataFrame) -> pd.DataFrame:
     elif TARGET_COL in df.columns:
         logger.warning("Skipping pm25_aqi_cat: pm25_lag_1h not available (would cause leakage)")
 
-    logger.info("Created domain features (anti-leakage: using pm25_lag_1h for ratio/aqi)")
+    # ── Interaction features (inspired by RC) ──
+    # PM2.5 × weather interactions — uses PAST pm25 value
+    if pm25_past_col is not None:
+        if "nhiet_do" in df.columns:
+            df["pm25_x_temp"] = df[pm25_past_col] * df["nhiet_do"]
+        if "do_am" in df.columns:
+            df["pm25_x_humidity"] = df[pm25_past_col] * df["do_am"]
+        # PM2.5 × time interactions
+        if "hour" in df.columns:
+            df["pm25_x_hour"] = df[pm25_past_col] * df["hour"]
+        if "is_night" in df.columns:
+            df["pm25_x_is_night"] = df[pm25_past_col] * df["is_night"]
+        elif "hour" in df.columns:
+            is_night = ((df["hour"] >= 22) | (df["hour"] <= 6)).astype(int)
+            df["pm25_x_is_night"] = df[pm25_past_col] * is_night
+
+    # Weather × weather: Temperature - Dew Point (humidity stress proxy)
+    if "nhiet_do" in df.columns and "diem_suong" in df.columns:
+        df["temp_dew_diff"] = df["nhiet_do"] - df["diem_suong"]
+
+    # PM2.5 relative to 24h rolling mean (deviation indicator)
+    roll_24_col = "pm25_roll_24h_mean"
+    if pm25_past_col is not None and roll_24_col in df.columns:
+        df["pm25_relative_24h"] = df[pm25_past_col] / (df[roll_24_col] + 0.1)
+
+    logger.info("Created domain + interaction features (anti-leakage: using pm25_lag_1h)")
     return df
 
 
@@ -161,6 +196,7 @@ def get_feature_columns(df: pd.DataFrame) -> dict[str, list[str]]:
         "rolling": [c for c in all_cols if "_roll_" in c],
         "ewm": [c for c in all_cols if "_ewm_" in c],
         "diff": [c for c in all_cols if "_diff_" in c or "_pct_change_" in c],
+        "fourier": [c for c in all_cols if c.startswith("fourier_")],
         "calendar": [
             c
             for c in all_cols
@@ -181,6 +217,7 @@ def get_feature_columns(df: pd.DataFrame) -> dict[str, list[str]]:
                 "dow_cos",
             ]
         ],
+        "interaction": [c for c in all_cols if c.startswith("pm25_x_") or c in ["temp_dew_diff", "pm25_relative_24h"]],
         "domain": [c for c in all_cols if c in ["co2_pm25_ratio", "temp_humidity_interaction", "pm25_aqi_cat"]],
     }
 

@@ -5,10 +5,17 @@ Contains:
   - page_actual_vs_predicted: 📊 Actual vs Predicted overlay chart
   - page_experiment_runs: 📋 Experiment history viewer
   - page_training: 🏋️ Interactive model training
+
+Performance Optimizations:
+  - Heavy data pipeline cached with @st.cache_data(ttl=600)
+  - GRU inference uses MPS (Apple Silicon GPU) when available
+  - Actual vs Predicted results cached per horizon
+  - Chunked processing to prevent memory overflow
 """
 
 from __future__ import annotations
 
+import gc
 import json
 from datetime import datetime
 from pathlib import Path
@@ -21,6 +28,7 @@ import streamlit as st
 PROJECT_ROOT = Path(__file__).resolve().parent
 RESEARCH_DIR = PROJECT_ROOT / "research"
 EXPORT_DIR = PROJECT_ROOT / "models" / "exported"
+CACHE_DIR = PROJECT_ROOT / "research" / "cache"
 
 # Reuse design tokens from app.py
 COLORS = {
@@ -58,6 +66,52 @@ def _apply_style(fig, height=450):
         height=height,
     )
     return fig
+
+
+def _get_torch_device() -> str:
+    """Detect best available device: MPS (Apple Silicon) > CUDA > CPU."""
+    try:
+        import torch
+        if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            return "mps"
+        if torch.cuda.is_available():
+            return "cuda"
+    except ImportError:
+        pass
+    return "cpu"
+
+
+@st.cache_data(ttl=600, show_spinner="Đang tải và xử lý dữ liệu...")
+def _cached_pipeline_data():
+    """Cache the heavy data pipeline result (load → clean → impute).
+
+    This is the most expensive operation (~10-20s on first run).
+    Cached for 10 minutes to avoid re-running on every page switch.
+    """
+    from src.data.cleaner import (
+        _clip_physical_bounds,
+        _handle_outliers,
+        _remove_duplicates,
+        _resample,
+        _set_datetime_index,
+    )
+    from src.data.imputer import impute_missing_data
+    from src.data.loader import load_raw_data
+
+    df_raw = load_raw_data()
+    df = _remove_duplicates(df_raw)
+    df = _set_datetime_index(df)
+    df, _ = _clip_physical_bounds(df)
+    df, _ = _handle_outliers(df, method="iqr", threshold=3.0)
+    df = _resample(df, freq="1h")
+    df_hybrid = impute_missing_data(
+        df, strategy="hybrid",
+        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5, verbose=False,
+    )
+    # Free raw data immediately
+    del df_raw, df
+    gc.collect()
+    return df_hybrid
 
 
 def _pm25_color(value: float) -> tuple[str, str]:
@@ -106,20 +160,27 @@ def _detect_available_models() -> list[str]:
 
 @st.cache_data(ttl=300)
 def _cached_sensor_preview():
-    """Load latest sensor data — cached 5 mins to avoid re-loading 209K rows."""
+    """Load latest sensor data — uses cached pipeline to avoid re-loading 209K rows."""
     try:
-        from src.inference.predictor import get_latest_data
-        return get_latest_data(200)
+        df_hybrid = _cached_pipeline_data()
+        return df_hybrid.tail(200)
     except Exception:
         return None
 
 
 @st.cache_data(ttl=300)
 def _cached_suggestion_values() -> dict:
-    """Cached suggestion values to avoid re-loading on every rerun."""
+    """Cached suggestion values — uses cached pipeline data."""
     try:
-        from src.inference.predictor import get_suggestion_values
-        return get_suggestion_values()
+        df_hybrid = _cached_pipeline_data()
+        row = df_hybrid.iloc[-1]
+        return {
+            "pm25": round(float(row.get("pm25", 10.0)), 1),
+            "nhiet_do": round(float(row.get("nhiet_do", 28.0)), 1),
+            "do_am": round(float(row.get("do_am", 75.0)), 1),
+            "diem_suong": round(float(row.get("diem_suong", 24.0)), 1),
+            "co2": round(float(row.get("co2", 400.0)), 1),
+        }
     except Exception:
         return {
             "pm25": 10.0, "nhiet_do": 28.0, "do_am": 75.0,
@@ -209,8 +270,7 @@ def _forecast_auto(model_type: str, horizon: int):
             try:
                 recent = _cached_sensor_preview()
                 if recent is None:
-                    from src.inference.predictor import get_latest_data
-                    recent = get_latest_data(200)
+                    recent = _cached_pipeline_data().tail(200)
 
                 result = _run_prediction(model_type, horizon, recent)
                 _show_forecast_result(result, recent)
@@ -261,8 +321,7 @@ def _forecast_manual(model_type: str, horizon: int):
             try:
                 recent = _cached_sensor_preview()
                 if recent is None:
-                    from src.inference.predictor import get_latest_data
-                    recent = get_latest_data(200)
+                    recent = _cached_pipeline_data().tail(200)
 
                 # Override last row with user values
                 recent = recent.copy()
@@ -281,11 +340,17 @@ def _forecast_manual(model_type: str, horizon: int):
 
 
 def _run_prediction(model_type: str, horizon: int, recent: pd.DataFrame) -> dict:
-    """Run prediction based on model type. Supports GRU, LightGBM, ARIMA."""
+    """Run prediction based on model type.
+
+    Uses MPS (Apple Silicon GPU) for GRU inference when available.
+    Supports GRU, LightGBM, ARIMA.
+    """
+    device = _get_torch_device()
+
     if model_type == "GRU":
         from src.inference.predictor import GRUPredictor
         predictor = GRUPredictor(horizon)
-        return predictor.predict(recent)
+        return predictor.predict(recent, device=device)
 
     elif model_type == "LightGBM":
         from src.features.builder import build_features
@@ -302,7 +367,7 @@ def _run_prediction(model_type: str, horizon: int, recent: pd.DataFrame) -> dict
         stem = model_type.split("user: ")[1].rstrip(")")
         user_path = PROJECT_ROOT / "models" / "user_trained" / f"{stem}.pt"
         predictor = GRUPredictor(horizon, model_dir=user_path.parent)
-        return predictor.predict(recent)
+        return predictor.predict(recent, device=device)
 
     elif model_type.startswith("LightGBM (user:"):
         from src.features.builder import build_features
@@ -319,7 +384,6 @@ def _run_prediction(model_type: str, horizon: int, recent: pd.DataFrame) -> dict
 
 def _predict_arima(recent: pd.DataFrame, horizon: int) -> dict:
     """Fit ARIMA on recent data and forecast."""
-    from datetime import datetime
     from statsmodels.tsa.arima.model import ARIMA
 
     series = recent["pm25"].dropna().values
@@ -395,8 +459,23 @@ def _show_forecast_result(result: dict, recent_data: pd.DataFrame):
 
 
 # ══════════════════════════════════════════════════════════════════════
-# Page: Actual vs Predicted
+# Page: Actual vs Predicted (OPTIMIZED — loads from pre-computed cache)
 # ══════════════════════════════════════════════════════════════════════
+
+
+@st.cache_data(ttl=3600)
+def _load_avp_cache(horizon: int) -> dict | None:
+    """Load pre-computed Actual vs Predicted data from cache file.
+
+    CRITICAL: This replaces live model inference that caused SIGSEGV (exit 139).
+    The heavy computation is done offline by scripts/precompute_avp.py
+    and saved as lightweight JSON files (~100KB each).
+    """
+    cache_file = CACHE_DIR / f"avp_{horizon}h.json"
+    if cache_file.exists():
+        with open(cache_file) as f:
+            return json.load(f)
+    return None
 
 
 def page_actual_vs_predicted(results):
@@ -408,206 +487,108 @@ def page_actual_vs_predicted(results):
     horizon = st.selectbox("⏱️ Chọn horizon", [1, 6, 24], index=1,
                            format_func=lambda x: f"{x} giờ")
 
-    if st.button("📈 Tạo biểu đồ", type="primary"):
-        with st.spinner("Đang tính toán predictions trên test set..."):
-            _generate_actual_vs_predicted(horizon)
+    # Try to load from cache first
+    data = _load_avp_cache(horizon)
 
-
-def _generate_actual_vs_predicted(horizon: int):
-    """Generate actual vs predicted chart for all available models."""
-    try:
-        from sklearn.preprocessing import StandardScaler
-
-        from src.data.cleaner import (
-            _clip_physical_bounds,
-            _handle_outliers,
-            _remove_duplicates,
-            _resample,
-            _set_datetime_index,
+    if data is not None:
+        _render_avp_chart(data, horizon)
+    else:
+        st.warning(
+            f"⚠️ Chưa có dữ liệu cache cho horizon {horizon}h.\n\n"
+            "Chạy lệnh sau để tạo cache:\n\n"
+            "```\nuv run python scripts/precompute_avp.py\n```"
         )
-        from src.data.imputer import impute_missing_data
-        from src.data.loader import TARGET_COL, load_raw_data
-        from src.features.builder import build_features
-
-        # Load data
-        df_raw = load_raw_data()
-        df = _remove_duplicates(df_raw)
-        df = _set_datetime_index(df)
-        df, _ = _clip_physical_bounds(df)
-        df, _ = _handle_outliers(df, method="iqr", threshold=3.0)
-        df = _resample(df, freq="1h")
-        df_hybrid = impute_missing_data(
-            df, strategy="hybrid",
-            max_gap_interp=6, max_gap_ml=24, knn_neighbors=5, verbose=False,
+        st.info(
+            "💡 **Tại sao cần pre-compute?**\n\n"
+            "Trang Actual vs Predicted yêu cầu chạy inference trên toàn bộ test set "
+            "(~800 samples × 2 models). Quá trình này tốn ~30s và sử dụng nhiều bộ nhớ, "
+            "có thể gây crash Streamlit server. Pre-compute chạy offline 1 lần và "
+            "lưu kết quả (~100KB/horizon) để dashboard load tức thì."
         )
 
-        target = df_hybrid[TARGET_COL].values
-        is_imputed = df_hybrid["is_imputed"].values
-        n = len(target)
-        val_end = int(n * 0.9)
 
-        # Actual test values
-        test_actuals = []
-        test_persist = []
-        test_indices = []
-        for i in range(val_end, n - horizon):
-            if is_imputed[i + horizon]:
-                continue
-            test_actuals.append(target[i + horizon])
-            test_persist.append(target[i])
-            test_indices.append(i + horizon)
+def _render_avp_chart(data: dict, horizon: int):
+    """Render the Actual vs Predicted chart from cached data."""
+    test_actuals = np.array(data["actuals"])
+    test_persist = np.array(data["persistence"])
 
-        test_actuals = np.array(test_actuals)
-        test_persist = np.array(test_persist)
+    # ── KPI Summary ──
+    n_test = data.get("n_test", len(test_actuals))
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
+                border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
+                padding: 1rem 1.5rem; margin: 1rem 0;">
+        <span style="color: #8B95A5; font-size: 0.85rem;">
+            📊 Test samples: <b style="color:#00D4AA">{n_test}</b> (real data only) |
+            Horizon: <b style="color:#00D4AA">{horizon}h</b> |
+            Models: <b style="color:#00D4AA">{len(data.get('metrics', []))}</b>
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
 
-        # Create figure
-        fig = go.Figure()
+    fig = go.Figure()
 
-        # Actual
+    # Actual
+    fig.add_trace(go.Scatter(
+        x=list(range(len(test_actuals))),
+        y=test_actuals,
+        name="Actual",
+        line=dict(color="#FAFAFA", width=2.5),
+    ))
+
+    # Persistence
+    fig.add_trace(go.Scatter(
+        x=list(range(len(test_persist))),
+        y=test_persist,
+        name="Persistence",
+        line=dict(color="#8B95A5", width=1.5, dash="dash"),
+    ))
+
+    model_colors = {"GRU": "#00D4AA", "LightGBM": "#FF6B6B"}
+
+    if data.get("gru_preds"):
+        # Filter None values for clean rendering
+        gru_preds = [p if p is not None else np.nan for p in data["gru_preds"]]
         fig.add_trace(go.Scatter(
-            x=list(range(len(test_actuals))),
-            y=test_actuals,
-            name="Actual",
-            line=dict(color="#FAFAFA", width=2.5),
+            x=list(range(len(gru_preds))),
+            y=gru_preds,
+            name=f"GRU ({horizon}h)",
+            line=dict(color=model_colors["GRU"], width=2),
         ))
 
-        # Persistence
+    if data.get("lgbm_preds"):
+        lgbm_preds = [p if p is not None else np.nan for p in data["lgbm_preds"]]
         fig.add_trace(go.Scatter(
-            x=list(range(len(test_persist))),
-            y=test_persist,
-            name="Persistence",
-            line=dict(color="#8B95A5", width=1.5, dash="dash"),
+            x=list(range(len(lgbm_preds))),
+            y=lgbm_preds,
+            name=f"LightGBM ({horizon}h)",
+            line=dict(color=model_colors["LightGBM"], width=2),
         ))
 
-        model_colors = {
-            "GRU": "#00D4AA",
-            "LightGBM": "#FF6B6B",
-        }
+    fig.update_layout(
+        xaxis_title="Test Sample Index",
+        yaxis_title="PM2.5 (µg/m³)",
+        title=f"Actual vs Predicted — Horizon {horizon}h (Test Set, Real Data Only)",
+        legend=dict(orientation="h", y=1.12, x=0.5, xanchor="center"),
+        hovermode="x unified",
+    )
+    fig = _apply_style(fig, height=520)
+    st.plotly_chart(fig, use_container_width=True)
 
-        # ── GRU Predictions ──
-        gru_path = EXPORT_DIR / f"gru_{horizon}h.pt"
-        scaler_path = EXPORT_DIR / f"scalers_{horizon}h.json"
-        if gru_path.exists() and scaler_path.exists():
-            import torch
+    # ── Errors if any ──
+    if data.get("gru_error"):
+        st.warning(f"⚠️ GRU: {data['gru_error']}")
+    if data.get("lgbm_error"):
+        st.warning(f"⚠️ LightGBM: {data['lgbm_error']}")
 
-            model_gru = torch.jit.load(str(gru_path), map_location="cpu")
-            model_gru.eval()
-
-            with open(scaler_path) as f:
-                sc = json.load(f)
-
-            feat_cols_dl = sc["features"]
-            available = [c for c in feat_cols_dl if c in df_hybrid.columns]
-            features = df_hybrid[available].values
-
-            feat_scaler = StandardScaler()
-            train_end = int(n * 0.8)
-            feat_scaler.fit(features[:train_end])
-            features_scaled = feat_scaler.transform(features)
-
-            lb = sc.get("lookback", 72)
-            gru_preds = []
-            gru_valid = []
-            for idx, i in enumerate(range(val_end, n - horizon)):
-                if is_imputed[i + horizon]:
-                    continue
-                if i < lb:
-                    gru_preds.append(np.nan)
-                    gru_valid.append(idx)
-                    continue
-                window = features_scaled[i - lb + 1:i + 1]
-                if len(window) < lb:
-                    gru_preds.append(np.nan)
-                    gru_valid.append(idx)
-                    continue
-                x = torch.FloatTensor(window).unsqueeze(0)
-                with torch.no_grad():
-                    pred_s = model_gru(x).item()
-                pred = pred_s * sc["target_scaler_scale"] + sc["target_scaler_mean"]
-                gru_preds.append(pred)
-
-            fig.add_trace(go.Scatter(
-                x=list(range(len(gru_preds))),
-                y=gru_preds,
-                name=f"GRU ({horizon}h)",
-                line=dict(color=model_colors["GRU"], width=2),
-            ))
-
-        # ── LightGBM Predictions ──
-        lgbm_path = EXPORT_DIR / f"lgbm_{horizon}h.txt"
-        if lgbm_path.exists():
-            import lightgbm as lgb
-
-            booster = lgb.Booster(model_file=str(lgbm_path))
-            df_feat = build_features(df_hybrid)
-            feat_names_path = EXPORT_DIR / f"lgbm_{horizon}h_features.json"
-            if feat_names_path.exists():
-                with open(feat_names_path) as f:
-                    feat_info = json.load(f)
-                feat_cols = [c for c in feat_info["features"] if c in df_feat.columns]
-            else:
-                feat_cols = [c for c in df_feat.columns if c not in [TARGET_COL, "is_imputed"]]
-
-            X_all = df_feat[feat_cols].values
-            lgbm_preds = []
-            idx_counter = 0
-            for i in range(val_end, n - horizon):
-                if is_imputed[i + horizon]:
-                    continue
-                if i < len(X_all):
-                    pred = booster.predict(X_all[i:i + 1])[0]
-                    lgbm_preds.append(pred)
-                else:
-                    lgbm_preds.append(np.nan)
-
-            fig.add_trace(go.Scatter(
-                x=list(range(len(lgbm_preds))),
-                y=lgbm_preds,
-                name=f"LightGBM ({horizon}h)",
-                line=dict(color=model_colors["LightGBM"], width=2),
-            ))
-
-        fig.update_layout(
-            xaxis_title="Test Sample Index",
-            yaxis_title="PM2.5 (µg/m³)",
-            title=f"Actual vs Predicted — Horizon {horizon}h (Test Set, Real Data Only)",
-            legend=dict(orientation="h", y=1.12, x=0.5, xanchor="center"),
-            hovermode="x unified",
-        )
-        fig = _apply_style(fig, height=520)
-        st.plotly_chart(fig, use_container_width=True)
-
-        # ── Metrics summary ──
+    # ── Metrics summary ──
+    if data.get("metrics"):
         st.markdown("### 📋 Tóm tắt Metrics")
-        metrics_rows = [
-            {"Mô hình": "Persistence",
-             "MAE": f"{np.mean(np.abs(test_actuals - test_persist)):.2f}",
-             "MASE": "1,00"}
-        ]
-        if gru_path.exists():
-            gru_arr = np.array([p for p in gru_preds if not np.isnan(p)])
-            gru_mae = np.mean(np.abs(test_actuals[:len(gru_arr)] - gru_arr))
-            persist_mae = np.mean(np.abs(test_actuals - test_persist))
-            metrics_rows.append({
-                "Mô hình": "GRU",
-                "MAE": f"{gru_mae:.2f}",
-                "MASE": f"{gru_mae / persist_mae:.2f}",
-            })
-        if lgbm_path.exists():
-            lgbm_arr = np.array(lgbm_preds)
-            lgbm_mae = np.mean(np.abs(test_actuals[:len(lgbm_arr)] - lgbm_arr))
-            persist_mae = np.mean(np.abs(test_actuals - test_persist))
-            metrics_rows.append({
-                "Mô hình": "LightGBM",
-                "MAE": f"{lgbm_mae:.2f}",
-                "MASE": f"{lgbm_mae / persist_mae:.2f}",
-            })
-
-        st.dataframe(pd.DataFrame(metrics_rows), use_container_width=True, hide_index=True)
-
-    except Exception as e:
-        st.error(f"Lỗi khi tạo biểu đồ: {e}")
-        st.exception(e)
+        st.dataframe(
+            pd.DataFrame(data["metrics"]),
+            use_container_width=True,
+            hide_index=True,
+        )
 
 
 # ══════════════════════════════════════════════════════════════════════

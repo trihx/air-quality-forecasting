@@ -45,6 +45,7 @@ PRESET_QUESTIONS = {
 def _get_knowledge_base():
     """Lazy import and get knowledge base singleton."""
     from src.chatbot.knowledge_base import get_knowledge_base
+
     return get_knowledge_base()
 
 
@@ -61,14 +62,17 @@ def page_ai_assistant(results):
     """Render AI Assistant chatbot page."""
 
     # ── Header ──
-    st.markdown("""
+    st.markdown(
+        """
     <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
         💬 Trợ Lý AI — Hỏi Đáp Dự Án
     </h1>
     <p style="color: #8B95A5; font-size: 1.05rem; margin-bottom: 1rem;">
         Hỏi bất kỳ câu hỏi nào về dự án • Hỗ trợ chuẩn bị phản biện luận văn
     </p>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # ── Connection status ──
     from src.chatbot.llm_client import check_connection, get_available_models
@@ -93,7 +97,12 @@ def page_ai_assistant(results):
     with col_model:
         models = get_available_models()
         if models:
-            st.info(f"🤖 Model: **{models[0]}**")
+            selected_model = st.selectbox(  # noqa: F841
+                "🤖 Chọn Model",
+                models,
+                index=0,
+                key="selected_llm_model",
+            )
         else:
             st.warning("⚠️ Chưa load model trong LM Studio")
 
@@ -121,12 +130,15 @@ def page_ai_assistant(results):
 
     # ── Preset Questions (right panel) ──
     with preset_col:
-        st.markdown("""
+        st.markdown(
+            """
         <div style="font-size: 0.85rem; font-weight: 700; color: #CBD5E0;
                     margin-bottom: 0.75rem;">
             🎓 Câu Hỏi Phản Biện Gợi Ý
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
         for category, questions in PRESET_QUESTIONS.items():
             with st.expander(category, expanded=False):
@@ -155,16 +167,12 @@ def page_ai_assistant(results):
             prompt = st.session_state.pop("pending_question")
 
         # Chat input
-        if user_input := st.chat_input(
-            "Hỏi về dự án, phương pháp, kết quả..."
-        ):
+        if user_input := st.chat_input("Hỏi về dự án, phương pháp, kết quả..."):
             prompt = user_input
 
         if prompt:
             # Add user message
-            st.session_state.chat_messages.append(
-                {"role": "user", "content": prompt}
-            )
+            st.session_state.chat_messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"):
                 st.markdown(prompt)
 
@@ -177,9 +185,7 @@ def page_ai_assistant(results):
                     if results_rag:
                         context_parts = []
                         for r in results_rag:
-                            context_parts.append(
-                                f"[Nguồn: {r['source']}]\n{r['content']}"
-                            )
+                            context_parts.append(f"[Nguồn: {r['source']}]\n{r['content']}")
                             if r["source"] not in sources:
                                 sources.append(r["source"])
                         context = "\n\n---\n\n".join(context_parts)
@@ -191,29 +197,28 @@ def page_ai_assistant(results):
                 from src.chatbot.llm_client import chat_stream
 
                 # Build message history (last 6 messages for context)
-                history = [
-                    {"role": m["role"], "content": m["content"]}
-                    for m in st.session_state.chat_messages[-6:]
-                ]
+                history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.chat_messages[-6:]]
+
+                # Get selected model
+                selected = st.session_state.get("selected_llm_model")
 
                 response = st.write_stream(
-                    chat_stream(messages=history, context=context)
+                    chat_stream(
+                        messages=history,
+                        context=context,
+                        model=selected,
+                    )
                 )
 
                 # Show sources
                 if sources:
-                    source_text = " • ".join(
-                        [f"`{s}`" for s in sources[:3]]
-                    )
+                    source_text = " • ".join([f"`{s}`" for s in sources[:3]])
                     st.caption(f"📎 Nguồn tham khảo: {source_text}")
 
             # Save assistant response
-            st.session_state.chat_messages.append(
-                {"role": "assistant", "content": response}
-            )
+            st.session_state.chat_messages.append({"role": "assistant", "content": response})
 
         # ── Chat controls ──
-        if st.session_state.chat_messages:
-            if st.button("🗑️ Xóa lịch sử chat", type="secondary"):
-                st.session_state.chat_messages = []
-                st.rerun()
+        if st.session_state.chat_messages and st.button("🗑️ Xóa lịch sử chat", type="secondary"):
+            st.session_state.chat_messages = []
+            st.rerun()

@@ -23,7 +23,6 @@ from sklearn.linear_model import Lasso
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-
 from src.data.loader import TARGET_COL
 from src.evaluation.metrics import evaluate_forecast
 from src.evaluation.splitter import temporal_train_val_test_split
@@ -47,9 +46,7 @@ def select_features_by_importance(
     """
     logger.info(f"🔍 Feature Selection: ranking {len(X_train.columns)} features...")
 
-    rf = RandomForestRegressor(
-        n_estimators=100, max_depth=10, random_state=42, n_jobs=-1
-    )
+    rf = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42, n_jobs=-1)
     rf.fit(X_train, y_train)
 
     importances = pd.Series(rf.feature_importances_, index=X_train.columns)
@@ -59,7 +56,7 @@ def select_features_by_importance(
 
     logger.info(f"  Top {top_k} features (cumulative importance = {importances.head(top_k).sum():.3f}):")
     for i, (feat, imp) in enumerate(importances.head(10).items()):
-        logger.info(f"    {i+1:2d}. {feat:<35s} {imp:.4f}")
+        logger.info(f"    {i + 1:2d}. {feat:<35s} {imp:.4f}")
     if top_k > 10:
         logger.info(f"    ... + {top_k - 10} more features")
 
@@ -92,10 +89,12 @@ def tune_lasso_optuna(
         alpha = trial.suggest_float("alpha", 1e-5, 10.0, log=True)
         max_iter = trial.suggest_int("max_iter", 1000, 10000)
 
-        model = Pipeline([
-            ("scaler", StandardScaler()),
-            ("model", Lasso(alpha=alpha, max_iter=max_iter)),
-        ])
+        model = Pipeline(
+            [
+                ("scaler", StandardScaler()),
+                ("model", Lasso(alpha=alpha, max_iter=max_iter)),
+            ]
+        )
 
         cv_maes = []
         for train_idx, val_idx in tscv.split(X_train):
@@ -221,9 +220,7 @@ def main() -> None:
     logger.info(f"📊 Loaded: {len(df):,} rows × {len(df.columns)} cols")
 
     # 2. Temporal Split
-    X_train, X_val, X_test, y_train, y_val, y_test = temporal_train_val_test_split(
-        df, target_col=TARGET_COL
-    )
+    X_train, X_val, X_test, y_train, y_val, y_test = temporal_train_val_test_split(df, target_col=TARGET_COL)
     X_train_full = pd.concat([X_train, X_val])
     y_train_full = pd.concat([y_train, y_val])
     logger.info(f"  Train+Val: {len(X_train_full):,} rows, Test: {len(X_test):,} rows")
@@ -238,9 +235,7 @@ def main() -> None:
     all_results = []
 
     for top_k in [15, 20, 25, 30, 40, 50]:
-        selected_features = select_features_by_importance(
-            X_train_full, y_train_full, top_k=top_k
-        )
+        selected_features = select_features_by_importance(X_train_full, y_train_full, top_k=top_k)
 
         # Ensure pm25_lag_1h is always included (needed for naive baseline)
         if "pm25_lag_1h" not in selected_features:
@@ -250,10 +245,12 @@ def main() -> None:
         X_test_sel = X_test[selected_features]
 
         # Quick Lasso eval with default params on selected features
-        model = Pipeline([
-            ("scaler", StandardScaler()),
-            ("model", Lasso(alpha=0.1, max_iter=5000)),
-        ])
+        model = Pipeline(
+            [
+                ("scaler", StandardScaler()),
+                ("model", Lasso(alpha=0.1, max_iter=5000)),
+            ]
+        )
 
         tscv = TimeSeriesSplit(n_splits=5)
         cv_maes = []
@@ -303,13 +300,13 @@ def main() -> None:
     results = []
 
     # Tuned Lasso
-    tuned_lasso = Pipeline([
-        ("scaler", StandardScaler()),
-        ("model", Lasso(**lasso_result["best_params"])),
-    ])
-    lasso_metrics = evaluate_tuned_model(
-        tuned_lasso, "Lasso_tuned", X_train_sel, y_train_full, X_test_sel, y_test
+    tuned_lasso = Pipeline(
+        [
+            ("scaler", StandardScaler()),
+            ("model", Lasso(**lasso_result["best_params"])),
+        ]
     )
+    lasso_metrics = evaluate_tuned_model(tuned_lasso, "Lasso_tuned", X_train_sel, y_train_full, X_test_sel, y_test)
     lasso_metrics["tuning"] = lasso_result
     results.append(lasso_metrics)
 
@@ -319,19 +316,19 @@ def main() -> None:
     lgbm_params["verbose"] = -1
     lgbm_params["n_jobs"] = -1
     tuned_lgbm = lgb.LGBMRegressor(**lgbm_params)
-    lgbm_metrics = evaluate_tuned_model(
-        tuned_lgbm, "LightGBM_tuned", X_train_sel, y_train_full, X_test_sel, y_test
-    )
+    lgbm_metrics = evaluate_tuned_model(tuned_lgbm, "LightGBM_tuned", X_train_sel, y_train_full, X_test_sel, y_test)
     lgbm_metrics["tuning"] = lgbm_result
     results.append(lgbm_metrics)
 
     # Also evaluate with ALL features (no selection) for comparison
     logger.info("\n--- Comparison: Tuned models on ALL features ---")
 
-    tuned_lasso_all = Pipeline([
-        ("scaler", StandardScaler()),
-        ("model", Lasso(**lasso_result["best_params"])),
-    ])
+    tuned_lasso_all = Pipeline(
+        [
+            ("scaler", StandardScaler()),
+            ("model", Lasso(**lasso_result["best_params"])),
+        ]
+    )
     lasso_all_metrics = evaluate_tuned_model(
         tuned_lasso_all, "Lasso_tuned_all", X_train_full, y_train_full, X_test, y_test
     )
@@ -347,13 +344,11 @@ def main() -> None:
     logger.info("\n" + "=" * 60)
     logger.info("📋 FINAL RESULTS — Feature Selection + Tuning")
     logger.info("=" * 60)
-    logger.info(f"  Persistence baseline:  MAE=1.821, MASE=1.000")
+    logger.info("  Persistence baseline:  MAE=1.821, MASE=1.000")
 
     for r in sorted(results, key=lambda x: x["mae"]):
         beat = "🏆 BEATS BASELINE" if r["mase"] < 1.0 else "❌ MASE>1"
-        logger.info(
-            f"  {r['model']:<22s} | MAE={r['mae']:<8} | MASE={r['mase']:<8} | {beat}"
-        )
+        logger.info(f"  {r['model']:<22s} | MAE={r['mae']:<8} | MASE={r['mase']:<8} | {beat}")
 
     # 7. Save results
     output_dir = Path("research/experiments/tuning")
@@ -369,10 +364,7 @@ def main() -> None:
                     "method": "RandomForest importance",
                     "best_top_k": best_k,
                     "selected_features": best_features,
-                    "feature_search": [
-                        {"top_k": r["top_k"], "cv_mae": r["cv_mae"]}
-                        for r in all_results
-                    ],
+                    "feature_search": [{"top_k": r["top_k"], "cv_mae": r["cv_mae"]} for r in all_results],
                 },
                 "lasso_tuning": lasso_result,
                 "lightgbm_tuning": lgbm_result,

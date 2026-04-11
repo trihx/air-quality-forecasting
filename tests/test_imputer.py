@@ -6,7 +6,6 @@ Each test has verbose output to show progress.
 import numpy as np
 import pandas as pd
 import pytest
-
 from src.data.imputer import (
     _build_knn_features,
     _cubic_spline_fill,
@@ -15,8 +14,7 @@ from src.data.imputer import (
     impute_missing_data,
     split_real_imputed,
 )
-from src.data.loader import FEATURE_COLS, TARGET_COL
-
+from src.data.loader import TARGET_COL
 
 # ── Fixtures ──
 
@@ -56,7 +54,7 @@ def hourly_data_with_gaps() -> pd.DataFrame:
 
     total_nan = df[TARGET_COL].isna().sum()
     print(f"  [fixture] Data: {n} rows, {total_nan} NaN PM2.5 values", flush=True)
-    print(f"  [fixture] Gaps: 3h, 8h, 18h, 30h", flush=True)
+    print("  [fixture] Gaps: 3h, 8h, 18h, 30h", flush=True)
     return df
 
 

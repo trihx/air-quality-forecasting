@@ -12,7 +12,7 @@ from src.data.loader import FEATURE_COLS, TARGET_COL
 # Default feature specs from SKILL.md §5.1
 LAG_FEATURES = [1, 2, 3, 6, 12, 24, 48, 168]  # hours
 ROLLING_WINDOWS = [3, 6, 12, 24, 48, 168]  # hours
-ROLLING_FUNCS = ["mean", "std", "min", "max"]
+ROLLING_FUNCS = ["mean", "std", "min", "max", "range"]
 EWM_SPANS = [12, 24, 48]  # hours
 
 
@@ -98,6 +98,10 @@ def create_rolling_features(
                     df[col_name] = shifted.rolling(window=window, min_periods=1).min()
                 elif func == "max":
                     df[col_name] = shifted.rolling(window=window, min_periods=1).max()
+                elif func == "range":
+                    roll_max = shifted.rolling(window=window, min_periods=1).max()
+                    roll_min = shifted.rolling(window=window, min_periods=1).min()
+                    df[col_name] = roll_max - roll_min
                 n_created += 1
 
     logger.info(f"Created {n_created} rolling features (windows={windows}, funcs={funcs})")

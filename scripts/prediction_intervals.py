@@ -65,8 +65,11 @@ def prepare_data():
     df = _resample(df, freq="1h")
 
     df_hybrid = impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
         verbose=True,
     )
     return df_hybrid
@@ -75,11 +78,7 @@ def prepare_data():
 def prepare_ml_data(df_hybrid, horizon):
     """Build features and split for ML models."""
     df_feat = build_features(df_hybrid)
-    is_imputed = (
-        df_feat["is_imputed"].values
-        if "is_imputed" in df_feat.columns
-        else np.zeros(len(df_feat), dtype=bool)
-    )
+    is_imputed = df_feat["is_imputed"].values if "is_imputed" in df_feat.columns else np.zeros(len(df_feat), dtype=bool)
 
     feature_cols = [c for c in df_feat.columns if c not in [TARGET_COL, "is_imputed"]]
     X = df_feat[feature_cols].values
@@ -121,10 +120,17 @@ def conformal_prediction_lgbm(X, y, train_end, val_end, test_mask, horizon, alph
 
     # Train LightGBM
     model = lgb.LGBMRegressor(
-        n_estimators=300, max_depth=3, learning_rate=0.01,
-        subsample=0.8, colsample_bytree=0.6,
-        min_child_samples=30, reg_alpha=0.05, reg_lambda=0.5,
-        num_leaves=64, verbose=-1, n_jobs=-1,
+        n_estimators=300,
+        max_depth=3,
+        learning_rate=0.01,
+        subsample=0.8,
+        colsample_bytree=0.6,
+        min_child_samples=30,
+        reg_alpha=0.05,
+        reg_lambda=0.5,
+        num_leaves=64,
+        verbose=-1,
+        n_jobs=-1,
     )
     model.fit(X_train, y_train)
 
@@ -184,28 +190,27 @@ def quantile_regression_lgbm(X, y, train_end, val_end, test_mask, horizon, alpha
     X_test, y_test = X[test_mask], y[test_mask]
 
     base_params = {
-        "n_estimators": 300, "max_depth": 3, "learning_rate": 0.01,
-        "subsample": 0.8, "colsample_bytree": 0.6,
-        "min_child_samples": 30, "num_leaves": 64,
-        "verbose": -1, "n_jobs": -1,
+        "n_estimators": 300,
+        "max_depth": 3,
+        "learning_rate": 0.01,
+        "subsample": 0.8,
+        "colsample_bytree": 0.6,
+        "min_child_samples": 30,
+        "num_leaves": 64,
+        "verbose": -1,
+        "n_jobs": -1,
     }
 
     # Lower quantile
-    model_lower = lgb.LGBMRegressor(
-        objective="quantile", alpha=alpha / 2, **base_params
-    )
+    model_lower = lgb.LGBMRegressor(objective="quantile", alpha=alpha / 2, **base_params)
     model_lower.fit(X_train, y_train)
 
     # Upper quantile
-    model_upper = lgb.LGBMRegressor(
-        objective="quantile", alpha=1 - alpha / 2, **base_params
-    )
+    model_upper = lgb.LGBMRegressor(objective="quantile", alpha=1 - alpha / 2, **base_params)
     model_upper.fit(X_train, y_train)
 
     # Median
-    model_median = lgb.LGBMRegressor(
-        objective="quantile", alpha=0.5, **base_params
-    )
+    model_median = lgb.LGBMRegressor(objective="quantile", alpha=0.5, **base_params)
     model_median.fit(X_train, y_train)
 
     lower = model_lower.predict(X_test)
@@ -253,9 +258,7 @@ def mc_dropout_gru(df_hybrid, horizon, alpha=ALPHA):
     features = df_hybrid[available].values
     target = df_hybrid[TARGET_COL].values
     is_imputed = (
-        df_hybrid["is_imputed"].values
-        if "is_imputed" in df_hybrid.columns
-        else np.zeros(len(df_hybrid), dtype=bool)
+        df_hybrid["is_imputed"].values if "is_imputed" in df_hybrid.columns else np.zeros(len(df_hybrid), dtype=bool)
     )
 
     n = len(features)
@@ -287,7 +290,7 @@ def mc_dropout_gru(df_hybrid, horizon, alpha=ALPHA):
 
         def __getitem__(self, idx):
             i = self.indices[idx]
-            x = self.feats[i: i + self.lb]
+            x = self.feats[i : i + self.lb]
             y = self.tgts[i + self.lb + self.h - 1]
             return torch.FloatTensor(x), torch.FloatTensor([y])
 
@@ -297,7 +300,9 @@ def mc_dropout_gru(df_hybrid, horizon, alpha=ALPHA):
             super().__init__()
             self.gru = nn.GRU(input_dim, hidden, layers, dropout=drop if layers > 1 else 0, batch_first=True)
             self.fc = nn.Sequential(
-                nn.Linear(hidden, hidden // 2), nn.ReLU(), nn.Dropout(drop),
+                nn.Linear(hidden, hidden // 2),
+                nn.ReLU(),
+                nn.Dropout(drop),
                 nn.Linear(hidden // 2, 1),
             )
 
@@ -445,7 +450,10 @@ def plot_intervals(results, fig_dir):
 
         fig, ax = plt.subplots(figsize=(12, 4))
         ax.fill_between(
-            x, r["lower"], r["upper"], alpha=0.3,
+            x,
+            r["lower"],
+            r["upper"],
+            alpha=0.3,
             color="steelblue",
             label=f"{(1 - r['alpha']) * 100:.0f}% PI",
         )

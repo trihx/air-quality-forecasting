@@ -19,11 +19,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy import stats
-from loguru import logger
-
 from src.data.cleaner import (
-    _clip_physical_bounds, _handle_outliers,
-    _remove_duplicates, _resample, _set_datetime_index,
+    _clip_physical_bounds,
+    _handle_outliers,
+    _remove_duplicates,
+    _resample,
+    _set_datetime_index,
 )
 from src.data.imputer import impute_missing_data
 from src.data.loader import TARGET_COL, load_raw_data
@@ -107,13 +108,19 @@ def _prepare_hybrid_data() -> pd.DataFrame:
     df, _ = _handle_outliers(df, method="iqr", threshold=3.0)
     df = _resample(df, freq="1h")
     return impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5, verbose=True,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
+        verbose=True,
     )
 
 
 def _generate_predictions(
-    df_feat: pd.DataFrame, df_hybrid: pd.DataFrame, horizon: int,
+    df_feat: pd.DataFrame,
+    df_hybrid: pd.DataFrame,
+    horizon: int,
 ) -> dict:
     """Generate predictions from LightGBM and GRU for a given horizon."""
     from lightgbm import LGBMRegressor
@@ -125,9 +132,7 @@ def _generate_predictions(
     df = df.dropna(subset=["target"])
 
     exclude = ["is_imputed", TARGET_COL, "target", "_persist"]
-    feature_cols = [c for c in df.columns
-                    if c not in exclude
-                    and df[c].dtype in ("float64", "float32", "int64")]
+    feature_cols = [c for c in df.columns if c not in exclude and df[c].dtype in ("float64", "float32", "int64")]
 
     X = df[feature_cols].fillna(0)
     y = df["target"]
@@ -153,9 +158,15 @@ def _generate_predictions(
     # Train LightGBM
     print(f"  Training LightGBM ({horizon}h)...", flush=True)
     model = LGBMRegressor(
-        n_estimators=300, learning_rate=0.05, max_depth=8,
-        num_leaves=31, subsample=0.8, colsample_bytree=0.8,
-        min_child_samples=20, verbose=-1, n_jobs=-1,
+        n_estimators=300,
+        learning_rate=0.05,
+        max_depth=8,
+        num_leaves=31,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        min_child_samples=20,
+        verbose=-1,
+        n_jobs=-1,
     )
     model.fit(X_train, y_train)
     lgbm_pred = model.predict(X_test_real)
@@ -214,14 +225,14 @@ def _train_gru_predict(df_hybrid: pd.DataFrame, horizon: int) -> np.ndarray:
 
     valid_range = n - horizon - lookback
     indices = np.arange(lookback, lookback + valid_range)
-    X_all = np.stack([feat_norm[i - lookback:i] for i in indices])
+    X_all = np.stack([feat_norm[i - lookback : i] for i in indices])
     y_all = target_norm[indices + horizon]
     imp_all = is_imputed[indices + horizon]
 
     tr_idx = train_end - lookback
     te_idx = val_end - lookback
     X_train, y_train = X_all[:tr_idx], y_all[:tr_idx]
-    X_test, y_test = X_all[te_idx:], y_all[te_idx:]
+    X_test, _y_test = X_all[te_idx:], y_all[te_idx:]
     imp_test = imp_all[te_idx:]
     real_mask = ~imp_test
 
@@ -241,7 +252,10 @@ def _train_gru_predict(df_hybrid: pd.DataFrame, horizon: int) -> np.ndarray:
     model = GRUModel(len(feat_cols)).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode="min", factor=0.5, patience=5,
+        optimizer,
+        mode="min",
+        factor=0.5,
+        patience=5,
     )
     loss_fn = nn.MSELoss()
 
@@ -258,7 +272,7 @@ def _train_gru_predict(df_hybrid: pd.DataFrame, horizon: int) -> np.ndarray:
             nb += 1
         scheduler.step(epoch_loss / nb)
         if (epoch + 1) % 25 == 0:
-            print(f"      GRU Epoch {epoch+1}/50: loss={epoch_loss/nb:.4f}", flush=True)
+            print(f"      GRU Epoch {epoch + 1}/50: loss={epoch_loss / nb:.4f}", flush=True)
 
     model.eval()
     X_te = torch.from_numpy(X_test[real_mask]).to(device)
@@ -270,6 +284,7 @@ def _train_gru_predict(df_hybrid: pd.DataFrame, horizon: int) -> np.ndarray:
 # ═══════════════════════════════════════════════════════════════
 # DIEBOLD-MARIANO TEST
 # ═══════════════════════════════════════════════════════════════
+
 
 def _diebold_mariano(e1: np.ndarray, e2: np.ndarray, h: int = 1) -> dict:
     """Diebold-Mariano test for predictive accuracy.
@@ -365,9 +380,11 @@ def _diebold_mariano_tests(preds: dict, horizon: int) -> dict:
 # RESIDUAL DIAGNOSTICS
 # ═══════════════════════════════════════════════════════════════
 
+
 def _residual_diagnostics(preds: dict, horizon: int) -> dict:
     """Residual diagnostics: Ljung-Box, normality, ACF."""
     import matplotlib
+
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     from statsmodels.stats.diagnostic import acorr_ljungbox
@@ -413,7 +430,7 @@ def _residual_diagnostics(preds: dict, horizon: int) -> dict:
 
         # ── Normality tests ──
         if n > 8:
-            shapiro_stat, shapiro_p = stats.shapiro(residuals[:min(5000, n)])
+            shapiro_stat, shapiro_p = stats.shapiro(residuals[: min(5000, n)])
             jb_stat, jb_p = stats.jarque_bera(residuals)
             print(f"    Shapiro-Wilk: W={shapiro_stat:.4f}, p={shapiro_p:.6f}", flush=True)
             print(f"    Jarque-Bera:  JB={jb_stat:.2f}, p={jb_p:.6f}", flush=True)
@@ -453,6 +470,7 @@ def _residual_diagnostics(preds: dict, horizon: int) -> dict:
 
         # ACF of residuals
         from statsmodels.graphics.tsaplots import plot_acf
+
         plot_acf(residuals, lags=min(30, n // 3), ax=axes[2], alpha=0.05)
         axes[2].set_title(f"ACF of Residuals — {model_name} ({horizon}h)")
 

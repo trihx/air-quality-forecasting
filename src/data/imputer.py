@@ -6,7 +6,7 @@ Strategies:
     C. ml_impute: KNN-based multivariate imputation
     D. hybrid: Tiered approach (Spline ≤6h, KNN 6-24h, Drop >24h)
 
-CRITICAL RULE: Test data MUST be real (non-imputed) only. 
+CRITICAL RULE: Test data MUST be real (non-imputed) only.
 Imputed data is labeled via `is_imputed` column for tracking.
 """
 
@@ -49,7 +49,10 @@ def impute_missing_data(
     Returns:
         DataFrame with imputed values and `is_imputed` column.
     """
-    _log = lambda msg: print(f"  [Imputer] {msg}", flush=True) if verbose else None
+
+    def _log(msg: str) -> None:
+        if verbose:
+            print(f"  [Imputer] {msg}", flush=True)
 
     _log(f"Strategy: {strategy}")
     _log(f"Input: {len(df):,} rows, {df[TARGET_COL].isna().sum():,} missing PM2.5")
@@ -66,9 +69,7 @@ def impute_missing_data(
     elif strategy == "extended_interp":
         df = _strategy_extended_interp(df, max_gap=max_gap_interp, verbose=verbose)
     elif strategy == "ml_impute":
-        df = _strategy_ml_impute(
-            df, max_gap=max_gap_ml, knn_neighbors=knn_neighbors, verbose=verbose
-        )
+        df = _strategy_ml_impute(df, max_gap=max_gap_ml, knn_neighbors=knn_neighbors, verbose=verbose)
     elif strategy == "hybrid":
         df = _strategy_hybrid(
             df,
@@ -125,17 +126,16 @@ def _strategy_segment_only(
     verbose: bool = True,
 ) -> pd.DataFrame:
     """Drop all gaps > max_gap. Interpolate only very short gaps (≤2h)."""
-    _log = lambda msg: print(f"    [A-SegmentOnly] {msg}", flush=True) if verbose else None
+
+    def _log(msg: str) -> None:
+        if verbose:
+            print(f"    [A-SegmentOnly] {msg}", flush=True)
 
     _log(f"Interpolating gaps ≤{max_gap}h, dropping rest")
-    df[TARGET_COL] = df[TARGET_COL].interpolate(
-        method="linear", limit=max_gap, limit_direction="forward"
-    )
+    df[TARGET_COL] = df[TARGET_COL].interpolate(method="linear", limit=max_gap, limit_direction="forward")
     for col in FEATURE_COLS:
         if col in df.columns:
-            df[col] = df[col].interpolate(
-                method="linear", limit=max_gap, limit_direction="forward"
-            )
+            df[col] = df[col].interpolate(method="linear", limit=max_gap, limit_direction="forward")
 
     n_still_nan = df[TARGET_COL].isna().sum()
     _log(f"Remaining NaN after interp: {n_still_nan:,}")
@@ -153,7 +153,10 @@ def _strategy_extended_interp(
     verbose: bool = True,
 ) -> pd.DataFrame:
     """Extend interpolation window to fill longer gaps."""
-    _log = lambda msg: print(f"    [B-ExtInterp] {msg}", flush=True) if verbose else None
+
+    def _log(msg: str) -> None:
+        if verbose:
+            print(f"    [B-ExtInterp] {msg}", flush=True)
 
     _log(f"Cubic spline interpolation, max_gap={max_gap}h")
 
@@ -184,7 +187,10 @@ def _strategy_ml_impute(
     ANTI-LEAKAGE: Does NOT use pm25 lag features to impute pm25.
     Uses only: nhiet_do, do_am, diem_suong, co2, hour_of_day, day_of_week.
     """
-    _log = lambda msg: print(f"    [C-MLImpute] {msg}", flush=True) if verbose else None
+
+    def _log(msg: str) -> None:
+        if verbose:
+            print(f"    [C-MLImpute] {msg}", flush=True)
 
     # Identify gaps that are within max_gap limit
     gap_info = _identify_gaps(df[TARGET_COL])
@@ -204,8 +210,11 @@ def _strategy_ml_impute(
     # Fit KNN on complete rows, predict missing
     _log(f"Fitting KNN (k={knn_neighbors})...")
     df = _apply_knn_imputation(
-        df, features_for_knn, gap_info=fillable,
-        n_neighbors=knn_neighbors, verbose=verbose,
+        df,
+        features_for_knn,
+        gap_info=fillable,
+        n_neighbors=knn_neighbors,
+        verbose=verbose,
     )
 
     n_still_nan = df[TARGET_COL].isna().sum()
@@ -230,7 +239,10 @@ def _strategy_hybrid(
     - Gap max_gap_interp < x ≤ max_gap_ml: KNN imputation
     - Gap > max_gap_ml: Drop
     """
-    _log = lambda msg: print(f"    [D-Hybrid] {msg}", flush=True) if verbose else None
+
+    def _log(msg: str) -> None:
+        if verbose:
+            print(f"    [D-Hybrid] {msg}", flush=True)
 
     # Phase 1: Cubic Spline for short gaps
     _log(f"Phase 1: Cubic Spline for gaps ≤{max_gap_interp}h")
@@ -243,16 +255,17 @@ def _strategy_hybrid(
 
     # Phase 2: KNN for medium gaps
     gap_info = _identify_gaps(df[TARGET_COL])
-    medium_gaps = gap_info[
-        (gap_info["length"] > 0) & (gap_info["length"] <= max_gap_ml)
-    ]
+    medium_gaps = gap_info[(gap_info["length"] > 0) & (gap_info["length"] <= max_gap_ml)]
 
     if len(medium_gaps) > 0:
         _log(f"Phase 2: KNN for {len(medium_gaps)} medium gaps ({medium_gaps['length'].sum()}h)")
         features_for_knn = _build_knn_features(df)
         df = _apply_knn_imputation(
-            df, features_for_knn, gap_info=medium_gaps,
-            n_neighbors=knn_neighbors, verbose=verbose,
+            df,
+            features_for_knn,
+            gap_info=medium_gaps,
+            n_neighbors=knn_neighbors,
+            verbose=verbose,
         )
     else:
         _log("Phase 2: No medium gaps to fill")
@@ -267,9 +280,7 @@ def _strategy_hybrid(
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
-def _cubic_spline_fill(
-    series: pd.Series, max_gap: int = 6
-) -> pd.Series:
+def _cubic_spline_fill(series: pd.Series, max_gap: int = 6) -> pd.Series:
     """Fill NaN gaps using Cubic Spline, respecting max_gap limit.
 
     Only fills gaps of length ≤ max_gap.
@@ -337,12 +348,14 @@ def _identify_gaps(series: pd.Series) -> pd.DataFrame:
     records = []
     for gid, indices in gap_groups.groupby(gap_groups).groups.items():
         idx_positions = [series.index.get_loc(i) for i in indices]
-        records.append({
-            "group_id": gid,
-            "start_idx": min(idx_positions),
-            "end_idx": max(idx_positions),
-            "length": len(idx_positions),
-        })
+        records.append(
+            {
+                "group_id": gid,
+                "start_idx": min(idx_positions),
+                "end_idx": max(idx_positions),
+                "length": len(idx_positions),
+            }
+        )
 
     return pd.DataFrame(records)
 
@@ -383,7 +396,10 @@ def _apply_knn_imputation(
 
     Uses auxiliary features + temporal features to predict missing PM2.5.
     """
-    _log = lambda msg: print(f"      [KNN] {msg}", flush=True) if verbose else None
+
+    def _log(msg: str) -> None:
+        if verbose:
+            print(f"      [KNN] {msg}", flush=True)
 
     df = df.copy()
 

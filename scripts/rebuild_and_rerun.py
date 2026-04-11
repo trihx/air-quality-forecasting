@@ -52,8 +52,8 @@ leakage_found = False
 # Check diff features
 if "pm25_diff_1h" in df_features.columns and "pm25_lag_1h" in df_features.columns:
     d = df_features["pm25_diff_1h"]
-    l = df_features["pm25_lag_1h"]
-    recon = d + l
+    lag_val = df_features["pm25_lag_1h"]
+    recon = d + lag_val
     valid = recon.notna()
     if valid.any() and np.allclose(recon[valid], target[valid], rtol=1e-10):
         print("  🔴 LEAKAGE STILL PRESENT: diff_1h + lag_1h = target!", flush=True)

@@ -11,8 +11,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from loguru import logger
-
-from src.data.loader import FEATURE_COLS, TARGET_COL
+from src.data.loader import TARGET_COL
 
 
 @pytest.fixture
@@ -89,7 +88,7 @@ class TestNoTargetLeakage:
                 leaky_diffs.append((col, corr))
 
         assert not leaky_diffs, (
-            f"Diff features suspiciously correlated with target (likely contain y[t]):\n"
+            "Diff features suspiciously correlated with target (likely contain y[t]):\n"
             + "\n".join(f"  {c}: corr={v:.4f}" for c, v in leaky_diffs)
         )
 
@@ -110,7 +109,7 @@ class TestNoTargetLeakage:
                     leaky.append((col, corr))
 
         assert not leaky, (
-            f"Domain features likely use current target value:\n"
+            "Domain features likely use current target value:\n"
             + "\n".join(f"  {c}: corr={v:.4f}" for c, v in leaky)
         )
 
@@ -158,7 +157,7 @@ class TestTemporalIntegrity:
                 suspicious.append((col, corr))
 
         assert not suspicious, (
-            f"Rolling features may include current value (shift needed):\n"
+            "Rolling features may include current value (shift needed):\n"
             + "\n".join(f"  {c}: corr={v:.4f}" for c, v in suspicious)
         )
 

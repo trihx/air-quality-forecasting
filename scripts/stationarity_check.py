@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 import matplotlib
+
 matplotlib.use("Agg")  # Non-interactive backend
 
 import matplotlib.pyplot as plt
@@ -64,17 +65,14 @@ def run_kpss_test(series: pd.Series, name: str, regression: str = "c") -> dict:
     series_clean = series.dropna()
     # KPSS may warn about p-value bounds; that's expected
     import warnings
+
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=InterpolationWarning)
         try:
-            stat, p_value, n_lags, critical_values = kpss(
-                series_clean, regression=regression, nlags="auto"
-            )
+            stat, p_value, n_lags, critical_values = kpss(series_clean, regression=regression, nlags="auto")
         except Exception:
             # Fallback without nlags="auto"
-            stat, p_value, n_lags, critical_values = kpss(
-                series_clean, regression=regression
-            )
+            stat, p_value, n_lags, critical_values = kpss(series_clean, regression=regression)
 
     is_stationary = p_value >= 0.05  # KPSS: H0 = stationary
 

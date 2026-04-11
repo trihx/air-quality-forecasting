@@ -14,8 +14,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from loguru import logger
-
 from src.data.cleaner import (
     _clip_physical_bounds,
     _handle_outliers,
@@ -27,11 +25,10 @@ from src.data.imputer import (
     Strategy,
     get_imputation_stats,
     impute_missing_data,
-    split_real_imputed,
 )
-from src.data.loader import FEATURE_COLS, TARGET_COL, load_raw_data
-from src.features.builder import build_features
+from src.data.loader import TARGET_COL, load_raw_data
 from src.evaluation.metrics import evaluate_forecast
+from src.features.builder import build_features
 
 # ── Paths ──
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -92,9 +89,12 @@ def main() -> None:
         results[strategy] = stats
         datasets[strategy] = df_imputed
 
-        print(f"\n  ✅ {strategy}: {stats['total']:,} rows "
-              f"({stats['real']:,} real + {stats['imputed']:,} imputed) "
-              f"in {elapsed:.1f}s", flush=True)
+        print(
+            f"\n  ✅ {strategy}: {stats['total']:,} rows "
+            f"({stats['real']:,} real + {stats['imputed']:,} imputed) "
+            f"in {elapsed:.1f}s",
+            flush=True,
+        )
 
     # ── Step 3: Build features for each dataset ──
     print(f"\n{'─' * 70}", flush=True)
@@ -120,8 +120,7 @@ def main() -> None:
 
             elapsed = time.time() - t0
             feature_datasets[strategy] = df_feat
-            print(f"  ✅ {strategy}: {len(df_feat):,} rows × {len(df_feat.columns)} cols "
-                  f"({elapsed:.1f}s)", flush=True)
+            print(f"  ✅ {strategy}: {len(df_feat):,} rows × {len(df_feat.columns)} cols ({elapsed:.1f}s)", flush=True)
             results[strategy]["n_features_rows"] = len(df_feat)
             results[strategy]["n_features_cols"] = len(df_feat.columns)
         except Exception as e:
@@ -135,7 +134,7 @@ def main() -> None:
     print(f"{'─' * 70}", flush=True)
 
     try:
-        import lightgbm as lgb
+        import lightgbm as lgb  # noqa: F401
     except ImportError:
         print("  ❌ LightGBM not installed. Skipping model comparison.", flush=True)
         _save_results(results)
@@ -149,8 +148,7 @@ def main() -> None:
             metrics = _train_and_evaluate(df_feat, strategy, verbose=True)
             results[strategy]["metrics"] = metrics
             elapsed = time.time() - t0
-            print(f"  ✅ {strategy}: MAE={metrics['mae']:.3f}, "
-                  f"MASE={metrics['mase']:.3f} ({elapsed:.1f}s)", flush=True)
+            print(f"  ✅ {strategy}: MAE={metrics['mae']:.3f}, MASE={metrics['mase']:.3f} ({elapsed:.1f}s)", flush=True)
         except Exception as e:
             print(f"  ❌ {strategy}: Training failed: {e}", flush=True)
             results[strategy]["error"] = str(e)
@@ -159,23 +157,26 @@ def main() -> None:
     print(f"\n{'═' * 70}", flush=True)
     print("[5/6] STRATEGY COMPARISON SUMMARY", flush=True)
     print(f"{'═' * 70}", flush=True)
-    print(f"\n{'Strategy':<20} {'Total':>7} {'Real':>7} {'Imputed':>8} "
-          f"{'MAE':>8} {'MASE':>8} {'Status':>10}", flush=True)
+    print(
+        f"\n{'Strategy':<20} {'Total':>7} {'Real':>7} {'Imputed':>8} {'MAE':>8} {'MASE':>8} {'Status':>10}", flush=True
+    )
     print("─" * 70, flush=True)
 
     for strategy, stats in results.items():
         mae = stats.get("metrics", {}).get("mae", float("nan"))
         mase = stats.get("metrics", {}).get("mase", float("nan"))
         status = "✅ PASS" if mase < 1.0 else "❌ MASE>1"
-        print(f"{strategy:<20} {stats['total']:>7,} {stats['real']:>7,} "
-              f"{stats['imputed']:>8,} {mae:>8.3f} {mase:>8.3f} {status:>10}", flush=True)
+        print(
+            f"{strategy:<20} {stats['total']:>7,} {stats['real']:>7,} "
+            f"{stats['imputed']:>8,} {mae:>8.3f} {mase:>8.3f} {status:>10}",
+            flush=True,
+        )
 
     # Persistence baseline
-    print(f"{'persistence':<20} {'─':>7} {'─':>7} {'─':>8} "
-          f"{'1.821':>8} {'1.000':>8} {'baseline':>10}", flush=True)
+    print(f"{'persistence':<20} {'─':>7} {'─':>7} {'─':>8} {'1.821':>8} {'1.000':>8} {'baseline':>10}", flush=True)
 
     # ── Step 6: Save results ──
-    print(f"\n[6/6] Saving results...", flush=True)
+    print("\n[6/6] Saving results...", flush=True)
     _save_results(results)
 
     total_time = time.time() - t_start
@@ -197,7 +198,8 @@ def _train_and_evaluate(
     """
     import lightgbm as lgb
 
-    _log = lambda msg: print(f"    [{strategy_name}] {msg}", flush=True) if verbose else None
+    def _log(msg):
+        return print(f"    [{strategy_name}] {msg}", flush=True) if verbose else None
 
     # Separate features and target
     exclude_cols = ["is_imputed", TARGET_COL]

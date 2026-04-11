@@ -15,10 +15,7 @@ Reference papers:
 """
 
 import numpy as np
-import pytest
-
-from src.evaluation.metrics import evaluate_forecast, mae, mase, rmse
-
+from src.evaluation.metrics import mae, mase, rmse
 
 # ══════════════════════════════════════════════════════════════════
 # 1. MASE Formula Correctness (Hyndman & Koehler 2006)
@@ -349,7 +346,6 @@ class TestDataIntegrity:
         import pandas as pd
         n = 1000
         idx = pd.date_range("2023-01-01", periods=n, freq="1h")
-        y = np.random.randn(n) * 5 + 20
 
         tr_end = int(n * 0.8)
         val_end = int(n * 0.9)

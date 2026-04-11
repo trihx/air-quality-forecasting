@@ -25,6 +25,7 @@ dependencies = [
     "statsmodels>=0.14.6",
     "streamlit>=1.56.0",
     "torch>=2.11.0",
+    "watchdog>=6.0.0",
     "xgboost>=3.2.0",
 ]
 

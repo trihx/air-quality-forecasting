@@ -22,8 +22,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from loguru import logger
-
 from src.data.cleaner import (
     _clip_physical_bounds,
     _handle_outliers,
@@ -49,7 +47,7 @@ ARIMA_WINDOW = 720  # 30 days — balance between accuracy and speed
 # How many test points to evaluate (subsample for speed)
 # SARIMA is very slow — evaluate every Nth test point
 SARIMA_EVAL_STEP = 6  # evaluate every 6th test point for SARIMA
-ARIMA_EVAL_STEP = 1   # evaluate every test point for ARIMA (fast)
+ARIMA_EVAL_STEP = 1  # evaluate every test point for ARIMA (fast)
 
 
 def main() -> None:
@@ -102,28 +100,40 @@ def main() -> None:
         h_key = f"{h}h"
         # Persistence
         p = all_results[h_key].get("Persistence", {})
-        print(f"{h}h{'':<7} {'Persistence':<25} {p.get('mae', 0):>8.3f} {p.get('rmse', 0):>8.3f} {'1.000':>8} {'baseline':>12}", flush=True)
+        print(
+            f"{h}h{'':<7} {'Persistence':<25} {p.get('mae', 0):>8.3f} {p.get('rmse', 0):>8.3f} {'1.000':>8} {'baseline':>12}",
+            flush=True,
+        )
 
         # ARIMA
         a = all_results[h_key].get("ARIMA", {})
         a_status = "✅ BEATS!" if a.get("mase", 99) < 1.0 else "❌ MASE>1"
-        print(f"{h}h{'':<7} {'ARIMA':<25} {a.get('mae', 0):>8.3f} {a.get('rmse', 0):>8.3f} {a.get('mase', 0):>8.3f} {a_status:>12}", flush=True)
+        print(
+            f"{h}h{'':<7} {'ARIMA':<25} {a.get('mae', 0):>8.3f} {a.get('rmse', 0):>8.3f} {a.get('mase', 0):>8.3f} {a_status:>12}",
+            flush=True,
+        )
 
         # SARIMA
         s = all_results[h_key].get("SARIMA", {})
         if s:
             s_status = "✅ BEATS!" if s.get("mase", 99) < 1.0 else "❌ MASE>1"
-            print(f"{h}h{'':<7} {'SARIMA':<25} {s.get('mae', 0):>8.3f} {s.get('rmse', 0):>8.3f} {s.get('mase', 0):>8.3f} {s_status:>12}", flush=True)
+            print(
+                f"{h}h{'':<7} {'SARIMA':<25} {s.get('mae', 0):>8.3f} {s.get('rmse', 0):>8.3f} {s.get('mase', 0):>8.3f} {s_status:>12}",
+                flush=True,
+            )
 
         # LightGBM (reference from previous experiment)
         l = lgbm_results[h_key]
         l_status = "✅ BEATS!" if l["mase"] < 1.0 else "❌ MASE>1"
-        print(f"{h}h{'':<7} {'LightGBM_tuned (ref)':<25} {l['mae']:>8.3f} {'—':>8} {l['mase']:>8.3f} {l_status:>12}", flush=True)
+        print(
+            f"{h}h{'':<7} {'LightGBM_tuned (ref)':<25} {l['mae']:>8.3f} {'—':>8} {l['mase']:>8.3f} {l_status:>12}",
+            flush=True,
+        )
 
         print("─" * 80, flush=True)
 
     # ── Step 5: Save ──
-    print(f"\n[5/5] Saving results...", flush=True)
+    print("\n[5/5] Saving results...", flush=True)
     _save_results(all_results)
 
     total_time = time.time() - t_start
@@ -142,8 +152,11 @@ def _prepare_hybrid_data() -> pd.DataFrame:
     df = _resample(df, freq="1h")
 
     df_hybrid = impute_missing_data(
-        df, strategy="hybrid",
-        max_gap_interp=6, max_gap_ml=24, knn_neighbors=5,
+        df,
+        strategy="hybrid",
+        max_gap_interp=6,
+        max_gap_ml=24,
+        knn_neighbors=5,
         verbose=True,
     )
     return df_hybrid
@@ -155,7 +168,7 @@ def _find_orders(pm25: pd.Series) -> tuple:
 
     # Use a subset for order selection (last 2000 points of training data)
     n_train = int(len(pm25) * 0.8)
-    train_subset = pm25.iloc[max(0, n_train - 2000):n_train]
+    train_subset = pm25.iloc[max(0, n_train - 2000) : n_train]
 
     print(f"  Auto-ARIMA on {len(train_subset)} samples...", flush=True)
     t0 = time.time()
@@ -163,7 +176,10 @@ def _find_orders(pm25: pd.Series) -> tuple:
     # Non-seasonal ARIMA
     auto_arima = pm.auto_arima(
         train_subset,
-        start_p=0, start_q=0, max_p=5, max_q=5,
+        start_p=0,
+        start_q=0,
+        max_p=5,
+        max_q=5,
         d=None,  # auto detect
         seasonal=False,
         stepwise=True,
@@ -184,10 +200,18 @@ def _find_orders(pm25: pd.Series) -> tuple:
     try:
         auto_sarima = pm.auto_arima(
             sarima_subset,
-            start_p=0, start_q=0, max_p=3, max_q=3,
+            start_p=0,
+            start_q=0,
+            max_p=3,
+            max_q=3,
             d=None,
-            seasonal=True, m=24,
-            start_P=0, start_Q=0, max_P=2, max_Q=2, D=1,
+            seasonal=True,
+            m=24,
+            start_P=0,
+            start_Q=0,
+            max_P=2,
+            max_Q=2,
+            D=1,
             stepwise=True,
             suppress_warnings=True,
             error_action="ignore",
@@ -196,10 +220,13 @@ def _find_orders(pm25: pd.Series) -> tuple:
         )
         sarima_order = auto_sarima.order
         sarima_seasonal = auto_sarima.seasonal_order
-        print(f"  SARIMA order: {sarima_order}×{sarima_seasonal} (AIC={auto_sarima.aic():.1f}) [{time.time() - t0:.1f}s]", flush=True)
+        print(
+            f"  SARIMA order: {sarima_order}×{sarima_seasonal} (AIC={auto_sarima.aic():.1f}) [{time.time() - t0:.1f}s]",
+            flush=True,
+        )
     except Exception as e:
         print(f"  ⚠️ SARIMA auto-fit failed: {e}", flush=True)
-        print(f"  Using default SARIMA(1,1,1)(1,1,0,24)", flush=True)
+        print("  Using default SARIMA(1,1,1)(1,1,0,24)", flush=True)
         sarima_order = (1, 1, 1)
         sarima_seasonal = (1, 1, 0, 24)
 
@@ -222,7 +249,7 @@ def _evaluate_horizon(
 
     # ── Temporal split ──
     n = len(pm25)
-    train_end = int(n * 0.8)
+    int(n * 0.8)
     val_end = int(n * 0.9)
 
     test_series = pm25.iloc[val_end:]
@@ -280,7 +307,7 @@ def _evaluate_horizon(
 
         # Sliding window for training
         window_start = max(0, pos - ARIMA_WINDOW)
-        train_window = pm25.iloc[window_start:pos + 1].dropna()
+        train_window = pm25.iloc[window_start : pos + 1].dropna()
 
         if len(train_window) < 50:
             continue
@@ -322,9 +349,12 @@ def _evaluate_horizon(
             "n_eval": len(y_arima_list),
             "time_s": round(arima_time, 1),
         }
-        print(f"    ✅ ARIMA {horizon}h: MAE={arima_mae:.3f}, MASE={arima_mase:.3f} ({arima_time:.0f}s, {len(y_arima_list)} points)", flush=True)
+        print(
+            f"    ✅ ARIMA {horizon}h: MAE={arima_mae:.3f}, MASE={arima_mase:.3f} ({arima_time:.0f}s, {len(y_arima_list)} points)",
+            flush=True,
+        )
     else:
-        print(f"    ⚠️ ARIMA failed all evaluations", flush=True)
+        print("    ⚠️ ARIMA failed all evaluations", flush=True)
 
     # ── C. SARIMA (subsampled rolling) ──
     print(f"\n  SARIMA{sarima_order}×{sarima_seasonal} rolling forecast ({horizon}h)...", flush=True)
@@ -340,7 +370,7 @@ def _evaluate_horizon(
 
         # Larger window for SARIMA (needs seasonal data)
         window_start = max(0, pos - ARIMA_WINDOW)
-        train_window = pm25.iloc[window_start:pos + 1].dropna()
+        train_window = pm25.iloc[window_start : pos + 1].dropna()
 
         if len(train_window) < 72:  # at least 3 days for seasonality
             continue
@@ -390,9 +420,12 @@ def _evaluate_horizon(
             "n_eval": len(y_sarima_list),
             "time_s": round(sarima_time, 1),
         }
-        print(f"    ✅ SARIMA {horizon}h: MAE={sarima_mae:.3f}, MASE={sarima_mase:.3f} ({sarima_time:.0f}s, {len(y_sarima_list)} points)", flush=True)
+        print(
+            f"    ✅ SARIMA {horizon}h: MAE={sarima_mae:.3f}, MASE={sarima_mase:.3f} ({sarima_time:.0f}s, {len(y_sarima_list)} points)",
+            flush=True,
+        )
     else:
-        print(f"    ⚠️ SARIMA failed all evaluations", flush=True)
+        print("    ⚠️ SARIMA failed all evaluations", flush=True)
 
     return results
 
