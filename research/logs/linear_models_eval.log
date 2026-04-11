@@ -1,0 +1,195 @@
+======================================================================
+LINEAR MODELS MULTI-HORIZON EVALUATION
+Horizons: [1, 6, 24]h | Log Transform: True
+Models: Lasso(CV), ElasticNet, Ridge(CV)
+RULE: Test set = REAL data only
+======================================================================
+
+[1/4] Preparing Hybrid dataset...
+2026-04-11 18:45:34.879 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-11 18:45:34.879 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-11 18:45:35.005 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-11 18:45:35.024 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-11 18:45:35.025 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-11 18:45:35.044 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-11 18:45:35.048 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-11 18:45:35.050 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-11 18:45:35.053 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-11 18:45:35.061 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-11 18:45:35.064 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-11 18:45:35.068 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-11 18:45:35.068 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-11 18:45:35.077 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-11 18:45:49.221 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Hybrid data: 7,742 rows
+
+[2/4] Building features (with Fourier + interactions)...
+2026-04-11 18:45:49.223 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-11 18:45:49.223 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-11 18:45:49.223 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-11 18:45:49.229 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-11 18:45:49.232 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-11 18:45:49.238 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-11 18:45:49.249 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-11 18:45:49.252 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-11 18:45:49.255 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-11 18:45:49.259 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-11 18:45:49.261 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-11 18:45:49.261 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-11 18:45:49.261 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,742 → 7,574 rows
+2026-04-11 18:45:49.262 | INFO     | src.features.builder:build_features:117 - ============================================================
+  Features: 7,574 rows × 120 cols
+  Fourier features: 12
+  Interaction features: 6
+  Rolling range features: 6
+
+══════════════════════════════════════════════════════════════════════
+[3/4] HORIZON = 1h
+══════════════════════════════════════════════════════════════════════
+
+  Creating 1h-ahead target...
+  Dataset after shift: 7,573 rows
+  Target: log1p transformed
+  Train: 6,058 rows
+  Test (real only): 600/758 rows
+
+  Evaluating Persistence baseline (1h)...
+2026-04-11 18:45:49.280 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Persistence (h=1): MAE=2.4931, RMSE=4.0111, MASE=1.0 ❌
+2026-04-11 18:45:49.280 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 25.0µg/m³: P=0.682 R=0.682 F1=0.682 Brier=0.0233 (n=22)
+2026-04-11 18:45:49.280 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 35.0µg/m³: P=0.250 R=0.250 F1=0.250 Brier=0.0100 (n=4)
+2026-04-11 18:45:49.280 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Training LassoCV...
+2026-04-11 18:45:49.474 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   LassoCV (h=1): MAE=3.6413, RMSE=5.2937, MASE=1.4605 ❌
+2026-04-11 18:45:49.474 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LassoCV @ 25.0µg/m³: P=0.375 R=0.273 F1=0.316 Brier=0.0433 (n=22)
+2026-04-11 18:45:49.474 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LassoCV @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0083 (n=4)
+2026-04-11 18:45:49.474 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    LassoCV: MAE=3.6413, MASE=1.4605 (0.2s)
+
+  Training ElasticNet...
+2026-04-11 18:46:12.033 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   ElasticNet (h=1): MAE=3.3294, RMSE=4.9509, MASE=1.3354 ❌
+2026-04-11 18:46:12.033 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     ElasticNet @ 25.0µg/m³: P=0.600 R=0.273 F1=0.375 Brier=0.0333 (n=22)
+2026-04-11 18:46:12.033 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     ElasticNet @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-11 18:46:12.033 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    ElasticNet: MAE=3.3294, MASE=1.3354 (22.6s)
+    Best: alpha=0.1, l1_ratio=0.1
+
+  Training RidgeCV...
+2026-04-11 18:46:12.129 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   RidgeCV (h=1): MAE=3.8808, RMSE=5.6246, MASE=1.5566 ❌
+2026-04-11 18:46:12.129 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RidgeCV @ 25.0µg/m³: P=0.333 R=0.227 F1=0.270 Brier=0.0450 (n=22)
+2026-04-11 18:46:12.130 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RidgeCV @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0083 (n=4)
+2026-04-11 18:46:12.130 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    RidgeCV: MAE=3.8808, MASE=1.5566 (0.1s)
+
+══════════════════════════════════════════════════════════════════════
+[3/4] HORIZON = 6h
+══════════════════════════════════════════════════════════════════════
+
+  Creating 6h-ahead target...
+  Dataset after shift: 7,568 rows
+  Target: log1p transformed
+  Train: 6,054 rows
+  Test (real only): 595/757 rows
+
+  Evaluating Persistence baseline (6h)...
+2026-04-11 18:46:12.148 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Persistence (h=6): MAE=6.7734, RMSE=9.1196, MASE=1.0 ❌
+2026-04-11 18:46:12.148 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 25.0µg/m³: P=0.091 R=0.077 F1=0.083 Brier=0.0739 (n=26)
+2026-04-11 18:46:12.148 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0134 (n=4)
+2026-04-11 18:46:12.148 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Training LassoCV...
+2026-04-11 18:46:12.268 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   LassoCV (h=6): MAE=5.0404, RMSE=6.8269, MASE=0.7442 ✅
+2026-04-11 18:46:12.268 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LassoCV @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-11 18:46:12.268 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LassoCV @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-11 18:46:12.268 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    LassoCV: MAE=5.0404, MASE=0.7442 (0.1s)
+
+  Training ElasticNet...
+2026-04-11 18:46:33.602 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   ElasticNet (h=6): MAE=4.8456, RMSE=6.5215, MASE=0.7154 ✅
+2026-04-11 18:46:33.602 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     ElasticNet @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-11 18:46:33.602 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     ElasticNet @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-11 18:46:33.602 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    ElasticNet: MAE=4.8456, MASE=0.7154 (21.3s)
+    Best: alpha=0.1, l1_ratio=0.5
+
+  Training RidgeCV...
+2026-04-11 18:46:33.723 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   RidgeCV (h=6): MAE=5.2024, RMSE=7.1356, MASE=0.7681 ✅
+2026-04-11 18:46:33.723 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RidgeCV @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-11 18:46:33.723 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RidgeCV @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-11 18:46:33.723 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    RidgeCV: MAE=5.2024, MASE=0.7681 (0.1s)
+
+══════════════════════════════════════════════════════════════════════
+[3/4] HORIZON = 24h
+══════════════════════════════════════════════════════════════════════
+
+  Creating 24h-ahead target...
+  Dataset after shift: 7,550 rows
+  Target: log1p transformed
+  Train: 6,040 rows
+  Test (real only): 585/755 rows
+
+  Evaluating Persistence baseline (24h)...
+2026-04-11 18:46:33.739 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Persistence (h=24): MAE=6.1532, RMSE=8.6291, MASE=1.0 ❌
+2026-04-11 18:46:33.740 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0752 (n=22)
+2026-04-11 18:46:33.740 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0137 (n=4)
+2026-04-11 18:46:33.740 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Training LassoCV...
+2026-04-11 18:46:33.877 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   LassoCV (h=24): MAE=5.3489, RMSE=7.1459, MASE=0.8693 ✅
+2026-04-11 18:46:33.877 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LassoCV @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0410 (n=22)
+2026-04-11 18:46:33.877 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LassoCV @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-11 18:46:33.877 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    LassoCV: MAE=5.3489, MASE=0.8693 (0.1s)
+
+  Training ElasticNet...
+2026-04-11 18:46:54.982 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   ElasticNet (h=24): MAE=5.0203, RMSE=6.6402, MASE=0.8159 ✅
+2026-04-11 18:46:54.982 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     ElasticNet @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0376 (n=22)
+2026-04-11 18:46:54.982 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     ElasticNet @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-11 18:46:54.982 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    ElasticNet: MAE=5.0203, MASE=0.8159 (21.1s)
+    Best: alpha=0.1, l1_ratio=0.5
+
+  Training RidgeCV...
+2026-04-11 18:46:55.075 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   RidgeCV (h=24): MAE=5.494, RMSE=7.3613, MASE=0.8929 ✅
+2026-04-11 18:46:55.076 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RidgeCV @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0393 (n=22)
+2026-04-11 18:46:55.076 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RidgeCV @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-11 18:46:55.076 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    RidgeCV: MAE=5.494, MASE=0.8929 (0.1s)
+
+══════════════════════════════════════════════════════════════════════
+[4/4] SUMMARY
+══════════════════════════════════════════════════════════════════════
+
+Horizon    Model                     MAE     MASE     RMSE       Status
+──────────────────────────────────────────────────────────────────────
+1h        Persistence             2.493    1.000    4.011     baseline
+1h        LassoCV                 3.641    1.460    5.294     ❌ MASE>1
+1h        ElasticNet              3.329    1.335    4.951     ❌ MASE>1
+1h        RidgeCV                 3.881    1.557    5.625     ❌ MASE>1
+──────────────────────────────────────────────────────────────────────
+6h        Persistence             6.773    1.000    9.120     baseline
+6h        LassoCV                 5.040    0.744    6.827     ✅ BEATS!
+6h        ElasticNet              4.846    0.715    6.521     ✅ BEATS!
+6h        RidgeCV                 5.202    0.768    7.136     ✅ BEATS!
+──────────────────────────────────────────────────────────────────────
+24h        Persistence             6.153    1.000    8.629     baseline
+24h        LassoCV                 5.349    0.869    7.146     ✅ BEATS!
+24h        ElasticNet              5.020    0.816    6.640     ✅ BEATS!
+24h        RidgeCV                 5.494    0.893    7.361     ✅ BEATS!
+──────────────────────────────────────────────────────────────────────
+
+  Results saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/linear_models/linear_models_20260411_184655.json
+
+COMPLETE — Total: 80s (1.3 min)

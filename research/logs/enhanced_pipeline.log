@@ -1,0 +1,200 @@
+======================================================================
+ENHANCED PIPELINE — LightGBM + v2 Features
+Features: Fourier + rolling_range + interactions
+Log Transform: True | Optuna trials: 100
+======================================================================
+
+[1/5] Preparing Hybrid dataset...
+2026-04-11 18:48:33.208 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-11 18:48:33.208 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-11 18:48:33.337 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-11 18:48:33.354 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-11 18:48:33.354 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-11 18:48:33.371 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-11 18:48:33.375 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-11 18:48:33.376 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-11 18:48:33.380 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-11 18:48:33.386 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-11 18:48:33.389 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-11 18:48:33.393 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-11 18:48:33.393 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-11 18:48:33.400 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-11 18:48:46.857 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Hybrid data: 7,742 rows
+
+[2/5] Building v2 features (Fourier + interactions + range)...
+2026-04-11 18:48:46.860 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-11 18:48:46.860 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-11 18:48:46.860 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-11 18:48:46.869 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-11 18:48:46.872 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-11 18:48:46.883 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-11 18:48:46.897 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-11 18:48:46.903 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-11 18:48:46.906 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-11 18:48:46.913 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-11 18:48:46.916 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-11 18:48:46.916 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-11 18:48:46.916 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,742 → 7,574 rows
+2026-04-11 18:48:46.916 | INFO     | src.features.builder:build_features:117 - ============================================================
+  Total: 7,574 rows × 120 cols
+  fourier: 12 features
+  interaction: 6 features
+  range: 6 features
+
+══════════════════════════════════════════════════════════════════════
+[3/5] HORIZON = 1h — LightGBM Optuna
+══════════════════════════════════════════════════════════════════════
+  Train: 6,058 | Test (real): 600/758
+2026-04-11 18:48:47.160 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Persistence (h=1): MAE=2.4931, RMSE=4.0111, MASE=1.0 ❌
+2026-04-11 18:48:47.160 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 25.0µg/m³: P=0.682 R=0.682 F1=0.682 Brier=0.0233 (n=22)
+2026-04-11 18:48:47.160 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 35.0µg/m³: P=0.250 R=0.250 F1=0.250 Brier=0.0100 (n=4)
+2026-04-11 18:48:47.160 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Training LightGBM Default...
+2026-04-11 18:48:50.054 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   LightGBM_default_1h (h=1): MAE=3.4956, RMSE=5.1142, MASE=1.4021 ❌
+2026-04-11 18:48:50.054 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_default_1h @ 25.0µg/m³: P=0.333 R=0.091 F1=0.143 Brier=0.0400 (n=22)
+2026-04-11 18:48:50.054 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_default_1h @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-11 18:48:50.054 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Tuning LightGBM Optuna (100 trials)...
+    Trial 20/100: MAE=4.5849 (best=4.3707)
+    Trial 40/100: MAE=4.3623 (best=4.2545)
+    Trial 60/100: MAE=5.1147 (best=4.2545)
+    Trial 80/100: MAE=4.3951 (best=4.2545)
+    Trial 100/100: MAE=4.5879 (best=4.2545)
+    Best CV MAE: 4.2545 (1029.7s)
+2026-04-11 19:06:01.075 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   LightGBM_tuned_1h (h=1): MAE=3.1929, RMSE=4.8294, MASE=1.2807 ❌
+2026-04-11 19:06:01.076 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_tuned_1h @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0367 (n=22)
+2026-04-11 19:06:01.076 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_tuned_1h @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-11 19:06:01.076 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    ✅ LightGBM tuned: MAE=3.1929, MASE=1.2807
+
+  Top-10 features (1h):
+    pm25_lag_1h                              importance=433
+    fourier_daily_sin_2                      importance=420
+    pm25_roll_24h_mean                       importance=228
+    pm25_x_temp                              importance=226
+    pm25_lag_24h                             importance=223
+    do_am                                    importance=186
+    pm25_pct_change_1h                       importance=166
+    pm25_x_humidity                          importance=145
+    hour_sin                                 importance=144
+    pm25_x_hour                              importance=143
+
+══════════════════════════════════════════════════════════════════════
+[3/5] HORIZON = 6h — LightGBM Optuna
+══════════════════════════════════════════════════════════════════════
+  Train: 6,054 | Test (real): 595/757
+2026-04-11 19:06:01.100 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Persistence (h=6): MAE=6.7734, RMSE=9.1196, MASE=1.0 ❌
+2026-04-11 19:06:01.100 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 25.0µg/m³: P=0.091 R=0.077 F1=0.083 Brier=0.0739 (n=26)
+2026-04-11 19:06:01.100 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0134 (n=4)
+2026-04-11 19:06:01.100 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Training LightGBM Default...
+2026-04-11 19:06:03.959 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   LightGBM_default_6h (h=6): MAE=4.9562, RMSE=6.7989, MASE=0.7317 ✅
+2026-04-11 19:06:03.959 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_default_6h @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-11 19:06:03.959 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_default_6h @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-11 19:06:03.959 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Tuning LightGBM Optuna (100 trials)...
+    Trial 20/100: MAE=5.8947 (best=5.8646)
+    Trial 40/100: MAE=6.0958 (best=5.8646)
+    Trial 60/100: MAE=6.0879 (best=5.8353)
+    Trial 80/100: MAE=6.1073 (best=5.8353)
+    Trial 100/100: MAE=5.8872 (best=5.8346)
+    Best CV MAE: 5.8346 (542.2s)
+2026-04-11 19:15:06.669 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   LightGBM_tuned_6h (h=6): MAE=4.911, RMSE=6.7564, MASE=0.725 ✅
+2026-04-11 19:15:06.670 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_tuned_6h @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-11 19:15:06.670 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_tuned_6h @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-11 19:15:06.670 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    ✅ LightGBM tuned: MAE=4.911, MASE=0.725
+
+  Top-10 features (6h):
+    pm25_roll_24h_mean                       importance=156
+    hour_sin                                 importance=143
+    fourier_daily_cos_2                      importance=113
+    pm25_roll_24h_min                        importance=110
+    pm25_roll_6h_min                         importance=64
+    pm25_roll_168h_std                       importance=57
+    pm25_roll_48h_mean                       importance=52
+    pm25_roll_168h_min                       importance=46
+    nhiet_do_lag_12h                         importance=45
+    pm25_roll_48h_max                        importance=43
+
+══════════════════════════════════════════════════════════════════════
+[3/5] HORIZON = 24h — LightGBM Optuna
+══════════════════════════════════════════════════════════════════════
+  Train: 6,040 | Test (real): 585/755
+2026-04-11 19:15:06.685 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Persistence (h=24): MAE=6.1532, RMSE=8.6291, MASE=1.0 ❌
+2026-04-11 19:15:06.685 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0752 (n=22)
+2026-04-11 19:15:06.685 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0137 (n=4)
+2026-04-11 19:15:06.685 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Training LightGBM Default...
+2026-04-11 19:15:09.598 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   LightGBM_default_24h (h=24): MAE=5.3177, RMSE=6.899, MASE=0.8642 ✅
+2026-04-11 19:15:09.598 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_default_24h @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0410 (n=22)
+2026-04-11 19:15:09.598 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_default_24h @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-11 19:15:09.598 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Tuning LightGBM Optuna (100 trials)...
+    Trial 20/100: MAE=6.7560 (best=6.5566)
+    Trial 40/100: MAE=6.5942 (best=6.3530)
+    Trial 60/100: MAE=6.4842 (best=6.3530)
+    Trial 80/100: MAE=6.6366 (best=6.3530)
+    Trial 100/100: MAE=6.4650 (best=6.3530)
+    Best CV MAE: 6.3530 (773.6s)
+2026-04-11 19:28:04.141 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   LightGBM_tuned_24h (h=24): MAE=4.9568, RMSE=6.6215, MASE=0.8056 ✅
+2026-04-11 19:28:04.141 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_tuned_24h @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0376 (n=22)
+2026-04-11 19:28:04.141 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     LightGBM_tuned_24h @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-11 19:28:04.141 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    ✅ LightGBM tuned: MAE=4.9568, MASE=0.8056
+
+  Top-10 features (24h):
+    pm25_lag_1h                              importance=216
+    fourier_daily_cos_2                      importance=163
+    pm25_lag_24h                             importance=153
+    pm25_roll_48h_max                        importance=152
+    hour_cos                                 importance=135
+    pm25_roll_24h_mean                       importance=134
+    pm25_roll_168h_min                       importance=111
+    pm25_roll_24h_min                        importance=107
+    pm25_roll_12h_min                        importance=106
+    pm25_roll_168h_std                       importance=103
+
+══════════════════════════════════════════════════════════════════════
+[4/5] Creating v2 dashboard snapshot...
+══════════════════════════════════════════════════════════════════════
+  Loaded linear results: linear_models_20260411_184655.json
+  Loaded v1 baseline for DL models
+  Saved v2 snapshot: /Users/trihx/Desktop/time-series-forecasting/research/experiments/dashboard_runs/v2_enhanced_20260411.json
+  Models: 13
+
+══════════════════════════════════════════════════════════════════════
+[5/5] FINAL SUMMARY — v2 Enhanced Results
+══════════════════════════════════════════════════════════════════════
+
+Horizon  Metric    v1 (before)   v2 (after)     Change
+───────────────────────────────────────────────────────
+1h       MAE             3.720        3.193     -14.2%
+         MASE            1.492        1.281     -14.2%
+───────────────────────────────────────────────────────
+6h       MAE             5.046        4.911      -2.7%
+         MASE            0.745        0.725      -2.7%
+───────────────────────────────────────────────────────
+24h      MAE             5.178        4.957      -4.3%
+         MASE            0.842        0.806      -4.3%
+───────────────────────────────────────────────────────
+
+COMPLETE — Total: 2371s (39.5 min)

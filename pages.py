@@ -599,9 +599,189 @@ def _render_avp_chart(data: dict, horizon: int):
 def page_experiment_runs(results):
     st.markdown("""
     <h1 style="font-size: 2rem;">📋 Experiment Runs</h1>
-    <p style="color: #CBD5E1;">Lịch sử tất cả các lần chạy thí nghiệm</p>
+    <p style="color: #CBD5E1;">Lịch sử thí nghiệm và so sánh giữa các phiên bản pipeline</p>
     """, unsafe_allow_html=True)
 
+    tab1, tab2 = st.tabs(["📊 So Sánh Phiên Bản", "📋 Tất Cả Experiment Runs"])
+
+    with tab1:
+        _render_version_comparison()
+
+    with tab2:
+        _render_all_runs()
+
+
+def _render_version_comparison():
+    """Render version comparison from dashboard_runs/ snapshots."""
+    runs_dir = RESEARCH_DIR / "experiments" / "dashboard_runs"
+    if not runs_dir.exists() or not list(runs_dir.glob("*.json")):
+        st.warning("Chưa có snapshot nào. Chạy `run_enhanced_pipeline.py` để tạo.")
+        return
+
+    # Load all snapshots
+    snapshots = {}
+    for jpath in sorted(runs_dir.glob("*.json")):
+        try:
+            with open(jpath) as f:
+                data = json.load(f)
+            version = data.get("version", jpath.stem)
+            snapshots[version] = data
+        except (json.JSONDecodeError, KeyError):
+            continue
+
+    if len(snapshots) < 2:
+        st.info("Cần ít nhất 2 snapshots để so sánh. Hiện có: " + ", ".join(snapshots.keys()))
+        if snapshots:
+            v_name = list(snapshots.keys())[0]
+            v_data = snapshots[v_name]
+            st.json(v_data.get("feature_set", {}))
+        return
+
+    # ── Version selector ──
+    versions = list(snapshots.keys())
+    col1, col2 = st.columns(2)
+    with col1:
+        v1_name = st.selectbox("📌 Phiên bản cơ sở", versions, index=0)
+    with col2:
+        v2_idx = min(1, len(versions) - 1)
+        v2_name = st.selectbox("🆕 Phiên bản mới", versions, index=v2_idx)
+
+    if v1_name == v2_name:
+        st.warning("Chọn 2 phiên bản khác nhau để so sánh.")
+        return
+
+    v1 = snapshots[v1_name]
+    v2 = snapshots[v2_name]
+
+    # ── Feature set comparison ──
+    st.markdown("### 🧬 So Sánh Feature Set")
+    v1_features = v1.get("feature_set", {})
+    v2_features = v2.get("feature_set", {})
+
+    feat_rows = []
+    all_keys = sorted(set(list(v1_features.keys()) + list(v2_features.keys())))
+    for key in all_keys:
+        v1_val = v1_features.get(key, False)
+        v2_val = v2_features.get(key, False)
+        status = "✅ Mới" if v2_val and not v1_val else ("➖ Bỏ" if v1_val and not v2_val else ("✓" if v2_val else "✗"))
+        feat_rows.append({
+            "Feature": key,
+            v1_name: "✓" if v1_val else "✗",
+            v2_name: "✓" if v2_val else "✗",
+            "Thay đổi": status,
+        })
+    st.dataframe(pd.DataFrame(feat_rows), use_container_width=True, hide_index=True)
+
+    # ── Description ──
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, rgba(0,212,170,0.08) 0%, rgba(78,205,196,0.04) 100%);
+                border-left: 4px solid #00D4AA; border-radius: 0 12px 12px 0;
+                padding: 1rem 1.2rem; margin: 1rem 0;">
+        <b>{v2_name}:</b> {v2.get('description', '—')}
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── MASE Comparison Chart ──
+    st.markdown("### 📊 MASE — So Sánh v1 vs v2")
+
+    v1_results = v1.get("data", {}).get("results", {})
+    v2_results = v2.get("data", {}).get("results", {})
+
+    # Find common models across both versions
+    horizons = ["1h", "6h", "24h"]
+    comparison_rows = []
+
+    for h in horizons:
+        v1_h = v1_results.get(h, {})
+        v2_h = v2_results.get(h, {})
+        all_models = sorted(set(list(v1_h.keys()) + list(v2_h.keys())))
+
+        for model in all_models:
+            v1_m = v1_h.get(model, {})
+            v2_m = v2_h.get(model, {})
+
+            v1_mae = v1_m.get("mae", None)
+            v2_mae = v2_m.get("mae", None)
+            v1_mase = v1_m.get("mase", v1_m.get("mase_original", None))
+            v2_mase = v2_m.get("mase", v2_m.get("mase_original", None))
+
+            is_new = model not in v1_h
+            mae_change = None
+            if v1_mae and v2_mae and isinstance(v1_mae, (int, float)) and isinstance(v2_mae, (int, float)):
+                mae_change = ((v2_mae - v1_mae) / v1_mae) * 100
+
+            comparison_rows.append({
+                "Horizon": h,
+                "Model": model,
+                f"MAE ({v1_name})": round(v1_mae, 3) if isinstance(v1_mae, (int, float)) else "—",
+                f"MAE ({v2_name})": round(v2_mae, 3) if isinstance(v2_mae, (int, float)) else "—",
+                f"MASE ({v1_name})": round(v1_mase, 4) if isinstance(v1_mase, (int, float)) else "—",
+                f"MASE ({v2_name})": round(v2_mase, 4) if isinstance(v2_mase, (int, float)) else "—",
+                "MAE Δ%": f"{mae_change:+.1f}%" if mae_change is not None else ("🆕" if is_new else "—"),
+            })
+
+    if comparison_rows:
+        comp_df = pd.DataFrame(comparison_rows)
+        st.dataframe(comp_df, use_container_width=True, hide_index=True)
+
+    # ── MASE Bar Chart ──
+    fig = go.Figure()
+
+    # Collect models that exist in v2 for charting
+    chart_models = []
+    for h in horizons:
+        for model in v2_results.get(h, {}):
+            if model not in chart_models and model != "Persistence":
+                chart_models.append(model)
+
+    chart_colors = [
+        "#00D4AA", "#FF6B6B", "#4ECDC4", "#FFE66D",
+        "#A78BFA", "#FB923C", "#60A5FA", "#F472B6",
+        "#34D399", "#F87171", "#818CF8", "#FBBF24",
+    ]
+
+    for i, model in enumerate(chart_models):
+        v2_mases = []
+        for h in horizons:
+            v2_m = v2_results.get(h, {}).get(model, {})
+            mase = v2_m.get("mase", v2_m.get("mase_original", None))
+            v2_mases.append(mase if isinstance(mase, (int, float)) else None)
+
+        fig.add_trace(go.Bar(
+            name=model, x=horizons,
+            y=[m if m else 0 for m in v2_mases],
+            marker_color=chart_colors[i % len(chart_colors)],
+            text=[f"{m:.3f}" if m else "—" for m in v2_mases],
+            textposition="outside", textfont={"size": 10},
+        ))
+
+    fig.add_hline(y=1.0, line_dash="dash", line_color="#FF6B6B",
+                  annotation_text="Baseline (MASE = 1.0)",
+                  annotation_font_color="#FF6B6B")
+    fig.update_layout(
+        barmode="group",
+        yaxis_title="MASE (thấp hơn = tốt hơn)",
+        xaxis_title="Forecast Horizon",
+        title=f"MASE — {v2_name} (All Models)",
+    )
+    fig = _apply_style(fig, height=500)
+    st.plotly_chart(fig, use_container_width=True)
+
+    # ── Nhắc nhở tối ưu tiếp ──
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, rgba(255,230,109,0.08) 0%, rgba(255,107,107,0.04) 100%);
+                border-left: 4px solid #FFE66D; border-radius: 0 12px 12px 0;
+                padding: 1rem 1.2rem; margin: 1rem 0;">
+        <b>🔔 Ghi nhớ tối ưu tiếp:</b><br>
+        • Retrain DL (GRU/LSTM/TFT) với features mới + Fourier<br>
+        • Thử CV feature (std/mean) với safeguard<br>
+        • So sánh log transform vs raw target cho từng model family
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def _render_all_runs():
+    """Render all experiment runs table."""
     exp_dir = RESEARCH_DIR / "experiments"
     all_jsons = sorted(exp_dir.rglob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
 
@@ -616,13 +796,10 @@ def page_experiment_runs(results):
             with open(jpath) as f:
                 data = json.load(f)
 
-            # Extract info based on structure
             if isinstance(data, dict):
-                # Check for timestamp in filename
                 name = jpath.stem
                 parent = jpath.parent.name
 
-                # Try to extract metrics
                 if "timestamp" in data:
                     runs.append({
                         "File": jpath.name,
@@ -633,7 +810,6 @@ def page_experiment_runs(results):
                         "path": str(jpath),
                     })
                 else:
-                    # Multi-horizon format (keys like "1h", "6h")
                     for key in data:
                         if key.endswith("h") and isinstance(data[key], dict):
                             for model_name, metrics in data[key].items():
