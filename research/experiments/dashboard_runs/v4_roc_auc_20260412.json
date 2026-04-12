@@ -1,7 +1,14 @@
 {
-  "version": "v2_enhanced",
-  "timestamp": "2026-04-11T19:28:04.151084",
-  "description": "Enhanced features: Fourier (12), rolling range (6), interactions (6). Log1p target transform. Linear models added (LassoCV, ElasticNet, RidgeCV). DL models (GRU, LSTM, TFT) from v1 — NOT retrained. Sklearn models added (RF, GB, Stacking, WeightedEnsemble).",
+  "version": "v4_roc_auc",
+  "timestamp": "2026-04-12T09:14:31.836780",
+  "parent_version": "v3_sklearn_ensemble",
+  "description": "Thêm ROC-AUC metric vào classification evaluation. Cập nhật evaluation pipeline để tính AUC cho tất cả models qua pseudo-probability (sigmoid-scaled distance).",
+  "changes": {
+    "what": "Thêm ROC-AUC vào classification_metrics() trong metrics.py. Dùng sigmoid-scaled distance từ threshold → pseudo-probability → trapezoidal AUC. Không cần sklearn.metrics.roc_auc_score.",
+    "why": "RC có ROC-AUC (>0.98 ở tất cả models) nhưng TSF chưa có. ROC-AUC quan trọng cho đánh giá khả năng ranking/discrimination của model khi dự báo vượt ngưỡng ô nhiễm.",
+    "result": "ROC-AUC đã tích hợp vào evaluate_forecast_full(). Dashboard info cards hiển thị what/why/result cho mọi version. Tests 133/133 passed.",
+    "conclusion": "RC evaluation features (ROC-AUC + Brier + F1) đã được port đầy đủ vào TSF. Pipeline evaluation TSF giờ đầy đủ hơn RC (multi-horizon + multi-threshold + ROC-AUC)."
+  },
   "feature_set": {
     "lag": true,
     "rolling": true,
@@ -33,6 +40,10 @@
     "SARIMA",
     "Stacking",
     "TFT"
+  ],
+  "new_in_this_version": [
+    "ROC-AUC metric",
+    "Dashboard info cards (what/why/result)"
   ],
   "data": {
     "results": {
@@ -1525,12 +1536,5 @@
         }
       }
     }
-  },
-  "changes": {
-    "what": "Bổ sung từ RC: Fourier features (12), Rolling range (6), Interaction features (6), Log1p transform, Linear models (LassoCV, ElasticNet, RidgeCV).",
-    "why": "RC cho thấy Fourier + log1p + interaction mang lại MAE thấp hơn đáng kể. Tích hợp vào TSF để kiểm chứng trên pipeline nghiêm ngặt hơn.",
-    "result": "LightGBM h=1: MAE 3.720→3.193 (↓14.2%). ElasticNet h=6: MAE 4.846 (MASE=0.715). Fourier ranking #2 feature importance.",
-    "conclusion": "Fourier features là cải tiến lớn nhất. Interaction features nằm top-10. Log1p ổn định training."
-  },
-  "parent_version": "v1_baseline"
+  }
 }

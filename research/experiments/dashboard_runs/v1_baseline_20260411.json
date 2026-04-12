@@ -294,5 +294,11 @@
         }
       }
     }
+  },
+  "changes": {
+    "what": "Baseline pipeline: Lag + Rolling + EWM + Diff + Calendar + Domain features. Models: Persistence, ARIMA, SARIMA, LightGBM (default + Optuna 100 trials), GRU, LSTM, TFT, Ensemble_GRU, Ensemble_Stack.",
+    "why": "Thiết lập điểm xuất phát (baseline) để so sánh với các cải tiến tiếp theo.",
+    "result": "h=1: LightGBM_tuned MAE=3.720. h=6: 5.046. h=24: 5.178. TFT gần nhất Persistence (MASE=1.029 ở h=1).",
+    "conclusion": "Pipeline cơ bản hoạt động tốt. Cần feature engineering mạnh hơn để cải thiện."
   }
 }

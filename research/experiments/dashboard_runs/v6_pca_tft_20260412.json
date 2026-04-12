@@ -1,7 +1,14 @@
 {
-  "version": "v2_enhanced",
-  "timestamp": "2026-04-11T19:28:04.151084",
-  "description": "Enhanced features: Fourier (12), rolling range (6), interactions (6). Log1p target transform. Linear models added (LassoCV, ElasticNet, RidgeCV). DL models (GRU, LSTM, TFT) from v1 — NOT retrained. Sklearn models added (RF, GB, Stacking, WeightedEnsemble).",
+  "version": "v6_pca_tft",
+  "timestamp": "2026-04-12T09:54:04.544636",
+  "parent_version": "v5_dl_retrain",
+  "description": "PCA/feature selection for 1h + TFT retrain with v2 features",
+  "changes": {
+    "what": "PCA (117→37 comp, 95% var) + Top-N feature selection (10/20/40) cho 1h horizon. TFT retrain với v2 features (113 temporal + 4 static) ở 1h/6h/24h.",
+    "why": "v5 cho thấy DL tệ hơn ở 1h (curse of dim). Giả thuyết: PCA/feature selection giảm noise. TFT cần test với v2 features giống GRU/LSTM.",
+    "result": "PCA/TopN KHÔNG giải quyết được 1h: GRU_top40=1.497 (best), GRU_pca=1.572. v1 (5 raw)=1.173 vẫn tốt nhất. TFT_v2 tệ hơn v1: 1h=1.976 (+92%), 6h=0.850 (+3.5%), 24h=0.886 (+9.2%). V2 features quá nhiều cho hidden=32 TFT.",
+    "conclusion": "1h PM2.5 forefasting fundamentally limited by autocorrelation: simple models (few features) dominate. Feature engineering giúp 6h/24h nhưng HẠI 1h. TFT cần hidden_dim lớn hơn hoặc feature selection trước khi nhận v2 features. Best per horizon: 1h=GRU_v1(1.173), 6h=GRU_log_v2(0.692), 24h=GRU_v1(0.727)."
+  },
   "feature_set": {
     "lag": true,
     "rolling": true,
@@ -12,7 +19,9 @@
     "fourier": true,
     "interaction": true,
     "log_transform": true,
-    "rolling_range": true
+    "rolling_range": true,
+    "cv_features": true,
+    "pca_reduction": true
   },
   "models_included": [
     "ARIMA",
@@ -22,8 +31,17 @@
     "Ensemble_Voting",
     "Ensemble_Weighted",
     "GRU",
+    "GRU_log",
+    "GRU_pca",
+    "GRU_raw",
+    "GRU_top10",
+    "GRU_top20",
+    "GRU_top40",
     "GradientBoosting",
     "LSTM",
+    "LSTM_log",
+    "LSTM_pca",
+    "LSTM_raw",
     "LassoCV",
     "LightGBM_default",
     "LightGBM_tuned",
@@ -32,7 +50,13 @@
     "RidgeCV",
     "SARIMA",
     "Stacking",
-    "TFT"
+    "TFT",
+    "TFT_v2"
+  ],
+  "new_in_this_version": [
+    "PCA 95% variance reduction",
+    "Top-N feature importance selection",
+    "TFT retrain with 113 temporal + 4 static features"
   ],
   "data": {
     "results": {
@@ -530,6 +554,106 @@
             "GB": 0.0,
             "Stacking": 0.3
           }
+        },
+        "GRU_raw": {
+          "mae": 4.1178,
+          "rmse": 5.9544,
+          "mase": 1.7228,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 102.1,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_raw": {
+          "mae": 4.5126,
+          "rmse": 6.1933,
+          "mase": 1.888,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 19.2,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "GRU_log": {
+          "mae": 3.6588,
+          "rmse": 5.7395,
+          "mase": 1.5308,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 85.6,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_log": {
+          "mae": 4.243,
+          "rmse": 6.5562,
+          "mase": 1.7752,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 20.2,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
+        },
+        "GRU_pca": {
+          "mae": 3.757,
+          "rmse": 5.173,
+          "mase": 1.5719,
+          "params": 46849,
+          "input_dim": 37,
+          "train_time_s": 105.0,
+          "n_test": 600
+        },
+        "LSTM_pca": {
+          "mae": 4.2929,
+          "rmse": 6.5617,
+          "mase": 1.7961,
+          "params": 61761,
+          "input_dim": 37,
+          "train_time_s": 16.1,
+          "n_test": 600
+        },
+        "GRU_top10": {
+          "mae": 5.9862,
+          "rmse": 7.3971,
+          "mase": 2.5046,
+          "params": 41665,
+          "input_dim": 10,
+          "train_time_s": 197.2,
+          "n_test": 600
+        },
+        "GRU_top20": {
+          "mae": 4.6853,
+          "rmse": 5.9656,
+          "mase": 1.9603,
+          "params": 43585,
+          "input_dim": 20,
+          "train_time_s": 139.2,
+          "n_test": 600
+        },
+        "GRU_top40": {
+          "mae": 3.5771,
+          "rmse": 5.3693,
+          "mase": 1.4966,
+          "params": 47425,
+          "input_dim": 40,
+          "train_time_s": 104.0,
+          "n_test": 600
+        },
+        "TFT_v2": {
+          "mae": 4.7221,
+          "rmse": 5.9273,
+          "mase": 1.9757,
+          "params": 28545,
+          "temporal_dim": 113,
+          "static_dim": 4,
+          "train_time_s": 28.7,
+          "n_test": 600,
+          "features": "v2_enhanced+cv"
         }
       },
       "6h": {
@@ -1026,6 +1150,61 @@
             "GB": 0.2,
             "Stacking": -0.0
           }
+        },
+        "GRU_raw": {
+          "mae": 4.9365,
+          "rmse": 6.2904,
+          "mase": 0.7829,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 93.4,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_raw": {
+          "mae": 4.5344,
+          "rmse": 6.5468,
+          "mase": 0.7191,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 17.1,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "GRU_log": {
+          "mae": 4.3626,
+          "rmse": 6.5801,
+          "mase": 0.6919,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 92.5,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_log": {
+          "mae": 4.7462,
+          "rmse": 7.0919,
+          "mase": 0.7527,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 17.1,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
+        },
+        "TFT_v2": {
+          "mae": 5.3566,
+          "rmse": 6.8538,
+          "mase": 0.8495,
+          "params": 28545,
+          "temporal_dim": 113,
+          "static_dim": 4,
+          "train_time_s": 18.2,
+          "n_test": 600,
+          "features": "v2_enhanced+cv"
         }
       },
       "24h": {
@@ -1522,15 +1701,63 @@
             "GB": 0.2,
             "Stacking": -0.0
           }
+        },
+        "GRU_raw": {
+          "mae": 4.8747,
+          "rmse": 6.507,
+          "mase": 0.7763,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 80.1,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_raw": {
+          "mae": 4.6833,
+          "rmse": 6.352,
+          "mase": 0.7459,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 30.9,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "GRU_log": {
+          "mae": 4.8757,
+          "rmse": 6.96,
+          "mase": 0.7765,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 115.2,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_log": {
+          "mae": 4.6112,
+          "rmse": 7.0885,
+          "mase": 0.7344,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 20.5,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
+        },
+        "TFT_v2": {
+          "mae": 5.5608,
+          "rmse": 7.0239,
+          "mase": 0.8856,
+          "params": 28545,
+          "temporal_dim": 113,
+          "static_dim": 4,
+          "train_time_s": 22.4,
+          "n_test": 600,
+          "features": "v2_enhanced+cv"
         }
       }
     }
-  },
-  "changes": {
-    "what": "Bổ sung từ RC: Fourier features (12), Rolling range (6), Interaction features (6), Log1p transform, Linear models (LassoCV, ElasticNet, RidgeCV).",
-    "why": "RC cho thấy Fourier + log1p + interaction mang lại MAE thấp hơn đáng kể. Tích hợp vào TSF để kiểm chứng trên pipeline nghiêm ngặt hơn.",
-    "result": "LightGBM h=1: MAE 3.720→3.193 (↓14.2%). ElasticNet h=6: MAE 4.846 (MASE=0.715). Fourier ranking #2 feature importance.",
-    "conclusion": "Fourier features là cải tiến lớn nhất. Interaction features nằm top-10. Log1p ổn định training."
-  },
-  "parent_version": "v1_baseline"
+  }
 }

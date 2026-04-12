@@ -672,14 +672,51 @@ def _render_version_comparison():
         })
     st.dataframe(pd.DataFrame(feat_rows), use_container_width=True, hide_index=True)
 
-    # ── Description ──
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, rgba(0,212,170,0.08) 0%, rgba(78,205,196,0.04) 100%);
-                border-left: 4px solid #00D4AA; border-radius: 0 12px 12px 0;
-                padding: 1rem 1.2rem; margin: 1rem 0;">
-        <b>{v2_name}:</b> {v2.get('description', '—')}
-    </div>
-    """, unsafe_allow_html=True)
+    # ── Version Info Cards (what/why/result) ──
+    st.markdown("### 📋 Chi Tiết Phiên Bản")
+
+    card_colors = {
+        0: ("#4A90D9", "rgba(74,144,217,0.08)", "rgba(74,144,217,0.03)"),   # blue
+        1: ("#00D4AA", "rgba(0,212,170,0.08)", "rgba(78,205,196,0.03)"),     # teal
+        2: ("#A78BFA", "rgba(167,139,250,0.08)", "rgba(167,139,250,0.03)"),  # purple
+        3: ("#FB923C", "rgba(251,146,60,0.08)", "rgba(251,146,60,0.03)"),    # orange
+    }
+
+    for idx, (v_name, v_data) in enumerate(snapshots.items()):
+        changes = v_data.get("changes", {})
+        accent, bg_start, bg_end = card_colors.get(idx, card_colors[0])
+        timestamp = v_data.get("timestamp", "—")[:19]
+        n_models = len(v_data.get("models_included", []))
+        parent = v_data.get("parent_version", "—")
+
+        what = changes.get("what", v_data.get("description", "—"))
+        why = changes.get("why", "—")
+        result = changes.get("result", "—")
+        conclusion = changes.get("conclusion", "")
+
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, {bg_start} 0%, {bg_end} 100%);
+                    border-left: 4px solid {accent}; border-radius: 0 12px 12px 0;
+                    padding: 1rem 1.2rem; margin: 0.8rem 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.1rem; font-weight: 700; color: {accent};">
+                    {'📌' if idx == 0 else '🆕'} {v_name}
+                </span>
+                <span style="font-size: 0.75rem; color: #94A3B8;">
+                    {timestamp} · {n_models} models · parent: {parent}
+                </span>
+            </div>
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; font-size: 0.88rem;">
+                <span style="color: #94A3B8; font-weight: 600;">📦 What</span>
+                <span style="color: #E2E8F0;">{what}</span>
+                <span style="color: #94A3B8; font-weight: 600;">💡 Why</span>
+                <span style="color: #E2E8F0;">{why}</span>
+                <span style="color: #94A3B8; font-weight: 600;">📊 Result</span>
+                <span style="color: #E2E8F0;">{result}</span>
+                {'<span style="color: #94A3B8; font-weight: 600;">✅ Conclusion</span><span style="color: #E2E8F0;">' + conclusion + '</span>' if conclusion else ''}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     # ── MASE Comparison Chart ──
     st.markdown("### 📊 MASE — So Sánh v1 vs v2")

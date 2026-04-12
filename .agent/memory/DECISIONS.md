@@ -81,3 +81,22 @@
 - **Knowledge sources**: 11 markdown docs + 9 experiment dirs + standardized_metrics.json → ~243 chunks
 - **Gotcha**: `all-MiniLM-L6-v2` = English-only → câu hỏi Việt match kém. PHẢI dùng multilingual.
 
+## [2026-04-11] RC Integration Strategy
+- **Quyết định**: Tích hợp từ Research Code (RC) → TSF: Fourier features, interaction features, log1p, rolling range, linear models, sklearn tree-based + ensemble.
+- **Nguyên tắc**: Không copy code — chỉ port methodology. Mọi feature phải tuân thủ anti-leakage (dùng `pm25_lag_1h`).
+- **Log transform**: Áp dụng `log1p` target cho toàn bộ pipeline (linear + LightGBM). DL chưa retrain.
+- **CV feature (std/mean)**: Bỏ khỏi default do risk NaN khi std=0. Thử sau với safeguard.
+- **Kết quả v2**: LightGBM MAE ↓14.2% (1h). Fourier `sin_day_2` = #2 feature importance.
+
+## [2026-04-12] Sklearn Ensemble — Performance vs v1
+- **RandomForest**: 300 trees, max_depth=12. MASE 6h=0.706, 24h=0.798. Ngang ElasticNet.
+- **GradientBoosting**: 300 trees, lr=0.05. Thua RF (0.721 vs 0.706 ở 6h).
+- **Stacking**: ElasticNet+RF+GB→Ridge meta, CV=5. **Tệ nhất** trong group (6h=0.735, 24h=0.857).
+- **Ensemble_Weighted**: Grid-search weights (step=0.1). Best sklearn (6h=0.705, 24h=0.797). RF=80%+GB=20%.
+- **Kết luận**: RF là backbone chính. Stacking không mang lợi ích với base models tương đồng.
+
+## [2026-04-12] Snapshot Versioning Protocol
+- **Format**: `dashboard_runs/{version}_{date}.json`
+- **Fields bắt buộc**: `version`, `timestamp`, `parent_version`, `changes: {what, why, result, conclusion}`, `feature_set`, `data.results`
+- **Rule**: KHÔNG GHI ĐÈ snapshot cũ. Mỗi run tạo file mới.
+- **Dashboard**: Tab "So Sánh Phiên Bản" tự đọc snapshots, hiển thị feature diff + MAE/MASE comparison.

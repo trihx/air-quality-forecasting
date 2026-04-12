@@ -1,0 +1,179 @@
+======================================================================
+DL v3 — PCA Feature Selection (1h) + TFT Retrain (v2 Features)
+Device: mps | Lookback: 72h
+PCA: 95.0% variance | Top-N: [10, 20, 40]
+TFT: hidden=32, heads=4, dropout=0.1
+======================================================================
+
+[1/3] Preparing data...
+  Loading raw data...
+2026-04-12 09:42:43.856 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-12 09:42:43.857 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-12 09:42:43.981 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-12 09:42:43.996 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 09:42:43.997 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-12 09:42:44.014 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-12 09:42:44.016 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 09:42:44.018 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-12 09:42:44.021 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-12 09:42:44.028 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-12 09:42:44.031 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-12 09:42:44.034 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-12 09:42:44.034 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-12 09:42:44.045 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  Imputing (hybrid)...
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-12 09:42:56.311 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Building v2 features...
+2026-04-12 09:42:56.312 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-12 09:42:56.312 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-12 09:42:56.312 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-12 09:42:56.318 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-12 09:42:56.322 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-12 09:42:56.329 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-12 09:42:56.344 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-12 09:42:56.349 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-12 09:42:56.352 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-12 09:42:56.358 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-12 09:42:56.361 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-12 09:42:56.362 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-12 09:42:56.362 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,742 → 7,574 rows
+2026-04-12 09:42:56.362 | INFO     | src.features.builder:build_features:117 - ============================================================
+  Data ready: 7,574 rows × 123 cols
+
+[2/3] Running experiments...
+
+══════════════════════════════════════════════════════════════════════
+TASK 1: PCA / Feature Selection for h=1
+══════════════════════════════════════════════════════════════════════
+  Persistence 1h: MAE=2.390
+
+  ── A) PCA (95% variance) ──
+    PCA: 117 → 37 components (95.1% variance)
+
+  Training GRU_pca (h=1, dim=37)...
+    Datasets: train=5987, val=757, test=600
+    Params: 46,849
+    Epoch   1/100 train=0.4930 val=0.1446 lr=1.0e-03 pat=0/10
+    Epoch  10/100 train=0.2006 val=0.1661 lr=1.0e-03 pat=5/10
+    Early stop ep 15 (best=0.1383)
+    ❌ GRU_pca: MAE=3.757, MASE=1.572 (105s)
+
+  Training LSTM_pca (h=1, dim=37)...
+    Datasets: train=5987, val=757, test=600
+    Params: 61,761
+    Epoch   1/100 train=0.5407 val=0.1847 lr=1.0e-03 pat=0/10
+    Epoch  10/100 train=0.1403 val=0.1996 lr=5.0e-04 pat=9/10
+    Early stop ep 11 (best=0.1847)
+    ❌ LSTM_pca: MAE=4.293, MASE=1.796 (16s)
+
+  ── B) Feature Importance Selection ──
+    Top-10 features: ['pm25_lag_1h', 'pm25_pct_change_1h', 'pm25_diff_1h', 'pm25_lag_24h', 'co2', 'pm25_lag_168h', 'do_am_lag_1h', 'diem_suong', 'nhiet_do_lag_12h', 'pm25_x_humidity']
+
+    Top-10 features:
+
+  Training GRU_top10 (h=1, dim=10)...
+    Datasets: train=5987, val=757, test=600
+    Params: 41,665
+    Epoch   1/100 train=0.5183 val=0.2073 lr=1.0e-03 pat=0/10
+    Epoch  10/100 train=0.3097 val=0.1400 lr=1.0e-03 pat=0/10
+    Epoch  20/100 train=0.2576 val=0.1479 lr=5.0e-04 pat=1/10
+    Early stop ep 29 (best=0.1391)
+    ❌ GRU_top10: MAE=5.986, MASE=2.505 (197s)
+
+    Top-20 features:
+
+  Training GRU_top20 (h=1, dim=20)...
+    Datasets: train=5987, val=757, test=600
+    Params: 43,585
+    Epoch   1/100 train=0.5352 val=0.1834 lr=1.0e-03 pat=0/10
+    Epoch  10/100 train=0.2821 val=0.1364 lr=1.0e-03 pat=0/10
+    Epoch  20/100 train=0.2178 val=0.1629 lr=5.0e-04 pat=10/10
+    Early stop ep 20 (best=0.1364)
+    ❌ GRU_top20: MAE=4.685, MASE=1.960 (139s)
+
+    Top-40 features:
+
+  Training GRU_top40 (h=1, dim=40)...
+    Datasets: train=5987, val=757, test=600
+    Params: 47,425
+    Epoch   1/100 train=0.4952 val=0.1594 lr=1.0e-03 pat=0/10
+    Epoch  10/100 train=0.2318 val=0.1407 lr=1.0e-03 pat=5/10
+    Early stop ep 15 (best=0.1318)
+    ❌ GRU_top40: MAE=3.577, MASE=1.497 (104s)
+
+══════════════════════════════════════════════════════════════════════
+TASK 2: TFT Retrain with v2 Enhanced Features
+══════════════════════════════════════════════════════════════════════
+  Temporal: 113 features
+  Static: 4 features → ['hour_cos', 'hour_sin', 'month_cos', 'month_sin']
+
+  ──────────────────────────────────────────────────
+  TFT v2 — Horizon 1h
+  ──────────────────────────────────────────────────
+    Persistence 1h: MAE=2.390
+    Train=5987, Val=757, Test=600
+    TFT params: 28,545 | temporal=113, static=4
+    Epoch   1/100 train=0.4954 val=0.1684 lr=1.0e-03 pat=0/15
+    Epoch  10/100 train=0.2434 val=0.1494 lr=1.0e-03 pat=1/15
+    Epoch  20/100 train=0.1595 val=0.2141 lr=5.0e-04 pat=11/15
+    Early stop ep 24 (best=0.1393)
+    ❌ TFT_v2 1h: MAE=4.722, MASE=1.976 (v1=1.029 Δ=+92.0%) (29s)
+
+  ──────────────────────────────────────────────────
+  TFT v2 — Horizon 6h
+  ──────────────────────────────────────────────────
+    Persistence 6h: MAE=6.305
+    Train=5982, Val=757, Test=600
+    TFT params: 28,545 | temporal=113, static=4
+    Epoch   1/100 train=0.6612 val=0.2108 lr=1.0e-03 pat=0/15
+    Epoch  10/100 train=0.2802 val=0.2401 lr=5.0e-04 pat=9/15
+    Early stop ep 16 (best=0.2108)
+    ✅ TFT_v2 6h: MAE=5.357, MASE=0.850 (v1=0.821 Δ=+3.5%) (18s)
+
+  ──────────────────────────────────────────────────
+  TFT v2 — Horizon 24h
+  ──────────────────────────────────────────────────
+    Persistence 24h: MAE=6.279
+    Train=5964, Val=757, Test=600
+    TFT params: 28,545 | temporal=113, static=4
+    Epoch   1/100 train=0.7031 val=0.3206 lr=1.0e-03 pat=0/15
+    Epoch  10/100 train=0.2852 val=0.2849 lr=1.0e-03 pat=5/15
+    Epoch  20/100 train=0.1685 val=0.3576 lr=2.5e-04 pat=15/15
+    Early stop ep 20 (best=0.2348)
+    ✅ TFT_v2 24h: MAE=5.561, MASE=0.886 (v1=0.811 Δ=+9.2%) (22s)
+
+══════════════════════════════════════════════════════════════════════
+[3/3] FINAL SUMMARY
+══════════════════════════════════════════════════════════════════════
+
+  ── PCA/Feature Selection @ 1h ──
+  Method               MASE       MAE        Dim   
+  ──────────────────────────────────────────────────
+  Persistence          1.0        2.3901     —     
+  GRU_top40            1.4966     3.5771     40    
+  GRU_pca              1.5719     3.757      37    
+  LSTM_pca             1.7961     4.2929     37    
+  GRU_top20            1.9603     4.6853     20    
+  GRU_top10            2.5046     5.9862     10    
+
+  ── TFT v2 vs v1 ──
+  Horizon    v1 MASE    v2 MASE    Δ         
+  ────────────────────────────────────────
+  1h        1.029      1.9757     +92.0%    
+  6h        0.821      0.8495     +3.5%     
+  24h        0.811      0.8856     +9.2%     
+
+  Results saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/dl_v3/dl_v3_pca_tft_20260412_095329.json
+
+COMPLETE — 646s (10.8 min)

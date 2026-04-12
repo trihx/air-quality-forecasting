@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "description": "DL retrain with v2 enhanced features + CV + log transform comparison",
+    "feature_set": "v2_enhanced + cv_features (std/mean, safeguard mean>=1.0)",
+    "cv_windows": [
+      6,
+      12,
+      24
+    ],
+    "lookback": 72,
+    "hidden_dim": 64,
+    "num_layers": 2,
+    "dropout": 0.2,
+    "device": "mps",
+    "timestamp": "2026-04-12T09:32:41.920147"
+  },
+  "1h": {
+    "Persistence": {
+      "mae": 2.3901,
+      "rmse": 3.8516,
+      "mase": 1.0
+    },
+    "GRU_raw": {
+      "mae": 4.1178,
+      "rmse": 5.9544,
+      "mase": 1.7228,
+      "params": 62209,
+      "input_dim": 117,
+      "train_time_s": 102.1,
+      "n_test": 600,
+      "use_log": false,
+      "features": "v2_enhanced+cv"
+    },
+    "LSTM_raw": {
+      "mae": 4.5126,
+      "rmse": 6.1933,
+      "mase": 1.888,
+      "params": 82241,
+      "input_dim": 117,
+      "train_time_s": 19.2,
+      "n_test": 600,
+      "use_log": false,
+      "features": "v2_enhanced+cv"
+    },
+    "GRU_log": {
+      "mae": 3.6588,
+      "rmse": 5.7395,
+      "mase": 1.5308,
+      "params": 62209,
+      "input_dim": 117,
+      "train_time_s": 85.6,
+      "n_test": 600,
+      "use_log": true,
+      "features": "v2_enhanced+cv"
+    },
+    "LSTM_log": {
+      "mae": 4.243,
+      "rmse": 6.5562,
+      "mase": 1.7752,
+      "params": 82241,
+      "input_dim": 117,
+      "train_time_s": 20.2,
+      "n_test": 600,
+      "use_log": true,
+      "features": "v2_enhanced+cv"
+    }
+  },
+  "6h": {
+    "Persistence": {
+      "mae": 6.3053,
+      "rmse": 8.5938,
+      "mase": 1.0
+    },
+    "GRU_raw": {
+      "mae": 4.9365,
+      "rmse": 6.2904,
+      "mase": 0.7829,
+      "params": 62209,
+      "input_dim": 117,
+      "train_time_s": 93.4,
+      "n_test": 600,
+      "use_log": false,
+      "features": "v2_enhanced+cv"
+    },
+    "LSTM_raw": {
+      "mae": 4.5344,
+      "rmse": 6.5468,
+      "mase": 0.7191,
+      "params": 82241,
+      "input_dim": 117,
+      "train_time_s": 17.1,
+      "n_test": 600,
+      "use_log": false,
+      "features": "v2_enhanced+cv"
+    },
+    "GRU_log": {
+      "mae": 4.3626,
+      "rmse": 6.5801,
+      "mase": 0.6919,
+      "params": 62209,
+      "input_dim": 117,
+      "train_time_s": 92.5,
+      "n_test": 600,
+      "use_log": true,
+      "features": "v2_enhanced+cv"
+    },
+    "LSTM_log": {
+      "mae": 4.7462,
+      "rmse": 7.0919,
+      "mase": 0.7527,
+      "params": 82241,
+      "input_dim": 117,
+      "train_time_s": 17.1,
+      "n_test": 600,
+      "use_log": true,
+      "features": "v2_enhanced+cv"
+    }
+  },
+  "24h": {
+    "Persistence": {
+      "mae": 6.2791,
+      "rmse": 8.7821,
+      "mase": 1.0
+    },
+    "GRU_raw": {
+      "mae": 4.8747,
+      "rmse": 6.507,
+      "mase": 0.7763,
+      "params": 62209,
+      "input_dim": 117,
+      "train_time_s": 80.1,
+      "n_test": 600,
+      "use_log": false,
+      "features": "v2_enhanced+cv"
+    },
+    "LSTM_raw": {
+      "mae": 4.6833,
+      "rmse": 6.352,
+      "mase": 0.7459,
+      "params": 82241,
+      "input_dim": 117,
+      "train_time_s": 30.9,
+      "n_test": 600,
+      "use_log": false,
+      "features": "v2_enhanced+cv"
+    },
+    "GRU_log": {
+      "mae": 4.8757,
+      "rmse": 6.96,
+      "mase": 0.7765,
+      "params": 62209,
+      "input_dim": 117,
+      "train_time_s": 115.2,
+      "n_test": 600,
+      "use_log": true,
+      "features": "v2_enhanced+cv"
+    },
+    "LSTM_log": {
+      "mae": 4.6112,
+      "rmse": 7.0885,
+      "mase": 0.7344,
+      "params": 82241,
+      "input_dim": 117,
+      "train_time_s": 20.5,
+      "n_test": 600,
+      "use_log": true,
+      "features": "v2_enhanced+cv"
+    }
+  }
+}

@@ -69,17 +69,105 @@
 > 📊 Feature insight: pm25_lag_1h chiếm 83.8% importance. All-features > top-20 selection.
 > 📊 **[2026-04-04 18:45]** Strategy comparison: Hybrid best (MASE=1.066), ext_interp worst (1.321). Test=REAL data only.
 > ⚠️ Key finding: Cubic spline alone gây noise → tệ hơn. KNN impute tốt hơn vì multivariate context.
-> 🔧 **[2026-04-04 21:52]** PIPELINE AUDIT & FIX v2: Fixed 2 critical bugs in multi_horizon_eval.py:
->   - Bug #1: h=1 target=y[t] (hiện tại) → FIXED to y[t+1] (tương lai)
->   - Bug #2: Persistence dùng lag features → FIXED to y[t] trực tiếp
-> 🏆 **[v2]** LightGBM FIXED: 1h=MASE 1.492 (❌), 6h=MASE 0.745 (-25.5%), 24h=MASE 0.842 (-15.8%).
-> 📊 Feature shift: 1h→pm25_lag_1h dominant. 6h→hour_sin+rolling_mean. 24h→multivariate (diem_suong, nhiet_do).
-> 🏆 **[2026-04-04 19:59]** ARIMA/SARIMA: SARIMA 24h ≈ LightGBM (0.813 vs 0.842). Seasonal s=24 rất mạnh.
-> 🏆🏆 **[2026-04-04 20:12]** GRU 24h = **MASE 0.727** — BEST! Vượt LightGBM (0.842). GRU > LSTM toàn diện.
-> 📊 Final ranking 6h: GRU_ens(0.698) > LightGBM(0.745) > SARIMA(0.762) > GRU(0.812) > ARIMA(0.856) > LSTM(0.914).
-> 📊 Final ranking 24h: **GRU(0.727)** > GRU_ens(0.730) > SARIMA(0.813) > LSTM(0.830) > LightGBM(0.842) > ARIMA(0.913).
-> 📊 1h: Persistence(1.000) > GRU(1.173) > SARIMA(1.283) > LightGBM(1.492) > LSTM(1.560).
-> 🔬 **[2026-04-04 21:01]** ENSEMBLE: GRU dominant ở mọi horizon. Stacking KHÔNG beat individual GRU.
-> 🧠 **[2026-04-05 03:05]** TFT: MASE 1h=1.029 (⭐ best ML/DL), 6h=0.822, 24h=0.812. Attention tiệm cận Persistence.
-> 📊 **[2026-04-05 02:45]** PI: Quantile best coverage (86.2%), Conformal OK (80.5%), MC Dropout needs calibration.
-> ✅ **[2026-04-05 10:48]** ALL 5 PHASES COMPLETE. Tests: 133/133. Dashboard + Thesis updated with TFT.
+> 🔧 **[2026-04-04 21:52]** PIPELINE AUDIT & FIX v2: Fixed 2 critical bugs in multi_horizon_eval.py
+> 🏆🏆 **[2026-04-04 20:12]** GRU 24h = **MASE 0.727** — BEST! Vượt LightGBM (0.842).
+> 🧠 **[2026-04-05 03:05]** TFT: MASE 1h=1.029 (⭐ best ML/DL), 6h=0.822, 24h=0.812.
+> ✅ **[2026-04-05 10:48]** ALL 5 PHASES COMPLETE. Tests: 133/133.
+
+---
+
+## RC Integration Phase (v2→v3) — 2026-04-11 → 2026-04-12
+
+### v2_enhanced (2026-04-11) — Fourier + Interactions + Linear + Log1p
+
+**Lý do**: RC cho thấy Fourier + log1p + interaction features mang lại MAE thấp hơn.
+**Bổ sung**: 12 Fourier, 6 rolling range, 6 interaction features, log1p transform, 3 linear models.
+
+| Run ID | Model | h | MAE | MASE | Notes |
+|--------|-------|---|-----|------|-------|
+| rc-v2-001 | LightGBM_tuned | 1h | 3.193 | 1.281 | ↓14.2% vs v1 (3.720). Fourier=#2 importance |
+| rc-v2-002 | LightGBM_tuned | 6h | 4.911 | 0.725 | ↓2.7% vs v1 |
+| rc-v2-003 | LightGBM_tuned | 24h | 4.957 | 0.806 | ↓4.3% vs v1 |
+| rc-v2-004 | ElasticNet | 6h | 4.846 | 0.715 | ✅ Best linear, bests=0.01/l1=0.5 |
+| rc-v2-005 | LassoCV | 1h | 3.641 | 1.461 | ❌ Linear thua Persistence ở 1h |
+| rc-v2-006 | ElasticNet | 24h | 5.020 | 0.816 | ✅ Beats Persistence 24h |
+
+### v3_sklearn_ensemble (2026-04-12) — RF + GB + Stacking + Ensemble
+
+**Lý do**: RC Ensemble (weighted) đạt MAE thấp nhất (1.845 single-step). Cần kiểm chứng trên TSF.
+**Bổ sung**: RandomForest, GradientBoosting, Stacking (ElasticNet+RF+GB→Ridge), VotingRegressor, Weighted Ensemble.
+
+| Run ID | Model | h | MAE | MASE | Notes |
+|--------|-------|---|-----|------|-------|
+| rc-v3-001 | RandomForest | 1h | 3.140 | 1.260 | ❌ All sklearn MASE>1 at 1h |
+| rc-v3-002 | Ensemble_Weighted | 1h | 3.114 | 1.249 | ❌ Best sklearn but still >1 |
+| rc-v3-003 | RandomForest | 6h | 4.782 | 0.706 | ✅ Ngang ElasticNet |
+| rc-v3-004 | **Ensemble_Weighted** | **6h** | **4.777** | **0.705** | ✅ RF=80%+GB=20%. Best sklearn |
+| rc-v3-005 | GradientBoosting | 6h | 4.880 | 0.721 | ✅ |
+| rc-v3-006 | RandomForest | 24h | 4.913 | 0.798 | ✅ |
+| rc-v3-007 | **Ensemble_Weighted** | **24h** | **4.907** | **0.797** | ✅ RF=80%+GB=20% |
+| rc-v3-008 | Stacking | 24h | 5.272 | 0.857 | ✅ Stacking tệ nhất trong group |
+
+> 📊 **[v3 Conclusion]**: Ensemble_Weighted (RF 80% + GB 20%) = best sklearn ở cả 6h+24h, cạnh tranh LightGBM_tuned. Stacking KHÔNG mang lợi ích rõ rệt. DL (GRU) vẫn dẫn đầu ở 24h.
+> 🔑 **Key insight**: Weights search luôn cho RF=80% → RF là backbone chính, GB chỉ diversify. Stacking weight=0%.
+
+---
+
+### v5 — DL Retrain with v2 Features + CV + Log Transform (2026-04-12)
+
+**What**: Retrain GRU/LSTM với 117 features (v2 enhanced: Fourier, interactions, CV) thay vì 5 raw features v1. Compare log1p vs raw target.
+**Why**: v2 features đã cải thiện LightGBM ↓14.2%. Test xem DL có benefit tương tự. CV features capture PM2.5 volatility.
+
+| Run ID | Model | Hz | MAE | MASE | Log? | Note |
+|--------|-------|----|-----|------|------|------|
+| dl-v2-001 | GRU_raw | 1h | 4.118 | 1.723 | ❌ | ❌ Tệ hơn v1 (1.173). 117 features quá nhiều cho 1h |
+| dl-v2-002 | LSTM_raw | 1h | 4.513 | 1.888 | ❌ | ❌ |
+| dl-v2-003 | GRU_log | 1h | 3.659 | 1.531 | ✅ | ❌ Log giúp nhưng vẫn MASE>1 |
+| dl-v2-004 | LSTM_log | 1h | 4.243 | 1.775 | ✅ | ❌ |
+| dl-v2-005 | GRU_raw | 6h | 4.936 | 0.783 | ❌ | ✅ v1=0.812 → ↓3.6% |
+| dl-v2-006 | **GRU_log** | **6h** | **4.363** | **0.692** | ✅ | ✅ **NEW BEST EVER!** v1=0.812 → ↓14.8% |
+| dl-v2-007 | **LSTM_raw** | **6h** | **4.534** | **0.719** | ❌ | ✅ v1=0.914 → ↓21.3% huge gain! |
+| dl-v2-008 | LSTM_log | 6h | 4.746 | 0.753 | ✅ | ✅ |
+| dl-v2-009 | GRU_raw | 24h | 4.875 | 0.776 | ❌ | ✅ v1=0.727 → +6.8% slight worse |
+| dl-v2-010 | GRU_log | 24h | 4.876 | 0.776 | ✅ | ✅ Same as raw |
+| dl-v2-011 | LSTM_raw | 24h | 4.683 | 0.746 | ❌ | ✅ v1=0.830 → ↓10.1% |
+| dl-v2-012 | **LSTM_log** | **24h** | **4.611** | **0.734** | ✅ | ✅ v1=0.830 → ↓11.5% |
+
+> 📊 **[v5 Conclusion]**:
+> - **6h**: GRU_log (MASE=0.692) = NEW BEST model toàn pipeline, thắng cả Ensemble_Weighted (0.705).
+> - **24h**: LSTM_log (0.734) > GRU v1 (0.727). v2 features giúp LSTM nhiều hơn GRU ở 24h.
+> - **1h**: DL tệ hơn v1 → curse of dimensionality, 117 features quá nhiều cho short horizon.
+> - **Log transform**: GRU thích log (especially 6h Δ=9.1%). LSTM ưa raw ở 6h nhưng log ở 24h.
+> 🔑 **Key insight**: DL benefits từ v2 features ở medium/long horizons. Tuy nhiên, feature selection/PCA nên thử cho 1h.
+
+---
+
+### v6 — PCA/Feature Selection (1h) + TFT Retrain v2 (2026-04-12)
+
+**What**: PCA (117→37, 95% var) + Top-N feature selection (10/20/40) @ 1h. TFT retrain (113 tempo + 4 static) @ all horizons.
+**Why**: v5 cho thấy curse of dimensionality ở 1h. Giả thuyết: PCA/selection giảm noise. TFT cần test v2.
+
+#### PCA/Feature Selection @ 1h
+
+| Run ID | Model | Hz | MAE | MASE | Dim | Note |
+|--------|-------|----|-----|------|-----|------|
+| v3-001 | GRU_pca | 1h | 3.757 | 1.572 | 37 | ❌ PCA 95% → 37 comp. Better than 117 but < v1 |
+| v3-002 | LSTM_pca | 1h | 4.293 | 1.796 | 37 | ❌ |
+| v3-003 | GRU_top10 | 1h | 5.986 | 2.505 | 10 | ❌ Quá ít features |
+| v3-004 | GRU_top20 | 1h | 4.685 | 1.960 | 20 | ❌ |
+| v3-005 | **GRU_top40** | **1h** | **3.577** | **1.497** | 40 | ❌ Best v2 selection nhưng v1 (1.173) vẫn thắng |
+
+#### TFT Retrain with v2 Features
+
+| Run ID | Model | Hz | MAE | MASE | Params | vs v1 |
+|--------|-------|----|-----|------|--------|-------|
+| v3-006 | TFT_v2 | 1h | 4.722 | 1.976 | 28,545 | ❌ v1=1.029 → +92.0% |
+| v3-007 | TFT_v2 | 6h | 5.357 | 0.850 | 28,545 | ✅ v1=0.821 → +3.5% |
+| v3-008 | TFT_v2 | 24h | 5.561 | 0.886 | 28,545 | ✅ v1=0.811 → +9.2% |
+
+> 📊 **[v6 Conclusion]**:
+> - **PCA/TopN KHÔNG giải quyết 1h**: GRU_top40 (1.497) < GRU_pca (1.572) < v2_full (1.723), nhưng TẤT CẢ đều tệ hơn v1 (1.173).
+> - **1h = autocorrelation trap**: Persistence gần perfect ở lag-1. Bất kỳ feature engineering nào cũng thêm noise. Simple model (5 raw features) tốt nhất.
+> - **TFT_v2 tệ hơn v1**: 113 temporal features quá nhiều cho hidden_dim=32 (28K params). TFT cần feature selection trước hoặc hidden_dim lớn hơn.
+> - **Ranking final": 1h → GRU_v1(1.173). 6h → GRU_log_v2(0.692). 24h → GRU_v1(0.727).
+> 🔑 **Key insight**: Feature engineering là CON DAO HAI LƯỠI cho DL: giúp multi-step (6h/24h) nhưng hại single-step (1h). TFT cần dataset >50K rows để handle 113+ features.

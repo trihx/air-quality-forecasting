@@ -1,0 +1,237 @@
+======================================================================
+DL RETRAIN v2 — Enhanced Features + Log Transform Comparison
+Horizons: [1, 6, 24]h | Lookback: 72h | Device: mps
+Architecture: hidden=64, layers=2, dropout=0.2
+Training: epochs=100, batch=64, patience=10
+New: CV features (windows=[6, 12, 24]), Fourier, Interactions
+RULE: Test set = REAL data only
+======================================================================
+
+[1/4] Preparing v2 enhanced dataset...
+  Loading and cleaning raw data...
+2026-04-12 09:20:51.060 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-12 09:20:51.061 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-12 09:20:51.188 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-12 09:20:51.207 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 09:20:51.208 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-12 09:20:51.226 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-12 09:20:51.229 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 09:20:51.231 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-12 09:20:51.235 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-12 09:20:51.241 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-12 09:20:51.244 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-12 09:20:51.248 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-12 09:20:51.248 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-12 09:20:51.256 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  Imputing (hybrid)...
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-12 09:21:05.606 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Building v2 features (Fourier + interactions)...
+2026-04-12 09:21:05.607 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-12 09:21:05.607 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-12 09:21:05.607 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-12 09:21:05.618 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-12 09:21:05.623 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-12 09:21:05.631 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-12 09:21:05.646 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-12 09:21:05.651 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-12 09:21:05.654 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-12 09:21:05.661 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-12 09:21:05.665 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-12 09:21:05.665 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-12 09:21:05.665 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,742 → 7,574 rows
+2026-04-12 09:21:05.665 | INFO     | src.features.builder:build_features:117 - ============================================================
+  Adding CV features (std/mean with safeguard)...
+  CV features added: ['pm25_cv_6h', 'pm25_cv_12h', 'pm25_cv_24h']
+  Total features: 123 cols × 7,574 rows
+
+══════════════════════════════════════════════════════════════════════
+[2/4] HORIZON = 1h
+══════════════════════════════════════════════════════════════════════
+
+  ── A) RAW target ──
+  Features: 117 cols | log=False
+  Train: 6059, Val: 757, Test: 758
+  Persistence 1h: MAE=2.390
+  Datasets: train=5987, val=757, test=600
+
+  Training GRU_raw (1h, log=False)...
+    Parameters: 62,209 | Input dim: 117
+    Epoch   1/100 | Train=0.4696 Val=0.1857 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1931 Val=0.1753 LR=1.0e-03 patience=5/10
+    Early stopping at epoch 15 (best val_loss=0.1656)
+    ❌ GRU_raw 1h: MAE=4.118, MASE=1.723 (102s, 600 pts)
+
+  Training LSTM_raw (1h, log=False)...
+    Parameters: 82,241 | Input dim: 117
+    Epoch   1/100 | Train=0.4715 Val=0.2025 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1376 Val=0.1943 LR=5.0e-04 patience=8/10
+    Early stopping at epoch 12 (best val_loss=0.1747)
+    ❌ LSTM_raw 1h: MAE=4.513, MASE=1.888 (19s, 600 pts)
+
+  ── B) LOG1P target ──
+  Features: 117 cols | log=True
+  Train: 6059, Val: 757, Test: 758
+  Persistence 1h: MAE=2.390
+  Datasets: train=5987, val=757, test=600
+
+  Training GRU_log (1h, log=True)...
+    Parameters: 62,209 | Input dim: 117
+    Epoch   1/100 | Train=0.4727 Val=0.4551 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1850 Val=0.5261 LR=5.0e-04 patience=7/10
+    Early stopping at epoch 13 (best val_loss=0.3644)
+    ❌ GRU_log 1h: MAE=3.659, MASE=1.531 (86s, 600 pts)
+
+  Training LSTM_log (1h, log=True)...
+    Parameters: 82,241 | Input dim: 117
+    Epoch   1/100 | Train=0.5181 Val=0.5369 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1458 Val=0.6932 LR=5.0e-04 patience=7/10
+    Early stopping at epoch 13 (best val_loss=0.5284)
+    ❌ LSTM_log 1h: MAE=4.243, MASE=1.775 (20s, 600 pts)
+
+══════════════════════════════════════════════════════════════════════
+[2/4] HORIZON = 6h
+══════════════════════════════════════════════════════════════════════
+
+  ── A) RAW target ──
+  Features: 117 cols | log=False
+  Train: 6059, Val: 757, Test: 758
+  Persistence 6h: MAE=6.305
+  Datasets: train=5982, val=757, test=600
+
+  Training GRU_raw (6h, log=False)...
+    Parameters: 62,209 | Input dim: 117
+    Epoch   1/100 | Train=0.5997 Val=0.3112 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1947 Val=0.3040 LR=5.0e-04 patience=6/10
+    Early stopping at epoch 14 (best val_loss=0.2137)
+    ✅ GRU_raw 6h: MAE=4.937, MASE=0.783 (93s, 600 pts)
+
+  Training LSTM_raw (6h, log=False)...
+    Parameters: 82,241 | Input dim: 117
+    Epoch   1/100 | Train=0.6007 Val=0.2073 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1358 Val=0.2681 LR=5.0e-04 patience=9/10
+    Early stopping at epoch 11 (best val_loss=0.2073)
+    ✅ LSTM_raw 6h: MAE=4.534, MASE=0.719 (17s, 600 pts)
+
+  ── B) LOG1P target ──
+  Features: 117 cols | log=True
+  Train: 6059, Val: 757, Test: 758
+  Persistence 6h: MAE=6.305
+  Datasets: train=5982, val=757, test=600
+
+  Training GRU_log (6h, log=True)...
+    Parameters: 62,209 | Input dim: 117
+    Epoch   1/100 | Train=0.5787 Val=0.6160 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1864 Val=1.0074 LR=5.0e-04 patience=6/10
+    Early stopping at epoch 14 (best val_loss=0.6064)
+    ✅ GRU_log 6h: MAE=4.363, MASE=0.692 (93s, 600 pts)
+
+  Training LSTM_log (6h, log=True)...
+    Parameters: 82,241 | Input dim: 117
+    Epoch   1/100 | Train=0.5879 Val=0.6340 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1371 Val=0.7982 LR=5.0e-04 patience=9/10
+    Early stopping at epoch 11 (best val_loss=0.6340)
+    ✅ LSTM_log 6h: MAE=4.746, MASE=0.753 (17s, 600 pts)
+
+══════════════════════════════════════════════════════════════════════
+[2/4] HORIZON = 24h
+══════════════════════════════════════════════════════════════════════
+
+  ── A) RAW target ──
+  Features: 117 cols | log=False
+  Train: 6059, Val: 757, Test: 758
+  Persistence 24h: MAE=6.279
+  Datasets: train=5964, val=757, test=600
+
+  Training GRU_raw (24h, log=False)...
+    Parameters: 62,209 | Input dim: 117
+    Epoch   1/100 | Train=0.6273 Val=0.3568 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1838 Val=0.2755 LR=5.0e-04 patience=8/10
+    Early stopping at epoch 12 (best val_loss=0.2502)
+    ✅ GRU_raw 24h: MAE=4.875, MASE=0.776 (80s, 600 pts)
+
+  Training LSTM_raw (24h, log=False)...
+    Parameters: 82,241 | Input dim: 117
+    Epoch   1/100 | Train=0.5857 Val=0.2744 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1529 Val=0.2385 LR=1.0e-03 patience=0/10
+    Epoch  20/100 | Train=0.1035 Val=0.2591 LR=5.0e-04 patience=10/10
+    Early stopping at epoch 20 (best val_loss=0.2385)
+    ✅ LSTM_raw 24h: MAE=4.683, MASE=0.746 (31s, 600 pts)
+
+  ── B) LOG1P target ──
+  Features: 117 cols | log=True
+  Train: 6059, Val: 757, Test: 758
+  Persistence 24h: MAE=6.279
+  Datasets: train=5964, val=757, test=600
+
+  Training GRU_log (24h, log=True)...
+    Parameters: 62,209 | Input dim: 117
+    Epoch   1/100 | Train=0.6164 Val=0.8859 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1864 Val=0.8145 LR=1.0e-03 patience=3/10
+    Early stopping at epoch 17 (best val_loss=0.6610)
+    ✅ GRU_log 24h: MAE=4.876, MASE=0.776 (115s, 600 pts)
+
+  Training LSTM_log (24h, log=True)...
+    Parameters: 82,241 | Input dim: 117
+    Epoch   1/100 | Train=0.5884 Val=0.7552 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1400 Val=0.7714 LR=5.0e-04 patience=7/10
+    Early stopping at epoch 13 (best val_loss=0.6629)
+    ✅ LSTM_log 24h: MAE=4.611, MASE=0.734 (21s, 600 pts)
+
+══════════════════════════════════════════════════════════════════════
+[3/4] LOG TRANSFORM COMPARISON
+══════════════════════════════════════════════════════════════════════
+
+Horizon  Model              MAE        MASE       Status    
+────────────────────────────────────────────────────────────
+1h       Persistence        2.390      1.000      baseline  
+1h       GRU_raw            4.118      1.723      ❌         
+1h       GRU_log            3.659      1.531      ❌         
+1h       LSTM_raw           4.513      1.888      ❌         
+1h       LSTM_log           4.243      1.775      ❌         
+         → GRU winner       LOG        delta=0.1920
+         → LSTM winner      LOG        delta=0.1128
+────────────────────────────────────────────────────────────
+6h       Persistence        6.305      1.000      baseline  
+6h       GRU_raw            4.936      0.783      ✅         
+6h       GRU_log            4.363      0.692      ✅         
+6h       LSTM_raw           4.534      0.719      ✅         
+6h       LSTM_log           4.746      0.753      ✅         
+         → GRU winner       LOG        delta=0.0910
+         → LSTM winner      RAW        delta=0.0336
+────────────────────────────────────────────────────────────
+24h       Persistence        6.279      1.000      baseline  
+24h       GRU_raw            4.875      0.776      ✅         
+24h       GRU_log            4.876      0.776      ✅         
+24h       LSTM_raw           4.683      0.746      ✅         
+24h       LSTM_log           4.611      0.734      ✅         
+         → GRU winner       RAW        delta=0.0002
+         → LSTM winner      LOG        delta=0.0115
+────────────────────────────────────────────────────────────
+
+══════════════════════════════════════════════════════════════════════
+REFERENCE: v1 DL (5 features) vs v2 DL (v2 enhanced + CV)
+══════════════════════════════════════════════════════════════════════
+Horizon  Model        v1 MASE    v2_raw     v2_log     Δ best    
+───────────────────────────────────────────────────────
+1h       GRU          1.173      1.723      1.531         +30.5%
+1h       LSTM         1.560      1.888      1.775         +13.8%
+6h       GRU          0.812      0.783      0.692         -14.8%
+6h       LSTM         0.914      0.719      0.753         -21.3%
+24h       GRU          0.727      0.776      0.776          +6.8%
+24h       LSTM         0.830      0.746      0.734         -11.5%
+
+[4/4] Saving results...
+  Results saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/dl_v2/dl_retrain_v2_20260412_093241.json
+
+COMPLETE — Total: 711s (11.8 min)

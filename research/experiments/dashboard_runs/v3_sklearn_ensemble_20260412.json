@@ -1,7 +1,14 @@
 {
-  "version": "v2_enhanced",
-  "timestamp": "2026-04-11T19:28:04.151084",
-  "description": "Enhanced features: Fourier (12), rolling range (6), interactions (6). Log1p target transform. Linear models added (LassoCV, ElasticNet, RidgeCV). DL models (GRU, LSTM, TFT) from v1 — NOT retrained. Sklearn models added (RF, GB, Stacking, WeightedEnsemble).",
+  "version": "v3_sklearn_ensemble",
+  "timestamp": "2026-04-12T09:07:09.368714",
+  "parent_version": "v2_enhanced",
+  "description": "Bổ sung 5 models từ Research Code (RC): RandomForest, GradientBoosting, Stacking (ElasticNet+RF+GB→Ridge), VotingRegressor, Weighted Ensemble (grid-search weights). Mục đích: hoàn thiện bộ models đa dạng, đánh giá xem tree-based ensemble có vượt trội LightGBM hay không.",
+  "changes": {
+    "what": "Thêm 5 sklearn models: RandomForest (300 trees), GradientBoosting (300 trees, lr=0.05), Stacking (3 base + Ridge meta, CV=5), VotingRegressor (RF+GB equal weights), Weighted Ensemble (RF+GB+Stacking, grid-search weights step=0.1)",
+    "why": "RC cho thấy Ensemble (weighted) đạt MAE thấp nhất (1.845 single-step). Cần kiểm chứng trên TSF pipeline với evaluation policy nghiêm ngặt hơn (test-on-real-only, multi-horizon).",
+    "result": "h=1: Tất cả MASE>1 (đúng quy luật autocorrelation). h=6: Ensemble_Weighted tốt nhất (MAE=4.777, MASE=0.705). h=24: Ensemble_Weighted tốt nhất (MAE=4.907, MASE=0.797). Best weights: RF=80%, GB=20%, Stacking=0%.",
+    "conclusion": "RandomForest + Ensemble_Weighted ngang hàng LightGBM_tuned và ElasticNet. Stacking không mang lại lợi ích rõ rệt — meta learner (Ridge) không khai thác được diversity giữa base models."
+  },
   "feature_set": {
     "lag": true,
     "rolling": true,
@@ -33,6 +40,13 @@
     "SARIMA",
     "Stacking",
     "TFT"
+  ],
+  "new_models_this_version": [
+    "RandomForest",
+    "GradientBoosting",
+    "Stacking",
+    "Ensemble_Voting",
+    "Ensemble_Weighted"
   ],
   "data": {
     "results": {
@@ -1526,11 +1540,24 @@
       }
     }
   },
-  "changes": {
-    "what": "Bổ sung từ RC: Fourier features (12), Rolling range (6), Interaction features (6), Log1p transform, Linear models (LassoCV, ElasticNet, RidgeCV).",
-    "why": "RC cho thấy Fourier + log1p + interaction mang lại MAE thấp hơn đáng kể. Tích hợp vào TSF để kiểm chứng trên pipeline nghiêm ngặt hơn.",
-    "result": "LightGBM h=1: MAE 3.720→3.193 (↓14.2%). ElasticNet h=6: MAE 4.846 (MASE=0.715). Fourier ranking #2 feature importance.",
-    "conclusion": "Fourier features là cải tiến lớn nhất. Interaction features nằm top-10. Log1p ổn định training."
-  },
-  "parent_version": "v1_baseline"
+  "best_per_horizon": {
+    "1h": {
+      "model": "TFT",
+      "mae": 2.46,
+      "mase": 1.029,
+      "note": "Không model nào thắng Persistence"
+    },
+    "6h": {
+      "model": "Ensemble_Weighted",
+      "mae": 4.777,
+      "mase": 0.705,
+      "note": "RF=80%+GB=20%"
+    },
+    "24h": {
+      "model": "GRU",
+      "mae": 4.562,
+      "mase": 0.727,
+      "note": "DL vẫn dẫn đầu ở 24h"
+    }
+  }
 }

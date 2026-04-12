@@ -1,0 +1,218 @@
+======================================================================
+SKLEARN MODELS — RF, GradientBoosting, Stacking, Ensemble
+Horizons: [1, 6, 24]h | Log Transform: True
+RULE: Test set = REAL data only
+======================================================================
+
+[1/4] Preparing Hybrid dataset...
+2026-04-12 09:00:11.623 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-12 09:00:11.623 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-12 09:00:11.758 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-12 09:00:11.779 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 09:00:11.780 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-12 09:00:11.802 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-12 09:00:11.807 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 09:00:11.810 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-12 09:00:11.815 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-12 09:00:11.820 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-12 09:00:11.823 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-12 09:00:11.828 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-12 09:00:11.828 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-12 09:00:11.839 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-12 09:00:25.786 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Hybrid data: 7,742 rows
+
+[2/4] Building v2 features...
+2026-04-12 09:00:25.788 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-12 09:00:25.788 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-12 09:00:25.788 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-12 09:00:25.796 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-12 09:00:25.799 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-12 09:00:25.806 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-12 09:00:25.819 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-12 09:00:25.825 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-12 09:00:25.829 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-12 09:00:25.836 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-12 09:00:25.839 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-12 09:00:25.839 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-12 09:00:25.839 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,742 → 7,574 rows
+2026-04-12 09:00:25.839 | INFO     | src.features.builder:build_features:117 - ============================================================
+  Features: 7,574 rows × 120 cols
+
+══════════════════════════════════════════════════════════════════════
+[3/4] HORIZON = 1h
+══════════════════════════════════════════════════════════════════════
+  Train: 6,058 | Test (real): 600/758
+2026-04-12 09:00:25.852 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Persistence (h=1): MAE=2.4931, RMSE=4.0111, MASE=1.0 ❌
+2026-04-12 09:00:25.852 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 25.0µg/m³: P=0.682 R=0.682 F1=0.682 Brier=0.0233 (n=22)
+2026-04-12 09:00:25.852 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 35.0µg/m³: P=0.250 R=0.250 F1=0.250 Brier=0.0100 (n=4)
+2026-04-12 09:00:25.852 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Training RandomForest...
+2026-04-12 09:00:30.279 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   RandomForest (h=1): MAE=3.1405, RMSE=4.727, MASE=1.2596 ❌
+2026-04-12 09:00:30.279 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RandomForest @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0383 (n=22)
+2026-04-12 09:00:30.279 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RandomForest @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:00:30.279 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    RandomForest: MAE=3.1405, MASE=1.2596 (4.4s)
+
+  Training GradientBoosting...
+2026-04-12 09:01:09.279 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   GradientBoosting (h=1): MAE=3.4804, RMSE=5.0154, MASE=1.396 ❌
+2026-04-12 09:01:09.279 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     GradientBoosting @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0400 (n=22)
+2026-04-12 09:01:09.279 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     GradientBoosting @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:01:09.279 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    GradientBoosting: MAE=3.4804, MASE=1.396 (39.0s)
+
+  Training Stacking (ElasticNet+RF+GB → Ridge meta)...
+2026-04-12 09:01:39.803 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Stacking (h=1): MAE=3.316, RMSE=4.9667, MASE=1.33 ❌
+2026-04-12 09:01:39.803 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Stacking @ 25.0µg/m³: P=0.375 R=0.136 F1=0.200 Brier=0.0400 (n=22)
+2026-04-12 09:01:39.803 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Stacking @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:01:39.803 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    Stacking: MAE=3.316, MASE=1.33 (30.5s)
+
+  Training Weighted Ensemble (RF+GB → equal weights)...
+2026-04-12 09:02:14.286 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Ensemble_Voting (h=1): MAE=3.2436, RMSE=4.8422, MASE=1.301 ❌
+2026-04-12 09:02:14.287 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Voting @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0367 (n=22)
+2026-04-12 09:02:14.287 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Voting @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:02:14.287 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    Ensemble_Voting: MAE=3.2436, MASE=1.301 (34.5s)
+
+  Building Custom Weighted Ensemble (weight search)...
+2026-04-12 09:02:14.288 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Ensemble_Weighted (h=1): MAE=3.1139, RMSE=4.7189, MASE=1.249 ❌
+2026-04-12 09:02:14.288 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Weighted @ 25.0µg/m³: P=0.750 R=0.136 F1=0.231 Brier=0.0333 (n=22)
+2026-04-12 09:02:14.288 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Weighted @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:02:14.288 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    Ensemble_Weighted: MAE=3.1139, MASE=1.249
+    Best weights: {'RF': np.float64(0.7), 'GB': np.float64(0.0), 'Stacking': np.float64(0.3)}
+
+══════════════════════════════════════════════════════════════════════
+[3/4] HORIZON = 6h
+══════════════════════════════════════════════════════════════════════
+  Train: 6,054 | Test (real): 595/757
+2026-04-12 09:02:14.314 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Persistence (h=6): MAE=6.7734, RMSE=9.1196, MASE=1.0 ❌
+2026-04-12 09:02:14.314 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 25.0µg/m³: P=0.091 R=0.077 F1=0.083 Brier=0.0739 (n=26)
+2026-04-12 09:02:14.314 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0134 (n=4)
+2026-04-12 09:02:14.314 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Training RandomForest...
+2026-04-12 09:02:18.734 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   RandomForest (h=6): MAE=4.782, RMSE=6.5232, MASE=0.706 ✅
+2026-04-12 09:02:18.734 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RandomForest @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-12 09:02:18.734 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RandomForest @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:02:18.734 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    RandomForest: MAE=4.782, MASE=0.706 (4.4s)
+
+  Training GradientBoosting...
+2026-04-12 09:02:57.546 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   GradientBoosting (h=6): MAE=4.8804, RMSE=6.8919, MASE=0.7205 ✅
+2026-04-12 09:02:57.546 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     GradientBoosting @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-12 09:02:57.546 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     GradientBoosting @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:02:57.546 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    GradientBoosting: MAE=4.8804, MASE=0.7205 (38.8s)
+
+  Training Stacking (ElasticNet+RF+GB → Ridge meta)...
+2026-04-12 09:03:27.717 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Stacking (h=6): MAE=4.9773, RMSE=6.8797, MASE=0.7348 ✅
+2026-04-12 09:03:27.717 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Stacking @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-12 09:03:27.717 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Stacking @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:03:27.717 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    Stacking: MAE=4.9773, MASE=0.7348 (30.2s)
+
+  Training Weighted Ensemble (RF+GB → equal weights)...
+2026-04-12 09:04:02.231 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Ensemble_Voting (h=6): MAE=4.8241, RMSE=6.6044, MASE=0.7122 ✅
+2026-04-12 09:04:02.231 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Voting @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-12 09:04:02.231 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Voting @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:04:02.231 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    Ensemble_Voting: MAE=4.8241, MASE=0.7122 (34.5s)
+
+  Building Custom Weighted Ensemble (weight search)...
+2026-04-12 09:04:02.232 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Ensemble_Weighted (h=6): MAE=4.7766, RMSE=6.5661, MASE=0.7052 ✅
+2026-04-12 09:04:02.232 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Weighted @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0437 (n=26)
+2026-04-12 09:04:02.232 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Weighted @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0067 (n=4)
+2026-04-12 09:04:02.232 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    Ensemble_Weighted: MAE=4.7766, MASE=0.7052
+    Best weights: {'RF': np.float64(0.8), 'GB': np.float64(0.2), 'Stacking': np.float64(-0.0)}
+
+══════════════════════════════════════════════════════════════════════
+[3/4] HORIZON = 24h
+══════════════════════════════════════════════════════════════════════
+  Train: 6,040 | Test (real): 585/755
+2026-04-12 09:04:02.260 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Persistence (h=24): MAE=6.1532, RMSE=8.6291, MASE=1.0 ❌
+2026-04-12 09:04:02.260 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0752 (n=22)
+2026-04-12 09:04:02.260 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Persistence @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0137 (n=4)
+2026-04-12 09:04:02.260 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+
+  Training RandomForest...
+2026-04-12 09:04:06.727 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   RandomForest (h=24): MAE=4.9128, RMSE=6.6243, MASE=0.7984 ✅
+2026-04-12 09:04:06.728 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RandomForest @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0376 (n=22)
+2026-04-12 09:04:06.728 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     RandomForest @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-12 09:04:06.728 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    RandomForest: MAE=4.9128, MASE=0.7984 (4.5s)
+
+  Training GradientBoosting...
+2026-04-12 09:04:45.706 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   GradientBoosting (h=24): MAE=5.0069, RMSE=6.6757, MASE=0.8137 ✅
+2026-04-12 09:04:45.706 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     GradientBoosting @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0393 (n=22)
+2026-04-12 09:04:45.706 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     GradientBoosting @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-12 09:04:45.706 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    GradientBoosting: MAE=5.0069, MASE=0.8137 (39.0s)
+
+  Training Stacking (ElasticNet+RF+GB → Ridge meta)...
+2026-04-12 09:05:14.329 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Stacking (h=24): MAE=5.2722, RMSE=7.0105, MASE=0.8568 ✅
+2026-04-12 09:05:14.330 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Stacking @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0376 (n=22)
+2026-04-12 09:05:14.330 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Stacking @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-12 09:05:14.330 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    Stacking: MAE=5.2722, MASE=0.8568 (28.6s)
+
+  Training Weighted Ensemble (RF+GB → equal weights)...
+2026-04-12 09:05:48.506 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Ensemble_Voting (h=24): MAE=4.9733, RMSE=6.6345, MASE=0.8082 ✅
+2026-04-12 09:05:48.506 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Voting @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0376 (n=22)
+2026-04-12 09:05:48.506 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Voting @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-12 09:05:48.506 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    Ensemble_Voting: MAE=4.9733, MASE=0.8082 (34.2s)
+
+  Building Custom Weighted Ensemble (weight search)...
+2026-04-12 09:05:48.507 | INFO     | src.evaluation.metrics:evaluate_forecast:126 -   Ensemble_Weighted (h=24): MAE=4.9071, RMSE=6.6023, MASE=0.7975 ✅
+2026-04-12 09:05:48.507 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Weighted @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0376 (n=22)
+2026-04-12 09:05:48.507 | INFO     | src.evaluation.metrics:evaluate_forecast_full:227 -     Ensemble_Weighted @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 (n=4)
+2026-04-12 09:05:48.507 | WARNING  | src.evaluation.metrics:classification_metrics:161 - No samples exceed threshold 50.0 µg/m³
+    Ensemble_Weighted: MAE=4.9071, MASE=0.7975
+    Best weights: {'RF': np.float64(0.8), 'GB': np.float64(0.2), 'Stacking': np.float64(-0.0)}
+
+══════════════════════════════════════════════════════════════════════
+[4/4] SUMMARY
+══════════════════════════════════════════════════════════════════════
+
+Horizon    Model                       MAE     MASE     RMSE     Time     Status
+────────────────────────────────────────────────────────────────────────────────
+1h        Persistence               2.493    1.000    4.011     0.0s   baseline
+1h        RandomForest              3.140    1.260    4.727     4.4s       ❌ >1
+1h        GradientBoosting          3.480    1.396    5.015    39.0s       ❌ >1
+1h        Stacking                  3.316    1.330    4.967    30.5s       ❌ >1
+1h        Ensemble_Voting           3.244    1.301    4.842    34.5s       ❌ >1
+1h        Ensemble_Weighted         3.114    1.249    4.719     0.0s       ❌ >1
+────────────────────────────────────────────────────────────────────────────────
+6h        Persistence               6.773    1.000    9.120     0.0s   baseline
+6h        RandomForest              4.782    0.706    6.523     4.4s    ✅ BEATS
+6h        GradientBoosting          4.880    0.721    6.892    38.8s    ✅ BEATS
+6h        Stacking                  4.977    0.735    6.880    30.2s    ✅ BEATS
+6h        Ensemble_Voting           4.824    0.712    6.604    34.5s    ✅ BEATS
+6h        Ensemble_Weighted         4.777    0.705    6.566     0.0s    ✅ BEATS
+────────────────────────────────────────────────────────────────────────────────
+24h        Persistence               6.153    1.000    8.629     0.0s   baseline
+24h        RandomForest              4.913    0.798    6.624     4.5s    ✅ BEATS
+24h        GradientBoosting          5.007    0.814    6.676    39.0s    ✅ BEATS
+24h        Stacking                  5.272    0.857    7.011    28.6s    ✅ BEATS
+24h        Ensemble_Voting           4.973    0.808    6.635    34.2s    ✅ BEATS
+24h        Ensemble_Weighted         4.907    0.797    6.602     0.0s    ✅ BEATS
+────────────────────────────────────────────────────────────────────────────────
+
+  Results saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/sklearn_models/sklearn_models_20260412_090548.json
+
+COMPLETE — Total: 337s (5.6 min)

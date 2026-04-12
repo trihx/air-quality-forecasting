@@ -140,13 +140,16 @@ def classification_metrics(
     Evaluates how well the model predicts PM2.5 exceeding a threshold.
     Inspired by RC's multi-threshold classification (25, 35, 50 µg/m³).
 
+    Includes ROC-AUC via pseudo-probability (sigmoid-scaled distance from
+    threshold), matching RC's approach without requiring sklearn.
+
     Args:
         y_true: Actual PM2.5 values (µg/m³).
         y_pred: Predicted PM2.5 values (µg/m³).
         threshold: PM2.5 threshold for exceedance classification.
 
     Returns:
-        Dictionary with precision, recall, f1, brier_score, n_exceed.
+        Dictionary with precision, recall, f1, brier_score, roc_auc, n_exceed.
     """
     y_true = np.asarray(y_true, dtype=float)
     y_pred = np.asarray(y_pred, dtype=float)
@@ -159,7 +162,11 @@ def classification_metrics(
 
     if n_exceed == 0:
         logger.warning(f"No samples exceed threshold {threshold} µg/m³")
-        results.update({"precision": float("nan"), "recall": float("nan"), "f1": float("nan"), "brier_score": float("nan")})
+        results.update({
+            "precision": float("nan"), "recall": float("nan"),
+            "f1": float("nan"), "brier_score": float("nan"),
+            "roc_auc": float("nan"),
+        })
         return results
 
     # Precision, Recall, F1 — manual calc to avoid sklearn import
@@ -174,13 +181,69 @@ def classification_metrics(
     # Brier Score — mean squared error of binary classification
     brier = float(np.mean((y_true_class - y_pred_class) ** 2))
 
+    # ROC-AUC — manual computation using pseudo-probabilities
+    # Convert regression outputs to probabilities via sigmoid of distance from threshold
+    roc_auc = _compute_roc_auc(y_true_class, y_pred, threshold)
+
     results.update({
         "precision": round(precision, 4),
         "recall": round(recall, 4),
         "f1": round(f1, 4),
         "brier_score": round(brier, 4),
+        "roc_auc": round(roc_auc, 4),
     })
     return results
+
+
+def _compute_roc_auc(
+    y_true_class: np.ndarray,
+    y_pred: np.ndarray,
+    threshold: float,
+) -> float:
+    """Compute ROC-AUC from regression predictions.
+
+    Uses sigmoid-scaled distance from threshold as pseudo-probability,
+    then computes AUC via trapezoidal rule on the ROC curve.
+
+    Args:
+        y_true_class: Binary labels (0/1).
+        y_pred: Raw regression predictions (µg/m³).
+        threshold: Classification threshold.
+
+    Returns:
+        ROC-AUC score (0-1). Returns NaN if only one class present.
+    """
+    n_pos = int(y_true_class.sum())
+    n_neg = int(len(y_true_class) - n_pos)
+    if n_pos == 0 or n_neg == 0:
+        return float("nan")
+
+    # Pseudo-probability: sigmoid of (pred - threshold), scaled by std
+    distance = y_pred - threshold
+    scale = max(np.std(y_pred), 1.0)  # prevent division by zero
+    prob = 1.0 / (1.0 + np.exp(-distance / scale))
+
+    # Sort by descending probability
+    sorted_idx = np.argsort(-prob)
+    y_sorted = y_true_class[sorted_idx]
+
+    # Trapezoidal ROC-AUC
+    tp_count = 0
+    fp_count = 0
+    auc = 0.0
+    prev_fpr = 0.0
+
+    for label in y_sorted:
+        if label == 1:
+            tp_count += 1
+        else:
+            fp_count += 1
+            tpr = tp_count / n_pos
+            fpr = fp_count / n_neg
+            auc += (fpr - prev_fpr) * tpr
+            prev_fpr = fpr
+
+    return float(auc)
 
 
 def evaluate_forecast_full(
@@ -227,7 +290,7 @@ def evaluate_forecast_full(
             logger.info(
                 f"    {model_name} @ {thresh}µg/m³: "
                 f"P={clf['precision']:.3f} R={clf['recall']:.3f} F1={clf['f1']:.3f} "
-                f"Brier={clf['brier_score']:.4f} (n={clf['n_exceed']})"
+                f"Brier={clf['brier_score']:.4f} AUC={clf['roc_auc']:.3f} (n={clf['n_exceed']})"
             )
 
     results["classification"] = clf_results

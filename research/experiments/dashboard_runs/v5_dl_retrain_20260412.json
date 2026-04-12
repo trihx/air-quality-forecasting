@@ -1,7 +1,14 @@
 {
-  "version": "v2_enhanced",
-  "timestamp": "2026-04-11T19:28:04.151084",
-  "description": "Enhanced features: Fourier (12), rolling range (6), interactions (6). Log1p target transform. Linear models added (LassoCV, ElasticNet, RidgeCV). DL models (GRU, LSTM, TFT) from v1 — NOT retrained. Sklearn models added (RF, GB, Stacking, WeightedEnsemble).",
+  "version": "v5_dl_retrain",
+  "timestamp": "2026-04-12T09:33:14.414736",
+  "parent_version": "v4_roc_auc",
+  "description": "DL models (GRU/LSTM) retrained with v2 enhanced features (117 cols: Fourier + interactions + CV). Raw vs log1p target comparison.",
+  "changes": {
+    "what": "Retrain GRU/LSTM with v2 features (117 cols incl. Fourier, interactions, CV). Compare log1p vs raw target for each model at 1h/6h/24h.",
+    "why": "v1 DL dùng chỉ 5 raw features. v2 features đã cải thiện LightGBM ↓14.2%. Test xem DL có benefit tương tự. CV features (std/mean) với safeguard (clamp mean>=1.0) giúp capture volatility.",
+    "result": "Mixed results: 6h GRU_log MASE=0.692 (NEW BEST, -14.8% vs v1). LSTM_raw 6h=0.719 (-21.3% vs v1). Nhưng 1h tệ hơn v1 (GRU +30.5%) do DL overfits trên 117 features ở short horizon. 24h LSTM_log=0.734 (-11.5%). Log transform giúp GRU ở 6h nhưng LSTM ưa RAW ở 6h.",
+    "conclusion": "V2 features giúp DL rõ rệt ở medium/long horizon (6h/24h). Short horizon (1h) bị curse of dimensionality. Log transform có mixed effect: GRU thích log, LSTM thích raw. Khuyến nghị: dùng GRU_log@6h (best ever MASE=0.692) và LSTM_log@24h (MASE=0.734)."
+  },
   "feature_set": {
     "lag": true,
     "rolling": true,
@@ -12,7 +19,8 @@
     "fourier": true,
     "interaction": true,
     "log_transform": true,
-    "rolling_range": true
+    "rolling_range": true,
+    "cv_features": true
   },
   "models_included": [
     "ARIMA",
@@ -22,8 +30,12 @@
     "Ensemble_Voting",
     "Ensemble_Weighted",
     "GRU",
+    "GRU_log",
+    "GRU_raw",
     "GradientBoosting",
     "LSTM",
+    "LSTM_log",
+    "LSTM_raw",
     "LassoCV",
     "LightGBM_default",
     "LightGBM_tuned",
@@ -33,6 +45,11 @@
     "SARIMA",
     "Stacking",
     "TFT"
+  ],
+  "new_in_this_version": [
+    "GRU/LSTM retrained with v2+CV features",
+    "Log1p vs raw comparison",
+    "CV features (std/mean safeguard)"
   ],
   "data": {
     "results": {
@@ -530,6 +547,50 @@
             "GB": 0.0,
             "Stacking": 0.3
           }
+        },
+        "GRU_raw": {
+          "mae": 4.1178,
+          "rmse": 5.9544,
+          "mase": 1.7228,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 102.1,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_raw": {
+          "mae": 4.5126,
+          "rmse": 6.1933,
+          "mase": 1.888,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 19.2,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "GRU_log": {
+          "mae": 3.6588,
+          "rmse": 5.7395,
+          "mase": 1.5308,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 85.6,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_log": {
+          "mae": 4.243,
+          "rmse": 6.5562,
+          "mase": 1.7752,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 20.2,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
         }
       },
       "6h": {
@@ -1026,6 +1087,50 @@
             "GB": 0.2,
             "Stacking": -0.0
           }
+        },
+        "GRU_raw": {
+          "mae": 4.9365,
+          "rmse": 6.2904,
+          "mase": 0.7829,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 93.4,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_raw": {
+          "mae": 4.5344,
+          "rmse": 6.5468,
+          "mase": 0.7191,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 17.1,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "GRU_log": {
+          "mae": 4.3626,
+          "rmse": 6.5801,
+          "mase": 0.6919,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 92.5,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_log": {
+          "mae": 4.7462,
+          "rmse": 7.0919,
+          "mase": 0.7527,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 17.1,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
         }
       },
       "24h": {
@@ -1522,15 +1627,52 @@
             "GB": 0.2,
             "Stacking": -0.0
           }
+        },
+        "GRU_raw": {
+          "mae": 4.8747,
+          "rmse": 6.507,
+          "mase": 0.7763,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 80.1,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_raw": {
+          "mae": 4.6833,
+          "rmse": 6.352,
+          "mase": 0.7459,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 30.9,
+          "n_test": 600,
+          "use_log": false,
+          "features": "v2_enhanced+cv"
+        },
+        "GRU_log": {
+          "mae": 4.8757,
+          "rmse": 6.96,
+          "mase": 0.7765,
+          "params": 62209,
+          "input_dim": 117,
+          "train_time_s": 115.2,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
+        },
+        "LSTM_log": {
+          "mae": 4.6112,
+          "rmse": 7.0885,
+          "mase": 0.7344,
+          "params": 82241,
+          "input_dim": 117,
+          "train_time_s": 20.5,
+          "n_test": 600,
+          "use_log": true,
+          "features": "v2_enhanced+cv"
         }
       }
     }
-  },
-  "changes": {
-    "what": "Bổ sung từ RC: Fourier features (12), Rolling range (6), Interaction features (6), Log1p transform, Linear models (LassoCV, ElasticNet, RidgeCV).",
-    "why": "RC cho thấy Fourier + log1p + interaction mang lại MAE thấp hơn đáng kể. Tích hợp vào TSF để kiểm chứng trên pipeline nghiêm ngặt hơn.",
-    "result": "LightGBM h=1: MAE 3.720→3.193 (↓14.2%). ElasticNet h=6: MAE 4.846 (MASE=0.715). Fourier ranking #2 feature importance.",
-    "conclusion": "Fourier features là cải tiến lớn nhất. Interaction features nằm top-10. Log1p ổn định training."
-  },
-  "parent_version": "v1_baseline"
+  }
 }

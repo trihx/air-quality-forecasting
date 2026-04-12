@@ -1,0 +1,723 @@
+{
+  "_metadata": {
+    "script": "sklearn_models_eval.py",
+    "timestamp": "2026-04-12T09:05:48.517335",
+    "log_transform": true,
+    "horizons": [
+      1,
+      6,
+      24
+    ],
+    "models": [
+      "RandomForest",
+      "GradientBoosting",
+      "Stacking",
+      "Ensemble_Voting",
+      "Ensemble_Weighted"
+    ],
+    "features": "Fourier + interaction + rolling_range (v2 enhanced)",
+    "test_policy": "real-only"
+  },
+  "1h": {
+    "Persistence": {
+      "model": "Persistence",
+      "mae": 2.4931,
+      "rmse": 4.0111,
+      "mape": 27.86,
+      "smape": 25.43,
+      "mase": 1.0,
+      "r2": 0.6047,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.6818,
+          "recall": 0.6818,
+          "f1": 0.6818,
+          "brier_score": 0.0233
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.25,
+          "recall": 0.25,
+          "f1": 0.25,
+          "brier_score": 0.01
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      }
+    },
+    "RandomForest": {
+      "model": "RandomForest",
+      "mae": 3.1405,
+      "rmse": 4.727,
+      "mape": 40.34,
+      "smape": 32.69,
+      "mase": 1.2596,
+      "r2": 0.451,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0383
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 4.43
+    },
+    "GradientBoosting": {
+      "model": "GradientBoosting",
+      "mae": 3.4804,
+      "rmse": 5.0154,
+      "mape": 45.63,
+      "smape": 36.1,
+      "mase": 1.396,
+      "r2": 0.382,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.04
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 39.0
+    },
+    "Stacking": {
+      "model": "Stacking",
+      "mae": 3.316,
+      "rmse": 4.9667,
+      "mape": 40.88,
+      "smape": 34.52,
+      "mase": 1.33,
+      "r2": 0.394,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.375,
+          "recall": 0.1364,
+          "f1": 0.2,
+          "brier_score": 0.04
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 30.52
+    },
+    "Ensemble_Voting": {
+      "model": "Ensemble_Voting",
+      "mae": 3.2436,
+      "rmse": 4.8422,
+      "mape": 41.69,
+      "smape": 33.89,
+      "mase": 1.301,
+      "r2": 0.424,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0367
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 34.48
+    },
+    "Ensemble_Weighted": {
+      "model": "Ensemble_Weighted",
+      "mae": 3.1139,
+      "rmse": 4.7189,
+      "mape": 39.34,
+      "smape": 32.18,
+      "mase": 1.249,
+      "r2": 0.4529,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.75,
+          "recall": 0.1364,
+          "f1": 0.2308,
+          "brier_score": 0.0333
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 0.0,
+      "best_weights": {
+        "RF": 0.7,
+        "GB": 0.0,
+        "Stacking": 0.3
+      }
+    }
+  },
+  "6h": {
+    "Persistence": {
+      "model": "Persistence",
+      "mae": 6.7734,
+      "rmse": 9.1196,
+      "mape": 82.84,
+      "smape": 63.26,
+      "mase": 1.0,
+      "r2": -0.8077,
+      "horizon": 6,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 26,
+          "precision": 0.0909,
+          "recall": 0.0769,
+          "f1": 0.0833,
+          "brier_score": 0.0739
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0134
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      }
+    },
+    "RandomForest": {
+      "model": "RandomForest",
+      "mae": 4.782,
+      "rmse": 6.5232,
+      "mape": 57.91,
+      "smape": 45.46,
+      "mase": 0.706,
+      "r2": 0.0751,
+      "horizon": 6,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 26,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0437
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 4.42
+    },
+    "GradientBoosting": {
+      "model": "GradientBoosting",
+      "mae": 4.8804,
+      "rmse": 6.8919,
+      "mape": 55.4,
+      "smape": 46.03,
+      "mase": 0.7205,
+      "r2": -0.0324,
+      "horizon": 6,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 26,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0437
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 38.81
+    },
+    "Stacking": {
+      "model": "Stacking",
+      "mae": 4.9773,
+      "rmse": 6.8797,
+      "mape": 58.77,
+      "smape": 47.19,
+      "mase": 0.7348,
+      "r2": -0.0288,
+      "horizon": 6,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 26,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0437
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 30.17
+    },
+    "Ensemble_Voting": {
+      "model": "Ensemble_Voting",
+      "mae": 4.8241,
+      "rmse": 6.6044,
+      "mape": 58.42,
+      "smape": 45.82,
+      "mase": 0.7122,
+      "r2": 0.0519,
+      "horizon": 6,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 26,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0437
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 34.51
+    },
+    "Ensemble_Weighted": {
+      "model": "Ensemble_Weighted",
+      "mae": 4.7766,
+      "rmse": 6.5661,
+      "mape": 57.11,
+      "smape": 45.3,
+      "mase": 0.7052,
+      "r2": 0.0629,
+      "horizon": 6,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 26,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0437
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0067
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 0.0,
+      "best_weights": {
+        "RF": 0.8,
+        "GB": 0.2,
+        "Stacking": -0.0
+      }
+    }
+  },
+  "24h": {
+    "Persistence": {
+      "model": "Persistence",
+      "mae": 6.1532,
+      "rmse": 8.6291,
+      "mape": 72.31,
+      "smape": 57.61,
+      "mase": 1.0,
+      "r2": -0.7431,
+      "horizon": 24,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0752
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0137
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      }
+    },
+    "RandomForest": {
+      "model": "RandomForest",
+      "mae": 4.9128,
+      "rmse": 6.6243,
+      "mape": 66.12,
+      "smape": 47.85,
+      "mase": 0.7984,
+      "r2": -0.0272,
+      "horizon": 24,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0376
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0068
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 4.47
+    },
+    "GradientBoosting": {
+      "model": "GradientBoosting",
+      "mae": 5.0069,
+      "rmse": 6.6757,
+      "mape": 70.06,
+      "smape": 48.65,
+      "mase": 0.8137,
+      "r2": -0.0432,
+      "horizon": 24,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0393
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0068
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 38.98
+    },
+    "Stacking": {
+      "model": "Stacking",
+      "mae": 5.2722,
+      "rmse": 7.0105,
+      "mape": 68.83,
+      "smape": 50.95,
+      "mase": 0.8568,
+      "r2": -0.1505,
+      "horizon": 24,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0376
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0068
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 28.62
+    },
+    "Ensemble_Voting": {
+      "model": "Ensemble_Voting",
+      "mae": 4.9733,
+      "rmse": 6.6345,
+      "mape": 70.95,
+      "smape": 48.31,
+      "mase": 0.8082,
+      "r2": -0.0304,
+      "horizon": 24,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0376
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0068
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 34.18
+    },
+    "Ensemble_Weighted": {
+      "model": "Ensemble_Weighted",
+      "mae": 4.9071,
+      "rmse": 6.6023,
+      "mape": 66.68,
+      "smape": 47.85,
+      "mase": 0.7975,
+      "r2": -0.0204,
+      "horizon": 24,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 22,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0376
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0068
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN
+        }
+      },
+      "train_time_s": 0.0,
+      "best_weights": {
+        "RF": 0.8,
+        "GB": 0.2,
+        "Stacking": -0.0
+      }
+    }
+  }
+}
