@@ -1,0 +1,83 @@
+======================================================================
+P0-8 FIX: STL RESIDUAL — LEAKAGE-FREE RE-RUN
+Horizon: 6h | Lookback: 72h | Device: mps
+FIX: STL fitted on TRAIN ONLY, seasonal pattern extrapolated
+======================================================================
+
+[1/4] Preparing dataset...
+2026-04-12 17:47:13.901 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-12 17:47:13.901 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-12 17:47:14.028 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-12 17:47:14.046 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 17:47:14.047 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-12 17:47:14.065 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-12 17:47:14.070 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 17:47:14.072 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-12 17:47:14.075 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-12 17:47:14.082 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-12 17:47:14.086 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-12 17:47:14.090 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-12 17:47:14.090 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-12 17:47:14.099 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-12 17:47:29.644 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Building v2 features...
+2026-04-12 17:47:29.645 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-12 17:47:29.645 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-12 17:47:29.645 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-12 17:47:29.652 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-12 17:47:29.655 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-12 17:47:29.662 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-12 17:47:29.675 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-12 17:47:29.679 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-12 17:47:29.683 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-12 17:47:29.689 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-12 17:47:29.692 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-12 17:47:29.692 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-12 17:47:29.692 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,742 → 7,574 rows
+2026-04-12 17:47:29.692 | INFO     | src.features.builder:build_features:117 - ============================================================
+  Shape: (7574, 120), train_end=6059, val_end=6816
+
+[2/4] Creating LEAKAGE-FREE STL target...
+    [LeakFree] Train STL fitted on 6059 points
+    [LeakFree] Seasonal pattern range: [-2.85, 5.57]
+    [LeakFree] Trend extrapolated: 7.28 (last week avg)
+    [LeakFree] Residual: mean=0.92, std=5.49
+  Features: 114 cols
+  Persistence 6h: MAE=6.305
+  Datasets: train=5982, val=757, test=600
+
+[3/4] Training GRU_stl_leakfree (h=6)...
+  Parameters: 61,633 | Input dim: 114
+    Epoch   1/100 | Train=0.9677 Val=0.8853 patience=0/10
+    Epoch  10/100 | Train=0.5115 Val=0.8889 patience=9/10
+    Early stopping at epoch 11 (best=0.8853)
+
+  ✅ GRU_stl_leakfree h=6: MAE=4.643, MASE=0.736, FB=-0.2455, MedAE=3.165 (80s)
+  [Diagnostics] Saved: /Users/trihx/Desktop/time-series-forecasting/research/diagnostics/diagnostics_gru_stl_leakfree_h6.png
+
+══════════════════════════════════════════════════════════════════════
+[4/4] COMPARISON: Leaky vs Leak-Free STL
+══════════════════════════════════════════════════════════════════════
+  STL (LEAKY — full data):     MASE = 0.507 ⚠️ INVALID
+  STL (LEAK-FREE — train only): MASE = 0.736 ✅
+  seasonal_diff (y-y[t-24]):    MASE = 0.903 ✅ VALID
+  raw (no transform):           MASE = 0.731 ✅ VALID
+  GRU v2+log (reference):       MASE = 0.692 ✅ REFERENCE
+
+  vs v2+log reference: +6.4%
+  📊 STL leak-free ≈ raw → deseasonalizing doesn't help with Fourier features
+
+  Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/deseasonal/stl_leakfree_20260412_174850.json
+
+COMPLETE — Total: 97s (1.6 min)

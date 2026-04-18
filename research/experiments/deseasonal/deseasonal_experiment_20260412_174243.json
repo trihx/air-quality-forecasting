@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "description": "P0-8 Deseasonalizing Transform Experiment",
+    "reference": "Manu Joseph Ch.7, DL Cookbook Ch.1",
+    "hypothesis": "Removing seasonal component before modeling simplifies learning",
+    "horizon": 6,
+    "lookback": 72,
+    "hidden_dim": 64,
+    "device": "mps",
+    "timestamp": "2026-04-12T17:42:43.952234"
+  },
+  "results": {
+    "raw": {
+      "model": "GRU_deseas_raw",
+      "target_transform": "raw",
+      "horizon": 6,
+      "mae": 4.6082,
+      "rmse": 6.3937,
+      "mase": 0.7308,
+      "forecast_bias": 0.0161,
+      "medae": 3.5473,
+      "params": 61633,
+      "input_dim": 114,
+      "train_time_s": 102.6,
+      "n_test": 600,
+      "persistence_mae": 6.3053,
+      "diagnostics": {
+        "verdict": "FAIL — Significant autocorrelation in residuals (model misspecification)",
+        "lb_pass_rate": 0.0,
+        "residual_mean": -0.1542,
+        "residual_std": 6.3918
+      }
+    },
+    "seasonal_diff": {
+      "model": "GRU_deseas_seasonal_diff",
+      "target_transform": "seasonal_diff",
+      "horizon": 6,
+      "mae": 5.6925,
+      "rmse": 7.6765,
+      "mase": 0.9028,
+      "forecast_bias": -0.1108,
+      "medae": 4.2402,
+      "params": 61633,
+      "input_dim": 114,
+      "train_time_s": 85.6,
+      "n_test": 600,
+      "persistence_mae": 6.3053,
+      "diagnostics": {
+        "verdict": "FAIL — Significant autocorrelation in residuals (model misspecification)",
+        "lb_pass_rate": 0.0,
+        "residual_mean": 1.0593,
+        "residual_std": 7.603
+      }
+    },
+    "stl_residual": {
+      "model": "GRU_deseas_stl_residual",
+      "target_transform": "stl_residual",
+      "horizon": 6,
+      "mae": 3.1976,
+      "rmse": 5.4288,
+      "mase": 0.5071,
+      "forecast_bias": -0.0156,
+      "medae": 1.8252,
+      "params": 61633,
+      "input_dim": 114,
+      "train_time_s": 78.1,
+      "n_test": 600,
+      "persistence_mae": 6.3053,
+      "diagnostics": {
+        "verdict": "FAIL — Significant autocorrelation in residuals (model misspecification)",
+        "lb_pass_rate": 0.0,
+        "residual_mean": 0.1495,
+        "residual_std": 5.4267
+      }
+    }
+  }
+}

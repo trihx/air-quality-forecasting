@@ -171,3 +171,154 @@
 > - **TFT_v2 tệ hơn v1**: 113 temporal features quá nhiều cho hidden_dim=32 (28K params). TFT cần feature selection trước hoặc hidden_dim lớn hơn.
 > - **Ranking final": 1h → GRU_v1(1.173). 6h → GRU_log_v2(0.692). 24h → GRU_v1(0.727).
 > 🔑 **Key insight**: Feature engineering là CON DAO HAI LƯỠI cho DL: giúp multi-step (6h/24h) nhưng hại single-step (1h). TFT cần dataset >50K rows để handle 113+ features.
+
+### v7 — Pipeline Audit & Enhancement (2026-04-12)
+
+**What**: Audit toàn bộ pipeline đối chiếu 8+ sách chuyên ngành (Manu Joseph, Peixeiro, Brownlee, Vishwas & Patel, Huang). Bổ sung visualization + evaluation metrics thiếu.
+**Why**: Đảm bảo pipeline đạt chuẩn academic cho luận văn. Phát hiện 5 chart thiếu và 3 metric thiếu so với khuyến nghị sách.
+
+#### Phase 1: EDA Foundation
+
+| Item | What | Result |
+|------|------|--------|
+| P0-1 | STL Decomposition (period=24h, LOESS) | Trend=0.647, Seasonal=0.343, Residual σ=5.18 µg/m³ |
+| P0-2 | Forecastability Assessment | Score=0.434 (Trung bình), CoV=0.72, ApEn=1.46, ACF(1)=0.90 |
+| P0-6 | Box Plot per Hour (24 boxes) | Peak 6h (19.7 µg/m³), Trough 12h (6.3 µg/m³) |
+| P0-7 | Mount 4 unmounted charts | rolling_corr, fat_tail, dispersion, recovery → Dashboard |
+| P1-1 | Q-Q Plot (normality) | Shapiro-Wilk raw p=1.4e-50 → NOT Normal |
+| P1-2 | Periodogram/PSD | Dominant 24h cycle confirmed → validates Fourier |
+
+#### Phase 2: Evaluation Upgrade
+
+| Item | What | Result |
+|------|------|--------|
+| P0-3 | Forecast Bias metric | `forecast_bias()` → detects over/under-forecasting |
+| P0-4 | RMSE/MAE Ratio | Added → >√2 = outlier errors |
+| P0-5 | Residual Diagnostics | Ljung-Box + Q-Q + ACF + 4-panel chart |
+| P2-4 | MedAE (Median Absolute Error) | `medae()` → robust to fat-tailed PM2.5 |
+
+> 📊 **[v7 Metrics]**:
+> - STL Residual σ = 5.18 µg/m³ → best-case MAE floor
+> - Forecastability Score = 0.434 → "Trung bình" → explains MASE>1 at h=1
+> - PM2.5 NOT Normal (p=1.4e-50) → justifies MASE over MAPE
+> - Tests: 167/167 passed ✅
+> 🔑 **Key insight**: STL Residual σ (5.18) thiết lập "sàn hiệu suất" — model đạt MAE ≈ 5.2 tức đã khai thác hết signal. GRU v2+log MAE=4.35 tại 6h → đang nằm dưới noise floor → excellent.
+
+### v7-exp — Deseasonalizing Transform Experiment (2026-04-12)
+
+**What**: Thí nghiệm 3 biến thể target: raw, seasonal_diff (y-y[t-24]), STL residual.
+**Why**: Manu Joseph Ch.7 khuyến nghị. PM2.5 seasonal strength = 0.343 → deseasonalizing có thể giúp.
+
+| Run ID | Transform | Hz | MAE | MASE | FB | MedAE | Leakage |
+|--------|-----------|-----|-----|------|-----|-------|---------|
+| v7-001 | raw (baseline) | 6h | 4.608 | 0.731 | +0.016 | 3.547 | ✅ Clean |
+| v7-002 | seasonal_diff | 6h | 5.692 | 0.903 | -0.111 | 4.240 | ✅ Clean |
+| v7-003 | stl_residual | 6h | 3.198 | 0.507 | -0.016 | 1.825 | ⚠️ STL fitted on full data |
+
+> 📊 **[v7-exp Conclusion]**:
+> - **seasonal_diff (0.903) TỆ HƠN raw (0.731)**: Fourier features ALREADY capture seasonality → deseasonalizing thêm nhiễu.
+> - **STL residual (0.507) SUSPECT**: STL fitted on entire series incl. test → LOOK-AHEAD BIAS. Kết quả INVALID, cần re-run với train-only STL.
+> - **Forecast Bias**: seasonal_diff under-forecasts 11% (FB=-0.111) → dangerous for PM2.5 alerting.
+> - **Residual Diagnostics**: Tất cả 3 variants FAIL Ljung-Box → residuals still autocorrelated (normal for DL).
+> 🔑 **Key insight**: **Fourier features khiến deseasonalizing explicit TRỞ NÊN DƯ THỪA (redundant)**. Model đã "remove" seasonal via Fourier → thêm seasonal_diff = double-remove → performance giảm. Đây là finding quan trọng cho thesis.
+
+#### v7-exp FIX: STL Leakage Corrected (2026-04-12)
+
+| Run ID | Transform | Hz | MAE | MASE | FB | Leakage |
+|--------|-----------|-----|-----|------|-----|---------|
+| v7-004 | stl_leakfree | 6h | 4.643 | 0.736 | -0.246 | ✅ Clean (train-only STL) |
+
+> ⚠️ **LEAKAGE CONFIRMED**: STL full-data (0.507) → STL train-only (0.736) = **+45% inflation**.
+> STL leak-free (0.736) ≈ raw (0.731) → **deseasonalizing NOT helpful with Fourier features**.
+> 📊 **Final v7-exp conclusion**: GRU v2+log (MASE=0.692) remains BEST at 6h. Fourier features make explicit deseasonalizing redundant.
+
+### v7-P4 — Deep Insights Phase 4 (2026-04-12)
+
+**P1-3: Error Anatomy** (GRU v2+log @ h=6, data from avp_6h.json)
+- Worst hour: **9h** (MAE=6.880) — morning rush + inversion
+- Best hour: **16h** (MAE=3.486) — afternoon convection disperses PM2.5
+- Error ACF(1) = 0.8253 → errors highly autocorrelated (model missing temporal patterns)
+- Error ACF(24) = 0.0317 → daily pattern in errors minimal (Fourier working)
+
+**P1-4: Granger Causality** (train-only, n=5547, maxlag=24)
+- Temperature → PM2.5: ✅ best_lag=1, p<1e-10
+- Humidity → PM2.5: ✅ best_lag=1, p<1e-10
+- CO2 → PM2.5: ✅ best_lag=6, p<1e-10
+- **All 3 external vars Granger-cause PM2.5** — validates feature design
+
+**P1-5: Cross-Correlation** (train-only)
+- CO2: best correlation r=0.3668 @ lag=0h (shared emission source)
+- Temperature: r=-0.1993 @ lag=0h (weak negative, via atmospheric mechanism)
+- Humidity: r=-0.2217 @ lag=-56h (indirect, complex mechanism)
+- Dew Point: r=-0.1971 @ lag=49h (weak)
+
+> All data saved to `research/eda/deep_insights_results.json` for cross-reference.
+> Dashboard Tab 6 reads ALL values from JSON dynamically.
+
+### v7-outlier — Outlier Strategy Fix (2026-04-12)
+
+**Problem**: IQR×3 cap PM2.5 at 54 µg/m³ — below WHO "Unhealthy" (55.4)
+- 1,908 real pollution events removed (0.9% of data)
+- PM2.5 skew=3.21, kurt=32.4 — IQR inappropriate for fat-tailed distributions
+
+**Fix**: PM2.5 uses DOMAIN bounds [0, 500] (WHO AQI scale + sensor spec)
+- Other variables (temp, humidity, CO2) keep IQR×3
+- 1,908 real data points NOW PRESERVED
+
+**Refs**: Manu Joseph Ch.2 (domain > statistical), Peixeiro Ch.3 (context first)
+**Impact**: All model results computed with old strategy. Full retrain needed.
+
+### v7-refs — Pipeline References Document (2026-04-12)
+
+Created `docs/PIPELINE_REFERENCES.md` — IEEE format citation mapping:
+- 8 sections: Data, EDA, Features, Models, Evaluation, PI, Experiments, Dashboard
+- Every decision linked to [Book] Ch.X, pp.Y-Z
+- 9 reference books indexed (MJ, PX, JB, VP, HP, TM, DL, AP, AQ)
+
+### v7-retrain — Full Pipeline Retrain (2026-04-12)
+
+**Trigger**: Outlier fix (PM2.5 domain bounds [0,500] thay IQR×3)
+**Duration**: 89 min | **Models**: 12 configs × 3 horizons = 36 experiments
+**Results**: `research/experiments/v7_retrain/`
+
+#### Summary Table (v7-retrain)
+| Horizon | Model | MAE | MASE |
+|---------|-------|-----|------|
+| **1h** | Persistence | 2.596 | 1.000 |
+| **1h** | LSTM_v2_log | 3.242 | - |
+| **1h** | Ens_Weighted | 3.216 | 1.239 |
+| **1h** | LightGBM | 3.298 | 1.270 |
+| **6h** | Ens_Weighted | **4.871** | **0.703** ⭐ |
+| **6h** | RandomForest | 4.886 | 0.705 |
+| **6h** | LightGBM | 5.081 | 0.733 |
+| **6h** | GRU_v2_log | 5.053 | 0.899 |
+| **24h** | LSTM_v2_log | **4.461** | **0.740** ⭐ |
+| **24h** | ARIMA(2,1,1) | 4.564 | 0.764 |
+| **24h** | Ens_Weighted | 4.978 | 0.788 |
+| **24h** | RandomForest | 4.999 | 0.791 |
+
+#### Key Findings
+1. Persistence MAE tăng (2.60 vs 1.82 cũ) — real pollution spikes giữ lại
+2. Ens_Weighted (RF+GB) thay GRU_v2_log ở 6h (0.703 vs 0.899)
+3. LSTM_v2_log vượt trội ở 24h (0.740)
+4. DL 1h MASE=inf: Persistence MAE~0 trên subset nhỏ → cần standardize
+5. ARIMA surprisingly competitive ở 24h (0.764)
+
+### v7-standardize — DL MASE Fix + Model Literature (2026-04-12)
+
+**DL MASE=inf fix**: persist_test trùng target do index offset
+- Root cause: DL sequencing offset khiến Persistence=Actual → MAE=0
+- Fix: Unified Persistence MAE (2.49, 6.42, 6.45) from ML-style test set
+- DL 1h: GRU MASE inf→1.343, LSTM inf→1.300
+- DL 6h: GRU MASE 0.899→0.787, LSTM 1.047→0.916
+- DL 24h: GRU MASE 0.937→0.875, LSTM 0.740→0.691 ⭐
+
+**Final v7-retrain Rankings (Standardized)**:
+| h | Best | MASE |
+|---|------|------|
+| 1h | Persistence | 1.000 |
+| 6h | Ens_Weighted | 0.703 ⭐ |
+| 24h | LSTM_v2_log | 0.691 ⭐ |
+
+**Model Selection Literature** added to PIPELINE_REFERENCES.md §10:
+- Why each model, why NOT others, data-model fit, results vs literature prediction

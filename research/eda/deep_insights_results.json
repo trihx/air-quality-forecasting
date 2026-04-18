@@ -1,0 +1,156 @@
+{
+  "error_anatomy": {
+    "model": "GRU_v2_log",
+    "horizon": 6,
+    "n_test": 601,
+    "hour_mae": {
+      "0": 4.584,
+      "1": 4.111,
+      "2": 4.784,
+      "3": 5.337,
+      "4": 5.185,
+      "5": 3.849,
+      "6": 3.691,
+      "7": 4.574,
+      "8": 4.815,
+      "9": 6.88,
+      "10": 6.223,
+      "11": 6.066,
+      "12": 5.182,
+      "13": 5.092,
+      "14": 5.882,
+      "15": 4.492,
+      "16": 3.486,
+      "17": 4.844,
+      "18": 3.934,
+      "19": 4.087,
+      "20": 4.874,
+      "21": 4.535,
+      "22": 4.428,
+      "23": 4.298
+    },
+    "hour_bias": {
+      "0": 1.119,
+      "1": 0.602,
+      "2": -0.136,
+      "3": -0.666,
+      "4": 0.248,
+      "5": 1.196,
+      "6": 1.379,
+      "7": 0.957,
+      "8": 0.304,
+      "9": -0.845,
+      "10": -0.48,
+      "11": -0.283,
+      "12": -0.276,
+      "13": -0.97,
+      "14": -1.499,
+      "15": 1.391,
+      "16": 1.846,
+      "17": 1.675,
+      "18": 2.881,
+      "19": 3.718,
+      "20": 2.941,
+      "21": 2.673,
+      "22": 2.721,
+      "23": 2.211
+    },
+    "level_mae": {
+      "Good (0-12)": 3.93,
+      "Moderate (12-35)": 6.877,
+      "USG (35-55)": 30.032
+    },
+    "level_bias": {
+      "Good (0-12)": 3.618,
+      "Moderate (12-35)": -6.751,
+      "USG (35-55)": -30.032
+    },
+    "level_count": {
+      "Good (0-12)": 453,
+      "Moderate (12-35)": 144,
+      "USG (35-55)": 4
+    },
+    "worst_hour": 9,
+    "best_hour": 16,
+    "worst_hour_mae": 6.88,
+    "best_hour_mae": 3.486,
+    "error_acf_lag1": 0.8253,
+    "error_acf_lag24": 0.0317
+  },
+  "granger_causality": {
+    "nhiet_do_lag_1h": {
+      "label": "Temperature (lag 1h)",
+      "best_lag": 1,
+      "best_p_value": 0.0,
+      "significant_at_005": true,
+      "p_values_selected": {
+        "1": 0.0,
+        "6": 0.0,
+        "12": 0.0,
+        "24": 0.0
+      }
+    },
+    "do_am_lag_1h": {
+      "label": "Humidity (lag 1h)",
+      "best_lag": 1,
+      "best_p_value": 0.0,
+      "significant_at_005": true,
+      "p_values_selected": {
+        "1": 0.0,
+        "6": 0.0,
+        "12": 0.0,
+        "24": 0.0
+      }
+    },
+    "co2_lag_1h": {
+      "label": "CO2 (lag 1h)",
+      "best_lag": 6,
+      "best_p_value": 0.0,
+      "significant_at_005": true,
+      "p_values_selected": {
+        "1": 0.569764,
+        "6": 0.0,
+        "12": 0.0,
+        "24": 0.0
+      }
+    }
+  },
+  "cross_correlation": {
+    "nhiet_do": {
+      "label": "Temperature",
+      "best_lag_hours": 0,
+      "best_correlation": -0.1993,
+      "cc_at_lag0": -0.1993,
+      "cc_at_lag1": -0.1659,
+      "cc_at_lag6": 0.0868,
+      "cc_at_lag24": -0.1834
+    },
+    "do_am": {
+      "label": "Humidity",
+      "best_lag_hours": -56,
+      "best_correlation": -0.2217,
+      "cc_at_lag0": 0.1537,
+      "cc_at_lag1": 0.1047,
+      "cc_at_lag6": -0.1829,
+      "cc_at_lag24": 0.0745
+    },
+    "co2": {
+      "label": "CO2",
+      "best_lag_hours": 0,
+      "best_correlation": 0.3668,
+      "cc_at_lag0": 0.3668,
+      "cc_at_lag1": 0.3471,
+      "cc_at_lag6": 0.1845,
+      "cc_at_lag24": 0.3077
+    },
+    "diem_suong": {
+      "label": "Dew Point",
+      "best_lag_hours": 49,
+      "best_correlation": -0.1971,
+      "cc_at_lag0": -0.0886,
+      "cc_at_lag1": -0.1196,
+      "cc_at_lag6": -0.1497,
+      "cc_at_lag24": -0.1757
+    }
+  }
+}

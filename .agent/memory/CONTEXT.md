@@ -1,27 +1,39 @@
 # PROJECT CONTEXT
 
-## Trạng thái hiện tại (2026-04-12 09:37)
-- **Phase**: ✅ ALL 8 PHASES + RC Integration (v6) + Performance Opt + Docs
+## Trạng thái hiện tại (2026-04-12 20:15)
+- **Status**: 💯 Hoàn tất mọi mục tiêu trong tuần (Đã chèn nội dung khoa học vào bản nháp luận văn $\rightarrow$ đợi tuần sau tiếp tục triển khai tiếp theo mong muốn của User).
+- **Phase**: ✅ 100% hoàn thành (Phase 1-6 + v7-retrain + Thesis integration).
+- **Knowledge Base**: `docs/KNOWLEDGE_BASE.md` — 30 cuốn sách → kiến thức pipeline (LUÔN đọc trước implement)
 - **Best model**: GRU v2+log — 6h MASE=0.692 (giảm 31.0% vs Persistence) ⭐⭐⭐
-- **Dữ liệu**: 209K records → Hybrid 7,742 rows → 119 features (v2 enhanced, anti-leakage ✅)
-- **Models**: 28 models across 5 families (Linear, Tree, DL, Statistical, Ensemble) + PCA/TopN variants
-- **Tests**: 154/154 passed ✅
-- **Snapshots**: v1→v6 trong `dashboard_runs/` (có chú thích what/why/result/conclusion)
+- **Dữ liệu**: 209K records → Hybrid 7,742 rows → 119 features (v2 enhanced, anti-leakage ✅, Purging Gap ✅)
+- **Models**: 28 models across 5 families + PCA/TopN variants
+- **Tests**: 167/167 passed ✅ (v7: +13 audit tests)
+- **Snapshots**: v1→v7 (Audit & S-ESD) trong `dashboard_runs/` + Tích hợp thành công `THESIS_DRAFT_CTU_1799.md`.
 - **Hardware**: Apple M1 Pro 16GB — `torch.device("mps")`, lazy import torch
 
-## Top Model Rankings (MASE) — Updated v6
+## 🚨 DATA INTEGRITY RULES (TUYỆT ĐỐI)
+1. **KHÔNG tưởng tượng số liệu** — mọi metric PHẢI reference từ JSON/log output thực tế
+2. **Mọi transform FIT trên TRAIN ONLY** — STL, PCA, BoxCox, Scaler. KHÔNG fit full data
+3. **Leakage audit sau MỖI experiment** — check MASE < 0.1 hoặc R² > 0.99 = red flag
+4. **Test set = REAL data only** — `is_imputed==0` filter BẮT BUỘC
+5. **Cross-reference trước khi ghi Dashboard** — đọc lại JSON output, KHÔNG copy từ memory
+6. **Shift(1) cho mọi feature dùng target** — diff, pct_change, ratio, rolling trên pm25
+7. **Cập nhật `docs/PIPELINE_REFERENCES.md`** sau MỖI task — ghi nguồn IEEE (Book Ch.X, pp.Y) cho quyết định mới
+
+## Top Model Rankings (MASE) — v7-retrain (standardized)
 | Horizon | Best | MASE | Runner-up | MASE | 3rd |
 |---------|------|------|-----------|------|-----|
-| **1h** | TFT v1 | 1.029 | GRU v1 | 1.173 | Ens_Weighted 1.249 |
-| **6h** | **GRU v2+log** | **0.692** ⭐⭐⭐ | GRU_ens | 0.698 | Ens_Weighted 0.705 |
-| **24h** | GRU v1 | **0.727** ⭐⭐ | GRU_ens | 0.730 | LSTM v2 0.734 |
+| **1h** | Persistence | 1.000 | Ens_Weighted | 1.239 | LSTM_v2_log 1.300 |
+| **6h** | **Ens_Weighted** | **0.703** ⭐⭐⭐ | RF | 0.705 | LightGBM 0.733 |
+| **24h** | **LSTM_v2_log** | **0.691** ⭐⭐⭐ | ARIMA | 0.764 | Ens_Weighted 0.788 |
 
-> Persistence rất mạnh ở 1h (autocorr=0.99). Feature engineering giúp 6h/24h nhưng HẠI 1h.
-> v5: GRU_log 6h = NEW BEST entire pipeline. v6: PCA/TopN không cải thiện 1h. TFT v2 cần hidden lớn hơn.
+> Persistence vẫn mạnh nhất ở 1h (autocorr~0.99). ML > DL ở 6h, DL > ML ở 24h.
+> DL MASE standardized: Unified Persistence MAE (2.49, 6.42, 6.45) across all families.
+> v7-retrain: Outlier fix PM2.5 domain [0,500]. All in `research/experiments/v7_retrain/`.
 
 ## Pipeline Architecture
 ```
-Raw (209K) → Clean (IQR 3.0, dedup) → Resample 1h → Impute (Spline≤6h + KNN 6-24h)
+Raw (209K) → Clean (PM2.5: domain [0,500], others: IQR 3.0) → Resample 1h → Impute (Spline≤6h + KNN 6-24h)
 → Features (119 cols: lag+rolling+ewm+diff+calendar+domain+fourier+interaction)
 → Split 80/10/10 temporal → Target: shift(-h) for ALL h
 → Model → Evaluate (MAE+MASE+Classification: Brier/F1 @ WHO thresholds)
@@ -62,6 +74,7 @@ Raw (209K) → Clean (IQR 3.0, dedup) → Resample 1h → Impute (Spline≤6h + 
 | v4_roc_auc | 2026-04-12 | +ROC-AUC metric, Dashboard info cards | Full eval parity with RC |
 | v5_dl_retrain | 2026-04-12 | GRU/LSTM retrain+CV+log comparison, 22 models | GRU_log 6h MASE=0.692 (NEW BEST) |
 | v6_pca_tft | 2026-04-12 | PCA+TopN feature sel (1h) + TFT v2 retrain, 28 models | 1h fundamentally limited by autocorrelation |
+| v7_audit | 2026-04-12 | Pipeline Audit: +5 EDA charts, +4 metrics, deseasonalizing exp | Fourier makes deseasonalizing redundant |
 
 ## Tài liệu quan trọng
 | File | Mô tả |

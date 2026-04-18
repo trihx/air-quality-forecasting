@@ -1,0 +1,43 @@
+============================================================
+Phase 1: EDA Audit — Generating Missing Charts
+============================================================
+[Phase1] Loading data from /Users/trihx/Desktop/time-series-forecasting/dataset/interim/cleaned_hourly.csv...
+  Shape: (6857, 5), Range: 2022-03-17 08:00:00 → 2025-03-15 18:00:00
+  PM2.5 NaN: 0
+
+[P0-1] STL Decomposition...
+  Trend strength: 0.647
+  Seasonal strength: 0.343
+  Noise ratio: 0.298
+  Residual std: 5.176 µg/m³ (performance floor)
+  Saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/05_stl_decomposition.png
+  Saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/05a_stl_seasonal_zoom.png
+
+[P0-2] Forecastability Assessment...
+  CoV = 0.7190 (higher = harder)
+  ApEn = 1.4623 (higher = more complex)
+  Seasonality Strength = 0.3427 (from STL)
+  ACF(1) = 0.8965
+  Forecastability Score = 0.4337 (composite)
+  Interpretation: Trung bình
+
+[P0-6] Box Plot per Hour...
+  Peak hour: 6h (median=19.7)
+  Trough hour: 12h (median=6.3)
+  Saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/05b_boxplot_hourly.png
+
+[P1-1] Q-Q Plot (normality check)...
+  Shapiro-Wilk (raw): p=1.44e-50 → NOT Normal
+  Shapiro-Wilk (log): p=5.53e-17 → NOT Normal
+  Saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/03c_qq_plot.png
+
+[P1-2] Periodogram / PSD...
+  Top dominant periods: [6857.0, 3428.5, 1371.4, 761.9, 2285.7]
+  Saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/05c_periodogram.png
+
+[Phase1] Metrics saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/audit_phase1_metrics.json
+[Phase1] Updated: /Users/trihx/Desktop/time-series-forecasting/research/eda/eda_results.json
+
+============================================================
+Phase 1 COMPLETE — All charts generated!
+============================================================

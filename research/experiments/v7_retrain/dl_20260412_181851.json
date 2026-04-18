@@ -1,0 +1,284 @@
+{
+  "1h": {
+    "GRU_v2_log": {
+      "model": "GRU_v2_log",
+      "mae": 3.3484,
+      "rmse": 5.849,
+      "mape": 40.05,
+      "smape": 35.86,
+      "mase": 1.343,
+      "r2": 0.3239,
+      "medae": 2.2214,
+      "forecast_bias": -0.1052,
+      "rmse_mae_ratio": 1.7468,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 24,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0363,
+          "roc_auc": 0.8867
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0102,
+          "roc_auc": 0.8968
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0015,
+          "roc_auc": 0.4614
+        }
+      },
+      "train_time_s": 617.38,
+      "mase_unified": true,
+      "mase_persist_mae": 2.4932
+    },
+    "LSTM_v2_log": {
+      "model": "LSTM_v2_log",
+      "mae": 3.2417,
+      "rmse": 5.6199,
+      "mape": 45.38,
+      "smape": 34.96,
+      "mase": 1.3002,
+      "r2": 0.3759,
+      "medae": 2.2271,
+      "forecast_bias": -0.0071,
+      "rmse_mae_ratio": 1.7336,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 24,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0349,
+          "roc_auc": 0.9049
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0102,
+          "roc_auc": 0.8811
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0015,
+          "roc_auc": 0.3493
+        }
+      },
+      "train_time_s": 128.31,
+      "mase_unified": true,
+      "mase_persist_mae": 2.4932
+    }
+  },
+  "6h": {
+    "GRU_v2_log": {
+      "model": "GRU_v2_log",
+      "mae": 5.0532,
+      "rmse": 7.5592,
+      "mape": 76.04,
+      "smape": 50.47,
+      "mase": 0.7869,
+      "r2": -0.1282,
+      "medae": 3.597,
+      "forecast_bias": 0.0922,
+      "rmse_mae_ratio": 1.4959,
+      "horizon": 6,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 24,
+          "precision": 0.3333,
+          "recall": 0.0417,
+          "f1": 0.0741,
+          "brier_score": 0.0364,
+          "roc_auc": 0.629
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0102,
+          "roc_auc": 0.6021
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0015,
+          "roc_auc": 0.7697
+        }
+      },
+      "train_time_s": 593.32,
+      "mase_unified": true,
+      "mase_persist_mae": 6.4217
+    },
+    "LSTM_v2_log": {
+      "model": "LSTM_v2_log",
+      "mae": 5.8802,
+      "rmse": 7.8683,
+      "mape": 105.11,
+      "smape": 57.3,
+      "mase": 0.9157,
+      "r2": -0.2223,
+      "medae": 5.2374,
+      "forecast_bias": 0.3287,
+      "rmse_mae_ratio": 1.3381,
+      "horizon": 6,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 24,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0349,
+          "roc_auc": 0.527
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0102,
+          "roc_auc": 0.5811
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0015,
+          "roc_auc": 0.2362
+        }
+      },
+      "train_time_s": 125.22,
+      "mase_unified": true,
+      "mase_persist_mae": 6.4217
+    }
+  },
+  "24h": {
+    "GRU_v2_log": {
+      "model": "GRU_v2_log",
+      "mae": 5.647,
+      "rmse": 8.9747,
+      "mape": 53.1,
+      "smape": 69.02,
+      "mase": 0.875,
+      "r2": -0.5878,
+      "medae": 3.4865,
+      "forecast_bias": -0.5209,
+      "rmse_mae_ratio": 1.5893,
+      "horizon": 24,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 24,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.035,
+          "roc_auc": 0.2486
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0102,
+          "roc_auc": 0.3327
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0015,
+          "roc_auc": 0.6754
+        }
+      },
+      "train_time_s": 635.24,
+      "mase_unified": true,
+      "mase_persist_mae": 6.4536
+    },
+    "LSTM_v2_log": {
+      "model": "LSTM_v2_log",
+      "mae": 4.4609,
+      "rmse": 7.3551,
+      "mape": 58.39,
+      "smape": 47.11,
+      "mase": 0.6912,
+      "r2": -0.0664,
+      "medae": 3.0662,
+      "forecast_bias": -0.1388,
+      "rmse_mae_ratio": 1.6488,
+      "horizon": 24,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 24,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.035,
+          "roc_auc": 0.5168
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0102,
+          "roc_auc": 0.3965
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0015,
+          "roc_auc": 0.6754
+        }
+      },
+      "train_time_s": 128.56,
+      "mase_unified": true,
+      "mase_persist_mae": 6.4536
+    }
+  }
+}

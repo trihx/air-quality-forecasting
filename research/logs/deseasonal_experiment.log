@@ -1,0 +1,136 @@
+======================================================================
+P0-8: DESEASONALIZING TRANSFORM EXPERIMENT
+Horizon: 6h | Lookback: 72h | Device: mps
+Architecture: hidden=64, layers=2, dropout=0.2
+Transforms: raw | seasonal_diff (y-y[t-24]) | stl_residual
+RULE: Test set = REAL data only
+======================================================================
+
+[1/4] Preparing dataset...
+  Loading and cleaning raw data...
+2026-04-12 17:37:59.675 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-12 17:37:59.675 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-12 17:37:59.813 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-12 17:37:59.830 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 17:37:59.831 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-12 17:37:59.851 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-12 17:37:59.855 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 17:37:59.858 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-12 17:37:59.861 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-12 17:37:59.867 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-12 17:37:59.878 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-12 17:37:59.885 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-12 17:37:59.885 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-12 17:37:59.892 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  Imputing (hybrid)...
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-12 17:38:15.123 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+  Building v2 features...
+2026-04-12 17:38:15.123 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-12 17:38:15.123 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-12 17:38:15.123 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-12 17:38:15.130 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-12 17:38:15.134 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-12 17:38:15.141 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-12 17:38:15.154 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-12 17:38:15.158 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-12 17:38:15.162 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-12 17:38:15.169 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-12 17:38:15.172 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-12 17:38:15.172 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-12 17:38:15.172 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,742 → 7,574 rows
+2026-04-12 17:38:15.172 | INFO     | src.features.builder:build_features:117 - ============================================================
+  Shape: (7574, 120)
+
+[2/4] Creating deseasonalized targets...
+
+  Creating deseasonalized targets...
+    Raw: mean=13.36, std=9.19
+    Seasonal diff: mean=-0.02, std=8.00
+    STL residual: mean=0.79, std=5.12
+
+[3/4] Running experiments...
+
+════════════════════════════════════════════════════════════
+  Transform: raw
+════════════════════════════════════════════════════════════
+    Valid points: 7574/7574 (100.0%)
+    Features: 114 cols
+    Train: 6059, Val: 757, Test: 758
+    Persistence 6h: MAE=6.305
+    Datasets: train=5982, val=757, test=600
+
+    Training GRU_deseas_raw (h=6)...
+    Parameters: 61,633 | Input dim: 114
+    Epoch   1/100 | Train=0.6053 Val=0.3112 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.1910 Val=0.2848 LR=5.0e-04 patience=6/10
+    Early stopping at epoch 14 (best val_loss=0.2138)
+
+    ✅ GRU_deseas_raw h=6: MAE=4.608, MASE=0.731, FB=0.0161, MedAE=3.547 (103s)
+  [Diagnostics] Saved: /Users/trihx/Desktop/time-series-forecasting/research/diagnostics/diagnostics_gru_deseas_raw_h6.png
+
+════════════════════════════════════════════════════════════
+  Transform: seasonal_diff
+════════════════════════════════════════════════════════════
+    Valid points: 7550/7574 (99.7%)
+    Features: 114 cols
+    Train: 6059, Val: 757, Test: 758
+    Persistence 6h: MAE=6.305
+    Datasets: train=5982, val=757, test=600
+
+    Training GRU_deseas_seasonal_diff (h=6)...
+    Parameters: 61,633 | Input dim: 114
+    Epoch   1/100 | Train=0.8879 Val=0.4209 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.3605 Val=0.4527 LR=5.0e-04 patience=8/10
+    Early stopping at epoch 12 (best val_loss=0.3393)
+
+    ✅ GRU_deseas_seasonal_diff h=6: MAE=5.692, MASE=0.903, FB=-0.1108, MedAE=4.240 (86s)
+  [Diagnostics] Saved: /Users/trihx/Desktop/time-series-forecasting/research/diagnostics/diagnostics_gru_deseas_seasonal_diff_h6.png
+
+════════════════════════════════════════════════════════════
+  Transform: stl_residual
+════════════════════════════════════════════════════════════
+    Valid points: 7574/7574 (100.0%)
+    Features: 114 cols
+    Train: 6059, Val: 757, Test: 758
+    Persistence 6h: MAE=6.305
+    Datasets: train=5982, val=757, test=600
+
+    Training GRU_deseas_stl_residual (h=6)...
+    Parameters: 61,633 | Input dim: 114
+    Epoch   1/100 | Train=0.9715 Val=0.3480 LR=1.0e-03 patience=0/10
+    Epoch  10/100 | Train=0.5078 Val=0.3793 LR=5.0e-04 patience=9/10
+    Early stopping at epoch 11 (best val_loss=0.3480)
+
+    ✅ GRU_deseas_stl_residual h=6: MAE=3.198, MASE=0.507, FB=-0.0156, MedAE=1.825 (78s)
+  [Diagnostics] Saved: /Users/trihx/Desktop/time-series-forecasting/research/diagnostics/diagnostics_gru_deseas_stl_residual_h6.png
+
+══════════════════════════════════════════════════════════════════════
+[4/4] EXPERIMENT COMPARISON
+══════════════════════════════════════════════════════════════════════
+
+Transform                 MAE     MASE       FB    MedAE Verdict     
+──────────────────────────────────────────────────────────────────────
+raw                     4.608    0.731   0.0161    3.547 FAIL — Significant a ✅
+seasonal_diff           5.692    0.903  -0.1108    4.240 FAIL — Significant a ✅
+stl_residual            3.198    0.507  -0.0156    1.825 FAIL — Significant a ✅
+
+──────────────────────────────────────────────────────────────────────
+Reference: GRU_v2+log (6h) MASE = 0.692
+Best transform: stl_residual (MASE=0.507)
+vs v2+log reference: -26.7%
+🎉 NEW BEST! Deseasonalizing IMPROVES over v2+log!
+
+  Results saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/deseasonal/deseasonal_experiment_20260412_174243.json
+
+COMPLETE — Total: 284s (4.7 min)

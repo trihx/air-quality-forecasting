@@ -1,0 +1,326 @@
+======================================================================
+v7 FULL PIPELINE RETRAIN — Outlier Fix (PM2.5 domain bounds)
+Timestamp: 20260412_181851
+Models: LightGBM, RF, GB, Stacking, Ensemble, ARIMA, SARIMA, GRU, LSTM
+Horizons: [1, 6, 24]h
+======================================================================
+[DATA] Loading raw data...
+2026-04-12 18:18:51.921 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-12 18:18:51.921 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-12 18:18:52.050 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-12 18:18:52.067 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 18:18:52.068 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-12 18:18:52.086 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-12 18:18:52.090 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 18:18:52.092 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-12 18:18:52.095 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-12 18:18:52.100 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-12 18:18:52.103 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-12 18:18:52.103 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-04-12 18:18:52.104 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-04-12 18:18:52.114 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,466 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,396 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,810 rows with gaps >24h
+  [Imputer] Output: 7,743 rows (7,112 real + 631 imputed)
+  [Imputer] Dropped 19,810 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.1%
+2026-04-12 18:19:06.343 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,743 rows (7,112 real + 631 imputed, 19,810 dropped)
+2026-04-12 18:19:06.344 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-12 18:19:06.344 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-12 18:19:06.344 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-12 18:19:06.350 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-12 18:19:06.354 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-12 18:19:06.361 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-12 18:19:06.375 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-12 18:19:06.380 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-12 18:19:06.383 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-12 18:19:06.390 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-12 18:19:06.393 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-12 18:19:06.393 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-12 18:19:06.394 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,743 → 7,575 rows
+2026-04-12 18:19:06.394 | INFO     | src.features.builder:build_features:117 - ============================================================
+[DATA] Final: 7,575 rows × 120 cols
+
+======================================================================
+[ML] LightGBM (Optuna-tuned)
+======================================================================
+
+  ── Horizon 1h ──
+2026-04-12 18:19:07.389 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   LightGBM_tuned (h=1): MAE=3.2976, RMSE=5.0632, MASE=1.2701 ❌
+2026-04-12 18:19:07.389 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LightGBM_tuned @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0383 AUC=0.856 (n=23)
+2026-04-12 18:19:07.389 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LightGBM_tuned @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0100 AUC=0.823 (n=6)
+2026-04-12 18:19:07.390 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    LightGBM_tuned: MAE=3.2976, MASE=1.2701 (0.8s)
+
+  ── Horizon 6h ──
+2026-04-12 18:19:08.328 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   LightGBM_tuned (h=6): MAE=5.081, RMSE=7.0864, MASE=0.7329 ✅
+2026-04-12 18:19:08.328 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LightGBM_tuned @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0454 AUC=0.613 (n=27)
+2026-04-12 18:19:08.329 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LightGBM_tuned @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0118 AUC=0.611 (n=7)
+2026-04-12 18:19:08.329 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    LightGBM_tuned: MAE=5.081, MASE=0.7329 (0.9s)
+
+  ── Horizon 24h ──
+2026-04-12 18:19:09.460 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   LightGBM_tuned (h=24): MAE=5.0156, RMSE=6.8497, MASE=0.7937 ✅
+2026-04-12 18:19:09.460 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LightGBM_tuned @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0392 AUC=0.611 (n=23)
+2026-04-12 18:19:09.460 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LightGBM_tuned @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.704 (n=6)
+2026-04-12 18:19:09.460 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    LightGBM_tuned: MAE=5.0156, MASE=0.7937 (1.1s)
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v7_retrain/lightgbm_20260412_181851.json
+
+======================================================================
+[ML] Sklearn: RF, GB, Stacking, Ensemble
+======================================================================
+
+  ── Horizon 1h ──
+2026-04-12 18:19:09.548 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   Persistence (h=1): MAE=2.5964, RMSE=4.2473, MASE=1.0 ❌
+2026-04-12 18:19:09.548 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Persistence @ 25.0µg/m³: P=0.696 R=0.696 F1=0.696 Brier=0.0233 AUC=0.935 (n=23)
+2026-04-12 18:19:09.548 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Persistence @ 35.0µg/m³: P=0.167 R=0.167 F1=0.167 Brier=0.0167 AUC=0.977 (n=6)
+2026-04-12 18:19:09.548 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+2026-04-12 18:19:13.939 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   RandomForest (h=1): MAE=3.2478, RMSE=4.9694, MASE=1.2509 ❌
+2026-04-12 18:19:13.940 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     RandomForest @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0400 AUC=0.862 (n=23)
+2026-04-12 18:19:13.940 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     RandomForest @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0100 AUC=0.843 (n=6)
+2026-04-12 18:19:13.940 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    RandomForest: MAE=3.2478, MASE=1.2509 (4.4s)
+2026-04-12 18:19:53.002 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   GradientBoosting (h=1): MAE=3.664, RMSE=5.288, MASE=1.4112 ❌
+2026-04-12 18:19:53.003 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GradientBoosting @ 25.0µg/m³: P=0.667 R=0.087 F1=0.154 Brier=0.0367 AUC=0.861 (n=23)
+2026-04-12 18:19:53.003 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GradientBoosting @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0100 AUC=0.856 (n=6)
+2026-04-12 18:19:53.003 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    GradientBoosting: MAE=3.664, MASE=1.4112 (39.1s)
+2026-04-12 18:20:22.715 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   Stacking (h=1): MAE=3.4039, RMSE=5.1756, MASE=1.311 ❌
+2026-04-12 18:20:22.716 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Stacking @ 25.0µg/m³: P=0.500 R=0.174 F1=0.258 Brier=0.0383 AUC=0.857 (n=23)
+2026-04-12 18:20:22.716 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Stacking @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0100 AUC=0.833 (n=6)
+2026-04-12 18:20:22.716 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    Stacking: MAE=3.4039, MASE=1.311 (29.7s)
+2026-04-12 18:20:22.717 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   Ensemble_Weighted (h=1): MAE=3.2164, RMSE=4.9547, MASE=1.2388 ❌
+2026-04-12 18:20:22.717 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Ensemble_Weighted @ 25.0µg/m³: P=0.500 R=0.130 F1=0.207 Brier=0.0383 AUC=0.863 (n=23)
+2026-04-12 18:20:22.717 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Ensemble_Weighted @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0100 AUC=0.843 (n=6)
+2026-04-12 18:20:22.717 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    Ensemble_Weighted: MAE=3.2164, MASE=1.2388 (weights={'RF': np.float64(0.7), 'GB': np.float64(0.0), 'Stack': np.float64(0.3)})
+
+  ── Horizon 6h ──
+2026-04-12 18:20:22.729 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   Persistence (h=6): MAE=6.9323, RMSE=9.4702, MASE=1.0 ❌
+2026-04-12 18:20:22.729 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Persistence @ 25.0µg/m³: P=0.087 R=0.074 F1=0.080 Brier=0.0773 AUC=0.533 (n=27)
+2026-04-12 18:20:22.729 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Persistence @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0218 AUC=0.461 (n=7)
+2026-04-12 18:20:22.729 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+2026-04-12 18:20:27.194 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   RandomForest (h=6): MAE=4.886, RMSE=6.8371, MASE=0.7048 ✅
+2026-04-12 18:20:27.194 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     RandomForest @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0454 AUC=0.657 (n=27)
+2026-04-12 18:20:27.194 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     RandomForest @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0118 AUC=0.641 (n=7)
+2026-04-12 18:20:27.194 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    RandomForest: MAE=4.886, MASE=0.7048 (4.5s)
+2026-04-12 18:21:06.092 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   GradientBoosting (h=6): MAE=4.9451, RMSE=7.0837, MASE=0.7133 ✅
+2026-04-12 18:21:06.092 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GradientBoosting @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0454 AUC=0.639 (n=27)
+2026-04-12 18:21:06.092 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GradientBoosting @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0118 AUC=0.653 (n=7)
+2026-04-12 18:21:06.092 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    GradientBoosting: MAE=4.9451, MASE=0.7133 (38.9s)
+2026-04-12 18:21:34.863 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   Stacking (h=6): MAE=5.0889, RMSE=7.1699, MASE=0.7341 ✅
+2026-04-12 18:21:34.864 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Stacking @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0454 AUC=0.623 (n=27)
+2026-04-12 18:21:34.864 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Stacking @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0118 AUC=0.596 (n=7)
+2026-04-12 18:21:34.864 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    Stacking: MAE=5.0889, MASE=0.7341 (28.8s)
+2026-04-12 18:21:34.865 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   Ensemble_Weighted (h=6): MAE=4.8707, RMSE=6.8763, MASE=0.7026 ✅
+2026-04-12 18:21:34.865 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Ensemble_Weighted @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0454 AUC=0.655 (n=27)
+2026-04-12 18:21:34.865 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Ensemble_Weighted @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0118 AUC=0.652 (n=7)
+2026-04-12 18:21:34.865 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    Ensemble_Weighted: MAE=4.8707, MASE=0.7026 (weights={'RF': np.float64(0.7), 'GB': np.float64(0.3), 'Stack': np.float64(-0.0)})
+
+  ── Horizon 24h ──
+2026-04-12 18:21:34.883 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   Persistence (h=24): MAE=6.3192, RMSE=8.967, MASE=1.0 ❌
+2026-04-12 18:21:34.883 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Persistence @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0785 AUC=0.662 (n=23)
+2026-04-12 18:21:34.883 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Persistence @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0205 AUC=0.724 (n=6)
+2026-04-12 18:21:34.883 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+2026-04-12 18:21:39.377 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   RandomForest (h=24): MAE=4.9989, RMSE=6.8385, MASE=0.7911 ✅
+2026-04-12 18:21:39.377 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     RandomForest @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0392 AUC=0.651 (n=23)
+2026-04-12 18:21:39.377 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     RandomForest @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.648 (n=6)
+2026-04-12 18:21:39.377 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    RandomForest: MAE=4.9989, MASE=0.7911 (4.5s)
+2026-04-12 18:22:18.285 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   GradientBoosting (h=24): MAE=5.0807, RMSE=7.0384, MASE=0.804 ✅
+2026-04-12 18:22:18.286 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GradientBoosting @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0410 AUC=0.614 (n=23)
+2026-04-12 18:22:18.286 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GradientBoosting @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.697 (n=6)
+2026-04-12 18:22:18.286 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    GradientBoosting: MAE=5.0807, MASE=0.804 (38.9s)
+2026-04-12 18:22:48.382 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   Stacking (h=24): MAE=5.3964, RMSE=7.2697, MASE=0.854 ✅
+2026-04-12 18:22:48.383 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Stacking @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0392 AUC=0.628 (n=23)
+2026-04-12 18:22:48.383 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Stacking @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.670 (n=6)
+2026-04-12 18:22:48.383 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    Stacking: MAE=5.3964, MASE=0.854 (30.1s)
+2026-04-12 18:22:48.384 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   Ensemble_Weighted (h=24): MAE=4.9782, RMSE=6.8503, MASE=0.7878 ✅
+2026-04-12 18:22:48.384 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Ensemble_Weighted @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0392 AUC=0.646 (n=23)
+2026-04-12 18:22:48.384 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     Ensemble_Weighted @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.673 (n=6)
+2026-04-12 18:22:48.384 | WARNING  | src.evaluation.metrics:classification_metrics:195 - No samples exceed threshold 50.0 µg/m³
+    Ensemble_Weighted: MAE=4.9782, MASE=0.7878 (weights={'RF': np.float64(0.7), 'GB': np.float64(0.3), 'Stack': np.float64(-0.0)})
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v7_retrain/sklearn_20260412_181851.json
+
+======================================================================
+[STAT] ARIMA/SARIMA (rolling window)
+======================================================================
+
+  ── Horizon 1h ──
+2026-04-12 18:23:26.548 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   ARIMA(2,1,1) (h=1): MAE=3.6268, RMSE=6.5855, MASE=1.3973 ❌
+2026-04-12 18:23:26.548 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     ARIMA(2,1,1) @ 25.0µg/m³: P=0.125 R=0.042 F1=0.062 Brier=0.0432 AUC=0.828 (n=24)
+2026-04-12 18:23:26.548 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     ARIMA(2,1,1) @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0115 AUC=0.727 (n=7)
+2026-04-12 18:23:26.549 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     ARIMA(2,1,1) @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0029 AUC=0.355 (n=1)
+    ARIMA(2,1,1): MAE=3.6268, MASE=1.3973
+2026-04-12 18:39:08.657 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   SARIMA (h=1): MAE=4.0183, RMSE=7.1084, MASE=1.5481 ❌
+2026-04-12 18:39:08.658 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     SARIMA @ 25.0µg/m³: P=0.125 R=0.042 F1=0.062 Brier=0.0432 AUC=0.820 (n=24)
+2026-04-12 18:39:08.658 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     SARIMA @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0159 AUC=0.773 (n=7)
+2026-04-12 18:39:08.658 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     SARIMA @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0058 AUC=0.482 (n=1)
+    SARIMA: MAE=4.0183, MASE=1.5481
+
+  ── Horizon 6h ──
+2026-04-12 18:39:45.929 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   ARIMA(2,1,1) (h=6): MAE=4.5358, RMSE=7.2822, MASE=0.7709 ✅
+2026-04-12 18:39:45.929 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     ARIMA(2,1,1) @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0348 AUC=0.520 (n=24)
+2026-04-12 18:39:45.929 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     ARIMA(2,1,1) @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.323 (n=7)
+2026-04-12 18:39:45.930 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     ARIMA(2,1,1) @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.006 (n=1)
+    ARIMA(2,1,1): MAE=4.5358, MASE=0.7709
+2026-04-12 18:55:20.286 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   SARIMA (h=6): MAE=5.035, RMSE=7.9831, MASE=0.8558 ✅
+2026-04-12 18:55:20.287 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     SARIMA @ 25.0µg/m³: P=0.200 R=0.042 F1=0.069 Brier=0.0392 AUC=0.673 (n=24)
+2026-04-12 18:55:20.287 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     SARIMA @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0145 AUC=0.659 (n=7)
+2026-04-12 18:55:20.287 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     SARIMA @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.289 (n=1)
+    SARIMA: MAE=5.035, MASE=0.8558
+
+  ── Horizon 24h ──
+2026-04-12 18:55:55.367 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   ARIMA(2,1,1) (h=24): MAE=4.5638, RMSE=7.3715, MASE=0.7638 ✅
+2026-04-12 18:55:55.367 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     ARIMA(2,1,1) @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0358 AUC=0.434 (n=24)
+2026-04-12 18:55:55.368 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     ARIMA(2,1,1) @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0104 AUC=0.336 (n=7)
+2026-04-12 18:55:55.368 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     ARIMA(2,1,1) @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.033 (n=1)
+    ARIMA(2,1,1): MAE=4.5638, MASE=0.7638
+2026-04-12 19:11:01.492 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   SARIMA (h=24): MAE=5.0649, RMSE=8.0345, MASE=0.8477 ✅
+2026-04-12 19:11:01.493 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     SARIMA @ 25.0µg/m³: P=0.200 R=0.042 F1=0.069 Brier=0.0402 AUC=0.642 (n=24)
+2026-04-12 19:11:01.493 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     SARIMA @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0149 AUC=0.646 (n=7)
+2026-04-12 19:11:01.493 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     SARIMA @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.304 (n=1)
+    SARIMA: MAE=5.0649, MASE=0.8477
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v7_retrain/arima_20260412_181851.json
+
+======================================================================
+[DL] GRU & LSTM v2+log (MPS)
+======================================================================
+  Device: mps
+
+  ── Horizon 1h ──
+
+    Training GRU_v2_log...
+      Epoch 20: loss=0.073577
+      Epoch 40: loss=0.067010
+      Epoch 60: loss=0.061490
+      Epoch 80: loss=0.053081
+      Epoch 100: loss=0.044629
+2026-04-12 19:21:20.002 | WARNING  | src.evaluation.metrics:mase:71 - MASE: naive MAE is near zero, returning inf
+2026-04-12 19:21:20.004 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   GRU_v2_log (h=1): MAE=3.3484, RMSE=5.849, MASE=inf ❌
+2026-04-12 19:21:20.004 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0363 AUC=0.887 (n=24)
+2026-04-12 19:21:20.004 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.897 (n=7)
+2026-04-12 19:21:20.005 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.461 (n=1)
+      GRU_v2_log: MAE=3.3484, MASE=inf (617.4s)
+
+    Training LSTM_v2_log...
+      Epoch 20: loss=0.077268
+      Epoch 40: loss=0.068594
+      Epoch 60: loss=0.059630
+      Epoch 80: loss=0.052251
+      Epoch 100: loss=0.048093
+2026-04-12 19:23:28.330 | WARNING  | src.evaluation.metrics:mase:71 - MASE: naive MAE is near zero, returning inf
+2026-04-12 19:23:28.331 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   LSTM_v2_log (h=1): MAE=3.2417, RMSE=5.6199, MASE=inf ❌
+2026-04-12 19:23:28.332 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0349 AUC=0.905 (n=24)
+2026-04-12 19:23:28.332 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.881 (n=7)
+2026-04-12 19:23:28.332 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.349 (n=1)
+      LSTM_v2_log: MAE=3.2417, MASE=inf (128.3s)
+
+  ── Horizon 6h ──
+
+    Training GRU_v2_log...
+      Epoch 20: loss=0.144851
+      Epoch 40: loss=0.081861
+      Epoch 60: loss=0.054123
+      Epoch 80: loss=0.044484
+      Epoch 100: loss=0.036386
+2026-04-12 19:33:21.689 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   GRU_v2_log (h=6): MAE=5.0532, RMSE=7.5592, MASE=0.8995 ✅
+2026-04-12 19:33:21.693 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 25.0µg/m³: P=0.333 R=0.042 F1=0.074 Brier=0.0364 AUC=0.629 (n=24)
+2026-04-12 19:33:21.693 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.602 (n=7)
+2026-04-12 19:33:21.693 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.770 (n=1)
+      GRU_v2_log: MAE=5.0532, MASE=0.8995 (593.3s)
+
+    Training LSTM_v2_log...
+      Epoch 20: loss=0.123090
+      Epoch 40: loss=0.074337
+      Epoch 60: loss=0.057861
+      Epoch 80: loss=0.050942
+      Epoch 100: loss=0.045614
+2026-04-12 19:35:26.936 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   LSTM_v2_log (h=6): MAE=5.8802, RMSE=7.8683, MASE=1.0467 ❌
+2026-04-12 19:35:26.937 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0349 AUC=0.527 (n=24)
+2026-04-12 19:35:26.937 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.581 (n=7)
+2026-04-12 19:35:26.937 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.236 (n=1)
+      LSTM_v2_log: MAE=5.8802, MASE=1.0467 (125.2s)
+
+  ── Horizon 24h ──
+
+    Training GRU_v2_log...
+      Epoch 20: loss=0.162852
+      Epoch 40: loss=0.080374
+      Epoch 60: loss=0.051184
+      Epoch 80: loss=0.039456
+      Epoch 100: loss=0.032701
+2026-04-12 19:46:02.212 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   GRU_v2_log (h=24): MAE=5.647, RMSE=8.9747, MASE=0.9372 ✅
+2026-04-12 19:46:02.212 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0350 AUC=0.249 (n=24)
+2026-04-12 19:46:02.213 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.333 (n=7)
+2026-04-12 19:46:02.213 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.675 (n=1)
+      GRU_v2_log: MAE=5.647, MASE=0.9372 (635.2s)
+
+    Training LSTM_v2_log...
+      Epoch 20: loss=0.130645
+      Epoch 40: loss=0.076213
+      Epoch 60: loss=0.054493
+      Epoch 80: loss=0.049508
+      Epoch 100: loss=0.037652
+2026-04-12 19:48:10.801 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   LSTM_v2_log (h=24): MAE=4.4609, RMSE=7.3551, MASE=0.7403 ✅
+2026-04-12 19:48:10.802 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0350 AUC=0.517 (n=24)
+2026-04-12 19:48:10.802 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.397 (n=7)
+2026-04-12 19:48:10.802 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.675 (n=1)
+      LSTM_v2_log: MAE=4.4609, MASE=0.7403 (128.6s)
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v7_retrain/dl_20260412_181851.json
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v7_retrain/all_models_combined_20260412_181851.json
+
+======================================================================
+✅ v7 RETRAIN COMPLETE — 5359s (89.3 min)
+======================================================================
+
+Horizon    Model                       MAE     MASE
+───────────────────────────────────────────────────────
+1h         LightGBM_tuned            3.298    1.270
+6h         LightGBM_tuned            5.081    0.733
+24h        LightGBM_tuned            5.016    0.794
+───────────────────────────────────────────────────────
+1h         Persistence               2.596    1.000
+1h         RandomForest              3.248    1.251
+1h         GradientBoosting          3.664    1.411
+1h         Stacking                  3.404    1.311
+1h         Ensemble_Weighted         3.216    1.239
+6h         Persistence               6.932    1.000
+6h         RandomForest              4.886    0.705
+6h         GradientBoosting          4.945    0.713
+6h         Stacking                  5.089    0.734
+6h         Ensemble_Weighted         4.871    0.703
+24h        Persistence               6.319    1.000
+24h        RandomForest              4.999    0.791
+24h        GradientBoosting          5.081    0.804
+24h        Stacking                  5.396    0.854
+24h        Ensemble_Weighted         4.978    0.788
+───────────────────────────────────────────────────────
+1h         ARIMA                     3.627    1.397
+1h         SARIMA                    4.018    1.548
+6h         ARIMA                     4.536    0.771
+6h         SARIMA                    5.035    0.856
+24h        ARIMA                     4.564    0.764
+24h        SARIMA                    5.065    0.848
+───────────────────────────────────────────────────────
+1h         GRU_v2_log                3.348      inf
+1h         LSTM_v2_log               3.242      inf
+6h         GRU_v2_log                5.053    0.899
+6h         LSTM_v2_log               5.880    1.047
+24h        GRU_v2_log                5.647    0.937
+24h        LSTM_v2_log               4.461    0.740
+───────────────────────────────────────────────────────

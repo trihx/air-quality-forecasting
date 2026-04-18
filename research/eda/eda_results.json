@@ -182,5 +182,55 @@
       "count": 0,
       "pct": 0.0
     }
+  },
+  "stl": {
+    "trend_strength": 0.6469,
+    "seasonal_strength": 0.3427,
+    "noise_ratio": 0.2983,
+    "residual_std": 5.1756,
+    "residual_mean": 0.7237
+  },
+  "forecastability": {
+    "cov": 0.719,
+    "approximate_entropy": 1.4623,
+    "seasonality_strength": 0.3427,
+    "acf_lag1": 0.8965,
+    "forecastability_score": 0.4337,
+    "interpretation": "Trung b\u00ecnh"
+  },
+  "normality": {
+    "shapiro_p_raw": 1.443271e-50,
+    "shapiro_p_log": 5.52922e-17,
+    "is_normal_raw": false,
+    "is_normal_log": false
+  },
+  "spectral": {
+    "dominant_periods": [
+      {
+        "period_hours": 6857.0,
+        "frequency": 0.000146,
+        "power": 55347.34
+      },
+      {
+        "period_hours": 3428.5,
+        "frequency": 0.000292,
+        "power": 29911.48
+      },
+      {
+        "period_hours": 1371.4,
+        "frequency": 0.000729,
+        "power": 24782.27
+      },
+      {
+        "period_hours": 761.9,
+        "frequency": 0.001313,
+        "power": 18148.31
+      },
+      {
+        "period_hours": 2285.7,
+        "frequency": 0.000438,
+        "power": 17185.99
+      }
+    ]
   }
 }

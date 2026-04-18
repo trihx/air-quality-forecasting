@@ -82,6 +82,31 @@ def r2_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return float(1 - ss_res / ss_tot)
 
 
+def forecast_bias(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """Forecast Bias — over- or under-forecasting indicator.
+
+    Ref: Manu Joseph Ch.4 p.80.
+    FB > 0 → model over-forecasts (predicts too high)
+    FB < 0 → model under-forecasts (predicts too low) ← dangerous for PM2.5
+    FB ≈ 0 → unbiased (ideal)
+
+    Returns:
+        Forecast bias as fraction.
+    """
+    total_actual = np.sum(y_true)
+    if abs(total_actual) < 1e-10:
+        return float("nan")
+    return float((np.sum(y_pred) - total_actual) / total_actual)
+
+
+def medae(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """Median Absolute Error — robust to outliers.
+
+    More robust than MAE for fat-tailed distributions like PM2.5.
+    """
+    return float(np.median(np.abs(y_true - y_pred)))
+
+
 def evaluate_forecast(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -105,14 +130,20 @@ def evaluate_forecast(
     y_pred = np.asarray(y_pred, dtype=float)
     y_naive = np.asarray(y_naive, dtype=float)
 
+    mae_val = mae(y_true, y_pred)
+    rmse_val = rmse(y_true, y_pred)
+
     results: dict[str, float | str] = {
         "model": model_name,
-        "mae": round(mae(y_true, y_pred), 4),
-        "rmse": round(rmse(y_true, y_pred), 4),
+        "mae": round(mae_val, 4),
+        "rmse": round(rmse_val, 4),
         "mape": round(mape(y_true, y_pred), 2),
         "smape": round(smape(y_true, y_pred), 2),
         "mase": round(mase(y_true, y_pred, y_naive), 4),
         "r2": round(r2_score(y_true, y_pred), 4),
+        "medae": round(medae(y_true, y_pred), 4),
+        "forecast_bias": round(forecast_bias(y_true, y_pred), 4),
+        "rmse_mae_ratio": round(rmse_val / mae_val, 4) if mae_val > 1e-10 else float("nan"),
     }
 
     if horizon is not None:

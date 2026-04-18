@@ -149,9 +149,21 @@ def _handle_outliers(
 ) -> tuple[pd.DataFrame, int]:
     """Detect and replace outliers with NaN (will be interpolated later).
 
+    Strategy (v7 audit):
+        - PM2.5: Domain-based bounds [0, 500] per WHO AQI scale & sensor spec.
+          IQR is INAPPROPRIATE for fat-tailed PM2.5 (skew=3.21, kurt=32.4)
+          because IQR×3 caps at ~54 µg/m³ — below WHO "Unhealthy" (55.4),
+          removing real pollution events [1][2].
+        - Other variables: IQR method (approximately symmetric distributions).
+
+    Refs:
+        [1] Manu Joseph, Ch.2: "Domain knowledge should guide outlier handling"
+        [2] Peixeiro, Ch.3: "Understand context before removing data points"
+        [3] Brownlee: "Investigate outliers, don't automatically remove"
+
     Args:
         df: Input DataFrame.
-        method: 'iqr' (default) or 'zscore'.
+        method: 'iqr' (default) or 'zscore' — applied to non-PM2.5 columns.
         threshold: IQR multiplier or z-score threshold.
 
     Returns:
@@ -160,8 +172,18 @@ def _handle_outliers(
     total_outliers: int = 0
     numeric_cols = [c for c in FEATURE_COLS + [TARGET_COL] if c in df.columns]
 
+    # Domain-based bounds for PM2.5 (fat-tailed, WHO AQI scale)
+    # Only remove sensor errors (negative or physically impossible values)
+    DOMAIN_BOUNDS: dict[str, tuple[float, float]] = {
+        "pm25": (0.0, 500.0),  # WHO AQI scale max + sensor spec
+    }
+
     for col in numeric_cols:
-        if method == "iqr":
+        if col in DOMAIN_BOUNDS:
+            # Domain-based: only remove sensor errors, keep real extreme events
+            lower, upper = DOMAIN_BOUNDS[col]
+            logger.debug(f"  {col}: using DOMAIN bounds [{lower}, {upper}] (fat-tailed, WHO AQI)")
+        elif method == "iqr":
             q1 = float(df[col].quantile(0.25))
             q3 = float(df[col].quantile(0.75))
             iqr = q3 - q1
@@ -183,11 +205,12 @@ def _handle_outliers(
             total_outliers += n_outliers
 
     if total_outliers > 0:
-        logger.info(f"[4/7] Replaced {total_outliers} outliers with NaN (method={method}, threshold={threshold})")
+        logger.info(f"[4/7] Replaced {total_outliers} outliers with NaN (method={method}, threshold={threshold}, PM2.5=domain)")
     else:
         logger.info("[4/7] No outliers detected")
 
     return df, total_outliers
+
 
 
 def _resample(df: pd.DataFrame, freq: str = "1h") -> pd.DataFrame:

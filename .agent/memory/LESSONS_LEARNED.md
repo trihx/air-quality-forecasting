@@ -76,3 +76,34 @@
 ## [2026-04-12] OMP Threading Crash trên Apple Silicon + LightGBM
 - **Bài học**: `n_jobs=-1` gây `OMP: Error #179: Function pthread_mutex_init failed` khi LightGBM chạy cùng PyTorch trên M1 Pro.
 - **Rule**: LUÔN dùng `n_jobs=1` + `os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"` khi mix LightGBM + PyTorch.
+
+## [2026-04-12] STL Decomposition trên Full Data = Look-Ahead Bias
+- **Lỗi**: STL fitted trên toàn bộ series (incl. test) → seasonal/trend tại test indices chứa thông tin tương lai. MASE 0.507 (leaky) vs 0.736 (leak-free) = +45% inflation.
+- **Fix**: STL fit TRAIN ONLY. Extract 24h seasonal pattern → tile cho val/test. Trend → flat extrapolation từ last week.
+- **Rule**: BẤT KỲ decomposition/transform nào cũng PHẢI fit trên train only. Áp dụng cho STL, Box-Cox, PCA.
+
+## [2026-04-12] Fourier Features Make Deseasonalizing Redundant
+- **Bài học**: seasonal_diff(0.903) TỆ HƠN raw(0.731). STL leak-free(0.736) ≈ raw. Fourier features (sin/cos) đã nắm bắt chu kỳ → explicit deseasonalizing = double-remove → thêm nhiễu.
+- **Rule**: Khi pipeline đã có Fourier features, KHÔNG cần thêm deseasonalizing target. Tiết kiệm complexity.
+
+## [2026-04-12] Audit: Periodogram Top-5 Periods ≠ 24h Daily Cycle
+- **Lỗi**: Dashboard ghi "24h dominant" nhưng periodogram top-5 by raw power là long-term trends (700-6800h). 24h cycle confirmed qua STL, không qua periodogram ranking.
+- **Fix**: Sửa text accuracy: "Top-5 là trend dài hạn, 24h confirmed qua STL".
+- **Rule**: LUÔN đọc lại dữ liệu thực tế (JSON) trước khi viết narrative. Không suy diễn từ expectation.
+
+## [2026-04-12] Outlier Strategy: IQR*3 Quá Aggressive Cho PM2.5
+- **Phát hiện**: IQR*3 cap PM2.5 tại 54 µg/m³ — dưới WHO "Unhealthy" (55.4). 1,908 điểm ô nhiễm thực bị loại.
+- **Nguyên nhân**: PM2.5 fat-tailed (skew=3.21, kurt=32.4). IQR assume symmetric → không phù hợp.
+- **Khuyến nghị sách**: Manu Joseph Ch.2 "domain knowledge > statistical"; Peixeiro Ch.3 "understand context first".
+- **Fix đề xuất**: PM2.5 dùng domain bounds [0, 500] thay IQR. Các biến khác (temp, humidity) giữ IQR.
+- **⚠️ Impact**: Thay đổi outlier → TOÀN BỘ model results thay đổi → cần retrain. Quyết định cần user review.
+
+## [2026-04-12] DL Persistence Alignment Bug — MASE=inf
+- **Bug**: DL script persist_test = values[LOOKBACK+va_end:] trùng với target → MAE=0 → MASE=inf
+- **Root cause**: After sequencing, persist index offset bằng LOOKBACK nhưng target cũng offset → same values
+- **Fix**: Unified Persistence MAE từ ML-style test set (2.49, 6.42, 6.45) cho standardize MASE
+- **Lesson**: LUÔN check MASE denominator ≠ 0. DL và ML phải dùng CÙNG Persistence baseline.
+
+## [2026-04-12] Khoa học hóa Kỹ thuật Dữ liệu & Đánh giá (Phase 6)
+- **Bài học**: Z-score/IQR tiêu chuẩn dễ phá hủy tín hiệu mùa vụ của PM2.5. TimeSeriesSplit cần Purging Gap bằng đúng max_lookback để cách ly Rolling window leakage. Thuật toán Box-Cox confirm log transform cực kỳ phù hợp cho PM2.5 (optimal lambda = -0.147).
+- **Rule**: Dùng S-ESD (Seasonal Extreme Studentized Deviate) cho anomaly chuỗi thời gian có mùa vụ. Khi dùng cửa sổ trượt, LUÔN cách ly tập Train/Test đúng bằng `max_lookback`. Tích hợp giải thích khoa học (Why/How) vào luận văn đúng chuẩn hàn lâm.

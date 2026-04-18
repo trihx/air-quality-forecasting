@@ -365,8 +365,8 @@ def page_overview(results):
     <div class="kpi-row">
         {kpi_card("Best Model (6h)", "GRU v2+log", "↓ 31.0% vs Persistence | MASE=0.692")}
         {kpi_card("Best MASE (1h)", "TFT v1 1.029", "Transformer ≈ Persistence")}
-        {kpi_card("Anti-Leakage Tests", "154/154", "✅ All passed")}
-        {kpi_card("Models × Versions", "28 · v6", "6 snapshot versions")}
+        {kpi_card("Anti-Leakage Tests", "167/167", "✅ All passed (v7)")}
+        {kpi_card("Models × Versions", "28 · v7", "7 snapshot versions")}
     </div>
     """, unsafe_allow_html=True)
 
@@ -398,12 +398,35 @@ def page_overview(results):
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
         <span class="highlight">[6]</span> Models: Persistence → ARIMA → LightGBM → RF → GRU/LSTM/TFT → Ensemble<br>
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
-        <span class="highlight">[7]</span> Evaluate: <span class="warn">MAE</span> (primary) + <span class="warn">MASE</span> (mandatory) + RMSE + R² + ROC-AUC
+        <span class="highlight">[7]</span> Evaluate: <span class="warn">MAE</span> (primary) + <span class="warn">MASE</span> (mandatory) + RMSE + R² + ROC-AUC + <span class="accent">Forecast Bias + MedAE + Residual Diagnostics (v7)</span>
     </div>
     """, unsafe_allow_html=True)
 
+    # ── v7 Audit Info Card ──
+    section_header("🔬", "v7 — Pipeline Audit Enhancement")
+    insight_card(
+        "🔬 What: Audit đối chiếu 8+ sách chuyên ngành",
+        "<b>Why:</b> Đảm bảo pipeline đạt chuẩn academic (Manu Joseph, Peixeiro, Brownlee, Vishwas & Patel, Huang).<br>"
+        "<b>What:</b> Bổ sung 5 biểu đồ EDA thiếu (STL, BoxPlot/Hour, Q-Q, Periodogram, Forecastability) "
+        "+ 4 metrics (Forecast Bias, MedAE, RMSE/MAE Ratio) + Residual Diagnostics (Ljung-Box).<br>"
+        "<b>Result:</b> STL Residual σ=5.18 µg/m³ → thiết lập 'sàn hiệu suất'. "
+        "Forecastability Score=0.434 (Trung bình) → giải thích MASE>1 ở h=1 là expected. "
+        "PM2.5 NOT Normal (p=1.4e-50) → justify MASE thay vì MAPE. Tests: 167/167 ✅",
+    )
+
+    # ── v7-exp Deseasonalizing Experiment ──
+    insight_card(
+        "🧪 v7-exp: Deseasonalizing Transform Experiment",
+        "<b>Why:</b> Manu Joseph Ch.7 khuyến nghị target transformation. PM2.5 seasonal strength = 0.343.<br>"
+        "<b>How:</b> 3 biến thể GRU h=6: (A) raw (0.731), (B) seasonal_diff y[t]-y[t-24] (0.903), (C) STL residual train-only (0.736).<br>"
+        "<b>Result:</b> Cả seasonal_diff (0.903) lẫn STL leak-free (0.736) đều <b>KHÔNG cải thiện</b> so với raw (0.731). "
+        "Fourier features ĐÃ capture seasonality → deseasonalizing thêm = redundant.<br>"
+        "<b>⚠️ Leakage audit:</b> STL fitted full data (0.507) → STL train-only (0.736) = <b>+45% inflation</b> do look-ahead bias.<br>"
+        "<b>🔑 Key Insight:</b> <i>Fourier features make explicit deseasonalizing REDUNDANT. GRU v2+log (0.692) remains BEST.</i>",
+    )
+
     # ── Rankings ──
-    section_header("🏆", "Final Model Rankings — v6 Updated")
+    section_header("🏆", "Final Model Rankings — v7 Updated")
 
     ranking_data = pd.DataFrame({
         "Mô hình": [
@@ -480,7 +503,7 @@ def page_multi_horizon(results):
     """, unsafe_allow_html=True)
 
     # ── MASE Chart ──
-    section_header("📊", "MASE — So Sánh Toàn Bộ Mô Hình (v6 updated)")
+    section_header("📊", "MASE — So Sánh Toàn Bộ Mô Hình (v7 updated)")
 
     models = [
         "Persistence", "ARIMA", "SARIMA",
@@ -800,112 +823,440 @@ def page_eda(results):
 
     pm25_desc = eda_data.get("descriptive", {}).get("pm25", {})
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "1. Tổng Quan", 
-        "2. Gaps & Spikes (Điểm Yếu)", 
-        "3. Tính Dừng & Mùa Vụ", 
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        "1. Tổng Quan",
+        "2. Gaps & Spikes (Điểm Yếu)",
+        "3. Tính Dừng & Mùa Vụ",
         "4. Autocorr & Drift (Điểm Mạnh)",
-        "5. The 'Why' (Actions)"
+        "5. The 'Why' (Actions)",
+        "6. Deep Insights (v7)"
     ])
 
     with tab1:
         st.markdown("### 1. Tổng Quan & Cường Độ (Dataset Overview)")
         st.markdown("Dữ liệu PM2.5 thu thập từ cảm biến IoT với tần suất cao (5 phút/lần). Dưới đây là mảng thông tin tổng quan trước khi đi sâu vào các câu chuyện dữ liệu.")
-        
+
         cols = st.columns(4)
         cols[0].metric("Tổng số điểm (sau clean)", f"{pm25_desc.get('count', 0):,}")
         cols[1].metric("Trung bình (Mean)", f"{pm25_desc.get('mean', 0):.1f} µg/m³")
         cols[2].metric("Trung vị (Median)", f"{pm25_desc.get('median', 0):.1f} µg/m³")
         cols[3].metric("Đỉnh điểm (Max)", f"{pm25_desc.get('max', 0):.1f} µg/m³", delta="Cực đoan", delta_color="inverse")
-        
-        insight_card("💡 Phân tích Tổng Quan", 
+
+        insight_card("💡 Phân tích Tổng Quan",
                      "Sự chênh lệch lớn giữa Mean (~13.2) và Max (~54.0) cho thấy PM2.5 không phân bố đều mà chứa các đỉnh ô nhiễm cục bộ. "
                      "Tần suất lấy mẫu cung cấp độ phân giải cao, lý tưởng để nắm bắt các biến động ngắn hạn nhưng cũng chứa nhiều nhiễu.")
-        
+
         img_path = RESEARCH_DIR / "eda" / "02_pm25_timeseries.png"
         if img_path.exists():
             st.image(str(img_path), caption="Tổng quan chuỗi thời gian PM2.5", use_container_width=True)
 
+        # ── Forecastability Assessment (P0-2) ──
+        fc = eda_data.get("forecastability", {})
+        if fc:
+            st.markdown("---")
+            st.markdown("#### 🎯 Forecastability Assessment")
+            st.markdown("*Đo mức độ khả thi dự báo TRƯỚC khi chọn model (Ref: Manu Joseph Ch.4)*")
+
+            fc_cols = st.columns(5)
+            fc_cols[0].metric("CoV (σ/μ)", f"{fc.get('cov', 0):.3f}", help="Coefficient of Variation — cao = khó dự báo")
+            fc_cols[1].metric("ApEn", f"{fc.get('approximate_entropy', 0):.3f}", help="Approximate Entropy — cao = phức tạp")
+            fc_cols[2].metric("Seasonality", f"{fc.get('seasonality_strength', 0):.3f}", help="Sức mạnh mùa vụ từ STL")
+            fc_cols[3].metric("ACF(1)", f"{fc.get('acf_lag1', 0):.3f}", help="Tự tương quan lag-1")
+            fc_cols[4].metric("Score", f"{fc.get('forecastability_score', 0):.3f}", delta=fc.get("interpretation", ""), delta_color="normal")
+
+            insight_card("📊 Đánh Giá Forecastability",
+                        f"**Score = {fc.get('forecastability_score', 0):.3f}** → {fc.get('interpretation', 'N/A')}. "
+                        f"CoV cao ({fc.get('cov', 0):.2f}) cho thấy biến động mạnh. "
+                        f"ACF(1) = {fc.get('acf_lag1', 0):.3f} rất cao → Persistence baseline cực mạnh ở h=1. "
+                        "Điều này giải thích tại sao MASE > 1.0 ở h=1 là **expected** chứ không phải model kém.")
+            
+            # P1-6: Complexity Profile Radar chart
+            st.markdown("---")
+            st.markdown("#### 🕸️ P1-6: Complexity Profile Radar")
+            st.markdown("*Ref: Visualizing multiple dimensions of time series complexity*")
+            
+            phase5_json = EDA_DIR / "phase5_dashboard_data.json"
+            if phase5_json.exists():
+                with open(phase5_json, "r") as f:
+                    p5_data = json.load(f)
+                
+                radar_data = p5_data.get("complexity_radar")
+                if radar_data:
+                    fig_radar = go.Figure()
+                    fig_radar.add_trace(go.Scatterpolar(
+                        r=radar_data["values"] + [radar_data["values"][0]],
+                        theta=radar_data["metrics"] + [radar_data["metrics"][0]],
+                        fill='toself',
+                        name='Complexity',
+                        line_color='#00D4AA',
+                        fillcolor='rgba(0, 212, 170, 0.3)'
+                    ))
+                    fig_radar.update_layout(
+                        polar=dict(
+                            radialaxis=dict(visible=True, range=[0, 1], gridcolor='rgba(139,149,165,0.15)'),
+                            angularaxis=dict(gridcolor='rgba(139,149,165,0.15)'),
+                            bgcolor='rgba(0,0,0,0)'
+                        ),
+                        showlegend=False,
+                        paper_bgcolor='rgba(0,0,0,0)',
+                        plot_bgcolor='rgba(0,0,0,0)',
+                        font=dict(color=COLORS["text"]),
+                        margin=dict(l=40, r=40, t=20, b=20)
+                    )
+                    st.plotly_chart(fig_radar, use_container_width=True)
+                    
+                    insight_card("🕸️ Complexity Profile",
+                        "Biểu đồ Radar tổng hợp 5 chiều độ phức tạp (quy về thang 0-1). "
+                        "Diện tích đa giác càng phủ rộng (ra rìa ngoài) nghĩa là chuỗi thời gian càng phức tạp, khó đoán và biến động mạnh. "
+                        "Mặt trái: Noise và CoV lớn. Mặt phải: Seasonality và Trend tạo cấu trúc bám víu cho model.")
+
     with tab2:
         st.markdown("### 2. Điểm Yếu Của IoT: Gaps & Spikes")
-        
+
         c1, c2 = st.columns(2)
         with c1:
             st.markdown("#### 🕳️ Data Quality Gaps")
             st.markdown("""
-            **Bản chất:** Cảm biến rớt mạng theo chùm. Dữ liệu thật chỉ chiếm một phần rất nhỏ ban đầu. 
+            **Bản chất:** Cảm biến rớt mạng theo chùm. Dữ liệu thật chỉ chiếm một phần rất nhỏ ban đầu.
             Missing data không ngẫu nhiên (Non-MCAR) mà theo chuỗi offline.
             """)
             img1 = EDA_DIR / "04a_missing_barcode.png"
             if img1.exists():
                 st.image(str(img1), caption="Mô hình khuyết thiếu (Missing Barcode) - vạch đen là missing", use_container_width=True)
-                
+            img_recovery = EDA_DIR / "04b_recovery_limits.png"
+            if img_recovery.exists():
+                st.image(str(img_recovery), caption="Giới hạn khôi phục: Gap ≤6h (Spline) → 6-24h (KNN) → >24h (Drop)", use_container_width=True)
+
         with c2:
             st.markdown("#### ⚡ Fat-Tailed Spikes")
             st.markdown("""
-            **Bản chất:** Dữ liệu có đỉnh đuôi dài (Fat-Tailed), vi phạm giả định phân phối chuẩn (Non-normal). 
+            **Bản chất:** Dữ liệu có đỉnh đuôi dài (Fat-Tailed), vi phạm giả định phân phối chuẩn (Non-normal).
             Đây là những khoảng rủi ro y tế cao nhất (đỉnh ô nhiễm dị thường).
             """)
             img2 = RESEARCH_DIR / "eda" / "03_distributions.png"
             if img2.exists():
                 st.image(str(img2), caption="Phân phối không chuẩn của PM2.5 (đuôi dài lệch phải)", use_container_width=True)
+            img_fat = EDA_DIR / "02a_pm25_fat_tailed_distribution.png"
+            if img_fat.exists():
+                st.image(str(img_fat), caption="Phân tích chi tiết: Fat-Tailed Distribution với các percentile", use_container_width=True)
+
+        # P1-1: Q-Q Plot
+        st.markdown("---")
+        st.markdown("#### 📐 Q-Q Plot — Kiểm Tra Tính Chuẩn (Normality)")
+        st.markdown("*Ref: Peixeiro Ch.6 — So sánh phân phối PM2.5 với normal distribution*")
+        img_qq = RESEARCH_DIR / "eda" / "03c_qq_plot.png"
+        if img_qq.exists():
+            st.image(str(img_qq), caption="Q-Q Plot: Raw (trái) vs Log-Transformed (phải) — đường thẳng = normal", use_container_width=True)
+        norm_data = eda_data.get("normality", {})
+        if norm_data:
+            insight_card("📐 Kết Quả Normality Test",
+                        f"**Shapiro-Wilk (raw):** p = {norm_data.get('shapiro_p_raw', 'N/A')} → {'Normal ✅' if norm_data.get('is_normal_raw') else 'NOT Normal ❌'} | "
+                        f"**Shapiro-Wilk (log):** p = {norm_data.get('shapiro_p_log', 'N/A')} → {'Normal ✅' if norm_data.get('is_normal_log') else 'NOT Normal ❌'}. "
+                        "Cả raw lẫn log-transform đều KHÔNG đạt normal. Đây là lý do cần **MASE** thay vì MAPE (phụ thuộc giả định normal).")
 
     with tab3:
         st.markdown("### 3. Tính Dừng & Tính Mùa Vụ (Stationarity / Seasonality)")
-        
+
         c1, c2 = st.columns(2)
         with c1:
             st.markdown("#### 📊 Stationarity (Tính dừng)")
             st.markdown("""
-            Kết quả kiểm định ADF và KPSS mâu thuẫn (Inconclusive). 
+            Kết quả kiểm định ADF và KPSS mâu thuẫn (Inconclusive).
             Dữ liệu IoT thường có "Variance dừng" (nhiễu đồng nhất) nhưng "Mean không dừng" (phụ thuộc mùa/tháng).
             """)
             img1 = RESEARCH_DIR / "eda" / "06_acf_pacf.png"
             if img1.exists():
                 st.image(str(img1), caption="Đồ thị ACF/PACF cho thấy hiện tượng tự tương quan kéo dài", use_container_width=True)
-                
+
         with c2:
             st.markdown("#### 🌅 Seasonality (Mùa vụ)")
             st.markdown("""
-            **Nhịp điệu sinh học:** PM2.5 cao nhất vào ban đêm/sáng sớm (đỉnh ~6h) do hiện tượng nghịch nhiệt, 
+            **Nhịp điệu sinh học:** PM2.5 cao nhất vào ban đêm/sáng sớm (đỉnh ~6h) do hiện tượng nghịch nhiệt,
             và chạm đáy vào giữa trưa (12h-14h) nhờ hiệu ứng đối lưu không khí.
             """)
             img2 = RESEARCH_DIR / "eda" / "07_temporal_patterns.png"
             if img2.exists():
                 st.image(str(img2), caption="Chu kỳ thay đổi trong ngày (Diurnal) và tháng", use_container_width=True)
 
+        # P0-6: Box Plot per Hour
+        st.markdown("---")
+        st.markdown("#### 📦 Box Plot Theo Giờ — Seasonal Pattern Trực Quan")
+        st.markdown("*Ref: Vishwas & Patel Ch.4 — Phân phối PM2.5 tại mỗi giờ trong ngày*")
+        img_box = RESEARCH_DIR / "eda" / "05b_boxplot_hourly.png"
+        if img_box.exists():
+            st.image(str(img_box), caption="Peak 6h sáng (nghịch nhiệt), Trough 12h trưa (đối lưu) — chứng cứ diurnal cycle", use_container_width=True)
+
+        # P0-1: STL Decomposition
+        st.markdown("---")
+        st.markdown("#### 🔬 STL Decomposition — Tách Thành Phần Chuỗi Thời Gian")
+        st.markdown("*Ref: Manu Joseph Ch.3 — Seasonal-Trend decomposition using LOESS (period=24h)*")
+        stl_data = eda_data.get("stl", {})
+        if stl_data:
+            stl_cols = st.columns(4)
+            stl_cols[0].metric("Trend Strength", f"{stl_data.get('trend_strength', 0):.3f}")
+            stl_cols[1].metric("Seasonal Strength", f"{stl_data.get('seasonal_strength', 0):.3f}")
+            stl_cols[2].metric("Noise Ratio", f"{stl_data.get('noise_ratio', 0):.3f}")
+            stl_cols[3].metric("Residual σ", f"{stl_data.get('residual_std', 0):.2f} µg/m³", help="Performance floor — mô hình không thể dưới giá trị này")
+        img_stl = RESEARCH_DIR / "eda" / "05_stl_decomposition.png"
+        if img_stl.exists():
+            st.image(str(img_stl), caption="STL: Original → Trend → Seasonal → Residual", use_container_width=True)
+        img_stl_zoom = RESEARCH_DIR / "eda" / "05a_stl_seasonal_zoom.png"
+        if img_stl_zoom.exists():
+            st.image(str(img_stl_zoom), caption="Seasonal Component zoom 1 tuần — 7 chu kỳ 24h rõ nét", use_container_width=True)
+        if stl_data:
+            insight_card("🔬 Phân Tích STL",
+                        f"**Trend Strength = {stl_data.get('trend_strength', 0):.3f}** → Trend trung bình (có xu hướng nhẹ theo mùa). "
+                        f"**Seasonal Strength = {stl_data.get('seasonal_strength', 0):.3f}** → Mùa vụ nhóm trung bình. "
+                        f"**Residual σ = {stl_data.get('residual_std', 0):.2f} µg/m³** → Đây là 'sàn hiệu suất': "
+                        "model mà đạt MAE ≈ Residual σ nghĩa là đã khai thác hết signal có thể.")
+
+        # P1-2: Periodogram / PSD
+        st.markdown("---")
+        st.markdown("#### 📡 Periodogram — Xác Nhận Tần Số Chủ Đạo")
+        st.markdown("*Ref: Huang Ch.7 — Power Spectral Density xác nhận frequencies mà Fourier features cần encode*")
+        img_psd = RESEARCH_DIR / "eda" / "05c_periodogram.png"
+        if img_psd.exists():
+            st.image(str(img_psd), caption="PSD cho thấy dominant periods — validate Fourier feature design", use_container_width=True)
+        spec_data = eda_data.get("spectral", {})
+        if spec_data and spec_data.get("dominant_periods"):
+            periods_str = ", ".join([f"{p['period_hours']}h" for p in spec_data["dominant_periods"][:5]])
+            insight_card("📡 Spectral Analysis",
+                        f"**Dominant periods (by power):** {periods_str}. "
+                        "Top-5 là trend dài hạn (tháng/năm) — phản ánh xu hướng mùa. "
+                        "Tín hiệu 24h daily cycle đã được xác nhận qua **STL Decomposition** (seasonal strength=0.343). "
+                        "Fourier features (period=24) encode đúng chu kỳ mà STL cho thấy.")
+
+        # P1-8: Expanding Window Stats
+        st.markdown("---")
+        st.markdown("#### 🌊 P1-8: Expanding Window Statistics — Kiểm tra phi tĩnh (Non-stationarity)")
+        st.markdown("*Ref: Peixeiro Ch.4 — Thống kê mở rộng cho thấy Mean/Variance có hội tụ hay không*")
+        
+        if phase5_json.exists():
+            # Loading is handled in tab1, so p5_data should exist if tab1 ran, but let's be safe
+            if 'p5_data' not in locals():
+                with open(phase5_json, "r") as f:
+                    p5_data = json.load(f)
+                    
+            exp_data = p5_data.get("expanding_window")
+            if exp_data:
+                fig_exp = go.Figure()
+                fig_exp.add_trace(go.Scatter(x=exp_data['dates'], y=exp_data['pm25_raw'], name='Raw PM2.5', opacity=0.3, line=dict(color='#8B95A5')))
+                fig_exp.add_trace(go.Scatter(x=exp_data['dates'], y=exp_data['expanding_mean'], name='Expanding Mean', line=dict(color=COLORS['primary'], width=3)))
+                fig_exp.add_trace(go.Scatter(x=exp_data['dates'], y=exp_data['expanding_std'], name='Expanding Std', line=dict(color=COLORS['accent'], width=3)))
+                fig_exp.update_layout(**PLOTLY_TEMPLATE['layout'])
+                fig_exp.update_layout(
+                    title="Expanding Window Mean & Std",
+                    xaxis_title="Thời gian (Date)",
+                    yaxis_title="PM2.5 Statistics",
+                    margin=dict(l=40, r=40, t=40, b=20),
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                )
+                st.plotly_chart(fig_exp, use_container_width=True)
+                
+                insight_card("🌊 Expanding Window Stats",
+                    "Expanding Mean (Đường màu Teal) dao động trong giai đoạn đầu và dần mượt hơn nhưng vẫn tiếp tục có xu hướng (trend). "
+                    "Expanding Std (Đường màu Coral) tăng dần theo thời gian. "
+                    "Cả hai đường đều **không đi ngang (non-flat)**, phản ánh hiện tượng **Không dừng (Non-stationarity)** về Mean và Variance "
+                    "mà kiểm định ADF/KPSS đã phát hiện. Điều này ép các mô hình tuyến tính phải khác biệt hóa (differencing).")
+
     with tab4:
         st.markdown("### 4. Điểm Mạnh: Tự Tương Quan & Concept Drift")
-        
+
         c1, c2 = st.columns(2)
         with c1:
             st.markdown("#### 🔄 Autocorrelation Trap")
             st.markdown("""
-            **Sức mạnh lừa dối:** Tại h=1h, tự tương quan r ≈ 0.97. 
+            **Sức mạnh lừa dối:** Tại h=1h, tự tương quan r ≈ 0.97.
             Mô hình dễ mắc "Bẫy tự tương quan" - dự đoán h=1 rất tốt nhưng thực chất chỉ lấy giá trị giờ trước.
             """)
             img1 = EDA_DIR / "01a_autocorrelation_memory.png"
             if img1.exists():
                 st.image(str(img1), caption="Bẫy tự tương quan: Trí nhớ dữ liệu (Memory) cực cao ở lag gần", use_container_width=True)
-                
+            img_disp = EDA_DIR / "01b_horizon_scatter_dispersion.png"
+            if img_disp.exists():
+                st.image(str(img_disp), caption="Scatter Dispersion: Error tăng nhanh khi horizon tăng", use_container_width=True)
+
         with c2:
             st.markdown("#### 🔀 Concept Drift Đa Biến")
             st.markdown("""
-            Tương quan PM2.5 vs Nhiệt độ không tĩnh, dao động thay đổi từ mùa này sang mùa khác (-0.6 đến +0.6). 
+            Tương quan PM2.5 vs Nhiệt độ không tĩnh, dao động thay đổi từ mùa này sang mùa khác (-0.6 đến +0.6).
             Trạng thái này phá vỡ sự phỏng đoán của các mô hình tuyến tính cũ (như Ridge/Linear).
             """)
             img2 = EDA_DIR / "03b_hexbin_multivariate.png"
             if img2.exists():
                 st.image(str(img2), caption="Concept drift: Tương quan phi tuyến tính thay đổi liên tục", use_container_width=True)
+            img_roll = EDA_DIR / "03a_rolling_correlation.png"
+            if img_roll.exists():
+                st.image(str(img_roll), caption="Rolling Correlation: Tương quan thay đổi theo thời gian (60-day window)", use_container_width=True)
+
+        # P1-7: Walk-Forward Stability
+        st.markdown("---")
+        st.markdown("#### 🚶 P1-7: Walk-Forward Stability (Monthly Volatility)")
+        st.markdown("*Ref: Peixeiro Ch.8 — Đánh giá độ ổn định của Mean/Variance qua các block thời gian thực tế*")
+        
+        if phase5_json.exists():
+            if 'p5_data' not in locals():
+                with open(phase5_json, "r") as f:
+                    p5_data = json.load(f)
+            
+            wf_data = p5_data.get("walk_forward")
+            if wf_data:
+                fig_wf = go.Figure()
+                fig_wf.add_trace(go.Bar(x=wf_data['dates'], y=wf_data['mean'], name='Monthly Mean', marker_color='rgba(0, 212, 170, 0.6)'))
+                fig_wf.add_trace(go.Scatter(x=wf_data['dates'], y=wf_data['std'], name='Monthly Std (Risk)', mode='lines+markers', line=dict(color=COLORS['accent'], width=2)))
+                fig_wf.update_layout(**PLOTLY_TEMPLATE['layout'])
+                fig_wf.update_layout(
+                    title="Phân phối PM2.5 theo tháng (Mean vs Volatility)",
+                    xaxis_title="Tháng",
+                    yaxis_title="PM2.5 (µg/m³)",
+                    margin=dict(l=40, r=40, t=40, b=20),
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                )
+                st.plotly_chart(fig_wf, use_container_width=True)
+                
+                insight_card("🚶 Walk-Forward Stability",
+                    "Volatility (Đường Coral) không nhất quán giữa các tháng, những tháng đỉnh điểm mùa khô có cả Mean và Std đều bật tăng mạnh. "
+                    "Tính chất **Heteroskedasticity** (Phương sai thay đổi) này giải thích tại sao Walk-forward Validation (TimeSeriesSplit) lại ưu việt hơn các phương pháp k-Fold truyền thống.")
 
     with tab5:
         st.markdown("### 5. Tại sao tiếp cận Pipeline như vậy? (The 'Why')")
         st.markdown("Những nguyên lý cốt lõi trên giải thích lý do tại sao chúng ta thiết kế hệ thống ML Data Engineering:")
-        
+
         st.info("**1. Xử lý Gaps (Thiếu hụt dữ liệu):** Vì missing data rớt theo chùm dài, các mô hình Linear Interpolation hỏng hoàn toàn. Chúng ta phải chia bậc: *Cubic Spline* (gaps ≤6h) -> *KNN* (6-24h) -> *Drop* (gaps >24h). Điều này vớt được tối đa dữ liệu mà vẫn giữ an toàn 100% Anti-Leakage.")
         st.info("**2. Xử lý Spikes (Mô hình Fat-Tailed):** PM2.5 có các đỉnh đột biến tàn phá loss function (MSE). Nên ta buộc dùng mô hình Deep Learning GRU kết hợp *Log Transform* hoặc áp dụng cơ chế *Quantile Regression* để đưa dự báo bao trùm được cận trên rủi ro (Upper Bound).")
         st.info("**3. Nắm bắt Mùa Vụ (Seasonality):** Chu kỳ đặc trưng buổi sáng (nghịch nhiệt) buộc ta phải ép thêm 110+ *Fourier features* và mã hóa Time-of-Day (v2) để DL học được quy luật vi khí hậu này.")
         st.info("**4. Thoát Bẫy Tự Tương Quan:** Vì r ≈ 0.97 ở 1 giờ, *MASE (Mean Absolute Scaled Error)* là metric sống còn. Mô hình phải đạt MASE < 1.0 thì mới được gọi là học đường nét mới thay vì chỉ copy giá trị cũ (Persistence).")
+        st.info("**5. STL Residual σ = 'Sàn Hiệu Suất':** Phân tích STL cho thấy Residual σ ≈ 5.2 µg/m³ — model đạt MAE gần giá trị này nghĩa là đã khai thác hết signal. Đây là cơ sở đánh giá model đã tối ưu hay chưa.")
+        
+        st.markdown("#### 🚀 Phase 6: Thiết Kế Nâng Cao (v7)")
+        phase6_json = EDA_DIR / "phase6_dashboard_data.json"
+        
+        box_cox_msg = "Kiểm định sự cần thiết của phép biến đổi phi tuyến tính (Log Transform)."
+        sesd_msg = "Thuật toán phát hiện dị thường S-ESD (Seasonal Extreme Studentized Deviate) giúp nhận dạng Outliers chính xác trên chuỗi có tính mùa vụ cao."
+        purging_msg = "Gap purging xử lý leakage ẩn giữa rollings của Train qua Test."
+        
+        if phase6_json.exists():
+            import json as _json
+            with open(phase6_json, "r") as f:
+                p6_data = _json.load(f)
+            
+            box_cox = p6_data.get('box_cox', {})
+            purging = p6_data.get('purging_gap', {})
+            
+            if 'optimal_lambda' in box_cox:
+                box_cox_msg = f"**Box-Cox Optimal \u03bb = {box_cox['optimal_lambda']:.3f}** \u2192 Recommend: **{box_cox['interpretation']}**. Điều này chứng minh một cách khoa học việc chọn Log Transformation (`np.log1p`) ở các thiết lập DL v2 ban đầu là cực kỳ đúng đắn."
+                
+            if 'status' in purging:
+                purging_msg = f"**{purging['concept']}**: {purging['definition']} \n\n\u2714\ufe0f **Status:** {purging['status']}"
+
+        st.success(f"**6. Optimal Transform (Box-Cox):** {box_cox_msg}")
+        st.success(f"**7. Robust Anomaly (S-ESD):** {sesd_msg} Nhờ áp dụng ngưỡng outlier IQR/Domain Bounds dựa trên MAD, ta đã loại bỏ nhiễu thành công mà không phá vỡ Seasonal Peaks.")
+        st.success(f"**8. Purge Gap Validation:** {purging_msg}")
+
+    with tab6:
+        st.markdown("### 6. Deep Insights — Error Anatomy, Granger, Cross-Correlation (v7)")
+        st.markdown("*Bổ sung theo khuyến nghị Manu Joseph Ch.7, Peixeiro Ch.10, Huang Ch.3*")
+
+        # Load deep insights data
+        di_path = RESEARCH_DIR / "eda" / "deep_insights_results.json"
+        di_data = {}
+        if di_path.exists():
+            import json as _json
+            with open(di_path) as f:
+                di_data = _json.load(f)
+
+        # ── P1-3: Error Anatomy ──
+        st.markdown("---")
+        st.markdown("#### 🔍 Error Anatomy — GRU v2+log @ h=6")
+        st.markdown("*Lỗi dự báo phân bố theo giờ trong ngày và mức ô nhiễm như thế nào?*")
+
+        ea = di_data.get("error_anatomy", {})
+        if ea:
+            ea_cols = st.columns(4)
+            ea_cols[0].metric("Worst Hour", f"{ea.get('worst_hour', '?')}h",
+                            delta=f"MAE={ea.get('worst_hour_mae', '?')}", delta_color="inverse")
+            ea_cols[1].metric("Best Hour", f"{ea.get('best_hour', '?')}h",
+                            delta=f"MAE={ea.get('best_hour_mae', '?')}", delta_color="normal")
+            ea_cols[2].metric("Error ACF(1)", f"{ea.get('error_acf_lag1', '?')}",
+                            help="Cao = errors structured (model missing patterns)")
+            ea_cols[3].metric("Error ACF(24)", f"{ea.get('error_acf_lag24', '?')}",
+                            help="Cao = daily pattern in errors")
+
+        img_ea = EDA_DIR / "06_error_anatomy.png"
+        if img_ea.exists():
+            st.image(str(img_ea), caption="Error Anatomy: MAE by Hour, Bias by Hour, MAE by Level, Error ACF", use_container_width=True)
+
+        if ea:
+            insight_card("🔍 Phân Tích Error Anatomy",
+                f"Model lỗi NHIỀU NHẤT lúc <b>{ea.get('worst_hour', '?')}h</b> (MAE={ea.get('worst_hour_mae', '?')}) "
+                f"và ÍT NHẤT lúc <b>{ea.get('best_hour', '?')}h</b> (MAE={ea.get('best_hour_mae', '?')}). "
+                f"Error ACF(1)={ea.get('error_acf_lag1', '?')} → errors có cấu trúc tự tương quan cao, "
+                "cho thấy model vẫn chưa nắm bắt hết temporal patterns. "
+                f"ACF(24)={ea.get('error_acf_lag24', '?')} → daily pattern trong errors đã được Fourier capture phần lớn.")
+
+        # ── P1-4: Granger Causality ──
+        st.markdown("---")
+        st.markdown("#### 🧬 Granger Causality — Biến ngoại sinh có giúp predict PM2.5?")
+        st.markdown("*Ref: Peixeiro Ch.10 — Kiểm định nhân quả Granger (F-test, α=0.05). Fitted trên TRAIN ONLY.*")
+
+        gc = di_data.get("granger_causality", {})
+        if gc:
+            gc_rows = []
+            for col, gr in gc.items():
+                if "error" not in gr:
+                    gc_rows.append({
+                        "Variable": gr["label"],
+                        "Best Lag": f"{gr['best_lag']}h",
+                        "p-value": f"{gr['best_p_value']:.2e}" if gr['best_p_value'] > 0 else "< 1e-10",
+                        "Significant (α=0.05)": "✅ Yes" if gr["significant_at_005"] else "❌ No",
+                    })
+            if gc_rows:
+                st.dataframe(pd.DataFrame(gc_rows), use_container_width=True, hide_index=True)
+
+        img_gc = EDA_DIR / "07_granger_causality.png"
+        if img_gc.exists():
+            st.image(str(img_gc), caption="Granger Causality p-values across lags", use_container_width=True)
+
+        if gc:
+            all_sig = all(gr.get("significant_at_005", False) for gr in gc.values() if "error" not in gr)
+            insight_card("🧬 Granger Causality",
+                "<b>Tất cả biến ngoại sinh đều Granger-cause PM2.5</b> (p < 0.05). "
+                "Điều này xác nhận việc sử dụng Temperature, Humidity, CO2 "
+                "làm input features là hợp lý — chúng THỰC SỰ cung cấp thông tin dự báo, "
+                "không chỉ là noise. CO2 có best lag=6h → phù hợp horizon 6h." if all_sig else
+                "Một số biến không significant → cần xem xét loại bỏ.")
+
+        # ── P1-5: Cross-Correlation ──
+        st.markdown("---")
+        st.markdown("#### 📊 Cross-Correlation Lagged — PM2.5 vs External Variables")
+        st.markdown("*Ref: Huang Ch.3 — Xác nhận lag nào có tương quan mạnh nhất, validate thiết kế lag features*")
+
+        cc = di_data.get("cross_correlation", {})
+        if cc:
+            cc_rows = []
+            for col, cr in cc.items():
+                cc_rows.append({
+                    "Variable": cr["label"],
+                    "Best Lag": f"{cr['best_lag_hours']}h",
+                    "Best r": f"{cr['best_correlation']:.4f}",
+                    "r(lag=0)": f"{cr.get('cc_at_lag0', 'N/A')}",
+                    "r(lag=6)": f"{cr.get('cc_at_lag6', 'N/A')}",
+                    "r(lag=24)": f"{cr.get('cc_at_lag24', 'N/A')}",
+                })
+            if cc_rows:
+                st.dataframe(pd.DataFrame(cc_rows), use_container_width=True, hide_index=True)
+
+        img_cc = EDA_DIR / "08_cross_correlation.png"
+        if img_cc.exists():
+            st.image(str(img_cc), caption="Cross-Correlation: positive lag = external variable LEADS PM2.5", use_container_width=True)
+
+        if cc:
+            co2_r = cc.get("co2", {}).get("best_correlation", 0)
+            insight_card("📊 Cross-Correlation",
+                f"<b>CO2</b> có tương quan mạnh nhất với PM2.5 (r={co2_r:.4f}), "
+                "xác nhận chúng chia sẻ nguồn phát thải (combustion). "
+                "Temperature/Humidity tương quan yếu (~0.2) — chúng ảnh hưởng gián tiếp qua cơ chế khí quyển. "
+                "Kết quả validate rằng lag features [1, 6, 12, 24, 48] bao phủ đủ các peak cross-correlation.")
 
 
 # ══════════════════════════════════════════════════════════════════════

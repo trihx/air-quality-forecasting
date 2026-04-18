@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "description": "P0-8 FIX: STL Residual with TRAIN-ONLY fitting (no leakage)",
+    "fix": "STL fitted on train only, seasonal pattern extrapolated to val/test",
+    "timestamp": "2026-04-12T17:48:50.447236"
+  },
+  "result": {
+    "model": "GRU_stl_leakfree",
+    "horizon": 6,
+    "mae": 4.6429,
+    "rmse": 6.9049,
+    "mase": 0.7363,
+    "forecast_bias": -0.2455,
+    "medae": 3.1645,
+    "params": 61633,
+    "train_time_s": 79.6,
+    "n_test": 600,
+    "persistence_mae": 6.3053,
+    "diagnostics_verdict": "FAIL — Significant autocorrelation in residuals (model misspecification)"
+  }
+}

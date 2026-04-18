@@ -1,0 +1,17 @@
+{
+    "box_cox": {
+        "optimal_lambda": -0.14728780978074427,
+        "interpretation": "Log transform"
+    },
+    "s_esd": {
+        "n_outliers_detected": 11665,
+        "pct_outliers": 44.40933490691742,
+        "mad": 0.013553998097364683,
+        "threshold": 0.04066199429209405
+    },
+    "purging_gap": {
+        "concept": "Purging Gap",
+        "definition": "\u0110\u1ec3 tr\u00e1nh leakage khi d\u00f9ng TimeSeriesSplit, ta c\u1ea7n lo\u1ea1i b\u1ecf (purge) m\u1ed9t kho\u1ea3ng gap t\u01b0\u01a1ng \u0111\u01b0\u01a1ng v\u1edbi max_lookback gi\u1eefa Train v\u00e0 Test split, tr\u00e1nh th\u00f4ng tin t\u1eeb Train l\u1ecdt qua rolling/lag features sang Test.",
+        "status": "\u0110\u01b0\u1ee3c x\u1eed l\u00fd ng\u1ea7m (implicitly handled) b\u1edfi h\u00e0m evaluate_forecast qua vi\u1ec7c kh\u1edfi t\u1ea1o lookback \u0111\u1ed9c l\u1eadp cho m\u1ed7i split."
+    }
+}

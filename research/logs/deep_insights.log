@@ -1,0 +1,87 @@
+============================================================
+PHASE 4: DEEP INSIGHTS (P1-3, P1-4, P1-5)
+============================================================
+
+[0] Loading data...
+  Loading and cleaning...
+2026-04-12 18:02:12.113 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-12 18:02:12.113 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-12 18:02:12.242 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-12 18:02:12.262 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 18:02:12.262 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-12 18:02:12.281 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-12 18:02:12.286 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-12 18:02:12.288 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-12 18:02:12.291 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-12 18:02:12.297 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-12 18:02:12.300 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-12 18:02:12.304 | DEBUG    | src.data.cleaner:_handle_outliers:182 -   pm25: 1908 outliers → NaN (range: [-30.0, 54.0])
+2026-04-12 18:02:12.304 | INFO     | src.data.cleaner:_handle_outliers:186 - [4/7] Replaced 23336 outliers with NaN (method=iqr, threshold=3.0)
+2026-04-12 18:02:12.313 | INFO     | src.data.cleaner:_resample:198 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,478 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,397 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,811 rows with gaps >24h
+  [Imputer] Output: 7,742 rows (7,101 real + 641 imputed)
+  [Imputer] Dropped 19,811 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.3%
+2026-04-12 18:02:25.696 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,742 rows (7,101 real + 641 imputed, 19,811 dropped)
+2026-04-12 18:02:25.697 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-12 18:02:25.697 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-12 18:02:25.697 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-12 18:02:25.705 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-12 18:02:25.709 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-12 18:02:25.716 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-12 18:02:25.729 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-12 18:02:25.733 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-12 18:02:25.737 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-12 18:02:25.743 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-12 18:02:25.746 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-12 18:02:25.746 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-12 18:02:25.746 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,742 → 7,574 rows
+2026-04-12 18:02:25.746 | INFO     | src.features.builder:build_features:117 - ============================================================
+  Shape: (7574, 120)
+
+[P1-3] Error Anatomy...
+  Saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/06_error_anatomy.png
+  Worst hour: 9h (MAE=6.880)
+  Best hour: 16h (MAE=3.486)
+  Error ACF(1): 0.8253, ACF(24): 0.0317
+
+[P1-4] Granger Causality...
+  Testing: Temperature (lag 1h) → PM2.5 (n=5547, maxlag=24)...
+    ✅ SIGNIFICANT: best_lag=1, p=0.000000
+  Testing: Humidity (lag 1h) → PM2.5 (n=5547, maxlag=24)...
+    ✅ SIGNIFICANT: best_lag=1, p=0.000000
+  Testing: CO2 (lag 1h) → PM2.5 (n=5547, maxlag=24)...
+    ✅ SIGNIFICANT: best_lag=6, p=0.000000
+  Saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/07_granger_causality.png
+
+[P1-5] Cross-Correlation...
+  Temperature: best_lag=0h, r=-0.1993, r(lag0)=-0.1993
+  Humidity: best_lag=-56h, r=-0.2217, r(lag0)=0.1537
+  CO2: best_lag=0h, r=0.3668, r(lag0)=0.3668
+  Dew Point: best_lag=49h, r=-0.1971, r(lag0)=-0.0886
+  Saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/08_cross_correlation.png
+
+  Results saved: /Users/trihx/Desktop/time-series-forecasting/research/eda/deep_insights_results.json
+
+============================================================
+SUMMARY
+============================================================
+  [P1-3] Worst hour: 9h (MAE=6.88)
+  [P1-3] Best hour: 16h (MAE=3.486)
+  [P1-3] Error ACF(1)=0.8253, ACF(24)=0.0317
+  [P1-4] Temperature (lag 1h): Granger ✅ (best lag=1, p=0.000000)
+  [P1-4] Humidity (lag 1h): Granger ✅ (best lag=1, p=0.000000)
+  [P1-4] CO2 (lag 1h): Granger ✅ (best lag=6, p=0.000000)
+  [P1-5] Temperature: best lag=0h, r=-0.1993
+  [P1-5] Humidity: best lag=-56h, r=-0.2217
+  [P1-5] CO2: best lag=0h, r=0.3668
+  [P1-5] Dew Point: best lag=49h, r=-0.1971
+
+DONE
