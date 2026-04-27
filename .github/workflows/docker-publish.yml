@@ -1,0 +1,68 @@
+name: Build & Push Docker Image
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: trihx/pm25-forecasting
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Verify .agent/ is excluded from build context
+      - name: Verify secrets exclusion
+        run: |
+          echo "Checking .dockerignore excludes secrets..."
+          grep -q "^\.agent/" .dockerignore || (echo "FAIL: .agent/ not in .dockerignore" && exit 1)
+          grep -q "^\.env" .dockerignore || (echo "FAIL: .env not in .dockerignore" && exit 1)
+          echo "✅ Secrets properly excluded"
+
+      # Security scan before pushing
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '1'
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ env.IMAGE_NAME }}
+          short-description: "PM2.5 Air Quality Forecasting Dashboard — ML/DL Pipeline (Thesis CTU)"
+          readme-filepath: ./docs/DEPLOYMENT_GUIDE.md

@@ -201,8 +201,14 @@ SENSOR_LABELS = {
 def page_forecast(results):
     st.markdown("""
     <h1 style="font-size: 2rem;">🔮 Dự Báo PM2.5</h1>
-    <p style="color: #CBD5E1;">Nhập dữ liệu cảm biến → Nhận dự báo nồng độ PM2.5</p>
+    <p style="opacity: 0.7;">Nhập dữ liệu cảm biến → Nhận dự báo nồng độ PM2.5</p>
     """, unsafe_allow_html=True)
+
+    # ── Version-aware info cards ──
+    from src.info_cards import cards_forecast, get_current_version, render_version_badge
+    ver = get_current_version()
+    render_version_badge(ver)
+    cards_forecast(ver)
 
     # ── Detect available models ──
     available_models = _detect_available_models()
@@ -237,9 +243,10 @@ def _forecast_auto(model_type: str, horizon: int):
 
     st.markdown("""
     <div style="background: linear-gradient(135deg, #1A1F2E 0%, #1E2536 100%);
+                color: #F8FAFC !important;
                 border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1rem 0;
                 border: 1px solid rgba(0,212,170,0.25);">
-        <div style="font-size: 0.8rem; color: #A0AEC0; text-transform: uppercase;
+        <div style="font-size: 0.8rem; opacity: 0.65; text-transform: uppercase;
                     letter-spacing: 0.08em; margin-bottom: 0.8rem; font-weight: 600;">
             📡 Dữ liệu cảm biến gần nhất
         </div>
@@ -254,12 +261,12 @@ def _forecast_auto(model_type: str, horizon: int):
             <div style="text-align: center; padding: 0.6rem 0.4rem;
                         background: rgba(15, 20, 30, 0.85);
                         border-radius: 10px; border: 1px solid rgba(0,212,170,0.12);">
-                <div style="font-size: 0.75rem; color: #A0AEC0; font-weight: 600;
+                <div style="font-size: 0.75rem; opacity: 0.65; font-weight: 600;
                             margin-bottom: 0.3rem;">{label}</div>
                 <div style="font-size: 1.6rem; font-weight: 800; color: #FFFFFF;
                             font-family: 'JetBrains Mono', monospace;
                             text-shadow: 0 0 12px rgba(0,212,170,0.3);">{val:.1f}</div>
-                <div style="font-size: 0.72rem; color: #8B95A5; margin-top: 0.2rem;">{unit}</div>
+                <div style="font-size: 0.72rem; opacity: 0.65; margin-top: 0.2rem;">{unit}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -288,7 +295,7 @@ def _forecast_manual(model_type: str, horizon: int):
     <div style="background: linear-gradient(135deg, #1A1F2E 0%, #1E2536 100%);
                 border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1rem;
                 border: 1px solid rgba(0,212,170,0.25);">
-        <div style="font-size: 0.85rem; color: #CBD5E1;">
+        <div style="font-size: 0.85rem; opacity: 0.7;">
             💡 Các giá trị bên dưới là dữ liệu gần nhất từ cảm biến. Bạn có thể sửa lại theo ý muốn.
         </div>
     </div>
@@ -416,7 +423,7 @@ def _show_forecast_result(result: dict, recent_data: pd.DataFrame):
         border-radius: 20px; padding: 2rem; text-align: center;
         margin: 1.5rem 0;
     ">
-        <div style="font-size: 0.9rem; color: #CBD5E1; text-transform: uppercase;
+        <div style="font-size: 0.9rem; opacity: 0.7; text-transform: uppercase;
                     letter-spacing: 0.1em;">
             Dự Báo PM2.5 — {result['model']} ({result['horizon']}h)
         </div>
@@ -481,8 +488,14 @@ def _load_avp_cache(horizon: int) -> dict | None:
 def page_actual_vs_predicted(results):
     st.markdown("""
     <h1 style="font-size: 2rem;">📊 Actual vs Predicted</h1>
-    <p style="color: #CBD5E1;">So sánh giá trị thực tế và dự đoán từ các mô hình trên tập test</p>
+    <p style="opacity: 0.7;">So sánh giá trị thực tế và dự đoán từ các mô hình trên tập test</p>
     """, unsafe_allow_html=True)
+
+    # ── Version-aware info cards ──
+    from src.info_cards import cards_actual_vs_predicted, get_current_version, render_version_badge
+    ver = get_current_version()
+    render_version_badge(ver)
+    cards_actual_vs_predicted(ver)
 
     horizon = st.selectbox("⏱️ Chọn horizon", [1, 6, 24], index=1,
                            format_func=lambda x: f"{x} giờ")
@@ -518,7 +531,7 @@ def _render_avp_chart(data: dict, horizon: int):
     <div style="background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
                 border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
                 padding: 1rem 1.5rem; margin: 1rem 0;">
-        <span style="color: #8B95A5; font-size: 0.85rem;">
+        <span style="opacity: 0.65; font-size: 0.85rem;">
             📊 Test samples: <b style="color:#00D4AA">{n_test}</b> (real data only) |
             Horizon: <b style="color:#00D4AA">{horizon}h</b> |
             Models: <b style="color:#00D4AA">{len(data.get('metrics', []))}</b>
@@ -599,8 +612,14 @@ def _render_avp_chart(data: dict, horizon: int):
 def page_experiment_runs(results):
     st.markdown("""
     <h1 style="font-size: 2rem;">📋 Experiment Runs</h1>
-    <p style="color: #CBD5E1;">Lịch sử thí nghiệm và so sánh giữa các phiên bản pipeline</p>
+    <p style="opacity: 0.7;">Lịch sử thí nghiệm và so sánh giữa các phiên bản pipeline</p>
     """, unsafe_allow_html=True)
+
+    # ── Version-aware info cards ──
+    from src.info_cards import cards_experiment_runs, get_current_version, render_version_badge
+    ver = get_current_version()
+    render_version_badge(ver)
+    cards_experiment_runs(ver)
 
     tab1, tab2 = st.tabs(["📊 So Sánh Phiên Bản", "📋 Tất Cả Experiment Runs"])
 
@@ -702,18 +721,18 @@ def _render_version_comparison():
                 <span style="font-size: 1.1rem; font-weight: 700; color: {accent};">
                     {'📌' if idx == 0 else '🆕'} {v_name}
                 </span>
-                <span style="font-size: 0.75rem; color: #94A3B8;">
+                <span style="font-size: 0.75rem; opacity: 0.75;">
                     {timestamp} · {n_models} models · parent: {parent}
                 </span>
             </div>
             <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; font-size: 0.88rem;">
-                <span style="color: #94A3B8; font-weight: 600;">📦 What</span>
-                <span style="color: #E2E8F0;">{what}</span>
-                <span style="color: #94A3B8; font-weight: 600;">💡 Why</span>
-                <span style="color: #E2E8F0;">{why}</span>
-                <span style="color: #94A3B8; font-weight: 600;">📊 Result</span>
-                <span style="color: #E2E8F0;">{result}</span>
-                {'<span style="color: #94A3B8; font-weight: 600;">✅ Conclusion</span><span style="color: #E2E8F0;">' + conclusion + '</span>' if conclusion else ''}
+                <span style="opacity: 0.75; font-weight: 600;">📦 What</span>
+                <span style="">{what}</span>
+                <span style="opacity: 0.75; font-weight: 600;">💡 Why</span>
+                <span style="">{why}</span>
+                <span style="opacity: 0.75; font-weight: 600;">📊 Result</span>
+                <span style="">{result}</span>
+                {'<span style="opacity: 0.75; font-weight: 600;">✅ Conclusion</span><span style="">' + conclusion + '</span>' if conclusion else ''}
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -918,8 +937,14 @@ def _render_all_runs():
 def page_training(results):
     st.markdown("""
     <h1 style="font-size: 2rem;">🏋️ Huấn Luyện Mô Hình</h1>
-    <p style="color: #CBD5E1;">Tùy chỉnh hyperparameters → Train → Đánh giá → Lưu mô hình</p>
+    <p style="opacity: 0.7;">Tùy chỉnh hyperparameters → Train → Đánh giá → Lưu mô hình</p>
     """, unsafe_allow_html=True)
+
+    # ── Version-aware info cards ──
+    from src.info_cards import cards_training, get_current_version, render_version_badge
+    ver = get_current_version()
+    render_version_badge(ver)
+    cards_training(ver)
 
     from src.training.trainer import get_default_params
 
@@ -938,9 +963,9 @@ def page_training(results):
 
     # ── Hyperparameter form ──
     st.markdown("""
-    <div style="background: #1A1F2E; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
+    <div style="background: #1A1F2E; color: #F8FAFC !important; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
                 border: 1px solid rgba(0,212,170,0.2);">
-        <div style="font-size: 0.85rem; color: #8B95A5;">
+        <div style="font-size: 0.85rem; opacity: 0.65;">
             💡 Các thông số bên dưới là cấu hình tối ưu (best params). Bạn có thể điều chỉnh trước khi huấn luyện.
         </div>
     </div>
@@ -1037,9 +1062,9 @@ def page_training(results):
             col_d.metric("R²", f"{metrics['r2']:.3f}")
 
             st.markdown(f"""
-            <div style="background: #1A1F2E; border-radius: 12px; padding: 1rem; margin: 1rem 0;
+            <div style="background: #1A1F2E; color: #F8FAFC !important; border-radius: 12px; padding: 1rem; margin: 1rem 0;
                         border: 1px solid rgba(0,212,170,0.2);">
-                <div style="font-size: 0.85rem; color: #8B95A5;">
+                <div style="font-size: 0.85rem; opacity: 0.65;">
                     📊 Persistence MAE: {metrics['persist_mae']:.2f} µg/m³ |
                     Test samples: {metrics['n_test']} |
                     ⏱️ Training time: {metrics['training_time_s']:.0f}s

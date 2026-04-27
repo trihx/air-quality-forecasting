@@ -1,0 +1,17 @@
+# ═══════════════════════════════════════════
+# GPU Override for NVIDIA CUDA
+# Usage: docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+# Requires: nvidia-container-toolkit on host
+# ═══════════════════════════════════════════
+
+services:
+  pm25-dashboard:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all

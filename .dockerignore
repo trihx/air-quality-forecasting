@@ -1,0 +1,52 @@
+# ════════════════════════════════════════
+# Docker Build Context — Exclude List
+# Bảo vệ bí mật công nghệ + giảm image size
+# ════════════════════════════════════════
+
+# === BÍ MẬT CÔNG NGHỆ ===
+.agent/
+.gemini/
+
+# === GIT & DEV TOOLS ===
+.git/
+.gitignore
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+__pycache__/
+*.pyc
+.venv/
+
+# === TÀI LIỆU BẢN QUYỀN (477MB) ===
+docs/*.pdf
+docs/*.epub
+docs/*.pptx
+docs/KNOWLEDGE_BASE.md
+docs/PIPELINE_REFERENCES.md
+docs/PLAYBOOK_SETUP_GUIDE.md
+
+# === DEVELOPMENT ONLY ===
+notebooks/
+scripts/
+tests/
+Makefile
+
+# === MÔI TRƯỜNG & SECRETS ===
+.env
+.env.*
+*.key
+*.pem
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === CI/CD ===
+.github/
+docker-compose.gpu.yml
+
+# === BUILD ARTIFACTS ===
+*.egg-info/
+build/
+dist/
+wheels/

@@ -1,8 +1,10 @@
 """
-LLM Client for PM2.5 AI Assistant.
+Multi-LLM Client for PM2.5 AI Assistant.
 
-Connects to LM Studio's OpenAI-compatible API for local inference.
-Supports streaming responses for smooth UX.
+Supports tiered fallback across multiple providers:
+  Cloud API (Gemini/OpenAI/Groq) → LM Studio (local)
+
+All providers use OpenAI-compatible API — zero extra dependencies.
 """
 
 import logging
@@ -11,11 +13,13 @@ from collections.abc import Generator
 
 from openai import OpenAI
 
-logger = logging.getLogger(__name__)
+from src.chatbot.provider_config import (
+    LLMProvider,
+    detect_available_providers,
+    mask_api_key,
+)
 
-# LM Studio config
-LM_STUDIO_BASE_URL = os.getenv("LM_STUDIO_URL", "http://localhost:8888/v1")
-LM_STUDIO_API_KEY = os.getenv("LM_STUDIO_API_KEY", "lm-studio")
+logger = logging.getLogger(__name__)
 
 # System prompt for project-aware assistant
 SYSTEM_PROMPT = """\
@@ -48,31 +52,45 @@ Dự án này là đề án Thạc sĩ tại Đại học Cần Thơ (CTU).
 ## Thông tin cơ bản:
 - Dữ liệu: 209K records, 3.1 năm, IoT (~2 phút/lần)
 - Target: PM2.5 (µg/m³)
-- Pipeline: Raw→Clean(IQR 3.0)→Resample 1h→Impute→Features(95)→Eval
-- Models: Persistence, ARIMA, SARIMAX, LightGBM, LSTM, GRU, TFT
-- Horizons: 1h, 6h, 24h | Tests: 133/133 passed
-- Best (24h): GRU MASE=0.727 (-27.3% vs Persistence)
+- Pipeline: Raw→Clean(IQR 3.0 + S-ESD)→Resample 1h→Impute→Features(119)→Eval
+- Models: Persistence, ARIMA, SARIMAX, LightGBM, XGBoost, RF, LSTM, GRU, TFT, Ensemble
+- Horizons: 1h, 6h, 24h | Tests: 167/167 passed
+- Best (6h): Ensemble Weighted MASE=0.703 | Best (24h): LSTM MASE=0.691
 - Persistence rất mạnh ở 1h (autocorrelation ≈ 0.97)
+- Anti-leakage: shift(1) + Purging Gap | Box-Cox λ≈-0.147
 """
 
 
-def _build_client() -> OpenAI | None:
-    """Create OpenAI client pointing to LM Studio."""
+def _build_client(provider: LLMProvider) -> OpenAI | None:
+    """Create OpenAI-compatible client for any provider."""
     try:
         client = OpenAI(
-            base_url=LM_STUDIO_BASE_URL,
-            api_key=LM_STUDIO_API_KEY,
+            base_url=provider.base_url,
+            api_key=provider.api_key,
             timeout=60.0,
         )
         return client
     except Exception as e:
-        logger.error(f"Cannot create LM Studio client: {e}")
+        logger.error(
+            f"Cannot create client for {provider.display_name}: {e}"
+        )
         return None
 
 
-def check_connection() -> bool:
-    """Check if LM Studio server is reachable."""
-    client = _build_client()
+def check_connection(provider: LLMProvider | None = None) -> bool:
+    """Check if a provider is reachable.
+
+    If no provider given, checks LM Studio (legacy behavior).
+    """
+    if provider is None:
+        # Legacy: check LM Studio
+        from src.chatbot.provider_config import get_provider_from_registry
+
+        provider = get_provider_from_registry("lm_studio")
+        if not provider:
+            return False
+
+    client = _build_client(provider)
     if not client:
         return False
     try:
@@ -82,9 +100,16 @@ def check_connection() -> bool:
         return False
 
 
-def get_available_models() -> list[str]:
-    """List models loaded in LM Studio."""
-    client = _build_client()
+def get_available_models(provider: LLMProvider | None = None) -> list[str]:
+    """List models available on a provider."""
+    if provider is None:
+        from src.chatbot.provider_config import get_provider_from_registry
+
+        provider = get_provider_from_registry("lm_studio")
+        if not provider:
+            return []
+
+    client = _build_client(provider)
     if not client:
         return []
     try:
@@ -94,31 +119,80 @@ def get_available_models() -> list[str]:
         return []
 
 
+def _try_stream_provider(
+    provider: LLMProvider,
+    full_messages: list[dict],
+    temperature: float,
+    max_tokens: int,
+) -> Generator[str, None, None] | None:
+    """Attempt to stream from a single provider. Returns None on failure."""
+    client = _build_client(provider)
+    if not client:
+        return None
+
+    model = provider.model
+    if not model and provider.is_local:
+        # Auto-detect model for LM Studio
+        try:
+            models_list = client.models.list()
+            if models_list.data:
+                model = models_list.data[0].id
+            else:
+                return None
+        except Exception:
+            model = "local-model"
+
+    if not model:
+        return None
+
+    try:
+        stream = client.chat.completions.create(
+            model=model,
+            messages=full_messages,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            stream=True,
+        )
+
+        def _gen():
+            for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    yield chunk.choices[0].delta.content
+
+        return _gen()
+    except Exception as e:
+        error_msg = str(e)
+        logger.warning(
+            f"Provider {provider.display_name} failed: {error_msg[:100]}"
+        )
+        return None
+
+
 def chat_stream(
     messages: list[dict],
     context: str = "",
     model: str | None = None,
     temperature: float = 0.3,
     max_tokens: int = 2048,
+    providers: list[LLMProvider] | None = None,
+    session_keys: dict | None = None,
 ) -> Generator[str, None, None]:
-    """
-    Stream chat completion from LM Studio.
+    """Stream chat completion with tiered fallback.
+
+    Priority: Cloud API (by priority) → LM Studio (fallback)
 
     Args:
         messages: Chat history [{role, content}, ...]
         context: RAG context to inject
-        model: Model identifier (None = use default loaded model)
-        temperature: Creativity (0.0-1.0, lower = more precise)
+        model: Override model (used for explicit selection)
+        temperature: Creativity (0.0-1.0)
         max_tokens: Max response length
+        providers: Pre-sorted provider list (if None, auto-detect)
+        session_keys: Session state keys for provider config
 
     Yields:
         Response text chunks for streaming
     """
-    client = _build_client()
-    if not client:
-        yield "❌ Không thể kết nối LM Studio. Vui lòng kiểm tra LM Studio đang chạy."
-        return
-
     # Build system message with RAG context
     system_content = SYSTEM_PROMPT
     if context:
@@ -126,39 +200,51 @@ def chat_stream(
 
     full_messages = [{"role": "system", "content": system_content}] + messages
 
-    try:
-        # Auto-detect model if not specified
-        if not model:
-            try:
-                models_list = client.models.list()
-                if models_list.data:
-                    model = models_list.data[0].id
-                else:
-                    yield "❌ Chưa load model trong LM Studio. Vui lòng load model trước."
-                    return
-            except Exception:
-                model = "local-model"
+    # Detect providers if not given
+    if providers is None:
+        providers = detect_available_providers(session_keys)
 
-        stream = client.chat.completions.create(
-            model=model or "local-model",
-            messages=full_messages,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            stream=True,
+    if not providers:
+        yield (
+            "⚠️ Chưa cấu hình LLM provider nào.\n\n"
+            "**Hướng dẫn:**\n"
+            "1. Vào **⚙️ Cấu Hình AI** ở sidebar bên trái\n"
+            "2. Nhập API key (khuyến nghị: **Gemini** — miễn phí)\n"
+            "3. Hoặc cài **LM Studio** trên máy và load model\n"
         )
-        for chunk in stream:
-            if chunk.choices and chunk.choices[0].delta.content:
-                yield chunk.choices[0].delta.content
-    except Exception as e:
-        error_msg = str(e)
-        if "Connection" in error_msg or "refused" in error_msg:
-            yield (
-                "❌ Không thể kết nối đến LM Studio.\n\n"
-                "**Hướng dẫn:**\n"
-                "1. Mở LM Studio\n"
-                "2. Load model (VD: Gemma 4 E4B)\n"
-                "3. Bật Local Server tại port 8888\n"
-                "4. Thử lại"
-            )
-        else:
-            yield f"❌ Lỗi: {error_msg}"
+        return
+
+    # Try each provider in priority order
+    tried = []
+    for provider in providers:
+        # Override model if explicitly specified
+        if model:
+            provider.model = model
+
+        logger.info(
+            f"Trying provider: {provider.display_name} "
+            f"(key: {mask_api_key(provider.api_key)})"
+        )
+
+        gen = _try_stream_provider(
+            provider, full_messages, temperature, max_tokens
+        )
+        if gen is not None:
+            # Yield provider info header
+            yield f"*🤖 {provider.display_name}*\n\n"
+            yield from gen
+            return
+
+        tried.append(provider.display_name)
+
+    # All providers failed
+    tried_str = ", ".join(tried)
+    yield (
+        f"❌ Không thể kết nối với bất kỳ LLM nào.\n\n"
+        f"**Đã thử:** {tried_str}\n\n"
+        "**Hướng dẫn khắc phục:**\n"
+        "1. Kiểm tra kết nối internet (cho Cloud API)\n"
+        "2. Kiểm tra API key còn hạn sử dụng\n"
+        "3. Mở LM Studio → Load model → Bật Server port 8888\n"
+        "4. Reload trang dashboard\n"
+    )

@@ -1,0 +1,40 @@
+# ═══════════════════════════════════════════
+# PM2.5 Forecasting Dashboard — Docker Compose
+# Usage: docker compose up -d
+# Dashboard: http://localhost:8501
+# ═══════════════════════════════════════════
+
+services:
+  pm25-dashboard:
+    image: trihx/pm25-forecasting:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      # LM Studio running on host machine
+      - LM_STUDIO_URL=http://host.docker.internal:8888/v1
+      # Cloud LLM API keys — inject via .env file or -e flag
+      # NEVER bake keys into image
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+    extra_hosts:
+      # Required for Linux to resolve host.docker.internal
+      - "host.docker.internal:host-gateway"
+    volumes:
+      # Persist ChromaDB index across restarts
+      - chroma_data:/app/.chroma_db
+      # Persist user-trained models
+      - user_models:/app/models/user_trained
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    shm_size: '2gb'    # PyTorch DataLoader shared memory
+    restart: unless-stopped
+
+volumes:
+  chroma_data:
+  user_models:

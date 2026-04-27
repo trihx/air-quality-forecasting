@@ -1,11 +1,23 @@
 """
 AI Assistant page for PM2.5 Forecasting Dashboard.
 
-Provides a chat interface connected to local LLM via LM Studio,
-with RAG-based context retrieval from project knowledge base.
+Provides a chat interface with:
+  - Multi-LLM support (Gemini, OpenAI, Groq, LM Studio)
+  - Tiered fallback (Cloud API → Local LLM)
+  - RAG-based context retrieval from project knowledge base
+  - Secure API key management via session state
 """
 
 import streamlit as st
+
+from src.chatbot.provider_config import (
+    LOCAL_MODEL_RECOMMENDATIONS,
+    PROVIDER_REGISTRY,
+    mask_api_key,
+    validate_provider_connection,
+    get_provider_from_registry,
+    detect_available_providers,
+)
 
 # ── Preset questions for thesis defense preparation ──
 PRESET_QUESTIONS = {
@@ -58,8 +70,141 @@ def _ensure_index(kb) -> int:
     return kb.index_count()
 
 
+def _render_provider_config():
+    """Render AI provider configuration in sidebar."""
+    st.sidebar.markdown(
+        """
+    <div style="font-size: 0.75rem; opacity: 0.6; text-transform: uppercase;
+                letter-spacing: 0.1em; margin: 1rem 0 0.5rem 0; font-weight: 700;">
+        ⚙️ Cấu Hình AI Provider
+    </div>
+    """,
+        unsafe_allow_html=True,
+    )
+
+    # Initialize session state for provider keys
+    if "llm_provider_keys" not in st.session_state:
+        st.session_state.llm_provider_keys = {}
+
+    # Provider selection tabs
+    for provider_name, reg in PROVIDER_REGISTRY.items():
+        if provider_name == "lm_studio":
+            continue  # Handle separately below
+
+        with st.sidebar.expander(
+            f"{'🟢' if st.session_state.llm_provider_keys.get(provider_name, {}).get('api_key') else '⚪'} "
+            f"{reg['display_name']}",
+            expanded=False,
+        ):
+            st.caption(reg["description"])
+
+            # API key input (password masked)
+            key = st.text_input(
+                "API Key",
+                type="password",
+                key=f"input_key_{provider_name}",
+                placeholder="Nhập API key...",
+                value=st.session_state.llm_provider_keys.get(provider_name, {}).get("api_key", ""),
+            )
+
+            # Model override (optional)
+            model = st.text_input(
+                "Model (tùy chọn)",
+                key=f"input_model_{provider_name}",
+                placeholder=reg["default_model"],
+                value=st.session_state.llm_provider_keys.get(provider_name, {}).get("model", ""),
+            )
+
+            col_save, col_test = st.columns(2)
+            with col_save:
+                if st.button("💾 Lưu", key=f"save_{provider_name}", use_container_width=True):
+                    if key:
+                        st.session_state.llm_provider_keys[provider_name] = {
+                            "api_key": key,
+                            "model": model,
+                            "base_url": "",
+                        }
+                        st.success(f"✅ Đã lưu ({mask_api_key(key)})")
+                    else:
+                        # Clear provider
+                        st.session_state.llm_provider_keys.pop(provider_name, None)
+                        st.info("Đã xóa API key")
+
+            with col_test:
+                if st.button("🔍 Test", key=f"test_{provider_name}", use_container_width=True):
+                    if key:
+                        provider = get_provider_from_registry(provider_name, api_key=key, custom_model=model)
+                        if provider:
+                            with st.spinner("Đang kiểm tra..."):
+                                ok, msg = validate_provider_connection(provider)
+                            if ok:
+                                st.success(f"✅ {msg}")
+                            else:
+                                st.error(f"❌ {msg}")
+                    else:
+                        st.warning("Chưa nhập API key")
+
+    # ── LM Studio (Local) ──
+    with st.sidebar.expander("🖥️ LM Studio (Local)", expanded=False):
+        st.caption(PROVIDER_REGISTRY["lm_studio"]["description"])
+
+        lm_url = st.text_input(
+            "Server URL",
+            key="input_lm_studio_url",
+            value=st.session_state.llm_provider_keys.get("lm_studio", {}).get(
+                "base_url",
+                PROVIDER_REGISTRY["lm_studio"]["base_url"],
+            ),
+        )
+
+        if st.button("🔍 Kiểm tra LM Studio", key="test_lm_studio", use_container_width=True):
+            provider = get_provider_from_registry("lm_studio", custom_base_url=lm_url)
+            if provider:
+                with st.spinner("Đang kết nối..."):
+                    ok, msg = validate_provider_connection(provider)
+                if ok:
+                    st.success(f"✅ {msg}")
+                    # Save URL to session
+                    st.session_state.llm_provider_keys["lm_studio"] = {
+                        "api_key": "lm-studio",
+                        "base_url": lm_url,
+                        "model": "",
+                    }
+                else:
+                    st.error(f"❌ {msg}")
+
+        # Model recommendations
+        with st.expander("📋 Model khuyến nghị", expanded=False):
+            for m in LOCAL_MODEL_RECOMMENDATIONS:
+                star = " ⭐" if m["recommended"] else ""
+                st.markdown(
+                    f"**{m['name']}{star}**\n"
+                    f"- VRAM: {m['vram']} | {m['vietnamese']}\n"
+                    f"- {m['best_for']}",
+                )
+
+    # ── Status summary ──
+    providers = detect_available_providers(st.session_state.llm_provider_keys)
+    cloud_providers = [p for p in providers if not p.is_local]
+
+    if cloud_providers:
+        names = ", ".join([p.display_name for p in cloud_providers])
+        st.sidebar.success(f"☁️ Cloud: {names}")
+    else:
+        st.sidebar.info("☁️ Chưa cấu hình Cloud API")
+
+    local_cfg = st.session_state.llm_provider_keys.get("lm_studio", {})
+    if local_cfg.get("api_key"):
+        st.sidebar.success("🖥️ LM Studio: Đã cấu hình")
+    else:
+        st.sidebar.caption("🖥️ LM Studio: Fallback (auto-detect)")
+
+
 def page_ai_assistant(results):
     """Render AI Assistant chatbot page."""
+
+    # ── Render provider config in sidebar ──
+    _render_provider_config()
 
     # ── Header ──
     st.markdown(
@@ -67,44 +212,46 @@ def page_ai_assistant(results):
     <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
         💬 Trợ Lý AI — Hỏi Đáp Dự Án
     </h1>
-    <p style="color: #8B95A5; font-size: 1.05rem; margin-bottom: 1rem;">
+    <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 1rem;">
         Hỏi bất kỳ câu hỏi nào về dự án • Hỗ trợ chuẩn bị phản biện luận văn
     </p>
     """,
         unsafe_allow_html=True,
     )
 
-    # ── Connection status ──
-    from src.chatbot.llm_client import check_connection, get_available_models
+    # ── Version-aware info cards ──
+    from src.info_cards import cards_ai_assistant, get_current_version, render_version_badge
+    ver = get_current_version()
+    render_version_badge(ver)
+    cards_ai_assistant(ver)
 
-    col_status, col_model = st.columns([1, 1])
+    # ── Active provider status ──
+    providers = detect_available_providers(
+        st.session_state.get("llm_provider_keys", {})
+    )
+    cloud_providers = [p for p in providers if not p.is_local]
+    local_providers = [p for p in providers if p.is_local]
 
+    col_status, col_info = st.columns([2, 1])
     with col_status:
-        connected = check_connection()
-        if connected:
-            st.success("✅ LM Studio đang hoạt động")
-        else:
-            st.error(
-                "❌ Không kết nối được LM Studio\n\n"
-                "**Hướng dẫn:**\n"
-                "1. Mở LM Studio\n"
-                "2. Load model (Gemma 4 E4B)\n"
-                "3. Bật Server → port 8888\n"
-                "4. Reload trang này"
+        if cloud_providers:
+            primary = cloud_providers[0]
+            st.success(
+                f"🟢 AI: **{primary.display_name}** ({primary.model or 'auto'})"
+                + (f" + {len(cloud_providers) - 1} fallback" if len(cloud_providers) > 1 else "")
+                + (" + LM Studio" if local_providers else "")
             )
-            return
+        elif local_providers:
+            st.info("🖥️ AI: **LM Studio** (local)")
+        else:
+            st.warning(
+                "⚠️ Chưa cấu hình AI — vào **⚙️ Cấu Hình AI Provider** ở sidebar"
+            )
 
-    with col_model:
-        models = get_available_models()
-        if models:
-            selected_model = st.selectbox(  # noqa: F841
-                "🤖 Chọn Model",
-                models,
-                index=0,
-                key="selected_llm_model",
-            )
-        else:
-            st.warning("⚠️ Chưa load model trong LM Studio")
+    with col_info:
+        # Show fallback chain
+        chain = " → ".join([p.display_name for p in providers]) or "Chưa cấu hình"
+        st.caption(f"🔗 Fallback: {chain}")
 
     # ── Knowledge Base status ──
     kb_col, reindex_col = st.columns([3, 1])
@@ -132,7 +279,7 @@ def page_ai_assistant(results):
     with preset_col:
         st.markdown(
             """
-        <div style="font-size: 0.85rem; font-weight: 700; color: #CBD5E0;
+        <div style="font-size: 0.85rem; font-weight: 700;
                     margin-bottom: 0.75rem;">
             🎓 Câu Hỏi Phản Biện Gợi Ý
         </div>
@@ -199,14 +346,16 @@ def page_ai_assistant(results):
                 # Build message history (last 6 messages for context)
                 history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.chat_messages[-6:]]
 
-                # Get selected model
-                selected = st.session_state.get("selected_llm_model")
+                # Get providers
+                current_providers = detect_available_providers(
+                    st.session_state.get("llm_provider_keys", {})
+                )
 
                 response = st.write_stream(
                     chat_stream(
                         messages=history,
                         context=context,
-                        model=selected,
+                        providers=current_providers,
                     )
                 )
 
