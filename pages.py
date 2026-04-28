@@ -447,15 +447,25 @@ def _forecast_auto(model_type: str, horizon: int):
         val = defaults.get(key, 0.0)
         with cols[idx]:
             st.markdown(f"""
-            <div style="text-align: center; padding: 0.6rem 0.4rem;
-                        background: rgba(15, 20, 30, 0.85);
-                        border-radius: 10px; border: 1px solid rgba(0,212,170,0.12);">
-                <div style="font-size: 0.75rem; opacity: 0.65; font-weight: 600;
-                            margin-bottom: 0.3rem;">{label}</div>
-                <div style="font-size: 1.6rem; font-weight: 800; color: #FFFFFF;
-                            font-family: 'JetBrains Mono', monospace;
-                            text-shadow: 0 0 12px rgba(0,212,170,0.3);">{val:.1f}</div>
-                <div style="font-size: 0.72rem; opacity: 0.65; margin-top: 0.2rem;">{unit}</div>
+            <style>
+                .sensor-card {{ text-align: center; padding: 0.7rem 0.4rem;
+                    background: rgba(15, 20, 30, 0.9) !important;
+                    border-radius: 10px; border: 1px solid rgba(0,212,170,0.2);
+                    border-top: 3px solid rgba(0,212,170,0.6); }}
+                .sensor-card .sc-label {{ font-size: 0.78rem; color: #e0e0e0 !important;
+                    font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+                    padding-bottom: 0.3rem; border-bottom: 1px solid rgba(255,255,255,0.15);
+                    margin-bottom: 0.35rem; }}
+                .sensor-card .sc-value {{ font-size: 1.5rem; font-weight: 800;
+                    color: #FFFFFF !important; font-family: 'JetBrains Mono', monospace;
+                    text-shadow: 0 0 12px rgba(0,212,170,0.3); }}
+                .sensor-card .sc-unit {{ font-size: 0.65rem; color: rgba(220,220,220,0.7) !important;
+                    margin-top: 0.15rem; }}
+            </style>
+            <div class="sensor-card">
+                <div class="sc-label">{label}</div>
+                <div class="sc-value">{val:.1f}</div>
+                <div class="sc-unit">{unit}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -617,12 +627,24 @@ def _predict_ensemble(recent: pd.DataFrame, horizon: int) -> dict:
 
     Weights are pre-optimized via grid-search (step=0.05).
     Source: research/experiments/ensemble/ensemble_20260404_204737.json
+
+    IMPORTANT: gc.collect() between GRU and LightGBM to avoid OMP segfault
+    on Apple Silicon when both runtimes are active simultaneously.
     """
     from src.features.builder import build_features
 
     w = _ENSEMBLE_WEIGHTS.get(horizon, {"gru": 0.50, "lgbm": 0.50})
 
-    # ── GRU prediction ──
+    # ── LightGBM prediction FIRST (lighter, less OMP conflict) ──
+    df_feat = build_features(recent)
+    lgbm_predictor = _get_lgbm_predictor(horizon)
+    lgbm_result = lgbm_predictor.predict(df_feat)
+    lgbm_val = lgbm_result["predicted_pm25"]
+
+    # Cleanup LightGBM memory before loading PyTorch
+    gc.collect()
+
+    # ── GRU prediction SECOND ──
     q_predictor = _get_gru_quantile_predictor(horizon)
     if q_predictor is not None:
         gru_result = q_predictor.predict(recent)
@@ -632,11 +654,8 @@ def _predict_ensemble(recent: pd.DataFrame, horizon: int) -> dict:
         gru_result = predictor.predict(recent, device=device)
     gru_val = gru_result["predicted_pm25"]
 
-    # ── LightGBM prediction ──
-    df_feat = build_features(recent)
-    lgbm_predictor = _get_lgbm_predictor(horizon)
-    lgbm_result = lgbm_predictor.predict(df_feat)
-    lgbm_val = lgbm_result["predicted_pm25"]
+    # Cleanup after both predictions
+    gc.collect()
 
     # ── Weighted average ──
     ensemble_val = round(gru_val * w["gru"] + lgbm_val * w["lgbm"], 2)

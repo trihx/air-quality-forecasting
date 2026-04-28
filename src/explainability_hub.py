@@ -247,22 +247,40 @@ def _tab_pipeline_journey():
         "Hover lên dòng chảy để xem chi tiết.",
     )
 
-    # ── Node definitions ──
+    # ── Node definitions (shortened labels to prevent text overlay) ──
     labels = [
-        "IoT Sensor\n(209K records)",       # 0
-        "Raw Data\n(27,649 rows × 5 cols)", # 1
-        "Data Cleaning\n(IQR 3.0 + Domain)",# 2
-        "Hybrid Imputation\n(Spline+KNN)",  # 3
-        "Feature Eng. v2\n(119 features)",  # 4
-        "Temporal Split\n(80/10/10)",        # 5
-        "Train Set\n(6,194 rows)",           # 6
-        "Val Set\n(774 rows)",              # 7
-        "Test Set\n(774 rows)",             # 8
-        "Statistical\n(ARIMA, SARIMA)",     # 9
-        "ML Models\n(LightGBM, RF, Ens.)",  # 10
-        "DL Models\n(GRU, LSTM, TFT)",      # 11
-        "Evaluation\n(MAE, MASE, R²)",      # 12
-        "Best: GRU v2+log\nMASE=0.692 (6h)",# 13
+        "IoT Sensor (209K)",                # 0
+        "Raw Data (27,649)",                # 1
+        "Clean (IQR 3.0)",                  # 2
+        "Impute (Spline+KNN)",              # 3
+        "Features v2 (119)",                # 4
+        "Split (80/10/10)",                 # 5
+        "Train (6,194)",                    # 6
+        "Val (774)",                        # 7
+        "Test (774)",                       # 8
+        "Statistical",                      # 9
+        "ML Models",                        # 10
+        "DL Models",                        # 11
+        "Evaluation",                       # 12
+        "Best: Ens (0.750)",               # 13
+    ]
+
+    # Detailed hover labels (shown on hover, not on chart)
+    hover_labels = [
+        "IoT Sensor: 209K records (~2 phút/mẫu, 3.1 năm)",
+        "Raw Data: 27,649 rows × 5 cols (resample 1h)",
+        "Data Cleaning: IQR 3.0 + PM2.5 domain [0,500]",
+        "Hybrid Imputation: Spline ≤6h + KNN 6-24h",
+        "Feature Eng. v2: 119 features (anti-leakage ✅)",
+        "Temporal Split: 80/10/10 theo thời gian",
+        "Train Set: 6,194 rows",
+        "Val Set: 774 rows",
+        "Test Set: 774 rows (REAL DATA ONLY)",
+        "Statistical: ARIMA(2,1,1), SARIMA×(2,1,0,24)",
+        "ML: LightGBM (Optuna), RF, Ensemble",
+        "DL: GRU, LSTM, TFT (PyTorch MPS)",
+        "Evaluation: MAE, MASE, R², CQR",
+        "Best 6h: Ensemble_GRU MASE=0.750",
     ]
 
     # Node colors
@@ -307,12 +325,13 @@ def _tab_pipeline_journey():
     fig = go.Figure(go.Sankey(
         arrangement="snap",
         node=dict(
-            pad=20,
-            thickness=25,
+            pad=45,
+            thickness=18,
             line=dict(color="rgba(0,0,0,0.3)", width=1),
             label=labels,
             color=node_colors,
-            hovertemplate="%{label}<extra></extra>",
+            customdata=hover_labels,
+            hovertemplate="%{customdata}<extra></extra>",
         ),
         link=dict(
             source=sources,
@@ -343,9 +362,11 @@ def _tab_pipeline_journey():
         title=dict(
             text="Pipeline Data Flow — PM2.5 Forecasting",
             font=dict(size=16, color=COLORS["primary"]),
+            pad=dict(b=20),
         ),
     )
-    fig = _apply_plotly_style(fig, height=550)
+    fig.update_traces(textfont=dict(size=11, color="#FAFAFA"))
+    fig = _apply_plotly_style(fig, height=800)
     st.plotly_chart(fig, use_container_width=True)
 
     # ── Pipeline Statistics Cards ──
@@ -634,13 +655,15 @@ def _tab_model_selection(results: dict):
     _section_header("🏆", "Hành Trình Chọn Mô Hình — Từ Baseline Đến Best")
 
     # ── Journey Timeline ──
+    # Data verified: standardized_metrics.json + dashboard_runs/v1-v7
     phases = [
-        ("v1", "Persistence + ARIMA", "Baseline. MASE=1.0, 1.023", "#FF6B6B"),
-        ("v2", "LightGBM + Feature Eng v2", "ML enters. MASE=0.725 (6h) ✅", "#FFE66D"),
+        ("v1", "Persistence + ARIMA", "Baseline. MASE=1.0, 1.073", "#FF6B6B"),
+        ("v2", "LightGBM + Feature Eng v2", "ML enters. MASE=0.800 (6h)", "#FFE66D"),
         ("v3", "RF, GB, Stacking, Ensemble", "Ensemble diversification", "#FB923C"),
         ("v4", "Deep Learning GRU/LSTM", "GRU_v1 best 1h: MASE=1.173", "#A78BFA"),
-        ("v5", "GRU_log + LSTM retrain", "GRU_log best 6h: MASE=0.692 ⭐", "#00D4AA"),
+        ("v5", "GRU_log + LSTM retrain", "GRU_log 6h: MASE=0.692 (orig) ⭐", "#00D4AA"),
         ("v6", "PCA, Top-N, TFT", "1h cursed by autocorr. TFT_v2 tệ", "#4ECDC4"),
+        ("v7", "CQR + Ensemble Inference", "CQR coverage ↑. Docker-ready", "#60A5FA"),
     ]
 
     # Timeline as a horizontal flow
@@ -648,14 +671,14 @@ def _tab_model_selection(results: dict):
     for col, (ver, name, note, color) in zip(cols, phases):
         with col:
             st.markdown(f"""
-            <div style="text-align: center; padding: 0.8rem 0.3rem;">
+            <div style="text-align: center; padding: 0.8rem 0.2rem;">
                 <div style="background: {color}; color: #0E1117; font-weight: 800;
-                            border-radius: 50%; width: 38px; height: 38px;
+                            border-radius: 50%; width: 36px; height: 36px;
                             display: flex; align-items: center; justify-content: center;
-                            margin: 0 auto; font-size: 0.7rem;">{ver}</div>
-                <div style="font-size: 0.75rem; font-weight: 600; color: #E2E8F0;
+                            margin: 0 auto; font-size: 0.65rem;">{ver}</div>
+                <div style="font-size: 0.7rem; font-weight: 600; color: #E2E8F0;
                             margin-top: 0.5rem;">{name}</div>
-                <div style="font-size: 0.65rem; color: var(--text-color); opacity: 0.55;
+                <div style="font-size: 0.6rem; color: var(--text-color); opacity: 0.55;
                             margin-top: 0.2rem;">{note}</div>
             </div>
             """, unsafe_allow_html=True)
@@ -694,16 +717,18 @@ def _tab_model_selection(results: dict):
     # ── Per-horizon winners ──
     _section_header("🥇", "Best Model per Horizon")
 
+    # Data source: standardized_metrics.json (unified MASE)
+    # 1h: TFT MASE=1.029, 6h: Ensemble_GRU MASE=0.750, 24h: Ensemble_Stack MASE=0.696
     winners = [
-        ("1h", "GRU (v1 raw)", "1.173", "Autocorr ~0.99 → simple models dominate"),
-        ("6h", "GRU_log (v2)", "0.692", "Log transform + v2 features = breakthrough ⭐"),
-        ("24h", "GRU (v1 raw)", "0.727", "Same autocorr advantage at long range"),
+        ("1h", "TFT", "1.029", "Autocorr ~0.99 → Persistence vẫn mạnh nhất"),
+        ("6h", "Ensemble_GRU", "0.750", "Weighted GRU+LightGBM = best 6h ⭐"),
+        ("24h", "Ensemble_Stack", "0.696", "Stacking ensemble best long-range ⭐"),
     ]
 
     cols = st.columns(3)
     for col, (h, model, mase, reason) in zip(cols, winners):
         with col:
-            is_best = h == "6h"
+            is_best = h in ("6h", "24h")
             border = "#FFE66D" if is_best else "rgba(0,212,170,0.3)"
             st.markdown(f"""
             <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
@@ -727,7 +752,7 @@ def _tab_model_selection(results: dict):
         "Tại horizon 1h, PM2.5 có autocorrelation ~0.99 → Persistence baseline rất mạnh "
         "(MASE=1.0). Mọi ML/DL model KHÔNG thắng được Persistence ở 1h. "
         "Giá trị thực sự của ML/DL chỉ thể hiện ở horizons dài hơn (6h, 24h), "
-        "nơi autocorrelation giảm đáng kể. "
+        "nơi Ensemble methods (GRU+LightGBM weighted, Stacking) cho MASE < 0.76. "
         "Đây là insight quan trọng cho thực tiễn triển khai.",
         card_type="warning",
     )
@@ -884,9 +909,10 @@ def _tab_scientific_foundation():
     st.markdown("---")
     _section_header("🔬", "So Sánh Với Nghiên Cứu Gần Đây (2022–2025)")
 
+    # Data source: standardized_metrics.json — Ensemble_GRU 6h MAE=4.729, MASE=0.750
     lit_data = [
         {"Study": "Dự án CTU (Our)", "Location": "Sa Đéc, VN", "PM2.5 Range": "5-50",
-         "Best MAE": "4.68", "Metric": "MASE=0.692", "Key Method": "GRU+log (v2 features)"},
+         "Best MAE": "4.73", "Metric": "MASE=0.750", "Key Method": "Ensemble (GRU+LightGBM)"},
         {"Study": "Zhang et al. 2023", "Location": "Beijing", "PM2.5 Range": "20-300",
          "Best MAE": "8.5", "Metric": "R²=0.92", "Key Method": "CNN-LSTM hybrid"},
         {"Study": "Liu et al. 2024", "Location": "Guangzhou", "PM2.5 Range": "15-150",
