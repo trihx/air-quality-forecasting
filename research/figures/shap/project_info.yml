@@ -1,0 +1,5 @@
+{
+    "name": "PM2.5 Forecasting — CTU Master Thesis",
+    "contributors": "trihx (Anh Trí)",
+    "description": "Time Series Forecasting for PM2.5 air quality prediction using LightGBM. Data from IoT sensors in Sa Đéc, Đồng Tháp, Vietnam (2022-2025). Multi-horizon: 1h, 6h, 24h. Anti-leakage compliant pipeline."
+}

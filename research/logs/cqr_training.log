@@ -1,0 +1,112 @@
+2026-04-28 10:19:53.288 | INFO     | __main__:main:403 - ======================================================================
+2026-04-28 10:19:53.288 | INFO     | __main__:main:404 - CQR — Conformalized Quantile Regression for GRU
+2026-04-28 10:19:53.288 | INFO     | __main__:main:405 - Romano et al. (2019), NeurIPS
+2026-04-28 10:19:53.288 | INFO     | __main__:main:406 - ======================================================================
+2026-04-28 10:19:53.365 | INFO     | __main__:load_pipeline_data:62 - Loading raw data...
+2026-04-28 10:19:53.365 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-28 10:19:53.365 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-28 10:19:53.482 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-28 10:19:53.496 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-28 10:19:53.498 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-28 10:19:53.516 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-28 10:19:53.519 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-28 10:19:53.521 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-28 10:19:53.524 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-28 10:19:53.530 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-28 10:19:53.533 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-28 10:19:53.533 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-04-28 10:19:53.534 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-04-28 10:19:53.541 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,466 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,396 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,810 rows with gaps >24h
+  [Imputer] Output: 7,743 rows (7,112 real + 631 imputed)
+  [Imputer] Dropped 19,810 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.1%
+2026-04-28 10:20:05.173 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,743 rows (7,112 real + 631 imputed, 19,810 dropped)
+2026-04-28 10:20:05.173 | INFO     | __main__:load_pipeline_data:77 - Pipeline data: 7743 rows
+2026-04-28 10:20:05.842 | INFO     | __main__:train_gru_quantile:99 - 
+======================================================================
+2026-04-28 10:20:05.842 | INFO     | __main__:train_gru_quantile:100 - CQR Training — GRU Quantile h=1
+2026-04-28 10:20:05.842 | INFO     | __main__:train_gru_quantile:101 - ======================================================================
+2026-04-28 10:20:05.853 | INFO     | __main__:train_gru_quantile:104 - Device: mps
+2026-04-28 10:20:05.863 | INFO     | __main__:train_gru_quantile:148 - Train: 6122 | Cal: 774 | Test: 775 (real: 605)
+2026-04-28 10:20:24.880 | INFO     | __main__:train_gru_quantile:247 -   Epoch  10/100 | train_loss=0.092075 | val_loss=0.091145 | lr=0.001000
+2026-04-28 10:20:41.975 | INFO     | __main__:train_gru_quantile:247 -   Epoch  20/100 | train_loss=0.087869 | val_loss=0.079674 | lr=0.001000
+2026-04-28 10:20:59.215 | INFO     | __main__:train_gru_quantile:247 -   Epoch  30/100 | train_loss=0.085142 | val_loss=0.077678 | lr=0.001000
+2026-04-28 10:21:13.035 | INFO     | __main__:train_gru_quantile:242 - Early stopping at epoch 38
+2026-04-28 10:21:13.038 | INFO     | __main__:train_gru_quantile:259 - Training complete: 38 epochs, 66.7s
+2026-04-28 10:21:13.141 | INFO     | __main__:train_gru_quantile:283 - CQR calibration: n_cal=774, adjustment=-1.264
+2026-04-28 10:21:13.461 | INFO     | __main__:train_gru_quantile:329 - 
+--- Results h=1 ---
+2026-04-28 10:21:13.461 | INFO     | __main__:train_gru_quantile:330 - MAE (median):    2.935 µg/m³
+2026-04-28 10:21:13.462 | INFO     | __main__:train_gru_quantile:331 - MASE:            1.1789
+2026-04-28 10:21:13.462 | INFO     | __main__:train_gru_quantile:332 - Persist MAE:     2.490
+2026-04-28 10:21:13.462 | INFO     | __main__:train_gru_quantile:333 - Raw QR coverage: 80.3% (width=9.77)
+2026-04-28 10:21:13.462 | INFO     | __main__:train_gru_quantile:334 - CQR coverage:    62.6% (width=7.24)
+2026-04-28 10:21:13.462 | INFO     | __main__:train_gru_quantile:335 - Target coverage: 90%
+2026-04-28 10:21:13.539 | INFO     | __main__:train_gru_quantile:347 - Exported model: /Users/trihx/Desktop/time-series-forecasting/models/exported/gru_quantile_1h.pt
+2026-04-28 10:21:13.539 | INFO     | __main__:train_gru_quantile:365 - Exported config: /Users/trihx/Desktop/time-series-forecasting/models/exported/gru_quantile_1h_config.json
+2026-04-28 10:21:13.605 | INFO     | __main__:train_gru_quantile:99 - 
+======================================================================
+2026-04-28 10:21:13.605 | INFO     | __main__:train_gru_quantile:100 - CQR Training — GRU Quantile h=6
+2026-04-28 10:21:13.605 | INFO     | __main__:train_gru_quantile:101 - ======================================================================
+2026-04-28 10:21:13.605 | INFO     | __main__:train_gru_quantile:104 - Device: mps
+2026-04-28 10:21:13.614 | INFO     | __main__:train_gru_quantile:148 - Train: 6117 | Cal: 774 | Test: 775 (real: 605)
+2026-04-28 10:21:31.079 | INFO     | __main__:train_gru_quantile:247 -   Epoch  10/100 | train_loss=0.147354 | val_loss=0.097176 | lr=0.001000
+2026-04-28 10:21:48.531 | INFO     | __main__:train_gru_quantile:247 -   Epoch  20/100 | train_loss=0.129537 | val_loss=0.073889 | lr=0.001000
+2026-04-28 10:22:05.820 | INFO     | __main__:train_gru_quantile:242 - Early stopping at epoch 30
+2026-04-28 10:22:05.823 | INFO     | __main__:train_gru_quantile:259 - Training complete: 30 epochs, 52.2s
+2026-04-28 10:22:05.924 | INFO     | __main__:train_gru_quantile:283 - CQR calibration: n_cal=774, adjustment=-0.776
+2026-04-28 10:22:06.026 | INFO     | __main__:train_gru_quantile:329 - 
+--- Results h=6 ---
+2026-04-28 10:22:06.026 | INFO     | __main__:train_gru_quantile:330 - MAE (median):    5.128 µg/m³
+2026-04-28 10:22:06.026 | INFO     | __main__:train_gru_quantile:331 - MASE:            0.8023
+2026-04-28 10:22:06.026 | INFO     | __main__:train_gru_quantile:332 - Persist MAE:     6.392
+2026-04-28 10:22:06.026 | INFO     | __main__:train_gru_quantile:333 - Raw QR coverage: 60.5% (width=11.50)
+2026-04-28 10:22:06.026 | INFO     | __main__:train_gru_quantile:334 - CQR coverage:    53.6% (width=9.95)
+2026-04-28 10:22:06.026 | INFO     | __main__:train_gru_quantile:335 - Target coverage: 90%
+2026-04-28 10:22:06.063 | INFO     | __main__:train_gru_quantile:347 - Exported model: /Users/trihx/Desktop/time-series-forecasting/models/exported/gru_quantile_6h.pt
+2026-04-28 10:22:06.063 | INFO     | __main__:train_gru_quantile:365 - Exported config: /Users/trihx/Desktop/time-series-forecasting/models/exported/gru_quantile_6h_config.json
+2026-04-28 10:22:06.129 | INFO     | __main__:train_gru_quantile:99 - 
+======================================================================
+2026-04-28 10:22:06.129 | INFO     | __main__:train_gru_quantile:100 - CQR Training — GRU Quantile h=24
+2026-04-28 10:22:06.129 | INFO     | __main__:train_gru_quantile:101 - ======================================================================
+2026-04-28 10:22:06.129 | INFO     | __main__:train_gru_quantile:104 - Device: mps
+2026-04-28 10:22:06.137 | INFO     | __main__:train_gru_quantile:148 - Train: 6099 | Cal: 774 | Test: 775 (real: 605)
+2026-04-28 10:22:23.440 | INFO     | __main__:train_gru_quantile:247 -   Epoch  10/100 | train_loss=0.140887 | val_loss=0.072949 | lr=0.001000
+2026-04-28 10:22:40.802 | INFO     | __main__:train_gru_quantile:247 -   Epoch  20/100 | train_loss=0.136868 | val_loss=0.075565 | lr=0.001000
+2026-04-28 10:22:58.109 | INFO     | __main__:train_gru_quantile:247 -   Epoch  30/100 | train_loss=0.128361 | val_loss=0.071914 | lr=0.000500
+2026-04-28 10:23:15.428 | INFO     | __main__:train_gru_quantile:247 -   Epoch  40/100 | train_loss=0.123676 | val_loss=0.071373 | lr=0.000250
+2026-04-28 10:23:17.180 | INFO     | __main__:train_gru_quantile:242 - Early stopping at epoch 41
+2026-04-28 10:23:17.183 | INFO     | __main__:train_gru_quantile:259 - Training complete: 41 epochs, 71.0s
+2026-04-28 10:23:17.289 | INFO     | __main__:train_gru_quantile:283 - CQR calibration: n_cal=774, adjustment=0.202
+2026-04-28 10:23:17.430 | INFO     | __main__:train_gru_quantile:329 - 
+--- Results h=24 ---
+2026-04-28 10:23:17.430 | INFO     | __main__:train_gru_quantile:330 - MAE (median):    4.728 µg/m³
+2026-04-28 10:23:17.430 | INFO     | __main__:train_gru_quantile:331 - MASE:            0.7359
+2026-04-28 10:23:17.431 | INFO     | __main__:train_gru_quantile:332 - Persist MAE:     6.425
+2026-04-28 10:23:17.431 | INFO     | __main__:train_gru_quantile:333 - Raw QR coverage: 67.9% (width=12.65)
+2026-04-28 10:23:17.431 | INFO     | __main__:train_gru_quantile:334 - CQR coverage:    69.8% (width=13.06)
+2026-04-28 10:23:17.431 | INFO     | __main__:train_gru_quantile:335 - Target coverage: 90%
+2026-04-28 10:23:17.470 | INFO     | __main__:train_gru_quantile:347 - Exported model: /Users/trihx/Desktop/time-series-forecasting/models/exported/gru_quantile_24h.pt
+2026-04-28 10:23:17.470 | INFO     | __main__:train_gru_quantile:365 - Exported config: /Users/trihx/Desktop/time-series-forecasting/models/exported/gru_quantile_24h_config.json
+2026-04-28 10:23:17.541 | SUCCESS  | __main__:main:455 - Updated /Users/trihx/Desktop/time-series-forecasting/research/experiments/prediction_intervals/prediction_intervals_20260405_100353.json
+2026-04-28 10:23:17.541 | SUCCESS  | __main__:main:462 - Detailed results: /Users/trihx/Desktop/time-series-forecasting/research/experiments/prediction_intervals/cqr_results_20260428_102317.json
+2026-04-28 10:23:17.541 | INFO     | __main__:main:465 - 
+======================================================================
+2026-04-28 10:23:17.541 | INFO     | __main__:main:466 - FINAL SUMMARY: GRU CQR vs MC Dropout (old)
+2026-04-28 10:23:17.541 | INFO     | __main__:main:467 - ======================================================================
+2026-04-28 10:23:17.541 | INFO     | __main__:main:468 -  Horizon   Coverage(CQR)   Width(CQR)      MAE     MASE
+2026-04-28 10:23:17.541 | INFO     | __main__:main:469 - ------------------------------------------------------------
+2026-04-28 10:23:17.541 | INFO     | __main__:main:471 -        1           62.6%         7.24    2.935   1.1789
+2026-04-28 10:23:17.541 | INFO     | __main__:main:471 -        6           53.5%         9.95    5.128   0.8023
+2026-04-28 10:23:17.541 | INFO     | __main__:main:471 -       24           69.8%        13.06    4.728   0.7359
+2026-04-28 10:23:17.541 | INFO     | __main__:main:475 - ------------------------------------------------------------
+2026-04-28 10:23:17.541 | INFO     | __main__:main:476 - Old MC Dropout: h=1: 36.8%, h=6: 7.6%, h=24: 25.7%
+2026-04-28 10:23:17.542 | INFO     | __main__:main:477 - ======================================================================

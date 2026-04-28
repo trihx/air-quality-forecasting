@@ -19,7 +19,6 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import plotly.graph_objects as go
 import streamlit as st
 
 # ── Config ──
@@ -37,7 +36,7 @@ COLORS = {
     "accent": "#FF6B6B",       # Coral — for warnings/alerts
     "warning": "#FFE66D",      # Yellow
     "bg_dark": "#0E1117",      # Streamlit dark bg
-    "card_bg": "#1A1F2E",      # Card background
+    "card_bg": "var(--secondary-background-color)",      # Card background
     "text": "#FAFAFA",         # Primary text
     "text_muted": "#8B95A5",   # Secondary text
     "success": "#00D4AA",
@@ -91,14 +90,14 @@ st.markdown("""
     .kpi-row { display: flex; gap: 1rem; margin: 1.5rem 0; }
     .kpi-card {
         flex: 1;
-        background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
-        border: 1px solid rgba(0,212,170,0.2);
+        background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
+        border: 1px solid var(--faded-text-color, rgba(128,128,128,0.2));
         border-radius: 16px;
         padding: 1.5rem;
         position: relative;
         overflow: hidden;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
-        color: #E2E8F0;
+        color: var(--text-color);
     }
     .kpi-card:hover {
         transform: translateY(-2px);
@@ -111,8 +110,8 @@ st.markdown("""
         height: 3px;
         background: linear-gradient(90deg, #00D4AA, #4ECDC4);
     }
-    .kpi-label { font-size: 0.85rem; color: #8B95A5; font-weight: 500; margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.05em; }
-    .kpi-value { font-size: 2rem; font-weight: 700; color: #FAFAFA; font-family: 'JetBrains Mono', monospace; }
+    .kpi-label { font-size: 0.85rem; color: var(--text-color); opacity: 0.7; font-weight: 500; margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .kpi-value { font-size: 2rem; font-weight: 700; color: var(--text-color); font-family: 'JetBrains Mono', monospace; }
     .kpi-delta { font-size: 0.9rem; margin-top: 0.3rem; }
     .kpi-delta.positive { color: #00D4AA; }
     .kpi-delta.negative { color: #FF6B6B; }
@@ -150,14 +149,14 @@ st.markdown("""
 
     /* ── Pipeline diagram ── */
     .pipeline-box {
-        background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
+        background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
         border: 1px solid rgba(0,212,170,0.2);
         border-radius: 12px;
         padding: 1.5rem;
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.85rem;
         line-height: 1.8;
-        color: #C5CDD8;
+        color: var(--text-color);
     }
     .pipeline-box .highlight { color: #00D4AA; font-weight: 600; }
     .pipeline-box .warn { color: #FFE66D; }
@@ -175,9 +174,7 @@ st.markdown("""
     }
 
     /* ── Hide Streamlit branding ── */
-    #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -324,15 +321,15 @@ def sidebar():
 
     st.sidebar.divider()
     st.sidebar.markdown("""
-    <div style="background: #1A1F2E; color: #F8FAFC !important; border-radius: 12px; padding: 1rem; border: 1px solid rgba(0,212,170,0.15);">
-        <div style="font-size: 0.75rem; color: rgba(248, 250, 252, 0.6); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">Project Stats</div>
+    <div style="background: var(--secondary-background-color); color: var(--text-color) !important; border-radius: 12px; padding: 1rem; border: 1px solid rgba(0,212,170,0.15);">
+        <div style="font-size: 0.75rem; color: var(--text-color); opacity: 0.6; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">Project Stats</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.85rem;">
-            <div style="color: #F8FAFC;">📅 <span style="color: rgba(248, 250, 252, 0.7);">Data</span></div><div style="color:#00D4AA">3.1 năm</div>
-            <div style="color: #F8FAFC;">📦 <span style="color: rgba(248, 250, 252, 0.7);">Records</span></div><div style="color:#00D4AA">209K</div>
-            <div style="color: #F8FAFC;">🎯 <span style="color: rgba(248, 250, 252, 0.7);">Target</span></div><div style="color:#00D4AA">PM2.5</div>
-            <div style="color: #F8FAFC;">🧪 <span style="color: rgba(248, 250, 252, 0.7);">Tests</span></div><div style="color:#00D4AA">167 ✅</div>
-            <div style="color: #F8FAFC;">📐 <span style="color: rgba(248, 250, 252, 0.7);">Features</span></div><div style="color:#00D4AA">119</div>
-            <div style="color: #F8FAFC;">🚫 <span style="color: rgba(248, 250, 252, 0.7);">Leakage</span></div><div style="color:#00D4AA">0</div>
+            <div style="color: var(--text-color);">📅 <span style="color: var(--text-color); opacity: 0.7;">Data</span></div><div style="color:#00D4AA">3.1 năm</div>
+            <div style="color: var(--text-color);">📦 <span style="color: var(--text-color); opacity: 0.7;">Records</span></div><div style="color:#00D4AA">209K</div>
+            <div style="color: var(--text-color);">🎯 <span style="color: var(--text-color); opacity: 0.7;">Target</span></div><div style="color:#00D4AA">PM2.5</div>
+            <div style="color: var(--text-color);">🧪 <span style="color: var(--text-color); opacity: 0.7;">Tests</span></div><div style="color:#00D4AA">167 ✅</div>
+            <div style="color: var(--text-color);">📐 <span style="color: var(--text-color); opacity: 0.7;">Features</span></div><div style="color:#00D4AA">119</div>
+            <div style="color: var(--text-color);">🚫 <span style="color: var(--text-color); opacity: 0.7;">Leakage</span></div><div style="color:#00D4AA">0</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -530,6 +527,7 @@ def page_multi_horizon(results):
     }
     horizons = ["1h", "6h", "24h"]
 
+    import plotly.graph_objects as go
     fig = go.Figure()
     for i, model in enumerate(models):
         vals = mase_data[model]
@@ -598,6 +596,7 @@ def page_multi_horizon(results):
         "LSTM v2": [4.510, 4.530, 4.610],
     }
 
+    import plotly.graph_objects as go
     fig2 = go.Figure()
     trend_colors = ["#FF6B6B", "#FFE66D", "#4ECDC4", "#A78BFA", "#00D4AA", "#60A5FA"]
     for i, (model, values) in enumerate(mae_data.items()):
@@ -646,11 +645,11 @@ def page_multi_horizon(results):
     section_header("📚", "So Sánh Với Nghiên Cứu Liên Quan (2022–2026)")
 
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
-                color: #F8FAFC !important;
+    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
+                color: var(--text-color) !important;
                 border-radius: 14px; padding: 1.5rem; margin: 1rem 0;
                 border: 1px solid rgba(0,212,170,0.2);">
-        <div style="font-size: 0.85rem; color: rgba(248,250,252,0.7); margin-bottom: 1rem;">
+        <div style="font-size: 0.85rem; color: var(--text-color); opacity: 0.7; margin-bottom: 1rem;">
             Bảng tổng hợp kết quả từ <strong style="color:#00D4AA;">15 nghiên cứu</strong> quốc tế và trong nước,
             so sánh trực tiếp với kết quả của dự án tại Sa Đéc, Đồng Tháp.
         </div>
@@ -763,18 +762,18 @@ def page_multi_horizon(results):
 
     with tab_eval:
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
-                    color: #F8FAFC !important;
+        <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
+                    color: var(--text-color) !important;
                     border-radius: 14px; padding: 1.5rem; margin: 0.5rem 0;
                     border: 1px solid rgba(0,212,170,0.25);">
             <h4 style="color: #00D4AA; margin-top: 0;">🔬 Kết Quả Dự Án CTU — So Với Literature</h4>
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; color: #F8FAFC;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; color: var(--text-color);">
                 <tr style="border-bottom: 1px solid rgba(0,212,170,0.3);">
-                    <th style="text-align: left; padding: 0.5rem; color: rgba(248,250,252,0.7);">Tiêu chí</th>
-                    <th style="text-align: center; padding: 0.5rem; color: rgba(248,250,252,0.7);">Dự án CTU</th>
-                    <th style="text-align: center; padding: 0.5rem; color: rgba(248,250,252,0.7);">TB Quốc tế</th>
-                    <th style="text-align: center; padding: 0.5rem; color: rgba(248,250,252,0.7);">TB Việt Nam</th>
-                    <th style="text-align: left; padding: 0.5rem; color: rgba(248,250,252,0.7);">Đánh giá</th>
+                    <th style="text-align: left; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">Tiêu chí</th>
+                    <th style="text-align: center; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">Dự án CTU</th>
+                    <th style="text-align: center; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">TB Quốc tế</th>
+                    <th style="text-align: center; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">TB Việt Nam</th>
+                    <th style="text-align: left; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">Đánh giá</th>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
                     <td style="padding: 0.5rem;">MAE 6h (µg/m³)</td>
@@ -793,8 +792,8 @@ def page_multi_horizon(results):
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
                     <td style="padding: 0.5rem;">MASE 6h</td>
                     <td style="text-align: center; color: #00D4AA; font-weight: 700;">0.692</td>
-                    <td style="text-align: center; color: rgba(248,250,252,0.5);">N/A (ít báo cáo)</td>
-                    <td style="text-align: center; color: rgba(248,250,252,0.5);">N/A</td>
+                    <td style="text-align: center; color: var(--text-color); opacity: 0.5;">N/A (ít báo cáo)</td>
+                    <td style="text-align: center; color: var(--text-color); opacity: 0.5;">N/A</td>
                     <td style="padding: 0.5rem; color: #F59E0B;">⭐ Tiên phong sử dụng MASE</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
@@ -962,6 +961,7 @@ def page_prediction_intervals(results):
 
     # ── Coverage Chart ──
     section_header("📊", "Coverage vs Target (90%)")
+    import plotly.graph_objects as go
     fig = go.Figure()
     methods = pi_df["method"].unique()
     for i, method in enumerate(methods):
@@ -981,6 +981,7 @@ def page_prediction_intervals(results):
 
     # ── Width Chart ──
     section_header("📏", "Interval Width (µg/m³)")
+    import plotly.graph_objects as go
     fig2 = go.Figure()
     for i, method in enumerate(methods):
         subset = pi_df[pi_df["method"] == method]
@@ -1104,6 +1105,7 @@ def page_eda(results):
                 
                 radar_data = p5_data.get("complexity_radar")
                 if radar_data:
+                    import plotly.graph_objects as go
                     fig_radar = go.Figure()
                     fig_radar.add_trace(go.Scatterpolar(
                         r=radar_data["values"] + [radar_data["values"][0]],
@@ -1261,6 +1263,7 @@ def page_eda(results):
                     
             exp_data = p5_data.get("expanding_window")
             if exp_data:
+                import plotly.graph_objects as go
                 fig_exp = go.Figure()
                 fig_exp.add_trace(go.Scatter(x=exp_data['dates'], y=exp_data['pm25_raw'], name='Raw PM2.5', opacity=0.3, line=dict(color='#8B95A5')))
                 fig_exp.add_trace(go.Scatter(x=exp_data['dates'], y=exp_data['expanding_mean'], name='Expanding Mean', line=dict(color=COLORS['primary'], width=3)))
@@ -1323,6 +1326,7 @@ def page_eda(results):
             
             wf_data = p5_data.get("walk_forward")
             if wf_data:
+                import plotly.graph_objects as go
                 fig_wf = go.Figure()
                 fig_wf.add_trace(go.Bar(x=wf_data['dates'], y=wf_data['mean'], name='Monthly Mean', marker_color='rgba(0, 212, 170, 0.6)'))
                 fig_wf.add_trace(go.Scatter(x=wf_data['dates'], y=wf_data['std'], name='Monthly Std (Risk)', mode='lines+markers', line=dict(color=COLORS['accent'], width=2)))

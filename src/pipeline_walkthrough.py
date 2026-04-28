@@ -38,7 +38,7 @@ def _step_data_collection():
     """Step 1: Data Collection."""
     st.markdown(
         """
-    <div style="background: #1A1F2E; color: #F8FAFC !important;
+    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
                 border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(0,212,170,0.2);">
         <div style="font-size: 1.3rem; font-weight: 700; color: #00D4AA;">
@@ -82,7 +82,7 @@ def _step_data_cleaning():
     """Step 2: Data Cleaning."""
     st.markdown(
         """
-    <div style="background: #1A1F2E; color: #F8FAFC !important;
+    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
                 border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(236,72,153,0.2);">
         <div style="font-size: 1.3rem; font-weight: 700; color: #EC4899;">
@@ -137,7 +137,7 @@ def _step_eda():
     """Step 3: Exploratory Data Analysis."""
     st.markdown(
         """
-    <div style="background: #1A1F2E; color: #F8FAFC !important;
+    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
                 border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(139,92,246,0.2);">
         <div style="font-size: 1.3rem; font-weight: 700; color: #8B5CF6;">
@@ -172,7 +172,7 @@ def _step_feature_engineering():
     """Step 4: Feature Engineering."""
     st.markdown(
         """
-    <div style="background: #1A1F2E; color: #F8FAFC !important;
+    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
                 border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(245,158,11,0.2);">
         <div style="font-size: 1.3rem; font-weight: 700; color: #F59E0B;">
@@ -253,7 +253,7 @@ def _step_imputation():
     """Step 5: Missing Data Imputation."""
     st.markdown(
         """
-    <div style="background: #1A1F2E; color: #F8FAFC !important;
+    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
                 border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(6,182,212,0.2);">
         <div style="font-size: 1.3rem; font-weight: 700; color: #06B6D4;">
@@ -294,7 +294,7 @@ def _step_modeling():
     """Step 6: Modeling & Evaluation."""
     st.markdown(
         """
-    <div style="background: #1A1F2E; color: #F8FAFC !important;
+    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
                 border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(16,185,129,0.2);">
         <div style="font-size: 1.3rem; font-weight: 700; color: #10B981;">
@@ -383,7 +383,7 @@ def _step_results():
     """Step 7: Results & Conclusions."""
     st.markdown(
         """
-    <div style="background: #1A1F2E; color: #F8FAFC !important;
+    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
                 border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(234,179,8,0.2);">
         <div style="font-size: 1.3rem; font-weight: 700; color: #EAB308;">

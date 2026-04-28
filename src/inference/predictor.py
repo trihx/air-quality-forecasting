@@ -63,8 +63,9 @@ class GRUPredictor:
 
         Args:
             recent_data: DataFrame with at least LOOKBACK rows and FEATURE_COLS.
-            device: Torch device string ('cpu', 'mps', 'cuda').
-                    MPS = Apple Silicon GPU acceleration.
+            device: Torch device string — ignored for TorchScript models.
+                    TorchScript-traced GRU hard-codes hidden state device
+                    at trace time (CPU), so MPS causes device mismatch.
 
         Returns:
             Dict with predicted_pm25, model, horizon, timestamp.
@@ -86,16 +87,12 @@ class GRUPredictor:
         # Scale features
         scaled = (window - self.feat_mean) / self.feat_scale
 
-        # Move model & data to target device for GPU acceleration
-        target_device = torch.device(device)
-        try:
-            model = self.model.to(target_device)
-            x = torch.FloatTensor(scaled).unsqueeze(0).to(target_device)
-        except (RuntimeError, AssertionError):
-            # Fallback to CPU if device not available
-            model = self.model.to("cpu")
-            x = torch.FloatTensor(scaled).unsqueeze(0)
-            device = "cpu"
+        # TorchScript-traced GRU: hidden state device baked at trace time (CPU).
+        # Moving model to MPS only moves weights → RuntimeError device mismatch.
+        # Force CPU for safe, portable inference.
+        model = self.model.to("cpu")
+        x = torch.FloatTensor(scaled).unsqueeze(0)
+        device = "cpu"
 
         # Predict
         with torch.no_grad():
@@ -117,6 +114,106 @@ class GRUPredictor:
             "input_rows": len(recent_data),
             "last_pm25": round(float(recent_data["pm25"].iloc[-1]), 2),
             "device": device,
+        }
+
+
+class GRUQuantilePredictor:
+    """Load exported GRU Quantile TorchScript model with CQR calibration.
+
+    Provides:
+      - Point prediction (median quantile q=0.50)
+      - Prediction intervals [q_low - adj, q_high + adj] with CQR guarantee
+
+    CPU-only inference for Docker portability.
+    Reference: Romano et al. (2019) "Conformalized Quantile Regression"
+    """
+
+    def __init__(self, horizon: int, model_dir: Path | None = None):
+        self.horizon = horizon
+        model_dir = model_dir or EXPORT_DIR
+
+        self.model_path = model_dir / f"gru_quantile_{horizon}h.pt"
+        self.config_path = model_dir / f"gru_quantile_{horizon}h_config.json"
+
+        if not self.model_path.exists():
+            raise FileNotFoundError(f"GRU Quantile model not found: {self.model_path}")
+        if not self.config_path.exists():
+            raise FileNotFoundError(f"CQR config not found: {self.config_path}")
+
+        # Lazy import torch — avoid OMP crash with LightGBM
+        import torch
+
+        self.torch = torch
+
+        # Load model on CPU (Docker-safe, TorchScript portable)
+        self.model = torch.jit.load(str(self.model_path), map_location="cpu")
+        self.model.eval()
+
+        # Load scalers + CQR config
+        with open(self.config_path) as f:
+            cfg = json.load(f)
+        self.feat_mean = np.array(cfg["feature_scaler_mean"])
+        self.feat_scale = np.array(cfg["feature_scaler_scale"])
+        self.tgt_mean = cfg["target_scaler_mean"]
+        self.tgt_scale = cfg["target_scaler_scale"]
+        self.features = cfg["features"]
+        self.conformal_adj = cfg.get("conformal_adjustment", 0.0)
+        self.quantiles = cfg.get("quantiles", [0.05, 0.50, 0.95])
+
+    def predict(self, recent_data: pd.DataFrame, device: str = "cpu") -> dict:
+        """Predict PM2.5 with CQR prediction intervals.
+
+        Args:
+            recent_data: DataFrame with at least LOOKBACK rows.
+            device: Ignored — always uses CPU for Docker compatibility.
+
+        Returns:
+            Dict with predicted_pm25, lower/upper bounds, coverage info.
+        """
+        torch = self.torch
+
+        # Validate
+        available = [c for c in self.features if c in recent_data.columns]
+        if len(available) < len(self.features):
+            missing = set(self.features) - set(available)
+            raise ValueError(f"Missing columns: {missing}")
+
+        if len(recent_data) < LOOKBACK:
+            raise ValueError(f"Need at least {LOOKBACK} rows, got {len(recent_data)}")
+
+        # Take last LOOKBACK rows and scale
+        window = recent_data[self.features].tail(LOOKBACK).values.astype(np.float64)
+        scaled = (window - self.feat_mean) / self.feat_scale
+        x = torch.FloatTensor(scaled).unsqueeze(0)
+
+        # Predict 3 quantiles (CPU inference)
+        with torch.no_grad():
+            out = self.model(x).cpu().numpy().flatten()
+
+        # Inverse scale all 3 quantiles
+        q_vals = out * self.tgt_scale + self.tgt_mean
+        q_low, q_median, q_high = float(q_vals[0]), float(q_vals[1]), float(q_vals[2])
+
+        # Apply CQR conformal adjustment for guaranteed coverage
+        cqr_lower = q_low - self.conformal_adj
+        cqr_upper = q_high + self.conformal_adj
+
+        return {
+            "predicted_pm25": round(q_median, 2),
+            "model": "GRU",
+            "horizon": self.horizon,
+            "timestamp": datetime.now().isoformat(),
+            "input_rows": len(recent_data),
+            "last_pm25": round(float(recent_data["pm25"].iloc[-1]), 2),
+            "device": "cpu",
+            # CQR-specific fields
+            "pi_method": "cqr",
+            "pi_lower": round(max(cqr_lower, 0.0), 2),  # PM2.5 >= 0
+            "pi_upper": round(cqr_upper, 2),
+            "pi_width": round(cqr_upper - cqr_lower, 2),
+            "conformal_adjustment": round(self.conformal_adj, 3),
+            "quantile_raw_lower": round(q_low, 2),
+            "quantile_raw_upper": round(q_high, 2),
         }
 
 

@@ -29,7 +29,7 @@ COLORS = {
     "warning": "#FFE66D",
     "text": "#FAFAFA",
     "text_muted": "#8B95A5",
-    "card_bg": "#1A1F2E",
+    "card_bg": "var(--secondary-background-color)",
 }
 
 CHART_COLORS = [
@@ -91,8 +91,148 @@ def _load_json(path: Path) -> dict | list | None:
 
 
 # ══════════════════════════════════════════════════════════════════════
+# HTML Report Generator (Shapash-style, standalone Plotly)
+# ══════════════════════════════════════════════════════════════════════
+
+
+def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
+    """Generate a standalone HTML report with Plotly charts for LightGBM SHAP."""
+    from datetime import datetime
+
+    horizon_data = shap_data.get(horizon, {})
+    top_features = horizon_data.get("top_15_shap", {})
+
+    # ── Build Plotly charts as HTML divs ──
+    # 1. Feature importance bar chart
+    names = list(top_features.keys())[::-1]
+    values = list(top_features.values())[::-1]
+
+    fig_bar = go.Figure(go.Bar(
+        x=values, y=names, orientation="h",
+        marker=dict(
+            color=values,
+            colorscale=[[0, "#4ECDC4"], [0.5, "#00D4AA"], [1, "#FFE66D"]],
+        ),
+        text=[f"{v:.4f}" for v in values],
+        textposition="outside",
+        hovertemplate="%{y}: <b>%{x:.4f}</b><extra></extra>",
+    ))
+    fig_bar.update_layout(
+        title=f"Top 15 SHAP Feature Importance — LightGBM h={horizon}",
+        xaxis_title="Mean |SHAP value|",
+        yaxis=dict(automargin=True),
+        paper_bgcolor="#0E1117", plot_bgcolor="#0E1117",
+        font=dict(color="#FAFAFA", family="Inter, sans-serif", size=12),
+        margin=dict(l=120, r=20, t=50, b=20), height=500,
+    )
+
+    # 2. Heatmap across all horizons
+    all_features = set()
+    for h_key in ["1h", "6h", "24h"]:
+        all_features.update(shap_data.get(h_key, {}).get("top_15_shap", {}).keys())
+    features_sorted = sorted(all_features)
+    matrix = []
+    for feat in features_sorted:
+        row = [shap_data.get(h, {}).get("top_15_shap", {}).get(feat, 0) for h in ["1h", "6h", "24h"]]
+        matrix.append(row)
+
+    fig_heat = go.Figure(go.Heatmap(
+        z=matrix, x=["1h", "6h", "24h"], y=features_sorted,
+        colorscale=[[0, "#0E1117"], [0.3, "#1A4040"], [0.6, "#00D4AA"], [1, "#FFE66D"]],
+        text=[[f"{v:.3f}" if v > 0 else "" for v in row] for row in matrix],
+        texttemplate="%{text}", textfont=dict(size=9),
+        hovertemplate="Feature: %{y}<br>Horizon: %{x}<br>SHAP: %{z:.4f}<extra></extra>",
+    ))
+    fig_heat.update_layout(
+        title="Feature × Horizon SHAP Heatmap",
+        paper_bgcolor="#0E1117", plot_bgcolor="#0E1117",
+        font=dict(color="#FAFAFA", family="Inter, sans-serif", size=11),
+        yaxis=dict(dtick=1, tickfont=dict(size=9), automargin=True),
+        margin=dict(l=120, r=20, t=50, b=20),
+        height=max(400, len(features_sorted) * 22),
+    )
+
+    # include_plotlyjs=True embeds ~3MB plotly.js inline → fully offline/Docker-ready
+    bar_html = fig_bar.to_html(full_html=False, include_plotlyjs=True)
+    heat_html = fig_heat.to_html(full_html=False, include_plotlyjs=False)
+
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    return f"""<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shapash Report — LightGBM h={horizon} — PM2.5 Forecasting</title>
+<!-- Plotly.js embedded inline in first chart div (offline/Docker-ready) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+  body {{ background: #0E1117; color: var(--text-color); font-family: 'Inter', sans-serif;
+         max-width: 1100px; margin: 0 auto; padding: 2rem; }}
+  h1 {{ font-size: 1.8rem; color: #00D4AA; margin-bottom: 0.3rem; }}
+  h2 {{ font-size: 1.3rem; color: #4ECDC4; margin: 2rem 0 0.8rem; border-bottom: 1px solid rgba(0,212,170,0.2); padding-bottom: 0.5rem; }}
+  .meta {{ color: #8B95A5; font-size: 0.85rem; margin-bottom: 1.5rem; }}
+  .card {{ background: var(--secondary-background-color); border-radius: 12px; padding: 1.2rem; margin: 0.5rem 0; border: 1px solid rgba(0,212,170,0.15); }}
+  .card h3 {{ color: #FFE66D; font-size: 1rem; margin-bottom: 0.5rem; }}
+  .card p {{ color: var(--text-color); opacity: 0.75; font-size: 0.85rem; line-height: 1.6; }}
+  .stats-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }}
+  .stat {{ background: linear-gradient(135deg, var(--secondary-background-color), var(--background-color)); border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid rgba(0,212,170,0.2); }}
+  .stat .label {{ font-size: 0.75rem; color: #8B95A5; text-transform: uppercase; letter-spacing: 0.05em; }}
+  .stat .value {{ font-size: 1.4rem; font-weight: 700; color: #00D4AA; font-family: 'JetBrains Mono', monospace; margin: 0.3rem 0; }}
+  .stat .detail {{ font-size: 0.7rem; color: var(--text-color); opacity: 0.5; }}
+  .footer {{ margin-top: 3rem; padding-top: 1rem; border-top: 1px solid rgba(0,212,170,0.15); color: #8B95A5; font-size: 0.75rem; text-align: center; }}
+  table {{ width: 100%; border-collapse: collapse; margin: 1rem 0; }}
+  th, td {{ padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid rgba(139,149,165,0.15); font-size: 0.85rem; }}
+  th {{ color: #00D4AA; font-weight: 600; }}
+</style>
+</head>
+<body>
+<h1>🧠 Shapash-Style Explainability Report</h1>
+<p class="meta">LightGBM · Horizon: <b>{horizon}</b> · Generated: {now} · PM2.5 Forecasting CTU</p>
+
+<div class="card">
+  <h3>📋 Project Info</h3>
+  <p><b>Dự án:</b> PM2.5 Forecasting — Đề án Thạc sĩ ĐH Cần Thơ (QĐ 1799)<br>
+     <b>Tác giả:</b> trihx (Anh Trí)<br>
+     <b>Dữ liệu:</b> IoT sensors, Sa Đéc, Đồng Tháp, Việt Nam (2022–2025)<br>
+     <b>Model:</b> LightGBM (Optuna-tuned) · n_test = {horizon_data.get('n_test', '?')}</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat"><div class="label">📥 Raw Input</div><div class="value">209K</div><div class="detail">records (~2 phút/mẫu)</div></div>
+  <div class="stat"><div class="label">🧹 After Clean</div><div class="value">27,649</div><div class="detail">Resample 1h (Total hours)</div></div>
+  <div class="stat"><div class="label">🔧 After Impute</div><div class="value">7,742</div><div class="detail">Hybrid + Drop gaps >6h</div></div>
+  <div class="stat"><div class="label">📐 Features</div><div class="value">119</div><div class="detail">v2: anti-leakage ✅</div></div>
+</div>
+
+<h2>📊 Top 15 Feature Importance (SHAP)</h2>
+{bar_html}
+
+<h2>🗺️ Feature × Horizon Heatmap</h2>
+{heat_html}
+
+<h2>🛡️ Anti-Leakage Compliance</h2>
+<table>
+<tr><th>Check</th><th>Status</th><th>Detail</th></tr>
+<tr><td>Feature Engineering</td><td>✅</td><td>shift(1) trên mọi feature dùng target</td></tr>
+<tr><td>Temporal Split</td><td>✅</td><td>80/10/10 theo thời gian — KHÔNG random</td></tr>
+<tr><td>Test = Real Data</td><td>✅</td><td>is_imputed == 0 filter bắt buộc</td></tr>
+<tr><td>Transform Fit</td><td>✅</td><td>Scaler, PCA fit trên TRAIN ONLY</td></tr>
+<tr><td>Test Coverage</td><td>✅</td><td>167/167 tests passed</td></tr>
+</table>
+
+<div class="footer">
+  Generated by PM2.5 Forecasting Dashboard · Inspired by <a href="https://github.com/MAIF/shapash" style="color: #00D4AA;">MAIF/Shapash</a> · {now}
+</div>
+</body>
+</html>"""
+
+
+# ══════════════════════════════════════════════════════════════════════
 # Tab 1: Pipeline Journey (Plotly Sankey)
 # ══════════════════════════════════════════════════════════════════════
+
 
 
 def _tab_pipeline_journey():
@@ -221,7 +361,7 @@ def _tab_pipeline_journey():
     for col, (label, value, detail) in zip([col1, col2, col3, col4], stats):
         with col:
             st.markdown(f"""
-            <div style="background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
+            <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
                         border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
                         padding: 1.2rem; text-align: center;">
                 <div style="font-size: 0.8rem; color: #8B95A5; text-transform: uppercase;
@@ -230,7 +370,7 @@ def _tab_pipeline_journey():
                             font-family: 'JetBrains Mono', monospace; margin: 0.3rem 0;">
                     {value}
                 </div>
-                <div style="font-size: 0.75rem; color: rgba(248,250,252,0.6);">{detail}</div>
+                <div style="font-size: 0.75rem; color: var(--text-color); opacity: 0.6;">{detail}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -252,7 +392,7 @@ def _tab_pipeline_journey():
                     border-left: 3px solid #00D4AA;">
             <span style="font-size: 0.95rem; font-weight: 600; color: #E2E8F0;
                          min-width: 200px;">{check}</span>
-            <span style="font-size: 0.85rem; color: rgba(248,250,252,0.7);">{desc}</span>
+            <span style="font-size: 0.85rem; color: var(--text-color); opacity: 0.7;">{desc}</span>
         </div>
         """, unsafe_allow_html=True)
 
@@ -278,11 +418,12 @@ def _tab_feature_explainability():
         "phương pháp model-agnostic, đo trực tiếp ảnh hưởng khi shuffle từng feature.",
     )
 
-    sub1, sub2, sub3, sub4 = st.tabs([
+    sub1, sub2, sub3, sub4, sub5 = st.tabs([
         "📊 Interactive Feature Importance",
         "🗺️ Feature × Horizon Heatmap",
         "🌊 SHAP Beeswarm & Dependence",
         "🧠 GRU Permutation Importance",
+        "📄 Export HTML Report",
     ])
 
     # ── Sub-tab 1: Interactive bar chart ──
@@ -344,7 +485,7 @@ def _tab_feature_explainability():
                             {cat_name.split(maxsplit=1)[1]}</div>
                         <div style="font-size: 1.5rem; font-weight: 700; color: #00D4AA;
                                     margin: 0.3rem 0;">{count}</div>
-                        <div style="font-size: 0.65rem; color: rgba(248,250,252,0.5);
+                        <div style="font-size: 0.65rem; color: var(--text-color); opacity: 0.5;
                                     overflow: hidden; text-overflow: ellipsis;">
                             {feat_list if feats else "—"}</div>
                     </div>
@@ -440,6 +581,47 @@ def _tab_feature_explainability():
         else:
             st.warning(f"File chưa tồn tại: {perm_path.name}")
 
+    # ── Sub-tab 5: Export HTML Report ──
+    with sub5:
+        _section_header("📄", "Export Shapash-Style HTML Report")
+        _insight_card(
+            "📋 Tính năng Export",
+            "Tạo file HTML standalone chứa toàn bộ SHAP analysis cho LightGBM — "
+            "có thể mở offline, đính kèm luận văn, hoặc chia sẻ với giám khảo. "
+            "Report bao gồm: Feature Importance, Heatmap, Data Statistics.",
+        )
+
+        h5 = st.selectbox("Chọn horizon", ["1h", "6h", "24h"], key="expl_export_h")
+
+        if st.button("🚀 Generate HTML Report", key="btn_gen_report",
+                     type="primary", use_container_width=True):
+            if not shap_data:
+                st.error("Chưa có SHAP results.")
+            else:
+                with st.spinner(f"Đang tạo report cho h={h5}..."):
+                    html_content = _generate_shapash_html(shap_data, h5)
+                    output_name = f"shapash_report_lgbm_{h5}.html"
+                    output_path = SHAP_DIR / output_name
+                    output_path.write_text(html_content, encoding="utf-8")
+
+                    st.success(f"✅ Report đã tạo: `{output_name}` ({len(html_content)//1024} KB)")
+                    st.download_button(
+                        label="⬇️ Download HTML Report",
+                        data=html_content,
+                        file_name=output_name,
+                        mime="text/html",
+                        use_container_width=True,
+                    )
+
+        # Show existing reports
+        existing = sorted(SHAP_DIR.glob("shapash_report_*.html"))
+        if existing:
+            st.markdown("---")
+            _section_header("📁", "Reports Đã Tạo")
+            for f in existing:
+                size_kb = f.stat().st_size // 1024
+                st.markdown(f"- `{f.name}` — {size_kb} KB")
+
 
 # ══════════════════════════════════════════════════════════════════════
 # Tab 3: Model Selection Journey
@@ -473,7 +655,7 @@ def _tab_model_selection(results: dict):
                             margin: 0 auto; font-size: 0.7rem;">{ver}</div>
                 <div style="font-size: 0.75rem; font-weight: 600; color: #E2E8F0;
                             margin-top: 0.5rem;">{name}</div>
-                <div style="font-size: 0.65rem; color: rgba(248,250,252,0.55);
+                <div style="font-size: 0.65rem; color: var(--text-color); opacity: 0.55;
                             margin-top: 0.2rem;">{note}</div>
             </div>
             """, unsafe_allow_html=True)
@@ -524,7 +706,7 @@ def _tab_model_selection(results: dict):
             is_best = h == "6h"
             border = "#FFE66D" if is_best else "rgba(0,212,170,0.3)"
             st.markdown(f"""
-            <div style="background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
+            <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
                         border: 2px solid {border}; border-radius: 14px;
                         padding: 1.3rem; text-align: center;">
                 <div style="font-size: 1.8rem; font-weight: 800; color: #00D4AA;">h={h}</div>
@@ -533,7 +715,7 @@ def _tab_model_selection(results: dict):
                 <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.4rem;
                             font-weight: 700; color: {'#FFE66D' if is_best else '#00D4AA'};">
                     MASE = {mase}</div>
-                <div style="font-size: 0.72rem; color: rgba(248,250,252,0.55);
+                <div style="font-size: 0.72rem; color: var(--text-color); opacity: 0.55;
                             margin-top: 0.5rem;">{reason}</div>
             </div>
             """, unsafe_allow_html=True)
@@ -640,12 +822,12 @@ def _tab_anti_leakage():
     # ── Test Coverage ──
     _section_header("✅", "Test Coverage")
     st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
+    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
                 border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
                 padding: 1.5rem; text-align: center;">
         <div style="font-size: 3rem; font-weight: 800; color: #00D4AA;">167 / 167</div>
         <div style="font-size: 1rem; color: #8B95A5; margin-top: 0.3rem;">Tests Passed</div>
-        <div style="font-size: 0.8rem; color: rgba(248,250,252,0.5); margin-top: 0.5rem;">
+        <div style="font-size: 0.8rem; color: var(--text-color); opacity: 0.5; margin-top: 0.5rem;">
             Bao gồm: leakage tests, shuffle tests, metric validation, pipeline integrity</div>
     </div>
     """, unsafe_allow_html=True)
@@ -693,7 +875,7 @@ def _tab_scientific_foundation():
                     📖 {author}</div>
                 <div style="font-style: italic; color: {color}; font-size: 0.8rem;
                             margin: 0.2rem 0;">{title}</div>
-                <div style="font-size: 0.75rem; color: rgba(248,250,252,0.6);">
+                <div style="font-size: 0.75rem; color: var(--text-color); opacity: 0.6;">
                     → {contribution}</div>
             </div>
             """, unsafe_allow_html=True)

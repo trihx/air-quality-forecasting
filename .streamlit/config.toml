@@ -1,19 +1,18 @@
 [server]
 headless = true
 port = 8501
-# Disable file watcher — eliminates transformers/torchvision module scanning
-# that causes hundreds of ModuleNotFoundError tracebacks on every rerun
 fileWatcherType = "none"
 
 [runner]
 fastReruns = true
 
 [logger]
-# Suppress noisy transformers warnings
 level = "error"
 
 [client]
 showErrorDetails = false
+toolbarMode = "developer"
 
 [browser]
 gatherUsageStats = false
+

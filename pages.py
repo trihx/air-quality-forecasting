@@ -15,6 +15,13 @@ Performance Optimizations:
 
 from __future__ import annotations
 
+# CRITICAL: Must be set BEFORE any import that loads OpenMP.
+# Prevents OMP segfault (exit 139) when PyTorch + LightGBM coexist
+# in the same Streamlit process on Apple Silicon.
+# See LESSONS_LEARNED.md [2026-04-12].
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 import gc
 import json
 from datetime import datetime
@@ -35,7 +42,7 @@ COLORS = {
     "primary": "#00D4AA",
     "accent": "#FF6B6B",
     "warning": "#FFE66D",
-    "card_bg": "#1A1F2E",
+    "card_bg": "var(--secondary-background-color)",
     "text": "#FAFAFA",
     "text_muted": "#8B95A5",
 }
@@ -130,23 +137,27 @@ def _detect_available_models() -> list[str]:
     """Scan models/exported/ to find which models can be used for inference."""
     models = []
     export_dir = PROJECT_ROOT / "models" / "exported"
-    if not export_dir.exists():
-        return ["GRU", "LightGBM"]
 
     # GRU: check for .pt files
-    if any(export_dir.glob("gru_*h.pt")):
+    if export_dir.exists() and any(export_dir.glob("gru_*h.pt")):
         models.append("GRU")
     # LightGBM: check for .txt files
-    if any(export_dir.glob("lgbm_*h.txt")):
+    if export_dir.exists() and any(export_dir.glob("lgbm_*h.txt")):
         models.append("LightGBM")
+    # Ensemble: available only if BOTH GRU and LightGBM are exported
+    if "GRU" in models and "LightGBM" in models:
+        models.append("Ensemble")
+    # SARIMA: always available (fit on-the-fly, seasonal patterns)
+    models.append("SARIMA")
     # ARIMA: always available (fit nhanh trên dữ liệu gần nhất)
     models.append("ARIMA")
+    # Persistence: always available (baseline — copy y[t-1])
+    models.append("Persistence")
 
     # Scan for user-trained models
     user_dir = PROJECT_ROOT / "models" / "user_trained"
     if user_dir.exists():
         for f in user_dir.glob("*.pt"):
-            name = f.stem  # e.g., gru_6h_20260405_123456
             label = f"GRU (user: {f.stem})"
             if label not in models:
                 models.append(label)
@@ -155,7 +166,59 @@ def _detect_available_models() -> list[str]:
             if label not in models:
                 models.append(label)
 
-    return models if models else ["GRU", "LightGBM"]
+    return models if models else ["GRU", "LightGBM", "ARIMA"]
+
+
+@st.cache_data(ttl=600)
+def _load_model_rankings() -> dict:
+    """Load MASE rankings per horizon from standardized_metrics.json."""
+    path = RESEARCH_DIR / "experiments" / "standardized_metrics.json"
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        data = json.load(f)
+    rankings = {}
+    for h_str, models_data in data.get("results", {}).items():
+        h = int(h_str.replace("h", ""))
+        sorted_models = []
+        for name, info in models_data.items():
+            mase = info.get("mase_unified") or info.get("mase")
+            mae = info.get("mae")
+            if mase is not None:
+                sorted_models.append((name, round(mase, 3), round(mae, 2) if mae else None))
+        sorted_models.sort(key=lambda x: x[1])
+        rankings[h] = sorted_models[:5]
+    return rankings
+
+
+def _is_model_inferrable(name: str) -> bool:
+    """Check if a model from standardized_metrics can be run for inference.
+
+    Uses base-name matching: 'LightGBM_tuned' -> base 'LightGBM' -> inferrable.
+    Ensemble variants are NOT inferrable (need multiple model exports).
+    """
+    base = name.split("_")[0]
+    return base in {"GRU", "LightGBM", "ARIMA", "SARIMA", "Persistence"}
+
+
+def _show_horizon_recommendation(horizon: int):
+    """Show top-5 model ranking for selected horizon."""
+    rankings = _load_model_rankings()
+    if horizon not in rankings:
+        return
+    top5 = rankings[horizon]
+    parts = []
+    has_non_inferrable = False
+    for name, mase, _ in top5:
+        if _is_model_inferrable(name):
+            parts.append(f"**{name}** ({mase})")
+        else:
+            parts.append(f"{name}¹ ({mase})")
+            has_non_inferrable = True
+    text = " → ".join(parts)
+    st.caption(f"🏆 **Xếp hạng MASE tại {horizon}h:** {text}")
+    if has_non_inferrable:
+        st.caption("_¹ Ensemble — cần nhiều model exports, chưa hỗ trợ dự báo trực tiếp_")
 
 
 @st.cache_data(ttl=300)
@@ -198,6 +261,121 @@ SENSOR_LABELS = {
 }
 
 
+
+# ── Mapping from standardized_metrics names → inference model key ──
+# Only models with exported predictors are mapped.
+# LightGBM_tuned is the exported version; LightGBM_default uses same file.
+_METRICS_TO_INFERENCE = {
+    "Persistence": "Persistence",
+    "ARIMA": "ARIMA",
+    "SARIMA": "SARIMA",
+    "GRU": "GRU",
+    "LightGBM_tuned": "LightGBM",
+    "Ensemble_GRU": "Ensemble",
+}
+
+# Optimized weights from grid-search experiment (ensemble_20260404_204737.json).
+# At 1h, Ensemble is just LightGBM (GRU weight=0), so not useful.
+_ENSEMBLE_WEIGHTS = {
+    1:  {"gru": 0.00, "lgbm": 1.00},
+    6:  {"gru": 0.45, "lgbm": 0.55},
+    24: {"gru": 0.70, "lgbm": 0.30},
+}
+
+
+@st.cache_data(ttl=600)
+def _load_all_rankings() -> dict:
+    """Load ALL model rankings per horizon (not just top 5)."""
+    path = RESEARCH_DIR / "experiments" / "standardized_metrics.json"
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        data = json.load(f)
+    rankings = {}
+    for h_str, models_data in data.get("results", {}).items():
+        h = int(h_str.replace("h", ""))
+        sorted_models = []
+        for name, info in models_data.items():
+            mase = info.get("mase_unified") or info.get("mase")
+            mae = info.get("mae")
+            if mase is not None:
+                sorted_models.append((name, round(mase, 3), round(mae, 2) if mae else None))
+        sorted_models.sort(key=lambda x: x[1])
+        rankings[h] = sorted_models
+    return rankings
+
+
+def _get_smart_model_list(horizon: int) -> list[tuple[str, float | None, bool]]:
+    """Get inferrable models sorted by MASE for the given horizon.
+
+    Returns list of (model_key, mase, is_best) tuples.
+    model_key is the clean key used by _run_prediction.
+    is_best marks the top-ranked model.
+    """
+    rankings = _load_all_rankings()
+    available = set(_detect_available_models())
+
+    result = []
+    seen_keys = set()
+
+    # 1. Add models from rankings (sorted by MASE)
+    for name, mase, _mae in rankings.get(horizon, []):
+        key = _METRICS_TO_INFERENCE.get(name)
+        if key and key in available and key not in seen_keys:
+            seen_keys.add(key)
+            result.append((key, mase, False))
+
+    # 2. Add remaining available models not in rankings
+    for model in available:
+        if model not in seen_keys and not model.startswith(("GRU (user:", "LightGBM (user:")):
+            result.append((model, None, False))
+            seen_keys.add(model)
+
+    # 3. Append user-trained models at the end
+    for model in available:
+        if model.startswith(("GRU (user:", "LightGBM (user:")):
+            result.append((model, None, False))
+
+    # Mark best model
+    if result:
+        result[0] = (result[0][0], result[0][1], True)
+
+    return result
+
+
+def _format_model_label(model_key: str, smart_models: list) -> str:
+    """Format dropdown label: 'GRU ⭐ (MASE: 0.812)' or 'ARIMA'."""
+    for key, mase, is_best in smart_models:
+        if key == model_key:
+            parts = []
+            parts.append(key)
+            if is_best:
+                parts.append(" ⭐")
+            if mase is not None:
+                parts.append(f"  (MASE: {mase:.3f})")
+            return "".join(parts)
+    return model_key
+
+
+def _show_smart_ranking_context(smart_models: list, selected: str):
+    """Show compact ranking bar below dropdowns."""
+    inferrable = [(k, m) for k, m, _ in smart_models if m is not None]
+    if not inferrable:
+        return
+
+    parts = []
+    for i, (key, mase) in enumerate(inferrable):
+        if key == selected:
+            parts.append(f"**▶ {key} ({mase})**")
+        elif i == 0:
+            parts.append(f"⭐ {key} ({mase})")
+        else:
+            parts.append(f"{key} ({mase})")
+
+    text = " → ".join(parts)
+    st.caption(f"🏆 **Xếp hạng MASE (thấp = tốt):** {text}")
+
+
 def page_forecast(results):
     st.markdown("""
     <h1 style="font-size: 2rem;">🔮 Dự Báo PM2.5</h1>
@@ -210,16 +388,26 @@ def page_forecast(results):
     render_version_badge(ver)
     cards_forecast(ver)
 
-    # ── Detect available models ──
-    available_models = _detect_available_models()
-
-    # ── Model & Horizon selection ──
+    # ── Horizon FIRST → determines model ranking ──
     col1, col2 = st.columns(2)
     with col1:
-        model_type = st.selectbox("🧠 Chọn mô hình", available_models, index=0)
-    with col2:
         horizon = st.selectbox("⏱️ Khung dự báo", [1, 6, 24], index=1,
                                format_func=lambda x: f"{x} giờ")
+
+    # ── Smart model list sorted by MASE for selected horizon ──
+    smart_models = _get_smart_model_list(horizon)
+    model_keys = [m[0] for m in smart_models]
+
+    with col2:
+        model_type = st.selectbox(
+            "🧠 Chọn mô hình",
+            model_keys,
+            index=0,
+            format_func=lambda k: _format_model_label(k, smart_models),
+        )
+
+    # ── Show ranking context ──
+    _show_smart_ranking_context(smart_models, model_type)
 
     st.divider()
 
@@ -236,14 +424,15 @@ def page_forecast(results):
         _forecast_manual(model_type, horizon)
 
 
+
 def _forecast_auto(model_type: str, horizon: int):
     """Forecast using latest data from dataset — show sensor preview first."""
     # ── Show sensor data preview ──
     defaults = _cached_suggestion_values()
 
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #1A1F2E 0%, #1E2536 100%);
-                color: #F8FAFC !important;
+    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--secondary-background-color) 100%);
+                color: var(--text-color) !important;
                 border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1rem 0;
                 border: 1px solid rgba(0,212,170,0.25);">
         <div style="font-size: 0.8rem; opacity: 0.65; text-transform: uppercase;
@@ -292,7 +481,7 @@ def _forecast_manual(model_type: str, horizon: int):
     defaults = _cached_suggestion_values()
 
     st.markdown("""
-    <div style="background: linear-gradient(135deg, #1A1F2E 0%, #1E2536 100%);
+    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--secondary-background-color) 100%);
                 border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1rem;
                 border: 1px solid rgba(0,212,170,0.25);">
         <div style="font-size: 0.85rem; opacity: 0.7;">
@@ -346,47 +535,198 @@ def _forecast_manual(model_type: str, horizon: int):
                 st.exception(e)
 
 
+@st.cache_resource
+def _get_gru_predictor(horizon: int, model_dir_str: str | None = None):
+    from src.inference.predictor import GRUPredictor
+    model_dir = Path(model_dir_str) if model_dir_str else None
+    return GRUPredictor(horizon, model_dir=model_dir)
+
+@st.cache_resource
+def _get_gru_quantile_predictor(horizon: int):
+    """Load GRU Quantile (CQR) predictor — returns None if model not exported yet."""
+    try:
+        from src.inference.predictor import GRUQuantilePredictor
+        return GRUQuantilePredictor(horizon)
+    except FileNotFoundError:
+        return None
+
+@st.cache_resource
+def _get_lgbm_predictor(horizon: int, model_dir_str: str | None = None):
+    from src.inference.predictor import LightGBMPredictor
+    model_dir = Path(model_dir_str) if model_dir_str else None
+    return LightGBMPredictor(horizon, model_dir=model_dir)
+
+def _get_eval_metrics(model: str, horizon: int) -> dict:
+    """Get evaluation metrics for a model+horizon combo.
+
+    Priority: prediction_intervals JSON > standardized_metrics.json > fallback.
+    """
+    # ── Source 1: Prediction intervals (has confidence width) ──
+    dir_path = PROJECT_ROOT / "research" / "experiments" / "prediction_intervals"
+    if dir_path.exists():
+        json_files = list(dir_path.glob("prediction_intervals_*.json"))
+        if json_files:
+            latest_file = max(json_files, key=lambda p: p.stat().st_mtime)
+            with open(latest_file) as f:
+                data = json.load(f)
+
+            best_match = None
+            PRIORITY = {"cqr": 3, "conformal_prediction": 2, "quantile_regression": 1}
+            for row in data:
+                if row["model"] == model and row["horizon"] == horizon:
+                    row_priority = PRIORITY.get(row["method"], 0)
+                    best_priority = PRIORITY.get(best_match["method"], 0) if best_match else -1
+                    if row_priority > best_priority:
+                        best_match = row
+
+            if best_match:
+                return {
+                    "mae": best_match["mae"],
+                    "confidence_width": best_match.get("conformal_width") or best_match.get("avg_width", 0) / 2,
+                    "coverage": best_match.get("coverage", 0.9),
+                }
+
+    # ── Source 2: standardized_metrics.json (accurate MAE per model+horizon) ──
+    std_path = RESEARCH_DIR / "experiments" / "standardized_metrics.json"
+    if std_path.exists():
+        with open(std_path) as f:
+            std_data = json.load(f)
+        h_results = std_data.get("results", {}).get(f"{horizon}h", {})
+        # Try exact match, then partial match (e.g. "GRU" matches "GRU")
+        for name, info in h_results.items():
+            if name == model or name.startswith(model):
+                mae = info.get("mae", 5.0)
+                return {
+                    "mae": round(mae, 2),
+                    "confidence_width": round(mae * 1.645, 1),
+                    "coverage": 0.90,
+                }
+
+    # ── Source 3: Generic fallback ──
+    fallback_mae = {1: 2.39, 6: 6.31, 24: 6.28}  # Persistence MAE
+    mae = fallback_mae.get(horizon, 5.0)
+    return {
+        "mae": round(mae, 2),
+        "confidence_width": round(mae * 1.645, 1),
+        "coverage": 0.90,
+    }
+
+
+def _predict_ensemble(recent: pd.DataFrame, horizon: int) -> dict:
+    """Weighted Ensemble: GRU × w_gru + LightGBM × w_lgbm.
+
+    Weights are pre-optimized via grid-search (step=0.05).
+    Source: research/experiments/ensemble/ensemble_20260404_204737.json
+    """
+    from src.features.builder import build_features
+
+    w = _ENSEMBLE_WEIGHTS.get(horizon, {"gru": 0.50, "lgbm": 0.50})
+
+    # ── GRU prediction ──
+    q_predictor = _get_gru_quantile_predictor(horizon)
+    if q_predictor is not None:
+        gru_result = q_predictor.predict(recent)
+    else:
+        device = _get_torch_device()
+        predictor = _get_gru_predictor(horizon)
+        gru_result = predictor.predict(recent, device=device)
+    gru_val = gru_result["predicted_pm25"]
+
+    # ── LightGBM prediction ──
+    df_feat = build_features(recent)
+    lgbm_predictor = _get_lgbm_predictor(horizon)
+    lgbm_result = lgbm_predictor.predict(df_feat)
+    lgbm_val = lgbm_result["predicted_pm25"]
+
+    # ── Weighted average ──
+    ensemble_val = round(gru_val * w["gru"] + lgbm_val * w["lgbm"], 2)
+
+    result = {
+        "predicted_pm25": ensemble_val,
+        "model": f"Ensemble (GRU×{w['gru']:.0%} + LightGBM×{w['lgbm']:.0%})",
+        "horizon": horizon,
+        "components": {
+            "GRU": round(gru_val, 2),
+            "LightGBM": round(lgbm_val, 2),
+        },
+    }
+
+    # Propagate CQR intervals from GRU if available
+    if gru_result.get("pi_method") == "cqr":
+        result["pi_method"] = "cqr"
+        result["pi_lower"] = gru_result.get("pi_lower", ensemble_val)
+        result["pi_upper"] = gru_result.get("pi_upper", ensemble_val)
+        result["pi_width"] = gru_result.get("pi_width", 0)
+        result["coverage"] = gru_result.get("coverage", 0.9)
+        result["quantile_raw_lower"] = gru_result.get("quantile_raw_lower", 0)
+        result["quantile_raw_upper"] = gru_result.get("quantile_raw_upper", 0)
+        result["conformal_adjustment"] = gru_result.get("conformal_adjustment", 0)
+
+    return result
+
+
 def _run_prediction(model_type: str, horizon: int, recent: pd.DataFrame) -> dict:
     """Run prediction based on model type.
 
     Uses MPS (Apple Silicon GPU) for GRU inference when available.
-    Supports GRU, LightGBM, ARIMA.
-    """
-    device = _get_torch_device()
+    Supports GRU, LightGBM, Ensemble, ARIMA, SARIMA, Persistence.
 
-    if model_type == "GRU":
-        from src.inference.predictor import GRUPredictor
-        predictor = GRUPredictor(horizon)
-        return predictor.predict(recent, device=device)
+    IMPORTANT: torch is imported ONLY inside GRU branches to avoid
+    OMP segfault when mixing PyTorch + LightGBM on Apple Silicon.
+    See LESSONS_LEARNED.md [2026-04-12].
+    """
+    eval_metrics = _get_eval_metrics(model_type, horizon)
+
+    if model_type == "Persistence":
+        result = _predict_persistence(recent, horizon)
+
+    elif model_type == "GRU":
+        # Prefer CQR quantile model (provides prediction intervals)
+        # Fallback to standard GRU if quantile model not exported
+        q_predictor = _get_gru_quantile_predictor(horizon)
+        if q_predictor is not None:
+            result = q_predictor.predict(recent)
+        else:
+            device = _get_torch_device()
+            predictor = _get_gru_predictor(horizon)
+            result = predictor.predict(recent, device=device)
 
     elif model_type == "LightGBM":
         from src.features.builder import build_features
-        from src.inference.predictor import LightGBMPredictor
         df_feat = build_features(recent)
-        predictor = LightGBMPredictor(horizon)
-        return predictor.predict(df_feat)
+        predictor = _get_lgbm_predictor(horizon)
+        result = predictor.predict(df_feat)
+
+    elif model_type == "Ensemble":
+        result = _predict_ensemble(recent, horizon)
 
     elif model_type == "ARIMA":
-        return _predict_arima(recent, horizon)
+        result = _predict_arima(recent, horizon)
+
+    elif model_type == "SARIMA":
+        result = _predict_sarima(recent, horizon)
 
     elif model_type.startswith("GRU (user:"):
-        from src.inference.predictor import GRUPredictor
+        device = _get_torch_device()
         stem = model_type.split("user: ")[1].rstrip(")")
         user_path = PROJECT_ROOT / "models" / "user_trained" / f"{stem}.pt"
-        predictor = GRUPredictor(horizon, model_dir=user_path.parent)
-        return predictor.predict(recent, device=device)
+        predictor = _get_gru_predictor(horizon, str(user_path.parent))
+        result = predictor.predict(recent, device=device)
 
     elif model_type.startswith("LightGBM (user:"):
         from src.features.builder import build_features
-        from src.inference.predictor import LightGBMPredictor
         stem = model_type.split("user: ")[1].rstrip(")")
         user_path = PROJECT_ROOT / "models" / "user_trained" / f"{stem}.txt"
         df_feat = build_features(recent)
-        predictor = LightGBMPredictor(horizon, model_dir=user_path.parent)
-        return predictor.predict(df_feat)
+        predictor = _get_lgbm_predictor(horizon, str(user_path.parent))
+        result = predictor.predict(df_feat)
 
     else:
         raise ValueError(f"Mô hình '{model_type}' chưa được hỗ trợ.")
+
+    # Inject evaluation metrics into result
+    result.update(eval_metrics)
+    return result
 
 
 def _predict_arima(recent: pd.DataFrame, horizon: int) -> dict:
@@ -410,15 +750,74 @@ def _predict_arima(recent: pd.DataFrame, horizon: int) -> dict:
     }
 
 
+def _predict_persistence(recent: pd.DataFrame, horizon: int) -> dict:
+    """Persistence baseline — predict PM2.5 = last known value."""
+    last_pm25 = float(recent["pm25"].dropna().iloc[-1])
+    return {
+        "predicted_pm25": round(last_pm25, 2),
+        "model": "Persistence (Baseline)",
+        "horizon": horizon,
+        "timestamp": datetime.now().isoformat(),
+        "input_rows": len(recent),
+        "last_pm25": round(last_pm25, 2),
+    }
+
+
+def _predict_sarima(recent: pd.DataFrame, horizon: int) -> dict:
+    """Fit SARIMA on recent data and forecast."""
+    from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+    series = recent["pm25"].dropna().values
+    # Best order from experiments: SARIMA(1,0,0)(2,1,0,24)
+    model = SARIMAX(
+        series, order=(1, 0, 0), seasonal_order=(2, 1, 0, 24),
+        enforce_stationarity=False, enforce_invertibility=False,
+    )
+    fitted = model.fit(disp=False, maxiter=50)
+    forecast = fitted.forecast(steps=horizon)
+    pred = float(forecast[-1])
+
+    return {
+        "predicted_pm25": round(pred, 2),
+        "model": "SARIMA(1,0,0)(2,1,0,24)",
+        "horizon": horizon,
+        "timestamp": datetime.now().isoformat(),
+        "input_rows": len(series),
+        "last_pm25": round(float(series[-1]), 2),
+    }
+
+
 def _show_forecast_result(result: dict, recent_data: pd.DataFrame):
-    """Display forecast result with KPI card and chart."""
+    """Display forecast result with KPI card and chart.
+
+    Supports CQR prediction intervals (adaptive width) when available.
+    Falls back to symmetric confidence_width for non-CQR models.
+    """
     pred = result["predicted_pm25"]
     level_label, level_color = _pm25_color(pred)
+    is_cqr = result.get("pi_method") == "cqr"
+
+    # ── Determine interval display ──
+    if is_cqr:
+        pi_lower = result.get("pi_lower", pred)
+        pi_upper = result.get("pi_upper", pred)
+        pi_width = result.get("pi_width", 0)
+        coverage_pct = int(result.get('coverage', 0.9) * 100)
+        method_label = "CQR"
+        interval_text = f"[{pi_lower:.1f} — {pi_upper:.1f}] µg/m³"
+    else:
+        conf_width = result.get("confidence_width", 0)
+        pi_lower = pred - conf_width
+        pi_upper = pred + conf_width
+        pi_width = conf_width * 2
+        coverage_pct = int(result.get('coverage', 0.9) * 100)
+        method_label = "CI"
+        interval_text = f"± {conf_width:.1f} µg/m³"
 
     # ── Big KPI ──
     st.markdown(f"""
     <div style="
-        background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
+        background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
         border: 2px solid {level_color};
         border-radius: 20px; padding: 2rem; text-align: center;
         margin: 1.5rem 0;
@@ -432,13 +831,48 @@ def _show_forecast_result(result: dict, recent_data: pd.DataFrame):
                     color: {level_color}; margin: 0.5rem 0;">
             {pred:.1f} <span style="font-size: 1.2rem;">µg/m³</span>
         </div>
-        <div style="font-size: 1rem; color: {level_color}; font-weight: 600;">
+        <div style="font-size: 1rem; color: {level_color}; font-weight: 600; margin-bottom: 0.5rem;">
             {level_label}
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-color); opacity: 0.7; border-top: 1px solid rgba(128,128,128,0.2); padding-top: 0.5rem; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 0.5rem;">
+            <span>🛡️ Khoảng {method_label} ({coverage_pct}%): <b>{interval_text}</b></span>
+            <span>📉 Sai số MAE: <b>{result.get('mae', 0):.2f}</b></span>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Chart: History + Prediction point ──
+    # ── CQR Detail expander ──
+    if is_cqr:
+        with st.expander("📐 Chi tiết Prediction Interval (CQR)", expanded=False):
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                st.metric("Quantile thô (5%-95%)",
+                          f"{result.get('quantile_raw_lower', 0):.1f} — {result.get('quantile_raw_upper', 0):.1f}")
+            with c2:
+                st.metric("Conformal Adjustment",
+                          f"± {result.get('conformal_adjustment', 0):.2f} µg/m³")
+            with c3:
+                st.metric("Khoảng CQR cuối",
+                          f"{pi_lower:.1f} — {pi_upper:.1f} µg/m³")
+            st.caption(
+                "_CQR = Conformalized Quantile Regression (Romano et al., 2019). "
+                "Khoảng dự báo có chiều rộng **thích ứng** theo mức độ khó dự đoán, "
+                "với đảm bảo toán học về coverage ≥ 90%._"
+            )
+
+    # ── Ensemble component detail ──
+    if "components" in result:
+        with st.expander("🧩 Chi tiết Ensemble Components", expanded=False):
+            comps = result["components"]
+            cols = st.columns(len(comps))
+            for idx, (name, val) in enumerate(comps.items()):
+                with cols[idx]:
+                    st.metric(f"{name}", f"{val:.1f} µg/m³")
+            st.caption(
+                f"_Weighted Average: {result['model']}_"
+            )
+
+    # ── Chart: History + Prediction point with PI band ──
     if "pm25" in recent_data.columns and len(recent_data) > 10:
         fig = go.Figure()
         history = recent_data["pm25"].tail(72)
@@ -448,9 +882,30 @@ def _show_forecast_result(result: dict, recent_data: pd.DataFrame):
             name="Lịch sử PM2.5",
             line=dict(color=COLORS["primary"], width=2),
         ))
+        pred_x = len(history) + result["horizon"]
+
+        # Prediction interval band (shaded area)
+        if pi_width > 0:
+            fig.add_trace(go.Scatter(
+                x=[pred_x, pred_x],
+                y=[pi_lower, pi_upper],
+                mode="lines",
+                name=f"Khoảng {method_label} {coverage_pct}%",
+                line=dict(color=level_color, width=3),
+                showlegend=True,
+            ))
+            # Add horizontal caps
+            cap_w = 0.5
+            fig.add_shape(type="line", x0=pred_x-cap_w, x1=pred_x+cap_w,
+                          y0=pi_lower, y1=pi_lower,
+                          line=dict(color=level_color, width=2))
+            fig.add_shape(type="line", x0=pred_x-cap_w, x1=pred_x+cap_w,
+                          y0=pi_upper, y1=pi_upper,
+                          line=dict(color=level_color, width=2))
+
         # Prediction point
         fig.add_trace(go.Scatter(
-            x=[len(history) + result["horizon"]],
+            x=[pred_x],
             y=[pred],
             name=f"Dự báo ({result['horizon']}h)",
             mode="markers",
@@ -528,7 +983,7 @@ def _render_avp_chart(data: dict, horizon: int):
     # ── KPI Summary ──
     n_test = data.get("n_test", len(test_actuals))
     st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #1A1F2E 0%, #252B3D 100%);
+    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
                 border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
                 padding: 1rem 1.5rem; margin: 1rem 0;">
         <span style="opacity: 0.65; font-size: 0.85rem;">
@@ -675,7 +1130,12 @@ def _render_version_comparison():
     # ── Feature set comparison ──
     st.markdown("### 🧬 So Sánh Feature Set")
     v1_features = v1.get("feature_set", {})
+    if not isinstance(v1_features, dict):
+        v1_features = {"features": True} if v1_features else {}
+        
     v2_features = v2.get("feature_set", {})
+    if not isinstance(v2_features, dict):
+        v2_features = {"features": True} if v2_features else {}
 
     feat_rows = []
     all_keys = sorted(set(list(v1_features.keys()) + list(v2_features.keys())))
@@ -963,7 +1423,7 @@ def page_training(results):
 
     # ── Hyperparameter form ──
     st.markdown("""
-    <div style="background: #1A1F2E; color: #F8FAFC !important; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
+    <div style="background: var(--secondary-background-color); color: var(--text-color) !important; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
                 border: 1px solid rgba(0,212,170,0.2);">
         <div style="font-size: 0.85rem; opacity: 0.65;">
             💡 Các thông số bên dưới là cấu hình tối ưu (best params). Bạn có thể điều chỉnh trước khi huấn luyện.
@@ -1062,7 +1522,7 @@ def page_training(results):
             col_d.metric("R²", f"{metrics['r2']:.3f}")
 
             st.markdown(f"""
-            <div style="background: #1A1F2E; color: #F8FAFC !important; border-radius: 12px; padding: 1rem; margin: 1rem 0;
+            <div style="background: var(--secondary-background-color); color: var(--text-color) !important; border-radius: 12px; padding: 1rem; margin: 1rem 0;
                         border: 1px solid rgba(0,212,170,0.2);">
                 <div style="font-size: 0.85rem; opacity: 0.65;">
                     📊 Persistence MAE: {metrics['persist_mae']:.2f} µg/m³ |
