@@ -1,0 +1,84 @@
+2026-04-28 15:19:29 | INFO     | logging:setup_logging:61 | Logging configured: level=INFO, log_dir=research/runs
+2026-04-28 15:19:29 | INFO     | run_ml:main:211 | 🚀 Level 2-3: ML Models Experiment
+2026-04-28 15:19:29 | INFO     | run_ml:main:220 | 📊 Loaded: 6,689 rows × 119 cols
+2026-04-28 15:19:29 | INFO     | splitter:temporal_train_val_test_split:55 | Temporal Split (NO shuffle):
+2026-04-28 15:19:29 | INFO     | splitter:temporal_train_val_test_split:56 |   Train: 5,351 rows [2022-03-24 08:00:00 → 2023-06-10 23:00:00]
+2026-04-28 15:19:29 | INFO     | splitter:temporal_train_val_test_split:57 |   Val:   669 rows [2023-06-11 00:00:00 → 2023-08-18 08:00:00]
+2026-04-28 15:19:29 | INFO     | splitter:temporal_train_val_test_split:58 |   Test:  669 rows [2023-08-18 09:00:00 → 2025-03-15 18:00:00]
+2026-04-28 15:19:29 | INFO     | run_ml:main:228 |   Train+Val: 6,020 rows, Test: 669 rows
+2026-04-28 15:19:29 | INFO     | run_ml:main:237 |   📏 Baseline target: MAE < 1.821
+2026-04-28 15:19:29 | INFO     | run_ml:main:243 | ============================================================
+2026-04-28 15:19:29 | INFO     | run_ml:main:244 | Training & Evaluating ML Models (Walk-Forward CV)
+2026-04-28 15:19:29 | INFO     | run_ml:main:245 | ============================================================
+2026-04-28 15:19:29 | INFO     | run_ml:main:248 | 
+--- Ridge ---
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 1: MAE=6.4501 (train=1005, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 2: MAE=6.2978 (train=2008, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 3: MAE=3.2244 (train=3011, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 4: MAE=2.8504 (train=4014, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Ridge Fold 5: MAE=2.2375 (train=5017, val=1003)
+2026-04-28 15:19:29 | INFO     | run_ml:walk_forward_evaluate:184 |   Ridge CV: MAE=4.2120 ± 1.7937
+2026-04-28 15:19:29 | INFO     | metrics:evaluate_forecast:157 |   Ridge: MAE=2.6048, RMSE=4.135, MASE=1.4304 ❌
+2026-04-28 15:19:29 | INFO     | run_ml:main:248 | 
+--- Lasso ---
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 1: MAE=2.5446 (train=1005, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 2: MAE=4.3803 (train=2008, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 3: MAE=2.9015 (train=3011, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 4: MAE=2.4479 (train=4014, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   Lasso Fold 5: MAE=1.9767 (train=5017, val=1003)
+2026-04-28 15:19:29 | INFO     | run_ml:walk_forward_evaluate:184 |   Lasso CV: MAE=2.8502 ± 0.8200
+2026-04-28 15:19:29 | INFO     | metrics:evaluate_forecast:157 |   Lasso: MAE=1.8303, RMSE=3.0298, MASE=1.0051 ❌
+2026-04-28 15:19:29 | INFO     | run_ml:main:248 | 
+--- ElasticNet ---
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 1: MAE=2.5275 (train=1005, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 2: MAE=4.5024 (train=2008, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 3: MAE=2.9171 (train=3011, val=1003)
+2026-04-28 15:19:29 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 4: MAE=2.4497 (train=4014, val=1003)
+2026-04-28 15:19:30 | DEBUG    | run_ml:walk_forward_evaluate:180 |   ElasticNet Fold 5: MAE=1.9697 (train=5017, val=1003)
+2026-04-28 15:19:30 | INFO     | run_ml:walk_forward_evaluate:184 |   ElasticNet CV: MAE=2.8733 ± 0.8685
+2026-04-28 15:19:30 | INFO     | metrics:evaluate_forecast:157 |   ElasticNet: MAE=1.9072, RMSE=3.1232, MASE=1.0473 ❌
+2026-04-28 15:19:30 | INFO     | run_ml:main:248 | 
+--- RandomForest ---
+2026-04-28 15:19:30 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 1: MAE=2.6047 (train=1005, val=1003)
+2026-04-28 15:19:32 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 2: MAE=4.0981 (train=2008, val=1003)
+2026-04-28 15:19:34 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 3: MAE=3.1569 (train=3011, val=1003)
+2026-04-28 15:19:37 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 4: MAE=2.7648 (train=4014, val=1003)
+2026-04-28 15:19:41 | DEBUG    | run_ml:walk_forward_evaluate:180 |   RandomForest Fold 5: MAE=2.1973 (train=5017, val=1003)
+2026-04-28 15:19:41 | INFO     | run_ml:walk_forward_evaluate:184 |   RandomForest CV: MAE=2.9644 ± 0.6450
+2026-04-28 15:19:46 | INFO     | metrics:evaluate_forecast:157 |   RandomForest: MAE=2.503, RMSE=3.5016, MASE=1.3745 ❌
+2026-04-28 15:19:46 | INFO     | run_ml:main:248 | 
+--- XGBoost ---
+2026-04-28 15:19:48 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 1: MAE=2.7158 (train=1005, val=1003)
+2026-04-28 15:19:50 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 2: MAE=4.4795 (train=2008, val=1003)
+2026-04-28 15:19:52 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 3: MAE=3.4408 (train=3011, val=1003)
+2026-04-28 15:19:53 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 4: MAE=3.9813 (train=4014, val=1003)
+2026-04-28 15:19:55 | DEBUG    | run_ml:walk_forward_evaluate:180 |   XGBoost Fold 5: MAE=2.5604 (train=5017, val=1003)
+2026-04-28 15:19:55 | INFO     | run_ml:walk_forward_evaluate:184 |   XGBoost CV: MAE=3.4356 ± 0.7310
+2026-04-28 15:19:57 | INFO     | metrics:evaluate_forecast:157 |   XGBoost: MAE=3.2195, RMSE=4.1606, MASE=1.7679 ❌
+2026-04-28 15:19:57 | INFO     | run_ml:main:248 | 
+--- LightGBM ---
+2026-04-28 15:20:00 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 1: MAE=2.7154 (train=1005, val=1003)
+2026-04-28 15:20:04 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 2: MAE=4.2661 (train=2008, val=1003)
+2026-04-28 15:20:07 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 3: MAE=3.1334 (train=3011, val=1003)
+2026-04-28 15:20:11 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 4: MAE=3.3157 (train=4014, val=1003)
+2026-04-28 15:20:14 | DEBUG    | run_ml:walk_forward_evaluate:180 |   LightGBM Fold 5: MAE=2.2804 (train=5017, val=1003)
+2026-04-28 15:20:14 | INFO     | run_ml:walk_forward_evaluate:184 |   LightGBM CV: MAE=3.1422 ± 0.6661
+2026-04-28 15:20:17 | INFO     | metrics:evaluate_forecast:157 |   LightGBM: MAE=2.2039, RMSE=3.2502, MASE=1.2103 ❌
+2026-04-28 15:20:17 | INFO     | run_ml:main:265 | 
+============================================================
+2026-04-28 15:20:17 | INFO     | run_ml:main:266 | 📋 ML Model Results (sorted by MAE)
+2026-04-28 15:20:17 | INFO     | run_ml:main:267 | ============================================================
+2026-04-28 15:20:17 | INFO     | run_ml:main:272 |   Lasso          | MAE=1.8303   | RMSE=3.0298   | MASE=1.0051   ❌
+2026-04-28 15:20:17 | INFO     | run_ml:main:272 |   ElasticNet     | MAE=1.9072   | RMSE=3.1232   | MASE=1.0473   ❌
+2026-04-28 15:20:17 | INFO     | run_ml:main:272 |   LightGBM       | MAE=2.2039   | RMSE=3.2502   | MASE=1.2103   ❌
+2026-04-28 15:20:17 | INFO     | run_ml:main:272 |   RandomForest   | MAE=2.503    | RMSE=3.5016   | MASE=1.3745   ❌
+2026-04-28 15:20:17 | INFO     | run_ml:main:272 |   Ridge          | MAE=2.6048   | RMSE=4.135    | MASE=1.4304   ❌
+2026-04-28 15:20:17 | INFO     | run_ml:main:272 |   XGBoost        | MAE=3.2195   | RMSE=4.1606   | MASE=1.7679   ❌
+2026-04-28 15:20:17 | INFO     | run_ml:main:305 | 
+💾 Results: research/experiments/ml_models/ml_results_20260428_152017.csv
+2026-04-28 15:20:17 | INFO     | run_ml:main:306 | 💾 JSON: research/experiments/ml_models/latest_results.json
+2026-04-28 15:20:17 | INFO     | run_ml:main:309 | 
+============================================================
+2026-04-28 15:20:17 | INFO     | run_ml:main:317 | 📊 Best ML: Lasso (MAE=1.8303)
+2026-04-28 15:20:17 | INFO     | run_ml:main:318 | ✅ ML Experiment Complete!
+2026-04-28 15:20:17 | INFO     | run_ml:main:319 | ============================================================

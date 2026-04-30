@@ -33,11 +33,13 @@ def _ensure_statsmodels():
         _sm_loaded = True
 
 
-# ── Plotting defaults ──
-ACCENT_BLUE = "#4A9EF5"
-ACCENT_ORANGE = "#F59E4A"
-ACCENT_GREEN = "#4AF5A3"
-ACCENT_RED = "#F54A4A"
+# ── VTF: Centralized theme ──
+from src.viz.theme import apply_mpl_theme, annotation_bbox, ACCENT_COLORS
+
+ACCENT_BLUE = ACCENT_COLORS["blue"]
+ACCENT_ORANGE = ACCENT_COLORS["orange"]
+ACCENT_GREEN = ACCENT_COLORS["green"]
+ACCENT_RED = ACCENT_COLORS["red"]
 
 
 def run_residual_diagnostics(
@@ -173,19 +175,7 @@ def _generate_diagnostic_chart(
         [1] Residual vs Time  | [2] Histogram + KDE
         [3] Q-Q Plot          | [4] ACF of Residuals
     """
-    plt.rcParams.update({
-        "figure.dpi": 150,
-        "figure.facecolor": "#0E1117",
-        "axes.facecolor": "#1A1D23",
-        "axes.edgecolor": "#2D3139",
-        "axes.labelcolor": "#C9CDD4",
-        "text.color": "#C9CDD4",
-        "xtick.color": "#8B95A5",
-        "ytick.color": "#8B95A5",
-        "grid.color": "#2D3139",
-        "grid.alpha": 0.5,
-        "font.size": 9,
-    })
+    apply_mpl_theme("light")
 
     fig, axes = plt.subplots(2, 2, figsize=(14, 9))
 
@@ -200,7 +190,7 @@ def _generate_diagnostic_chart(
     ax1.grid(True, alpha=0.3)
     mean_text = f"Mean = {np.mean(residuals):.3f}"
     ax1.text(0.02, 0.95, mean_text, transform=ax1.transAxes, fontsize=8,
-            verticalalignment="top", bbox=dict(boxstyle="round,pad=0.3", facecolor="#2D3139", alpha=0.8))
+            verticalalignment="top", bbox=annotation_bbox("light"))
 
     # Panel 2: Histogram + KDE
     ax2 = axes[0, 1]
@@ -216,7 +206,7 @@ def _generate_diagnostic_chart(
     ax2.grid(True, alpha=0.3)
     skew_text = f"Skew={results['residual_stats']['skew']:.2f} Kurt={results['residual_stats']['kurtosis']:.2f}"
     ax2.text(0.02, 0.95, skew_text, transform=ax2.transAxes, fontsize=8,
-            verticalalignment="top", bbox=dict(boxstyle="round,pad=0.3", facecolor="#2D3139", alpha=0.8))
+            verticalalignment="top", bbox=annotation_bbox("light"))
 
     # Panel 3: Q-Q Plot
     ax3 = axes[1, 0]

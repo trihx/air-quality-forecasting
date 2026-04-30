@@ -55,8 +55,8 @@ Dự án này là đề án Thạc sĩ tại Đại học Cần Thơ (CTU).
 - Pipeline: Raw→Clean(IQR 3.0 + S-ESD)→Resample 1h→Impute→Features(119)→Eval
 - Models: Persistence, ARIMA, SARIMAX, LightGBM, XGBoost, RF, LSTM, GRU, TFT, Ensemble
 - Horizons: 1h, 6h, 24h | Tests: 167/167 passed
-- Best (6h): Ensemble Weighted MASE=0.703 | Best (24h): LSTM MASE=0.691
-- Persistence rất mạnh ở 1h (autocorrelation ≈ 0.97)
+- Best (6h): Ensemble_GRU MASE=0.750 | Best (24h): Ensemble_Stack MASE=0.696
+- Persistence rất mạnh ở 1h (autocorrelation ≈ 0.99, no model beats it)
 - Anti-leakage: shift(1) + Purging Gap | Box-Cox λ≈-0.147
 """
 

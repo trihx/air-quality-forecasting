@@ -1,0 +1,77 @@
+{
+  "1h": {
+    "Persistence": {
+      "mae": 2.5964,
+      "rmse": 4.2473,
+      "mase": 1.0
+    },
+    "LightGBM": {
+      "mae": 3.9003,
+      "mase": 1.5022
+    },
+    "GRU": {
+      "mae": 2.7264,
+      "mase": 1.0501
+    },
+    "Ensemble_Stack": {
+      "mae": 3.0375,
+      "mase": 1.3269,
+      "weights": "LightGBM=1.052, GRU=-0.016, intercept=-1.603"
+    },
+    "Ensemble_Weighted": {
+      "mae": 3.8946,
+      "mase": 1.5,
+      "best_weight": "LightGBM=0.95, GRU=0.05"
+    }
+  },
+  "6h": {
+    "Persistence": {
+      "mae": 6.9323,
+      "rmse": 9.4702,
+      "mase": 1.0
+    },
+    "LightGBM": {
+      "mae": 5.3121,
+      "mase": 0.7663
+    },
+    "GRU": {
+      "mae": 4.874,
+      "mase": 0.7031
+    },
+    "Ensemble_Stack": {
+      "mae": 4.7813,
+      "mase": 0.8075,
+      "weights": "LightGBM=0.560, GRU=-0.110, intercept=5.924"
+    },
+    "Ensemble_Weighted": {
+      "mae": 5.1588,
+      "mase": 0.7442,
+      "best_weight": "LightGBM=0.60, GRU=0.40"
+    }
+  },
+  "24h": {
+    "Persistence": {
+      "mae": 6.3192,
+      "rmse": 8.967,
+      "mase": 1.0
+    },
+    "LightGBM": {
+      "mae": 5.9274,
+      "mase": 0.938
+    },
+    "GRU": {
+      "mae": 4.7969,
+      "mase": 0.7591
+    },
+    "Ensemble_Stack": {
+      "mae": 4.491,
+      "mase": 0.8042,
+      "weights": "LightGBM=0.519, GRU=-0.198, intercept=5.778"
+    },
+    "Ensemble_Weighted": {
+      "mae": 5.301,
+      "mase": 0.8389,
+      "best_weight": "LightGBM=0.30, GRU=0.70"
+    }
+  }
+}

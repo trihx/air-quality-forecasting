@@ -1,0 +1,29 @@
+2026-04-29 11:23:48.085 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-29 11:23:48.085 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-29 11:23:48.200 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-29 11:23:48.214 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-29 11:23:48.215 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-29 11:23:48.232 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-29 11:23:48.235 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-29 11:23:48.237 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-29 11:23:48.241 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-29 11:23:48.246 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-29 11:23:48.249 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-29 11:23:48.249 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-04-29 11:23:48.250 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-04-29 11:23:48.258 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+2026-04-29 11:23:59.512 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,743 rows (7,112 real + 631 imputed, 19,810 dropped)
+2026-04-29 11:23:59.600 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-29 11:23:59.600 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-29 11:23:59.600 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-29 11:23:59.607 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-29 11:23:59.610 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-29 11:23:59.617 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-29 11:23:59.630 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-29 11:23:59.634 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-29 11:23:59.638 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-29 11:23:59.643 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-29 11:23:59.646 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-29 11:23:59.646 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-29 11:23:59.647 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 6 → 120 columns, 7,743 → 7,575 rows
+2026-04-29 11:23:59.647 | INFO     | src.features.builder:build_features:117 - ============================================================

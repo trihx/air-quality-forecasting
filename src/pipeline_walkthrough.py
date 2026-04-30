@@ -313,8 +313,8 @@ def _step_modeling():
         "📏 Baseline": ["Persistence (y_pred = y_last)"],
         "📈 Statistical": ["ARIMA", "SARIMAX"],
         "🌲 ML (Tree-based)": ["LightGBM (Optuna 100 trials)", "XGBoost", "Random Forest", "Gradient Boosting"],
-        "🧠 Deep Learning": ["LSTM", "GRU (Best 24h!)", "TFT (Transformer)"],
-        "🎯 Ensemble": ["Stacking", "Weighted Ensemble (Best 6h!)"],
+        "🧠 Deep Learning": ["LSTM", "GRU", "TFT (Transformer)"],
+        "🎯 Ensemble": ["Stacking (Best 24h!)", "Weighted GRU+LightGBM (Best 6h!)"],
     }
 
     for family, models in families.items():
@@ -401,9 +401,9 @@ def _step_results():
     st.markdown("#### 🔑 Phát hiện chính")
 
     findings = [
-        ("🏆 Best Models", "6h: Ensemble Weighted (MASE=0.703) | 24h: LSTM v2+log (MASE=0.691)"),
-        ("📏 Persistence dominance", "Ở 1h, Persistence là best model do autocorrelation ~0.97. ML/DL hiệu quả ở 6h-24h."),
-        ("🌲 ML vs DL", "ML (LightGBM, RF) tốt hơn ở 6h. DL (GRU, LSTM) tốt hơn ở 24h khi cần capture long-term patterns."),
+        ("🏆 Best Models", "6h: Ensemble_GRU (MASE=0.750) | 24h: Ensemble_Stack (MASE=0.696)"),
+        ("📏 Persistence dominance", "Ở 1h, Persistence là best model do autocorrelation ~0.99. ML/DL hiệu quả ở 6h-24h."),
+        ("🌲 ML vs DL", "Ensemble methods (GRU+LightGBM, Stacking) tốt nhất ở cả 6h và 24h."),
         ("🔧 Feature Engineering", "119 features (Fourier + interaction + domain) giúp giảm MAE 14% so với baseline features."),
         ("⚠️ Anti-Leakage", "Phát hiện và xử lý leakage từ diff/pct_change features → pipeline integrity 100%."),
     ]

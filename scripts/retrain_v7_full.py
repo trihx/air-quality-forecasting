@@ -10,7 +10,7 @@ Runs ALL model families sequentially:
 Results saved to research/experiments/ with v7_retrain timestamp.
 
 Usage:
-    uv run python scripts/retrain_v7_full.py 2>&1 | tee research/logs/retrain_v7.log
+    uv run python scripts/retrain_v7_full.py 2>&1 | tee research/logs/retrain_v8.log
 """
 
 from __future__ import annotations
@@ -158,13 +158,15 @@ def run_lightgbm(df_feat):
     }
 
     results = {}
+    preds = {}
     for h in HORIZONS:
         print(f"\n  ── Horizon {h}h ──", flush=True)
         X_train, y_train, X_test, y_true, y_naive, *_ = split_data(df_feat, h)
         model = lgb.LGBMRegressor(**LGBM_PARAMS[h])
-        m, _ = eval_model(model, f"LightGBM_tuned", X_train, y_train, X_test, y_true, y_naive, h)
+        m, p = eval_model(model, f"LightGBM_tuned", X_train, y_train, X_test, y_true, y_naive, h)
         results[f"{h}h"] = {"LightGBM_tuned": m}
-    return results
+        preds[f"{h}h"] = {"LightGBM_tuned": p.tolist(), "Persistence": y_naive.tolist(), "Actuals": y_true.tolist()}
+    return {"metrics": results, "preds": preds}
 
 
 def run_sklearn(df_feat):
@@ -183,6 +185,7 @@ def run_sklearn(df_feat):
     from sklearn.preprocessing import StandardScaler
 
     results = {}
+    preds = {}
     for h in HORIZONS:
         print(f"\n  ── Horizon {h}h ──", flush=True)
         X_train, y_train, X_test, y_true, y_naive, *_ = split_data(df_feat, h)
@@ -239,7 +242,13 @@ def run_sklearn(df_feat):
         print(f"    Ensemble_Weighted: MAE={ens_m['mae']}, MASE={ens_m['mase']} (weights={best_w})", flush=True)
 
         results[f"{h}h"] = h_results
-    return results
+        preds[f"{h}h"] = {
+            "RandomForest": rf_p.tolist(),
+            "GradientBoosting": gb_p.tolist(),
+            "Stacking": st_p.tolist(),
+            "Ensemble_Weighted": best_ens_pred.tolist()
+        }
+    return {"metrics": results, "preds": preds}
 
 
 def run_arima(df_feat):
@@ -260,22 +269,26 @@ def run_arima(df_feat):
     window = 720
 
     results = {}
+    preds = {}
     for h in HORIZONS:
         print(f"\n  ── Horizon {h}h ──", flush=True)
         h_results = {}
+        h_preds = {}
 
         # ARIMA(2,1,1)
-        preds_arima = []
-        for i in range(len(test_vals) - h):
+        from joblib import Parallel, delayed
+        def _fit_arima(i):
             start = max(0, val_end + i - window)
             train_window = pm25[start:val_end + i]
             try:
                 model = ARIMA(train_window, order=(2, 1, 1))
                 fit = model.fit()
                 fc = fit.forecast(steps=h)
-                preds_arima.append(float(fc[-1]))
+                return float(fc[-1])
             except Exception:
-                preds_arima.append(float(train_window[-1]))
+                return float(train_window[-1])
+        
+        preds_arima = Parallel(n_jobs=-1)(delayed(_fit_arima)(i) for i in range(len(test_vals) - h))
 
         actuals = test_vals[h:h + len(preds_arima)]
         persist = test_vals[:len(preds_arima)]
@@ -283,32 +296,35 @@ def run_arima(df_feat):
 
         arima_m = evaluate_forecast_full(actuals, preds_arima, persist, "ARIMA(2,1,1)", h)
         h_results["ARIMA"] = arima_m
+        h_preds["ARIMA"] = preds_arima.tolist() if hasattr(preds_arima, "tolist") else list(preds_arima)
         print(f"    ARIMA(2,1,1): MAE={arima_m['mae']}, MASE={arima_m['mase']}", flush=True)
 
         # SARIMA(1,0,0)(2,1,0,24)
-        preds_sarima = []
-        for i in range(len(test_vals) - h):
+        def _fit_sarima(i):
             start = max(0, val_end + i - window)
             train_window = pm25[start:val_end + i]
             if len(train_window) < 48:
-                preds_sarima.append(float(train_window[-1]))
-                continue
+                return float(train_window[-1])
             try:
                 model = SARIMAX(train_window, order=(1, 0, 0), seasonal_order=(2, 1, 0, 24),
                                 enforce_stationarity=False, enforce_invertibility=False)
                 fit = model.fit(disp=False, maxiter=50)
                 fc = fit.forecast(steps=h)
-                preds_sarima.append(float(fc[-1]))
+                return float(fc[-1])
             except Exception:
-                preds_sarima.append(float(train_window[-1]))
+                return float(train_window[-1])
+                
+        preds_sarima = Parallel(n_jobs=-1)(delayed(_fit_sarima)(i) for i in range(len(test_vals) - h))
 
         preds_sarima = np.clip(preds_sarima[:len(actuals)], 0, None)
         sarima_m = evaluate_forecast_full(actuals, preds_sarima, persist, "SARIMA", h)
         h_results["SARIMA"] = sarima_m
+        h_preds["SARIMA"] = preds_sarima.tolist() if hasattr(preds_sarima, "tolist") else list(preds_sarima)
         print(f"    SARIMA: MAE={sarima_m['mae']}, MASE={sarima_m['mase']}", flush=True)
 
         results[f"{h}h"] = h_results
-    return results
+        preds[f"{h}h"] = h_preds
+    return {"metrics": results, "preds": preds}
 
 
 def run_dl(df_feat):
@@ -351,6 +367,7 @@ def run_dl(df_feat):
         return np.array(X), np.array(y)
 
     results = {}
+    preds = {}
     for h in HORIZONS:
         print(f"\n  ── Horizon {h}h ──", flush=True)
 
@@ -379,6 +396,7 @@ def run_dl(df_feat):
         train_dl = DataLoader(train_ds, batch_size=64, shuffle=True)
 
         h_results = {}
+        h_preds = {}
 
         for arch_name, rnn_class in [("GRU_v2_log", nn.GRU), ("LSTM_v2_log", nn.LSTM)]:
             print(f"\n    Training {arch_name}...", flush=True)
@@ -405,9 +423,13 @@ def run_dl(df_feat):
             patience_counter = 0
             best_state = None
 
+            # Pre-compute val target on device (once)
+            y_val_log_t = torch.FloatTensor(np.log1p(y_test_orig)).to(device)
+
             for epoch in range(100):
                 model.train()
                 epoch_loss = 0
+                n_batch = 0
                 for xb, yb in train_dl:
                     optimizer.zero_grad()
                     pred = model(xb)
@@ -416,28 +438,42 @@ def run_dl(df_feat):
                     torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                     optimizer.step()
                     epoch_loss += loss.item()
+                    n_batch += 1
 
-                avg_loss = epoch_loss / len(train_dl)
-                scheduler.step(avg_loss)
+                avg_loss = epoch_loss / max(n_batch, 1)
 
-                if avg_loss < best_loss:
-                    best_loss = avg_loss
+                # Evaluate on validation set for early stopping
+                model.eval()
+                with torch.no_grad():
+                    preds_val = []
+                    for i in range(0, len(X_test_t), 64):
+                        preds_val.append(model(X_test_t[i:i+64]))
+                    pred_val = torch.cat(preds_val)
+                    val_loss = criterion(pred_val, y_val_log_t).item()
+
+                scheduler.step(val_loss)
+
+                if val_loss < best_loss:
+                    best_loss = val_loss
                     patience_counter = 0
                     best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
                 else:
                     patience_counter += 1
                     if patience_counter >= 10:
-                        print(f"      Early stop at epoch {epoch + 1}", flush=True)
+                        print(f"      Early stop at epoch {epoch + 1} (val_loss={val_loss:.6f})", flush=True)
                         break
 
                 if (epoch + 1) % 20 == 0:
-                    print(f"      Epoch {epoch + 1}: loss={avg_loss:.6f}", flush=True)
+                    print(f"      Epoch {epoch + 1}: train={avg_loss:.6f}, val={val_loss:.6f}", flush=True)
 
             # Load best and predict
             model.load_state_dict({k: v.to(device) for k, v in best_state.items()})
             model.eval()
             with torch.no_grad():
-                pred_log = model(X_test_t).cpu().numpy()
+                preds_log = []
+                for i in range(0, len(X_test_t), 64):
+                    preds_log.append(model(X_test_t[i:i+64]).cpu().numpy())
+                pred_log = np.concatenate(preds_log)
             pred_orig = np.clip(np.expm1(pred_log), 0, None)
 
             elapsed = time.time() - t0
@@ -445,14 +481,16 @@ def run_dl(df_feat):
             metrics = evaluate_forecast_full(y_test_orig, pred_orig, persist_test, arch_name, h)
             metrics["train_time_s"] = round(elapsed, 2)
             h_results[arch_name] = metrics
+            h_preds[arch_name] = pred_orig.tolist()
             print(f"      {arch_name}: MAE={metrics['mae']}, MASE={metrics['mase']} ({elapsed:.1f}s)", flush=True)
 
             # Cleanup
-            del model, optimizer, scheduler
+            del model, optimizer, scheduler, y_val_log_t
             torch.mps.empty_cache() if device.type == "mps" else None
 
         results[f"{h}h"] = h_results
-    return results
+        preds[f"{h}h"] = h_preds
+    return {"metrics": results, "preds": preds}
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -461,7 +499,7 @@ def run_dl(df_feat):
 
 def _save(data, name):
     """Save results JSON."""
-    out_dir = RESEARCH_DIR / "experiments" / "v7_retrain"
+    out_dir = RESEARCH_DIR / "experiments" / "v8_final"
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{name}_{TIMESTAMP}.json"
 
@@ -492,33 +530,44 @@ def main():
     df_hybrid, df_feat = prepare_data()
 
     all_results = {"_metadata": {
-        "version": "v7_retrain",
+        "version": "v8_final",
         "outlier_strategy": "PM2.5=domain[0,500], others=IQR*3",
         "timestamp": datetime.now().isoformat(),
     }}
+    
+    all_preds = {}
 
-    # 1. LightGBM
-    lgbm_results = run_lightgbm(df_feat)
-    all_results["lightgbm"] = lgbm_results
-    _save(lgbm_results, "lightgbm")
+    # 1. LightGBM (already run)
+    # lgbm_out = run_lightgbm(df_feat)
+    # all_results["lightgbm"] = lgbm_out["metrics"]
+    # all_preds["lightgbm"] = lgbm_out["preds"]
+    # _save(lgbm_out["metrics"], "lightgbm")
+    # _save(lgbm_out["preds"], "lightgbm_preds")
 
-    # 2. Sklearn
-    sklearn_results = run_sklearn(df_feat)
-    all_results["sklearn"] = sklearn_results
-    _save(sklearn_results, "sklearn")
+    # 2. Sklearn (already run)
+    # sklearn_out = run_sklearn(df_feat)
+    # all_results["sklearn"] = sklearn_out["metrics"]
+    # all_preds["sklearn"] = sklearn_out["preds"]
+    # _save(sklearn_out["metrics"], "sklearn")
+    # _save(sklearn_out["preds"], "sklearn_preds")
 
-    # 3. ARIMA/SARIMA (slow — rolling window)
-    arima_results = run_arima(df_feat)
-    all_results["arima"] = arima_results
-    _save(arima_results, "arima")
+    # 3. ARIMA/SARIMA (already run)
+    # arima_out = run_arima(df_feat)
+    # all_results["arima"] = arima_out["metrics"]
+    # all_preds["arima"] = arima_out["preds"]
+    # _save(arima_out["metrics"], "arima")
+    # _save(arima_out["preds"], "arima_preds")
 
     # 4. DL (GRU/LSTM)
-    dl_results = run_dl(df_feat)
-    all_results["dl"] = dl_results
-    _save(dl_results, "dl")
+    dl_out = run_dl(df_feat)
+    all_results["dl"] = dl_out["metrics"]
+    all_preds["dl"] = dl_out["preds"]
+    _save(dl_out["metrics"], "dl")
+    _save(dl_out["preds"], "dl_preds")
 
     # Save combined
-    _save(all_results, "all_models_combined")
+    # _save(all_results, "all_models_combined")
+    # _save(all_preds, "all_models_preds")
 
     total_time = time.time() - t_total
     print(f"\n{'=' * 70}", flush=True)

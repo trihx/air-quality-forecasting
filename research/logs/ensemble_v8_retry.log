@@ -1,0 +1,158 @@
+======================================================================
+ENSEMBLE STACKING — LightGBM + GRU
+Horizons: [1, 6, 24]h | Meta-learner: Ridge Regression
+Device: (lazy — set when GRU starts)
+RULE: Test set = REAL data only
+======================================================================
+
+[1/4] Preparing data...
+2026-04-29 20:20:56.356 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-29 20:20:56.356 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-29 20:20:56.479 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-29 20:20:56.496 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-29 20:20:56.497 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-29 20:20:56.519 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-29 20:20:56.523 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-29 20:20:56.525 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-29 20:20:56.529 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-29 20:20:56.535 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-29 20:20:56.539 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-29 20:20:56.539 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-04-29 20:20:56.539 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-04-29 20:20:56.548 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,466 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,396 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,810 rows with gaps >24h
+  [Imputer] Output: 7,743 rows (7,112 real + 631 imputed)
+  [Imputer] Dropped 19,810 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.1%
+2026-04-29 20:21:08.449 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,743 rows (7,112 real + 631 imputed, 19,810 dropped)
+  Building engineered features for LightGBM...
+2026-04-29 20:21:08.451 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-29 20:21:08.451 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-29 20:21:08.451 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-29 20:21:08.460 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-29 20:21:08.463 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-29 20:21:08.472 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-29 20:21:08.488 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-29 20:21:08.492 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-29 20:21:08.496 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-29 20:21:08.502 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-29 20:21:08.506 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-29 20:21:08.506 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-29 20:21:08.506 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,743 → 7,575 rows
+2026-04-29 20:21:08.506 | INFO     | src.features.builder:build_features:117 - ============================================================
+  LightGBM data: 7575 rows × 119 cols
+  GRU data: 7743 rows × 5 features
+
+══════════════════════════════════════════════════════════════════════
+[2/4] HORIZON = 1h
+══════════════════════════════════════════════════════════════════════
+
+  [A] Training LightGBM (1h)...
+    LightGBM 1h: MAE=3.900, MASE=1.502 (2s)
+    Test: 758 total, 600 real
+
+  [B] Training GRU (1h)...
+    PyTorch initialized: device=mps
+    Datasets: train=6122, val=774, test=604
+      Epoch   1 | Train=0.4899 Val=0.3128 p=0/10
+      Epoch  10 | Train=0.2509 Val=0.2729 p=3/10
+      Epoch  20 | Train=0.2410 Val=0.2416 p=4/10
+      Epoch  30 | Train=0.2230 Val=0.2285 p=1/10
+      Epoch  40 | Train=0.2112 Val=0.2158 p=0/10
+      Epoch  50 | Train=0.2022 Val=0.1970 p=1/10
+      Epoch  60 | Train=0.1875 Val=0.1814 p=0/10
+      Epoch  70 | Train=0.1790 Val=0.1831 p=7/10
+      Early stop epoch 73 (best=0.1769)
+    GRU 1h: MAE=3.390, MASE=1.306 (persist_ref=2.596) (535s)
+
+  [C] Building Ensemble (1h)...
+    Common test points: 600
+    Stack 1h: MAE=3.045, MASE=1.330
+    Weights: LightGBM=1.052, GRU=-0.037
+    Weighted 1h: MAE=3.900, MASE=1.502 (w_lgbm=1.00)
+
+══════════════════════════════════════════════════════════════════════
+[2/4] HORIZON = 6h
+══════════════════════════════════════════════════════════════════════
+
+  [A] Training LightGBM (6h)...
+    LightGBM 6h: MAE=5.312, MASE=0.766 (2s)
+    Test: 757 total, 595 real
+
+  [B] Training GRU (6h)...
+    PyTorch initialized: device=mps
+    Datasets: train=6117, val=774, test=604
+      Epoch   1 | Train=0.7523 Val=0.3510 p=0/10
+      Epoch  10 | Train=0.4578 Val=0.2714 p=5/10
+      Early stop epoch 15 (best=0.2302)
+    GRU 6h: MAE=4.776, MASE=0.689 (persist_ref=6.932) (109s)
+
+  [C] Building Ensemble (6h)...
+    Common test points: 595
+    Stack 6h: MAE=4.731, MASE=0.799
+    Weights: LightGBM=0.557, GRU=-0.184
+    Weighted 6h: MAE=5.132, MASE=0.740 (w_lgbm=0.50)
+
+══════════════════════════════════════════════════════════════════════
+[2/4] HORIZON = 24h
+══════════════════════════════════════════════════════════════════════
+
+  [A] Training LightGBM (24h)...
+    LightGBM 24h: MAE=5.927, MASE=0.938 (2s)
+    Test: 756 total, 586 real
+
+  [B] Training GRU (24h)...
+    PyTorch initialized: device=mps
+    Datasets: train=6099, val=774, test=604
+      Epoch   1 | Train=0.6949 Val=0.3178 p=0/10
+      Epoch  10 | Train=0.5470 Val=0.2573 p=1/10
+      Early stop epoch 19 (best=0.2226)
+    GRU 24h: MAE=4.662, MASE=0.738 (persist_ref=6.319) (138s)
+
+  [C] Building Ensemble (24h)...
+    Common test points: 586
+    Stack 24h: MAE=4.373, MASE=0.783
+    Weights: LightGBM=0.496, GRU=-0.028
+    Weighted 24h: MAE=5.228, MASE=0.827 (w_lgbm=0.30)
+
+══════════════════════════════════════════════════════════════════════
+[3/4] ENSEMBLE RESULTS SUMMARY
+══════════════════════════════════════════════════════════════════════
+  Metrics saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/ensemble/ensemble_20260429_203415.json
+  Preds saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/ensemble/ensemble_preds_20260429_203415.json
+
+Hz     Model                          MAE     MASE    vs Best
+─────────────────────────────────────────────────────────────────
+1h     Persistence                  2.596    1.000   baseline
+1h     LightGBM                     3.900    1.502           
+1h     GRU                          3.390    1.306           
+1h     ⭐ Ensemble (Stack)           3.045    1.330    ❌ +1.9%
+1h     ⭐ Ensemble (Weighted)        3.900    1.502   ❌ +15.0%
+─────────────────────────────────────────────────────────────────
+6h     Persistence                  6.932    1.000   baseline
+6h     LightGBM                     5.312    0.766           
+6h     GRU                          4.776    0.689           
+6h     ⭐ Ensemble (Stack)           4.731    0.799   ❌ +16.0%
+6h     ⭐ Ensemble (Weighted)        5.132    0.740    ❌ +7.5%
+─────────────────────────────────────────────────────────────────
+24h    Persistence                  6.319    1.000   baseline
+24h    LightGBM                     5.927    0.938           
+24h    GRU                          4.662    0.738           
+24h    ⭐ Ensemble (Stack)           4.373    0.783    ❌ +6.2%
+24h    ⭐ Ensemble (Weighted)        5.228    0.827   ❌ +12.1%
+─────────────────────────────────────────────────────────────────
+
+[4/4] Saving results...
+  Metrics saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/ensemble/ensemble_20260429_203415.json
+  Preds saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/ensemble/ensemble_preds_20260429_203415.json
+
+══════════════════════════════════════════════════════════════════════
+COMPLETE — Total: 799s (13.3 min)
+══════════════════════════════════════════════════════════════════════

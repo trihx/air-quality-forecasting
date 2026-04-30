@@ -1,0 +1,11 @@
+# PM2.5 Forecasting — Dark Mode
+# For Streamlit dashboard dark theme, presentations
+
+figure.facecolor: #0E1117
+axes.facecolor: #1A1D23
+axes.edgecolor: #2D3139
+axes.labelcolor: #EAEAEA
+text.color: #EAEAEA
+xtick.color: #8B95A5
+ytick.color: #8B95A5
+grid.color: #2D3139

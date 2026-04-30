@@ -20,6 +20,8 @@
 - Mọi thao tác Transform (PCA, Scaler, Imputer) chỉ được phép `fit` trên tập **TRAIN ONLY** để tránh leakage bias. CẤM `fit` full data.
 - Leakage Audit R² > 0.99 thì KHÔNG BAO GIỜ được deploy, phải quay lại sửa feature.
 - File CSS của Streamlit Dashboard đã được override: `<div class="kpi-card">`, màu `var(--secondary)`. TUYỆT ĐỐI nhớ xử lý tương phản nền Light/Dark khi tạo card màu tối.
+- **Zero-Hardcode Policy**: Mọi đoạn text dài (Insights, Lessons, Literature Comparison) trên UI đều PHẢI lưu trong `research/experiments/dashboard_content.json` và load qua `ContentManager`. UI file (`app.py`, `info_cards.py`) CHỈ dành cho layout và data visualization.
+- **Visual Theme Framework (VTF)**: Toàn bộ biểu đồ Plotly PHẢI cấu hình thông qua `src/viz/theme.py`. KHÔNG hardcode màu sắc linh tinh gây lỗi tương phản Light/Dark mode. Sử dụng màu Kẽm 500 (`#71717A`) cho text để tương thích cả 2 nền. Cấm để legend/tooltip overlay đè lên dữ liệu chart.
 
 ## 4. Workflows Lệnh
 - Chạy Dashboard: `uv run streamlit run app.py`

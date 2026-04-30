@@ -19,7 +19,11 @@ JSON_REPORT = PROJECT_ROOT / "research" / "eda" / "gap_analysis_report.json"
 OUTPUT_DIR = PROJECT_ROOT / "research" / "eda" / "visualizations"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-plt.style.use("seaborn-v0_8-whitegrid")
+# VTF: Centralized theme (Light mode for publication)
+sys.path.insert(0, str(PROJECT_ROOT))
+from src.viz.theme import apply_mpl_theme, annotation_bbox
+
+apply_mpl_theme("light")
 sns.set_context("talk")
 PRIMARY_COLOR = "#007AFF"
 ERROR_COLOR = "#FF3B30"
@@ -52,7 +56,7 @@ def plot_missing_barcode(df: pd.DataFrame):
         transform=ax.transAxes,
         fontsize=12,
         fontweight="bold",
-        bbox=dict(facecolor="white", alpha=0.8, edgecolor="none"),
+        bbox=annotation_bbox("light"),
     )
 
     plt.tight_layout()
@@ -107,7 +111,6 @@ def plot_recovery_bar(report_data: dict):
     ax.set_ylabel("Số giờ bị mất")
 
     # Explanation
-    props = {"boxstyle": "round", "facecolor": "white", "alpha": 0.9, "edgecolor": "gray"}
     ax.text(
         0.5,
         0.4,
@@ -118,7 +121,7 @@ def plot_recovery_bar(report_data: dict):
         transform=ax.transAxes,
         fontsize=11,
         ha="center",
-        bbox=props,
+        bbox=annotation_bbox("light"),
     )
 
     # Make top margin higher for text

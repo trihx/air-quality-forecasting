@@ -1,0 +1,131 @@
+======================================================================
+v7 FULL PIPELINE RETRAIN — Outlier Fix (PM2.5 domain bounds)
+Timestamp: 20260429_195123
+Models: LightGBM, RF, GB, Stacking, Ensemble, ARIMA, SARIMA, GRU, LSTM
+Horizons: [1, 6, 24]h
+======================================================================
+[DATA] Loading raw data...
+2026-04-29 19:51:24.384 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-29 19:51:24.384 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-29 19:51:24.512 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-29 19:51:24.528 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-29 19:51:24.529 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-29 19:51:24.547 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-29 19:51:24.551 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-29 19:51:24.553 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-29 19:51:24.556 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-29 19:51:24.560 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-29 19:51:24.564 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-29 19:51:24.564 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-04-29 19:51:24.564 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-04-29 19:51:24.573 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,466 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,396 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN] Positions to fill: 586
+      [KNN] Filled 586 values via KNN
+    [D-Hybrid] Phase 3: Dropping 19,810 rows with gaps >24h
+  [Imputer] Output: 7,743 rows (7,112 real + 631 imputed)
+  [Imputer] Dropped 19,810 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.1%
+2026-04-29 19:51:37.316 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,743 rows (7,112 real + 631 imputed, 19,810 dropped)
+2026-04-29 19:51:37.317 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-04-29 19:51:37.317 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-04-29 19:51:37.317 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-04-29 19:51:37.323 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-04-29 19:51:37.327 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-04-29 19:51:37.333 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-04-29 19:51:37.352 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-04-29 19:51:37.357 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-04-29 19:51:37.360 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-04-29 19:51:37.366 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-04-29 19:51:37.370 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-04-29 19:51:37.370 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-04-29 19:51:37.370 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,743 → 7,575 rows
+2026-04-29 19:51:37.370 | INFO     | src.features.builder:build_features:117 - ============================================================
+[DATA] Final: 7,575 rows × 120 cols
+
+======================================================================
+[DL] GRU & LSTM v2+log (MPS)
+======================================================================
+  Device: mps
+
+  ── Horizon 1h ──
+
+    Training GRU_v2_log...
+      Early stop at epoch 17 (val_loss=0.113338)
+2026-04-29 19:53:27.812 | WARNING  | src.evaluation.metrics:mase:71 - MASE: naive MAE is near zero, returning inf
+2026-04-29 19:53:27.813 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   GRU_v2_log (h=1): MAE=2.5146, RMSE=5.0252, MASE=inf ❌
+2026-04-29 19:53:27.813 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 25.0µg/m³: P=0.778 R=0.292 F1=0.424 Brier=0.0276 AUC=0.931 (n=24)
+2026-04-29 19:53:27.813 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.935 (n=7)
+2026-04-29 19:53:27.813 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.649 (n=1)
+      GRU_v2_log: MAE=2.5146, MASE=inf (109.6s)
+
+    Training LSTM_v2_log...
+      Epoch 20: train=0.077357, val=0.127016
+      Early stop at epoch 28 (val_loss=0.124555)
+2026-04-29 19:53:59.850 | WARNING  | src.evaluation.metrics:mase:71 - MASE: naive MAE is near zero, returning inf
+2026-04-29 19:53:59.850 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   LSTM_v2_log (h=1): MAE=2.7678, RMSE=5.3344, MASE=inf ❌
+2026-04-29 19:53:59.850 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 25.0µg/m³: P=1.000 R=0.083 F1=0.154 Brier=0.0320 AUC=0.930 (n=24)
+2026-04-29 19:53:59.851 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.908 (n=7)
+2026-04-29 19:53:59.851 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.598 (n=1)
+      LSTM_v2_log: MAE=2.7678, MASE=inf (32.0s)
+
+  ── Horizon 6h ──
+
+    Training GRU_v2_log...
+      Epoch 20: train=0.137579, val=0.312814
+      Early stop at epoch 21 (val_loss=0.311843)
+2026-04-29 19:56:13.117 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   GRU_v2_log (h=6): MAE=4.167, RMSE=7.0164, MASE=0.7417 ✅
+2026-04-29 19:56:13.117 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0349 AUC=0.684 (n=24)
+2026-04-29 19:56:13.117 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.570 (n=7)
+2026-04-29 19:56:13.117 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.258 (n=1)
+      GRU_v2_log: MAE=4.167, MASE=0.7417 (133.3s)
+
+    Training LSTM_v2_log...
+      Early stop at epoch 17 (val_loss=0.365712)
+2026-04-29 19:56:33.192 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   LSTM_v2_log (h=6): MAE=4.5028, RMSE=7.2412, MASE=0.8015 ✅
+2026-04-29 19:56:33.192 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0349 AUC=0.521 (n=24)
+2026-04-29 19:56:33.193 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.650 (n=7)
+2026-04-29 19:56:33.193 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.067 (n=1)
+      LSTM_v2_log: MAE=4.5028, MASE=0.8015 (20.1s)
+
+  ── Horizon 24h ──
+
+    Training GRU_v2_log...
+      Early stop at epoch 11 (val_loss=0.888775)
+2026-04-29 19:57:44.508 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   GRU_v2_log (h=24): MAE=4.683, RMSE=7.4734, MASE=0.7772 ✅
+2026-04-29 19:57:44.508 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0350 AUC=0.600 (n=24)
+2026-04-29 19:57:44.508 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.563 (n=7)
+2026-04-29 19:57:44.508 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     GRU_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.417 (n=1)
+      GRU_v2_log: MAE=4.683, MASE=0.7772 (71.3s)
+
+    Training LSTM_v2_log...
+      Epoch 20: train=0.133791, val=0.307337
+      Early stop at epoch 29 (val_loss=0.359411)
+2026-04-29 19:58:20.162 | INFO     | src.evaluation.metrics:evaluate_forecast:157 -   LSTM_v2_log (h=24): MAE=4.2784, RMSE=7.1516, MASE=0.7101 ✅
+2026-04-29 19:58:20.162 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0350 AUC=0.575 (n=24)
+2026-04-29 19:58:20.162 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.501 (n=7)
+2026-04-29 19:58:20.162 | INFO     | src.evaluation.metrics:evaluate_forecast_full:321 -     LSTM_v2_log @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.089 (n=1)
+      LSTM_v2_log: MAE=4.2784, MASE=0.7101 (35.7s)
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v8_final/dl_20260429_195123.json
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v8_final/dl_preds_20260429_195123.json
+
+======================================================================
+✅ v7 RETRAIN COMPLETE — 416s (6.9 min)
+======================================================================
+
+Horizon    Model                       MAE     MASE
+───────────────────────────────────────────────────────
+───────────────────────────────────────────────────────
+───────────────────────────────────────────────────────
+───────────────────────────────────────────────────────
+1h         GRU_v2_log                2.515      inf
+1h         LSTM_v2_log               2.768      inf
+6h         GRU_v2_log                4.167    0.742
+6h         LSTM_v2_log               4.503    0.801
+24h        GRU_v2_log                4.683    0.777
+24h        LSTM_v2_log               4.278    0.710
+───────────────────────────────────────────────────────

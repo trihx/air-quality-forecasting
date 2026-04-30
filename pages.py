@@ -37,20 +37,19 @@ RESEARCH_DIR = PROJECT_ROOT / "research"
 EXPORT_DIR = PROJECT_ROOT / "models" / "exported"
 CACHE_DIR = PROJECT_ROOT / "research" / "cache"
 
-# Reuse design tokens from app.py
+# VTF: Reuse design tokens from centralized theme
+from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC, get_plotly_template, get_theme, apply_plotly_style
+
 COLORS = {
-    "primary": "#00D4AA",
-    "accent": "#FF6B6B",
-    "warning": "#FFE66D",
+    "primary": PALETTE_SEMANTIC["primary"],
+    "accent": PALETTE_SEMANTIC["accent"],
+    "warning": PALETTE_SEMANTIC["warning"],
     "card_bg": "var(--secondary-background-color)",
     "text": "#FAFAFA",
     "text_muted": "#8B95A5",
 }
 
-CHART_COLORS = [
-    "#00D4AA", "#FF6B6B", "#4ECDC4", "#FFE66D",
-    "#A78BFA", "#FB923C", "#60A5FA", "#F472B6",
-]
+CHART_COLORS = PALETTE_CATEGORICAL
 
 # WHO PM2.5 guidelines (µg/m³, 24h average)
 WHO_LEVELS = [
@@ -61,18 +60,7 @@ WHO_LEVELS = [
 ]
 
 
-def _apply_style(fig, height=450):
-    fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color=COLORS["text"], family="Inter, sans-serif", size=13),
-        xaxis=dict(gridcolor="rgba(139,149,165,0.12)"),
-        yaxis=dict(gridcolor="rgba(139,149,165,0.12)"),
-        legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=12)),
-        margin=dict(l=20, r=20, t=50, b=20),
-        height=height,
-    )
-    return fig
+
 
 
 def _get_torch_device() -> str:
@@ -182,9 +170,10 @@ def _load_model_rankings() -> dict:
         h = int(h_str.replace("h", ""))
         sorted_models = []
         for name, info in models_data.items():
-            mase = info.get("mase_unified") or info.get("mase")
+            from src.snapshot_adapter import extract_mase
+            mase = extract_mase(info)
             mae = info.get("mae")
-            if mase is not None:
+            if mase > 0:
                 sorted_models.append((name, round(mase, 3), round(mae, 2) if mae else None))
         sorted_models.sort(key=lambda x: x[1])
         rankings[h] = sorted_models[:5]
@@ -296,9 +285,10 @@ def _load_all_rankings() -> dict:
         h = int(h_str.replace("h", ""))
         sorted_models = []
         for name, info in models_data.items():
-            mase = info.get("mase_unified") or info.get("mase")
+            from src.snapshot_adapter import extract_mase
+            mase = extract_mase(info)
             mae = info.get("mae")
-            if mase is not None:
+            if mase > 0:
                 sorted_models.append((name, round(mase, 3), round(mae, 2) if mae else None))
         sorted_models.sort(key=lambda x: x[1])
         rankings[h] = sorted_models
@@ -449,17 +439,16 @@ def _forecast_auto(model_type: str, horizon: int):
             st.markdown(f"""
             <style>
                 .sensor-card {{ text-align: center; padding: 0.7rem 0.4rem;
-                    background: rgba(15, 20, 30, 0.9) !important;
+                    background: var(--text-color) !important;
                     border-radius: 10px; border: 1px solid rgba(0,212,170,0.2);
                     border-top: 3px solid rgba(0,212,170,0.6); }}
-                .sensor-card .sc-label {{ font-size: 0.78rem; color: #e0e0e0 !important;
+                .sensor-card .sc-label {{ font-size: 0.78rem; color: var(--background-color) !important;
                     font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-                    padding-bottom: 0.3rem; border-bottom: 1px solid rgba(255,255,255,0.15);
-                    margin-bottom: 0.35rem; }}
-                .sensor-card .sc-value {{ font-size: 1.5rem; font-weight: 800;
-                    color: #FFFFFF !important; font-family: 'JetBrains Mono', monospace;
+                    padding-bottom: 0.3rem; border-bottom: 1px solid rgba(0,0,0,0.15);
+                    margin-bottom: 0.5rem; }}
+                .sensor-card .sc-value {{ font-size: 1.5rem; font-weight: 800; color: var(--background-color) !important;
                     text-shadow: 0 0 12px rgba(0,212,170,0.3); }}
-                .sensor-card .sc-unit {{ font-size: 0.65rem; color: rgba(220,220,220,0.7) !important;
+                .sensor-card .sc-unit {{ font-size: 0.65rem; color: var(--background-color) !important; opacity: 0.8;
                     margin-top: 0.15rem; }}
             </style>
             <div class="sensor-card">
@@ -935,7 +924,7 @@ def _show_forecast_result(result: dict, recent_data: pd.DataFrame):
             xaxis_title="Thời gian (giờ)", yaxis_title="PM2.5 (µg/m³)",
             title=f"72h Lịch Sử + Dự Báo {result['horizon']}h",
         )
-        fig = _apply_style(fig, height=380)
+        fig = apply_plotly_style(fig, height=380)
         st.plotly_chart(fig, use_container_width=True)
 
 
@@ -978,7 +967,7 @@ def page_actual_vs_predicted(results):
     data = _load_avp_cache(horizon)
 
     if data is not None:
-        _render_avp_chart(data, horizon)
+        _render_avp_chart(data, horizon, ver)
     else:
         st.warning(
             f"⚠️ Chưa có dữ liệu cache cho horizon {horizon}h.\n\n"
@@ -994,13 +983,83 @@ def page_actual_vs_predicted(results):
         )
 
 
-def _render_avp_chart(data: dict, horizon: int):
-    """Render the Actual vs Predicted chart from cached data."""
+def _render_avp_chart(data: dict, horizon: int, ver: str):
+    """Render the Actual vs Predicted chart from cached data.
+
+    Dynamic Top-3: Reads top models from snapshot ranking and maps them
+    to available prediction arrays in cache. Users can override via multiselect.
+    """
     test_actuals = np.array(data["actuals"])
     test_persist = np.array(data["persistence"])
 
+    # ── Discover available models from cache ──
+    model_preds = data.get("model_preds", {})
+    # Backward compat: old cache format without model_preds
+    if not model_preds:
+        if data.get("gru_preds"):
+            model_preds["GRU"] = data["gru_preds"]
+        if data.get("lgbm_preds"):
+            model_preds["LightGBM"] = data["lgbm_preds"]
+
+    available_models = list(model_preds.keys())
+
+    # ── Hybrid Top-3: snapshot ranking + cache availability ──
+    from src.info_cards import get_version_data
+    from src.snapshot_adapter import TOP_N, HORIZONS
+    v_data = get_version_data(ver)
+    h_key = f"{horizon}h"
+
+    # Step 1: Get snapshot top_n for this horizon
+    top_models_info = v_data.get("top_n", {}).get(h_key, [])
+    snapshot_top_names = [m["model"] for m in top_models_info]
+
+    # Step 2: Build cache MAE ranking as fallback
+    cache_metrics = data.get("metrics", [])
+    cache_mae = {}
+    for m in cache_metrics:
+        name = m.get("Mô hình", "")
+        if name == "Persistence" or name not in available_models:
+            continue
+        try:
+            cache_mae[name] = float(m.get("MAE", 999))
+        except (ValueError, TypeError):
+            cache_mae[name] = 999
+    cache_ranked = sorted(cache_mae.keys(), key=lambda n: cache_mae[n])
+
+    # Step 3: Hybrid selection — snapshot top_n ∩ cache first, then fill
+    default_selection = []
+    # Priority: models that are BOTH in snapshot top_n AND available in cache
+    for name in snapshot_top_names:
+        if name in available_models and name not in default_selection:
+            default_selection.append(name)
+        if len(default_selection) >= TOP_N:
+            break
+    # Fill remaining with best cache-ranked models
+    for name in cache_ranked:
+        if name not in default_selection:
+            default_selection.append(name)
+        if len(default_selection) >= TOP_N:
+            break
+    # Final fallback
+    if not default_selection:
+        default_selection = available_models[:TOP_N]
+
+    # Models in snapshot top_n that don't have prediction data
+    unavailable_top = [m["model"] for m in top_models_info if m["model"] not in available_models]
+
+    # ── Model selection widget ──
+    selected_models = st.multiselect(
+        "🎯 Chọn mô hình hiển thị trên biểu đồ",
+        options=available_models,
+        default=default_selection,
+        help=f"Mặc định: Top {TOP_N} mô hình tốt nhất cho horizon {horizon}h "
+             f"(ưu tiên từ snapshot ranking, bổ sung từ cache MAE).",
+    )
+
     # ── KPI Summary ──
     n_test = data.get("n_test", len(test_actuals))
+    n_models_available = len(available_models)
+    n_models_total = len(v_data.get("results", {}).get(h_key, {}))
     st.markdown(f"""
     <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
                 border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
@@ -1008,59 +1067,70 @@ def _render_avp_chart(data: dict, horizon: int):
         <span style="opacity: 0.65; font-size: 0.85rem;">
             📊 Test samples: <b style="color:#00D4AA">{n_test}</b> (real data only) |
             Horizon: <b style="color:#00D4AA">{horizon}h</b> |
-            Models: <b style="color:#00D4AA">{len(data.get('metrics', []))}</b>
+            Trực quan hóa: <b style="color:#00D4AA">{len(selected_models)}/{n_models_available}</b> mô hình
         </span>
     </div>
     """, unsafe_allow_html=True)
 
     fig = go.Figure()
 
-    # Actual
+    # Actual line
     fig.add_trace(go.Scatter(
         x=list(range(len(test_actuals))),
         y=test_actuals,
         name="Actual",
-        line=dict(color="#FAFAFA", width=2.5),
+        line=dict(color="#1E293B", width=2.5),
     ))
 
-    # Persistence
+    # Persistence baseline (always shown as dashed reference)
     fig.add_trace(go.Scatter(
         x=list(range(len(test_persist))),
         y=test_persist,
         name="Persistence",
-        line=dict(color="#8B95A5", width=1.5, dash="dash"),
+        line=dict(color="#94A3B8", width=1.5, dash="dash"),
     ))
 
-    model_colors = {"GRU": "#00D4AA", "LightGBM": "#FF6B6B"}
+    # ── Dynamic model traces with distinct colors from VTF ──
+    model_palette = {
+        "GRU": "#00D4AA",
+        "LightGBM": "#FF6B6B",
+        "Ensemble_Stack": "#7C3AED",
+        "Ensemble_GRU": "#F59E0B",
+        "Ensemble_Weighted": "#EC4899",
+        "TFT": "#3B82F6",
+        "ARIMA": "#10B981",
+        "SARIMA": "#6366F1",
+    }
+    fallback_colors = PALETTE_CATEGORICAL
 
-    if data.get("gru_preds"):
-        # Filter None values for clean rendering
-        gru_preds = [p if p is not None else np.nan for p in data["gru_preds"]]
+    for idx, model_name in enumerate(selected_models):
+        preds = model_preds.get(model_name)
+        if not preds:
+            continue
+        preds_clean = [p if p is not None else np.nan for p in preds]
+        color = model_palette.get(model_name, fallback_colors[idx % len(fallback_colors)])
         fig.add_trace(go.Scatter(
-            x=list(range(len(gru_preds))),
-            y=gru_preds,
-            name=f"GRU ({horizon}h)",
-            line=dict(color=model_colors["GRU"], width=2),
-        ))
-
-    if data.get("lgbm_preds"):
-        lgbm_preds = [p if p is not None else np.nan for p in data["lgbm_preds"]]
-        fig.add_trace(go.Scatter(
-            x=list(range(len(lgbm_preds))),
-            y=lgbm_preds,
-            name=f"LightGBM ({horizon}h)",
-            line=dict(color=model_colors["LightGBM"], width=2),
+            x=list(range(len(preds_clean))),
+            y=preds_clean,
+            name=f"{model_name} ({horizon}h)",
+            line=dict(color=color, width=2),
         ))
 
     fig.update_layout(
         xaxis_title="Test Sample Index",
         yaxis_title="PM2.5 (µg/m³)",
         title=f"Actual vs Predicted — Horizon {horizon}h (Test Set, Real Data Only)",
-        legend=dict(orientation="h", y=1.12, x=0.5, xanchor="center"),
-        hovermode="x unified",
     )
-    fig = _apply_style(fig, height=520)
+    fig = apply_plotly_style(fig, height=520)
     st.plotly_chart(fig, use_container_width=True)
+
+    # ── Note about unavailable models ──
+    if unavailable_top:
+        st.caption(f"*(ℹ️ Các mô hình {', '.join(unavailable_top)} nằm trong Top {TOP_N} (snapshot) nhưng chưa có dữ liệu dự đoán trong cache. "
+                   f"Xem đầy đủ tại bảng Metrics bên dưới.)*")
+    else:
+        st.caption(f"*(Ghi chú: Biểu đồ hiển thị Top {TOP_N} mô hình tốt nhất theo MAE cho horizon {horizon}h. "
+                   f"Bảng Metrics bên dưới liệt kê toàn bộ các mô hình.)*")
 
     # ── Errors if any ──
     if data.get("gru_error"):
@@ -1068,9 +1138,107 @@ def _render_avp_chart(data: dict, horizon: int):
     if data.get("lgbm_error"):
         st.warning(f"⚠️ LightGBM: {data['lgbm_error']}")
 
-    # ── Metrics summary ──
-    if data.get("metrics"):
-        st.markdown("### 📋 Tóm tắt Metrics")
+    # ── Metrics summary from normalized version data ──
+    from src.info_cards import get_version_data
+    from src.snapshot_adapter import TOP_N, HORIZONS
+    v_data = get_version_data(ver)
+
+    # ── Ranking mode toggle ──
+    rank_metric = st.radio(
+        "📊 Xếp hạng theo",
+        ["MAE", "MASE"],
+        index=0,
+        horizontal=True,
+        help="MAE = sai số tuyệt đối (µg/m³). MASE = so với Persistence baseline (< 1.0 = tốt hơn).",
+    )
+
+    st.markdown(f"### 🏆 Top {TOP_N} Mô Hình Tốt Nhất (theo {rank_metric})")
+    st.caption(f"*Persistence Baseline được loại khỏi xếp hạng. {'MASE < 1.0 = tốt hơn Persistence.' if rank_metric == 'MASE' else 'MAE thấp hơn = dự đoán chính xác hơn.'}*")
+
+    cols = st.columns(len(HORIZONS))
+    for idx, h_key in enumerate(HORIZONS):
+        h_val = int(h_key.replace("h", ""))
+        raw_top = v_data.get("top_n", {}).get(h_key, [])
+        # Re-sort by user-selected metric
+        sort_key = "mase" if rank_metric == "MASE" else "mae"
+        top_models = sorted(raw_top, key=lambda x: x.get(sort_key, float("inf")))[:TOP_N]
+        is_selected = (h_val == horizon)
+
+        with cols[idx]:
+            # Header with highlight for selected horizon
+            if is_selected:
+                st.markdown(f"""
+                <style>
+                    .avp-tab-selected {{
+                        background: var(--text-color) !important;
+                        border: 2px solid #00D4AA; border-radius: 10px; padding: 0.8rem; text-align: center;
+                    }}
+                </style>
+                <div class="avp-tab-selected">
+                    <b style="color: #00D4AA; font-size: 1.1rem;">⏱️ {h_key} (đang xem)</b>
+                </div>""", unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                <style>
+                    .avp-tab-unselected {{
+                        background: var(--secondary-background-color) !important;
+                        border: 1px solid rgba(128,128,128,0.3); border-radius: 10px; padding: 0.8rem; text-align: center;
+                    }}
+                </style>
+                <div class="avp-tab-unselected">
+                    <b style="color: var(--text-color); font-size: 1.1rem;">⏱️ {h_key}</b>
+                </div>""", unsafe_allow_html=True)
+
+            if top_models:
+                medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
+                for rank, row in enumerate(top_models):
+                    mase_color = "#00D4AA" if row["mase"] < 1.0 else "#FF6B6B"
+                    medal = medals[rank] if rank < len(medals) else f"#{rank+1}"
+                    border_color = '#00D4AA' if rank == 0 else '#8B95A5'
+                    st.markdown(f"""
+                    <style>
+                        .avp-model-card-{rank} {{
+                            background: var(--text-color) !important; border-radius: 8px;
+                            padding: 0.6rem 0.8rem; margin: 0.4rem 0;
+                            border-left: 3px solid {border_color};
+                            border-top: 1px solid rgba(128,128,128,0.2);
+                            border-right: 1px solid rgba(128,128,128,0.2);
+                            border-bottom: 1px solid rgba(128,128,128,0.2);
+                        }}
+                    </style>
+                    <div class="avp-model-card-{rank}">
+                        <div style="font-size: 0.75rem; color: var(--background-color); opacity: 0.8;">{medal} Top {rank + 1}</div>
+                        <div style="font-weight: 600; font-size: 0.95rem; color: var(--background-color);">{row['model']}</div>
+                        <div style="font-size: 0.85rem; margin-top: 0.2rem; color: var(--background-color);">
+                            MAE: <b>{row['mae']:.2f}</b> · MASE: <b style="color: {mase_color};">{row['mase']:.2f}</b>
+                        </div>
+                    </div>""", unsafe_allow_html=True)
+            else:
+                st.info(f"Không có dữ liệu cho {h_key}")
+
+    # ── Full table for selected horizon ──
+    h_key = f"{horizon}h"
+    h_results = v_data.get("results", {}).get(h_key, {})
+    if h_results:
+        all_metrics = []
+        for model_name, m in h_results.items():
+            all_metrics.append({
+                "Mô hình": model_name,
+                "MAE (µg/m³)": round(m["mae"], 2),
+                "RMSE (µg/m³)": round(m["rmse"], 2) if m.get("rmse") else "—",
+                "MASE": round(m["mase"], 4),
+            })
+        sort_col = "MASE" if rank_metric == "MASE" else "MAE (µg/m³)"
+        all_metrics.sort(key=lambda x: x.get(sort_col, float("inf")) if isinstance(x.get(sort_col), (int, float)) else float("inf"))
+        with st.expander(f"📋 Bảng đầy đủ tất cả mô hình — Horizon {horizon}h (xếp theo {rank_metric})", expanded=False):
+            st.dataframe(
+                pd.DataFrame(all_metrics),
+                use_container_width=True,
+                hide_index=True,
+            )
+    elif data.get("metrics"):
+        # Fallback to cached metrics if version data not available
+        st.markdown(f"### 📋 Tóm tắt Metrics (Reference Models - {horizon}h)")
         st.dataframe(
             pd.DataFrame(data["metrics"]),
             use_container_width=True,
@@ -1192,35 +1360,19 @@ def _render_version_comparison():
         result = changes.get("result", "—")
         conclusion = changes.get("conclusion", "")
 
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, {bg_start} 0%, {bg_end} 100%);
-                    border-left: 4px solid {accent}; border-radius: 0 12px 12px 0;
-                    padding: 1rem 1.2rem; margin: 0.8rem 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <span style="font-size: 1.1rem; font-weight: 700; color: {accent};">
-                    {'📌' if idx == 0 else '🆕'} {v_name}
-                </span>
-                <span style="font-size: 0.75rem; opacity: 0.75;">
-                    {timestamp} · {n_models} models · parent: {parent}
-                </span>
-            </div>
-            <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; font-size: 0.88rem;">
-                <span style="opacity: 0.75; font-weight: 600;">📦 What</span>
-                <span style="">{what}</span>
-                <span style="opacity: 0.75; font-weight: 600;">💡 Why</span>
-                <span style="">{why}</span>
-                <span style="opacity: 0.75; font-weight: 600;">📊 Result</span>
-                <span style="">{result}</span>
-                {'<span style="opacity: 0.75; font-weight: 600;">✅ Conclusion</span><span style="">' + conclusion + '</span>' if conclusion else ''}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        html_str = f"""<div style="background: linear-gradient(135deg, {bg_start} 0%, {bg_end} 100%); border-left: 4px solid {accent}; border-radius: 0 12px 12px 0; padding: 1rem 1.2rem; margin: 0.8rem 0;">"""
+        html_str += f"""<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;"><span style="font-size: 1.1rem; font-weight: 700; color: {accent};">{'📌' if idx == 0 else '🆕'} {v_name}</span><span style="font-size: 0.75rem; opacity: 0.75;">{timestamp} · {n_models} models · parent: {parent}</span></div>"""
+        html_str += f"""<div style="display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; font-size: 0.88rem;"><span style="opacity: 0.75; font-weight: 600;">📦 What</span><span>{what}</span><span style="opacity: 0.75; font-weight: 600;">💡 Why</span><span>{why}</span><span style="opacity: 0.75; font-weight: 600;">📊 Result</span><span>{result}</span></div>"""
+        if conclusion:
+            html_str += f"""<div style="margin-top:0.4rem; padding-top:0.4rem; border-top:1px solid var(--border-color, rgba(139,149,165,0.2)); font-size:0.88rem;"><span style="color:#00D4AA;">✅ Conclusion</span> {conclusion}</div>"""
+        html_str += """</div>"""
+        st.markdown(html_str, unsafe_allow_html=True)
 
     # ── MASE Comparison Chart ──
-    st.markdown("### 📊 MASE — So Sánh v1 vs v2")
+    st.markdown(f"### 📊 MASE — So Sánh {v1_name} vs {v2_name}")
 
-    v1_results = v1.get("data", {}).get("results", {})
-    v2_results = v2.get("data", {}).get("results", {})
+    v1_results = v1.get("results", v1.get("data", {}).get("results", {}))
+    v2_results = v2.get("results", v2.get("data", {}).get("results", {}))
 
     # Find common models across both versions
     horizons = ["1h", "6h", "24h"]
@@ -1237,8 +1389,8 @@ def _render_version_comparison():
 
             v1_mae = v1_m.get("mae", None)
             v2_mae = v2_m.get("mae", None)
-            v1_mase = v1_m.get("mase", v1_m.get("mase_original", None))
-            v2_mase = v2_m.get("mase", v2_m.get("mase_original", None))
+            v1_mase = v1_m.get("mase_unified", v1_m.get("mase", v1_m.get("mase_original", None)))
+            v2_mase = v2_m.get("mase_unified", v2_m.get("mase", v2_m.get("mase_original", None)))
 
             is_new = model not in v1_h
             mae_change = None
@@ -1252,7 +1404,7 @@ def _render_version_comparison():
                 f"MAE ({v2_name})": round(v2_mae, 3) if isinstance(v2_mae, (int, float)) else "—",
                 f"MASE ({v1_name})": round(v1_mase, 4) if isinstance(v1_mase, (int, float)) else "—",
                 f"MASE ({v2_name})": round(v2_mase, 4) if isinstance(v2_mase, (int, float)) else "—",
-                "MAE Δ%": f"{mae_change:+.1f}%" if mae_change is not None else ("🆕" if is_new else "—"),
+                "MAE Δ%": f"{mae_change:+.1f}%" if mae_change is not None else ("✅ Mới" if is_new else "—"),
             })
 
     if comparison_rows:
@@ -1279,7 +1431,7 @@ def _render_version_comparison():
         v2_mases = []
         for h in horizons:
             v2_m = v2_results.get(h, {}).get(model, {})
-            mase = v2_m.get("mase", v2_m.get("mase_original", None))
+            mase = v2_m.get("mase_unified", v2_m.get("mase", v2_m.get("mase_original", None)))
             v2_mases.append(mase if isinstance(mase, (int, float)) else None)
 
         fig.add_trace(go.Bar(
@@ -1299,7 +1451,7 @@ def _render_version_comparison():
         xaxis_title="Forecast Horizon",
         title=f"MASE — {v2_name} (All Models)",
     )
-    fig = _apply_style(fig, height=500)
+    fig = apply_plotly_style(fig, height=500)
     st.plotly_chart(fig, use_container_width=True)
 
     # ── Nhắc nhở tối ưu tiếp ──

@@ -1,0 +1,11 @@
+# PM2.5 Forecasting — Light Mode
+# For publication (IEEE/CTU thesis), dashboard Light Mode
+
+figure.facecolor: #FFFFFF
+axes.facecolor: #FAFAFA
+axes.edgecolor: #D1D5DB
+axes.labelcolor: #373737
+text.color: #373737
+xtick.color: #6B7280
+ytick.color: #6B7280
+grid.color: #E5E7EB

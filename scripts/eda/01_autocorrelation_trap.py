@@ -18,12 +18,15 @@ DATA_PATH = PROJECT_ROOT / "dataset" / "interim" / "cleaned_hourly.csv"
 OUTPUT_DIR = PROJECT_ROOT / "research" / "eda" / "visualizations"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# Styling for premium storytelling look (Apple HIG / modern data sci style)
-plt.style.use("seaborn-v0_8-whitegrid")
+# VTF: Centralized theme (Light mode for publication)
+sys.path.insert(0, str(PROJECT_ROOT))
+from src.viz.theme import apply_mpl_theme
+
+apply_mpl_theme("light")
 sns.set_context("talk")
 PRIMARY_COLOR = "#007AFF"  # Apple blue
 SECONDARY_COLOR = "#FF3B30"  # Apple red
-TEXT_COLOR = "#1C1C1E"
+TEXT_COLOR = "#373737"  # High contrast for light mode
 
 
 def plot_autocorrelation_story(df: pd.DataFrame):

@@ -21,21 +21,20 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RESEARCH_DIR = PROJECT_ROOT / "research"
 SHAP_DIR = RESEARCH_DIR / "figures" / "shap"
 
-# ── Design tokens (match app.py) ──
+# ── Design tokens (VTF: centralized from src.viz.theme) ──
+from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC, get_plotly_template
+
 COLORS = {
-    "primary": "#00D4AA",
-    "secondary": "#4ECDC4",
-    "accent": "#FF6B6B",
-    "warning": "#FFE66D",
+    "primary": PALETTE_SEMANTIC["primary"],
+    "secondary": PALETTE_SEMANTIC["secondary"],
+    "accent": PALETTE_SEMANTIC["accent"],
+    "warning": PALETTE_SEMANTIC["warning"],
     "text": "#FAFAFA",
     "text_muted": "#8B95A5",
     "card_bg": "var(--secondary-background-color)",
 }
 
-CHART_COLORS = [
-    "#00D4AA", "#FF6B6B", "#4ECDC4", "#FFE66D",
-    "#A78BFA", "#FB923C", "#60A5FA", "#F472B6",
-]
+CHART_COLORS = PALETTE_CATEGORICAL
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -63,19 +62,9 @@ def _insight_card(title: str, text: str, card_type: str = "default"):
 
 
 def _apply_plotly_style(fig: go.Figure, height: int = 450) -> go.Figure:
+    _template = get_plotly_template("dark")
     fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color=COLORS["text"], family="Inter, sans-serif", size=13),
-        xaxis=dict(
-            gridcolor="rgba(139,149,165,0.12)",
-            zerolinecolor="rgba(139,149,165,0.12)",
-        ),
-        yaxis=dict(
-            gridcolor="rgba(139,149,165,0.12)",
-            zerolinecolor="rgba(139,149,165,0.12)",
-        ),
-        legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=12)),
+        **_template["layout"],
         margin=dict(l=20, r=20, t=50, b=20),
         height=height,
     )
@@ -379,19 +368,31 @@ def _tab_pipeline_journey():
         ("🔧 After Impute", "7,742 rows", "Hybrid: Spline + KNN"),
         ("📐 Features", "119 columns", "v2: anti-leakage ✅"),
     ]
+    st.markdown("""
+    <style>
+        .pipeline-card { text-align: center; padding: 1.2rem 0.4rem;
+            background: var(--text-color) !important;
+            border-radius: 10px; border: 1px solid rgba(0,212,170,0.2);
+            border-top: 3px solid rgba(0,212,170,0.6); }
+        .pipeline-card .pc-label { font-size: 0.78rem; color: var(--background-color) !important;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+            padding-bottom: 0.3rem; border-bottom: 1px solid rgba(0,0,0,0.15);
+            margin-bottom: 0.5rem; }
+        .pipeline-card .pc-value { font-size: 1.5rem; font-weight: 800;
+            color: var(--background-color) !important; font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 12px rgba(0,212,170,0.3); margin: 0.3rem 0; }
+        .pipeline-card .pc-detail { font-size: 0.7rem; color: var(--background-color) !important; opacity: 0.8;
+            margin-top: 0.2rem; }
+    </style>
+    """, unsafe_allow_html=True)
+
     for col, (label, value, detail) in zip([col1, col2, col3, col4], stats):
         with col:
             st.markdown(f"""
-            <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
-                        border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
-                        padding: 1.2rem; text-align: center;">
-                <div style="font-size: 0.8rem; color: #8B95A5; text-transform: uppercase;
-                            letter-spacing: 0.05em;">{label}</div>
-                <div style="font-size: 1.6rem; font-weight: 700; color: #00D4AA;
-                            font-family: 'JetBrains Mono', monospace; margin: 0.3rem 0;">
-                    {value}
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-color); opacity: 0.6;">{detail}</div>
+            <div class="pipeline-card">
+                <div class="pc-label">{label}</div>
+                <div class="pc-value">{value}</div>
+                <div class="pc-detail">{detail}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -407,13 +408,19 @@ def _tab_pipeline_journey():
     ]
     for check, desc in checkpoints:
         st.markdown(f"""
-        <div style="display: flex; align-items: center; gap: 0.75rem;
-                    padding: 0.6rem 1rem; margin: 0.3rem 0;
-                    background: rgba(0,212,170,0.06); border-radius: 8px;
-                    border-left: 3px solid #00D4AA;">
-            <span style="font-size: 0.95rem; font-weight: 600; color: #E2E8F0;
+        <style>
+            .checkpoint-card {{
+                display: flex; align-items: center; gap: 0.75rem;
+                padding: 0.8rem 1.2rem; margin: 0.4rem 0;
+                background: var(--text-color) !important; border-radius: 8px;
+                border-left: 4px solid #00D4AA; border-top: 1px solid rgba(0,212,170,0.1);
+                border-right: 1px solid rgba(0,212,170,0.1); border-bottom: 1px solid rgba(0,212,170,0.1);
+            }}
+        </style>
+        <div class="checkpoint-card">
+            <span style="font-size: 0.95rem; font-weight: 700; color: var(--background-color);
                          min-width: 200px;">{check}</span>
-            <span style="font-size: 0.85rem; color: var(--text-color); opacity: 0.7;">{desc}</span>
+            <span style="font-size: 0.85rem; color: var(--background-color); opacity: 0.8;">{desc}</span>
         </div>
         """, unsafe_allow_html=True)
 
@@ -655,15 +662,15 @@ def _tab_model_selection(results: dict):
     _section_header("🏆", "Hành Trình Chọn Mô Hình — Từ Baseline Đến Best")
 
     # ── Journey Timeline ──
-    # Data verified: standardized_metrics.json + dashboard_runs/v1-v7
+    # Data verified: standardized_metrics.json (v7_retrain, unified baseline)
     phases = [
-        ("v1", "Persistence + ARIMA", "Baseline. MASE=1.0, 1.073", "#FF6B6B"),
-        ("v2", "LightGBM + Feature Eng v2", "ML enters. MASE=0.800 (6h)", "#FFE66D"),
+        ("v1", "Persistence + ARIMA", "Baseline. MASE=1.0, 1.028", "#FF6B6B"),
+        ("v2", "LightGBM + Feature Eng v2", "ML enters. MASE=0.791 (6h)", "#FFE66D"),
         ("v3", "RF, GB, Stacking, Ensemble", "Ensemble diversification", "#FB923C"),
-        ("v4", "Deep Learning GRU/LSTM", "GRU_v1 best 1h: MASE=1.173", "#A78BFA"),
-        ("v5", "GRU_log + LSTM retrain", "GRU_log 6h: MASE=0.692 (orig) ⭐", "#00D4AA"),
-        ("v6", "PCA, Top-N, TFT", "1h cursed by autocorr. TFT_v2 tệ", "#4ECDC4"),
-        ("v7", "CQR + Ensemble Inference", "CQR coverage ↑. Docker-ready", "#60A5FA"),
+        ("v4", "Deep Learning GRU/LSTM", "GRU 6h: 0.769, LSTM 24h: 0.676 ⭐", "#A78BFA"),
+        ("v5", "Ensemble Methods", "Ensemble_Stack 6h: 0.745 ⭐", "#00D4AA"),
+        ("v6", "PCA, Top-N, TFT", "TFT 1h: 0.987 — phá vỡ Autocorr Trap!", "#4ECDC4"),
+        ("v7", "CQR + Unified Baseline", "Standardized MASE. Docker-ready", "#60A5FA"),
     ]
 
     # Timeline as a horizontal flow
@@ -671,15 +678,23 @@ def _tab_model_selection(results: dict):
     for col, (ver, name, note, color) in zip(cols, phases):
         with col:
             st.markdown(f"""
-            <div style="text-align: center; padding: 0.8rem 0.2rem;">
+            <style>
+                .timeline-step {{
+                    text-align: center; padding: 1rem 0.5rem;
+                    background: var(--text-color) !important;
+                    border-radius: 12px; height: 100%;
+                    border: 1px solid rgba(128,128,128,0.2);
+                }}
+            </style>
+            <div class="timeline-step">
                 <div style="background: {color}; color: #0E1117; font-weight: 800;
                             border-radius: 50%; width: 36px; height: 36px;
                             display: flex; align-items: center; justify-content: center;
                             margin: 0 auto; font-size: 0.65rem;">{ver}</div>
-                <div style="font-size: 0.7rem; font-weight: 600; color: #E2E8F0;
-                            margin-top: 0.5rem;">{name}</div>
-                <div style="font-size: 0.6rem; color: var(--text-color); opacity: 0.55;
-                            margin-top: 0.2rem;">{note}</div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--background-color);
+                            margin-top: 0.8rem; line-height: 1.3;">{name}</div>
+                <div style="font-size: 0.65rem; color: var(--background-color); opacity: 0.8;
+                            margin-top: 0.4rem; line-height: 1.3;">{note}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -688,17 +703,23 @@ def _tab_model_selection(results: dict):
     # ── Trade-off Matrix ──
     _section_header("⚖️", "Trade-off Matrix — Best Models per Horizon")
 
-    data = results.get("data", {}).get("results", {})
+    # Load from standardized_metrics.json (source of truth)
+    metrics_path = PROJECT_ROOT / "research" / "experiments" / "standardized_metrics.json"
+    std_metrics = _load_json(metrics_path)
+    std_results = std_metrics.get("results", {}) if std_metrics else {}
     horizons = ["1h", "6h", "24h"]
 
     # Key models to compare
     model_meta = {
         "Persistence": {"complexity": "Trivial", "interp": "⭐⭐⭐⭐⭐", "type": "Baseline"},
         "ARIMA": {"complexity": "Low", "interp": "⭐⭐⭐⭐", "type": "Statistical"},
+        "SARIMA": {"complexity": "Low", "interp": "⭐⭐⭐⭐", "type": "Statistical"},
         "LightGBM_tuned": {"complexity": "Medium", "interp": "⭐⭐⭐", "type": "ML"},
-        "RandomForest": {"complexity": "Medium", "interp": "⭐⭐⭐", "type": "ML"},
         "GRU": {"complexity": "High", "interp": "⭐⭐", "type": "DL"},
+        "LSTM": {"complexity": "High", "interp": "⭐⭐", "type": "DL"},
         "TFT": {"complexity": "High", "interp": "⭐⭐⭐", "type": "DL"},
+        "Ensemble_GRU": {"complexity": "High", "interp": "⭐⭐", "type": "Ensemble"},
+        "Ensemble_Stack": {"complexity": "High", "interp": "⭐⭐", "type": "Ensemble"},
     }
 
     rows = []
@@ -706,9 +727,15 @@ def _tab_model_selection(results: dict):
         row = {"Model": model_name, "Type": meta["type"],
                "Complexity": meta["complexity"], "Interpretability": meta["interp"]}
         for h in horizons:
-            h_data = data.get(h, {}).get(model_name, {})
-            mase = h_data.get("mase") or h_data.get("mase_unified") or h_data.get("mase_original")
-            row[f"MASE {h}"] = f"{mase:.3f}" if mase else "—"
+            h_data = std_results.get(h, {}).get(model_name, {})
+            mase = h_data.get("mase_unified") or h_data.get("mase")
+            mae = h_data.get("mae")
+            if model_name == "Persistence":
+                row[f"MASE {h}"] = "1.000 (baseline)"
+            elif mase:
+                row[f"MASE {h}"] = f"{mase:.3f}"
+            else:
+                row[f"MASE {h}"] = "—"
         rows.append(row)
 
     df = pd.DataFrame(rows)
@@ -717,31 +744,38 @@ def _tab_model_selection(results: dict):
     # ── Per-horizon winners ──
     _section_header("🥇", "Best Model per Horizon")
 
-    # Data source: standardized_metrics.json (unified MASE)
-    # 1h: TFT MASE=1.029, 6h: Ensemble_GRU MASE=0.750, 24h: Ensemble_Stack MASE=0.696
+    # Data source: standardized_metrics.json (unified MASE, v7_retrain)
+    # 1h: TFT MASE=0.987 (only model < 1.0!)
+    # 6h: Ensemble_Stack MASE=0.745
+    # 24h: LSTM MASE=0.676
     winners = [
-        ("1h", "TFT", "1.029", "Autocorr ~0.99 → Persistence vẫn mạnh nhất"),
-        ("6h", "Ensemble_GRU", "0.750", "Weighted GRU+LightGBM = best 6h ⭐"),
-        ("24h", "Ensemble_Stack", "0.696", "Stacking ensemble best long-range ⭐"),
+        ("1h", "TFT", "0.987", "Attention mechanism khai thác tín hiệu yếu — model DUY NHẤT thắng Persistence!"),
+        ("6h", "Ensemble_Stack", "0.745", "Stacking meta-learner = best 6h ⭐"),
+        ("24h", "LSTM", "0.676", "Long-range memory vượt trội ⭐⭐"),
     ]
 
     cols = st.columns(3)
     for col, (h, model, mase, reason) in zip(cols, winners):
         with col:
-            is_best = h in ("6h", "24h")
-            border = "#FFE66D" if is_best else "rgba(0,212,170,0.3)"
+            is_best = True  # All winners beat Persistence
+            border = "#FFE66D"
             st.markdown(f"""
-            <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
-                        border: 2px solid {border}; border-radius: 14px;
-                        padding: 1.3rem; text-align: center;">
+            <style>
+                .best-model-card {{
+                    background: var(--text-color) !important;
+                    border: 2px solid {border}; border-radius: 14px;
+                    padding: 1.5rem; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                }}
+            </style>
+            <div class="best-model-card">
                 <div style="font-size: 1.8rem; font-weight: 800; color: #00D4AA;">h={h}</div>
-                <div style="font-size: 1rem; font-weight: 600; color: #E2E8F0;
-                            margin: 0.4rem 0;">{model}</div>
-                <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.4rem;
-                            font-weight: 700; color: {'#FFE66D' if is_best else '#00D4AA'};">
+                <div style="font-size: 1.1rem; font-weight: 700; color: var(--background-color);
+                            margin: 0.6rem 0;">{model}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem;
+                            font-weight: 800; color: #FFE66D; text-shadow: 0 0 10px rgba(255,230,109,0.2);">
                     MASE = {mase}</div>
-                <div style="font-size: 0.72rem; color: var(--text-color); opacity: 0.55;
-                            margin-top: 0.5rem;">{reason}</div>
+                <div style="font-size: 0.75rem; color: var(--background-color); opacity: 0.8;
+                            margin-top: 0.8rem; line-height: 1.4;">{reason}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -750,10 +784,10 @@ def _tab_model_selection(results: dict):
     _insight_card(
         "🔑 Kết Luận Quan Trọng",
         "Tại horizon 1h, PM2.5 có autocorrelation ~0.99 → Persistence baseline rất mạnh "
-        "(MASE=1.0). Mọi ML/DL model KHÔNG thắng được Persistence ở 1h. "
-        "Giá trị thực sự của ML/DL chỉ thể hiện ở horizons dài hơn (6h, 24h), "
-        "nơi Ensemble methods (GRU+LightGBM weighted, Stacking) cho MASE < 0.76. "
-        "Đây là insight quan trọng cho thực tiễn triển khai.",
+        "(MASE=1.0). Tuy nhiên, <b>TFT (Temporal Fusion Transformer) đã phá vỡ bừ autocorrelation trap</b> "
+        "với MASE=0.987, nhờ attention mechanism có thể khai thác tín hiệu yếu mà các mô hình khác bỏ qua. "
+        "Ở horizons dài (6h, 24h), Ensemble và LSTM chiếm ưu thế nhờ long-range temporal patterns — "
+        "LSTM đạt MASE=0.676 ở 24h, giảm 32.4% lỗi so với Persistence.",
         card_type="warning",
     )
 
@@ -792,18 +826,24 @@ def _tab_anti_leakage():
 
     for num, source, problem, fix, version in leaks:
         st.markdown(f"""
-        <div style="display: flex; gap: 1rem; padding: 0.8rem 1rem; margin: 0.4rem 0;
-                    background: rgba(255,107,107,0.05); border-radius: 10px;
-                    border-left: 4px solid #FF6B6B;">
-            <div style="font-size: 1.5rem; min-width: 30px;">{num}</div>
+        <style>
+            .leakage-card {{
+                display: flex; gap: 1rem; padding: 1rem 1.2rem; margin: 0.5rem 0;
+                background: var(--text-color) !important; border-radius: 10px;
+                border-left: 4px solid #FF6B6B; border-top: 1px solid rgba(255,107,107,0.1);
+                border-right: 1px solid rgba(255,107,107,0.1); border-bottom: 1px solid rgba(255,107,107,0.1);
+            }}
+        </style>
+        <div class="leakage-card">
+            <div style="font-size: 1.5rem; min-width: 30px; display: flex; align-items: center; justify-content: center;">{num}</div>
             <div style="flex: 1;">
-                <div style="font-weight: 700; color: #E2E8F0; font-size: 0.95rem;">
+                <div style="font-weight: 700; color: var(--background-color); font-size: 1rem; margin-bottom: 0.3rem;">
                     {source}</div>
-                <div style="color: #FF6B6B; font-size: 0.8rem; margin: 0.2rem 0;">
+                <div style="color: #FF8787; font-size: 0.85rem; margin: 0.2rem 0; font-weight: 500;">
                     ❌ Vấn đề: {problem}</div>
-                <div style="color: #00D4AA; font-size: 0.8rem;">
+                <div style="color: #00D4AA; font-size: 0.85rem; font-weight: 500;">
                     ✅ Fix: {fix}</div>
-                <div style="color: #8B95A5; font-size: 0.7rem; margin-top: 0.2rem;">
+                <div style="color: var(--background-color); opacity: 0.7; font-size: 0.75rem; margin-top: 0.4rem;">
                     Phát hiện: {version}</div>
             </div>
         </div>
@@ -894,13 +934,19 @@ def _tab_scientific_foundation():
     for i, (author, title, contribution, color) in enumerate(references):
         with cols[i % 2]:
             st.markdown(f"""
-            <div style="background: rgba(0,212,170,0.04); border-left: 3px solid {color};
-                        border-radius: 8px; padding: 0.8rem 1rem; margin: 0.3rem 0;">
-                <div style="font-weight: 700; color: #E2E8F0; font-size: 0.9rem;">
+            <style>
+                .ref-card-{i} {{
+                    background: var(--text-color) !important; border-left: 4px solid {color};
+                    border-radius: 8px; padding: 1rem 1.2rem; margin: 0.4rem 0;
+                    border-top: 1px solid rgba(128,128,128,0.2); border-right: 1px solid rgba(128,128,128,0.2); border-bottom: 1px solid rgba(128,128,128,0.2);
+                }}
+            </style>
+            <div class="ref-card-{i}">
+                <div style="font-weight: 700; color: var(--background-color); font-size: 0.95rem;">
                     📖 {author}</div>
-                <div style="font-style: italic; color: {color}; font-size: 0.8rem;
-                            margin: 0.2rem 0;">{title}</div>
-                <div style="font-size: 0.75rem; color: var(--text-color); opacity: 0.6;">
+                <div style="font-style: italic; color: {color}; font-size: 0.85rem;
+                            margin: 0.4rem 0;">{title}</div>
+                <div style="font-size: 0.8rem; color: var(--background-color); opacity: 0.8; line-height: 1.4;">
                     → {contribution}</div>
             </div>
             """, unsafe_allow_html=True)

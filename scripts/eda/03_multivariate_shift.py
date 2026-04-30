@@ -18,12 +18,15 @@ DATA_PATH = PROJECT_ROOT / "dataset" / "interim" / "cleaned_hourly.csv"
 OUTPUT_DIR = PROJECT_ROOT / "research" / "eda" / "visualizations"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# Styling
-plt.style.use("seaborn-v0_8-whitegrid")
+# VTF: Centralized theme (Light mode for publication)
+sys.path.insert(0, str(PROJECT_ROOT))
+from src.viz.theme import apply_mpl_theme, annotation_bbox
+
+apply_mpl_theme("light")
 sns.set_context("talk")
 PRIMARY_COLOR = "#007AFF"
 SECONDARY_COLOR = "#FF9500"
-TEXT_COLOR = "#1C1C1E"
+TEXT_COLOR = "#373737"
 
 
 def plot_rolling_correlation(df: pd.DataFrame):
@@ -58,8 +61,7 @@ def plot_rolling_correlation(df: pd.DataFrame):
         "Làm Machine Learning khó bắt được quy luật tĩnh."
     )
     # Put text at bottom left
-    props = {"boxstyle": "round", "facecolor": "white", "alpha": 0.9, "edgecolor": "gray"}
-    ax.text(0.02, 0.05, text, transform=ax.transAxes, fontsize=11, verticalalignment="bottom", bbox=props)
+    ax.text(0.02, 0.05, text, transform=ax.transAxes, fontsize=11, verticalalignment="bottom", bbox=annotation_bbox("light"))
 
     plt.tight_layout()
     plt.savefig(OUTPUT_DIR / "03a_rolling_correlation.png", dpi=300)

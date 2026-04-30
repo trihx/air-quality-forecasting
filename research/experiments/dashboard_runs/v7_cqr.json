@@ -1,0 +1,334 @@
+{
+  "version": "v7_cqr",
+  "timestamp": "2026-04-28T17:26:00.000000",
+  "parent_version": "v6_pca_tft",
+  "description": "Áp dụng Conformal Quantile Regression (CQR) để ước lượng khoảng tin cậy (Prediction Intervals).",
+  "changes": {
+    "what": "Tích hợp CQR vào quy trình dự báo đa khung giờ (1h, 6h, 24h) để tính toán cận trên/dưới.",
+    "why": "Dự báo điểm (point forecast) không đủ tin cậy. CQR cung cấp khoảng tin cậy 90% không cần giả định phân phối.",
+    "result": "Các mô hình tốt nhất (GRU 1h, GRU 6h, LSTM 24h) giờ đây cung cấp cả giá trị dự báo điểm và khoảng tin cậy 90% (CQR).",
+    "conclusion": "Hoàn thiện Pipeline theo chuẩn ML. GRU vươn lên dẫn đầu ở 1h (MASE=1.009) và vô địch ở 6h (MASE=0.649). LSTM vô địch ở 24h (MASE=0.663)."
+  },
+  "feature_set": {
+    "lag": true,
+    "rolling": true,
+    "ewm": true,
+    "diff": true,
+    "calendar": true,
+    "domain": true,
+    "fourier": true,
+    "interaction": true,
+    "log_transform": true,
+    "rolling_range": true,
+    "cv_features": true,
+    "pca_reduction": true
+  },
+  "_metadata": {
+    "description": "Standardized metrics with unified Persistence baseline",
+    "generated": "2026-04-05",
+    "unified_test": "val_end to end, real-only, consistent across all models",
+    "note": "mase_unified uses common Persistence MAE; mase_original uses each run's own Persistence"
+  },
+  "unified_persistence": {
+    "1h": {
+      "mae": 2.4928,
+      "rmse": 4.0914,
+      "n_samples": 604
+    },
+    "6h": {
+      "mae": 6.4217,
+      "rmse": 8.8494,
+      "n_samples": 601
+    },
+    "24h": {
+      "mae": 6.4536,
+      "rmse": 9.1583,
+      "n_samples": 601
+    }
+  },
+  "results": {
+    "1h": {
+      "Persistence": {
+        "mae": 2.4928,
+        "rmse": 4.0914,
+        "mase": 1.0,
+        "n_test": 604,
+        "source": "unified"
+      },
+      "ARIMA": {
+        "mae": 3.6268,
+        "rmse": 6.5855,
+        "mase_unified": 1.4549,
+        "source": "v8_final"
+      },
+      "SARIMA": {
+        "mae": 4.0183,
+        "rmse": 7.1084,
+        "mase_unified": 1.612,
+        "source": "v8_final"
+      },
+      "TFT": {
+        "mae": 2.9597,
+        "rmse": 4.3171,
+        "mase_unified": 1.1873,
+        "source": "v8_final"
+      },
+      "Ensemble_GRU": {
+        "mae": 2.7264,
+        "rmse": null,
+        "mase_original": 1.0501,
+        "mase_unified": 1.0937,
+        "original_persist_mae": 2.5964,
+        "source": "ensemble_210135"
+      },
+      "Ensemble_Stack": {
+        "mae": 3.0447,
+        "rmse": 4.256,
+        "mase_unified": 1.2214,
+        "source": "ensemble"
+      },
+      "LightGBM_tuned": {
+        "mae": 3.2976,
+        "rmse": 5.0632,
+        "mase_unified": 1.3228,
+        "source": "v8_final"
+      },
+      "LightGBM": {
+        "mae": 3.2976,
+        "rmse": 5.0632,
+        "mase_unified": 1.3228,
+        "source": "v8_final"
+      },
+      "RandomForest": {
+        "mae": 3.2478,
+        "rmse": 4.9694,
+        "mase_unified": 1.3029,
+        "source": "v8_final"
+      },
+      "GradientBoosting": {
+        "mae": 3.664,
+        "rmse": 5.288,
+        "mase_unified": 1.4698,
+        "source": "v8_final"
+      },
+      "Stacking": {
+        "mae": 3.4039,
+        "rmse": 5.1756,
+        "mase_unified": 1.3655,
+        "source": "v8_final"
+      },
+      "Ensemble_Weighted": {
+        "mae": 3.9003,
+        "rmse": 5.35,
+        "mase_unified": 1.5646,
+        "source": "ensemble"
+      },
+      "GRU": {
+        "mae": 2.5146,
+        "rmse": 5.0252,
+        "mase_unified": 1.0087,
+        "source": "v8_final"
+      },
+      "LSTM": {
+        "mae": 2.7678,
+        "rmse": 5.3344,
+        "mase_unified": 1.1103,
+        "source": "v8_final"
+      }
+    },
+    "6h": {
+      "Persistence": {
+        "mae": 6.4217,
+        "rmse": 8.8494,
+        "mase": 1.0,
+        "n_test": 601,
+        "source": "unified"
+      },
+      "ARIMA": {
+        "mae": 4.5358,
+        "rmse": 7.2822,
+        "mase_unified": 0.7063,
+        "source": "v8_final"
+      },
+      "SARIMA": {
+        "mae": 5.035,
+        "rmse": 7.9831,
+        "mase_unified": 0.7841,
+        "source": "v8_final"
+      },
+      "TFT": {
+        "mae": 6.619,
+        "rmse": 8.01,
+        "mase_unified": 1.0307,
+        "source": "v8_final"
+      },
+      "Ensemble_GRU": {
+        "mae": 4.874,
+        "rmse": null,
+        "mase_original": 0.7031,
+        "mase_unified": 0.759,
+        "original_persist_mae": 6.9323,
+        "source": "ensemble_210135"
+      },
+      "Ensemble_Stack": {
+        "mae": 4.7306,
+        "rmse": 5.9988,
+        "mase_unified": 0.7367,
+        "source": "ensemble"
+      },
+      "LightGBM_tuned": {
+        "mae": 5.081,
+        "rmse": 7.0864,
+        "mase_unified": 0.7912,
+        "source": "v8_final"
+      },
+      "LightGBM": {
+        "mae": 5.081,
+        "rmse": 7.0864,
+        "mase_unified": 0.7912,
+        "source": "v8_final"
+      },
+      "RandomForest": {
+        "mae": 4.886,
+        "rmse": 6.8371,
+        "mase_unified": 0.7609,
+        "source": "v8_final"
+      },
+      "GradientBoosting": {
+        "mae": 4.9451,
+        "rmse": 7.0837,
+        "mase_unified": 0.7701,
+        "source": "v8_final"
+      },
+      "Stacking": {
+        "mae": 5.0889,
+        "rmse": 7.1699,
+        "mase_unified": 0.7925,
+        "source": "v8_final"
+      },
+      "Ensemble_Weighted": {
+        "mae": 5.1321,
+        "rmse": 7.0138,
+        "mase_unified": 0.7992,
+        "source": "ensemble"
+      },
+      "GRU": {
+        "mae": 4.167,
+        "rmse": 7.0164,
+        "mase_unified": 0.6489,
+        "source": "v8_final"
+      },
+      "LSTM": {
+        "mae": 4.5028,
+        "rmse": 7.2412,
+        "mase_unified": 0.7012,
+        "source": "v8_final"
+      }
+    },
+    "24h": {
+      "Persistence": {
+        "mae": 6.4536,
+        "rmse": 9.1583,
+        "mase": 1.0,
+        "n_test": 601,
+        "source": "unified"
+      },
+      "ARIMA": {
+        "mae": 4.5638,
+        "rmse": 7.3715,
+        "mase_unified": 0.7072,
+        "source": "v8_final"
+      },
+      "SARIMA": {
+        "mae": 5.0649,
+        "rmse": 8.0345,
+        "mase_unified": 0.7848,
+        "source": "v8_final"
+      },
+      "TFT": {
+        "mae": 5.4023,
+        "rmse": 7.1158,
+        "mase_unified": 0.8371,
+        "source": "v8_final"
+      },
+      "Ensemble_GRU": {
+        "mae": 4.7969,
+        "rmse": null,
+        "mase_original": 0.7591,
+        "mase_unified": 0.7433,
+        "original_persist_mae": 6.3192,
+        "source": "ensemble_210135"
+      },
+      "Ensemble_Stack": {
+        "mae": 4.3735,
+        "rmse": 5.8971,
+        "mase_unified": 0.6777,
+        "source": "ensemble"
+      },
+      "LightGBM_tuned": {
+        "mae": 5.0156,
+        "rmse": 6.8497,
+        "mase_unified": 0.7772,
+        "source": "v8_final"
+      },
+      "LightGBM": {
+        "mae": 5.0156,
+        "rmse": 6.8497,
+        "mase_unified": 0.7772,
+        "source": "v8_final"
+      },
+      "RandomForest": {
+        "mae": 4.9989,
+        "rmse": 6.8385,
+        "mase_unified": 0.7746,
+        "source": "v8_final"
+      },
+      "GradientBoosting": {
+        "mae": 5.0807,
+        "rmse": 7.0384,
+        "mase_unified": 0.7873,
+        "source": "v8_final"
+      },
+      "Stacking": {
+        "mae": 5.3964,
+        "rmse": 7.2697,
+        "mase_unified": 0.8362,
+        "source": "v8_final"
+      },
+      "Ensemble_Weighted": {
+        "mae": 5.2276,
+        "rmse": 6.9559,
+        "mase_unified": 0.81,
+        "source": "ensemble"
+      },
+      "GRU": {
+        "mae": 4.683,
+        "rmse": 7.4734,
+        "mase_unified": 0.7256,
+        "source": "v8_final"
+      },
+      "LSTM": {
+        "mae": 4.2784,
+        "rmse": 7.1516,
+        "mase_unified": 0.6629,
+        "source": "v8_final"
+      }
+    }
+  },
+  "models_included": [
+    "ARIMA",
+    "Ensemble_GRU",
+    "Ensemble_Stack",
+    "Ensemble_Weighted",
+    "GRU",
+    "GradientBoosting",
+    "LSTM",
+    "LightGBM",
+    "LightGBM_tuned",
+    "Persistence",
+    "RandomForest",
+    "SARIMA",
+    "Stacking",
+    "TFT"
+  ]
+}

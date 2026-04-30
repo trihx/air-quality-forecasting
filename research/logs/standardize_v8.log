@@ -1,0 +1,34 @@
+======================================================================
+STANDARDIZE BASELINE & BUILD AVP CACHE
+======================================================================
+2026-04-29 20:35:06.833 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-04-29 20:35:06.833 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-04-29 20:35:06.953 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-04-29 20:35:06.968 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-29 20:35:06.968 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-04-29 20:35:06.986 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-04-29 20:35:06.989 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-04-29 20:35:06.991 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-04-29 20:35:06.994 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-04-29 20:35:06.999 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-04-29 20:35:07.002 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-04-29 20:35:07.002 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-04-29 20:35:07.003 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-04-29 20:35:07.011 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+2026-04-29 20:35:18.829 | INFO     | src.data.imputer:impute_missing_data:109 - Imputation [hybrid]: 7,743 rows (7,112 real + 631 imputed, 19,810 dropped)
+
+  Unified Persistence baselines:
+    1h: MAE=2.4928, RMSE=4.0914, n=604
+    6h: MAE=6.4217, RMSE=8.8494, n=601
+    24h: MAE=6.4536, RMSE=9.1583, n=601
+
+  Sources loaded:
+    LightGBM: True, Sklearn: True, ARIMA: True
+    DL: True, TFT: True, Ensemble: True
+Traceback (most recent call last):
+  File "/Users/trihx/Desktop/time-series-forecasting/scripts/standardize_metrics.py", line 336, in <module>
+    main()
+  File "/Users/trihx/Desktop/time-series-forecasting/scripts/standardize_metrics.py", line 150, in main
+    new_mase = round(orig["mae"] / persist_mae, 4)
+                     ~~~~^^^^^^^
+TypeError: list indices must be integers or slices, not str

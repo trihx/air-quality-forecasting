@@ -1,0 +1,24 @@
+# PM2.5 Forecasting — Base Style (theme-neutral)
+# Reference: Shen (2023), SciencePlots, Matplotlib docs
+
+font.family: sans-serif
+font.sans-serif: Inter, Arial, DejaVu Sans
+font.size: 10
+axes.titlesize: 13
+axes.labelsize: 11
+xtick.labelsize: 9
+ytick.labelsize: 9
+legend.fontsize: 9
+figure.titlesize: 15
+
+lines.linewidth: 1.5
+lines.markersize: 5
+
+axes.grid: True
+grid.alpha: 0.25
+axes.spines.top: False
+axes.spines.right: False
+
+figure.dpi: 150
+savefig.bbox: tight
+savefig.pad_inches: 0.1

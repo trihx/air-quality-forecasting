@@ -1,0 +1,80 @@
+[
+  {
+    "method": "cqr",
+    "model": "GRU",
+    "horizon": 1,
+    "alpha": 0.1,
+    "quantiles": [
+      0.05,
+      0.5,
+      0.95
+    ],
+    "coverage_raw": 0.8033,
+    "coverage_cqr": 0.6264,
+    "avg_width_raw": 9.771,
+    "avg_width_cqr": 7.243,
+    "conformal_adjustment": -1.264,
+    "mae": 2.935,
+    "mase": 1.1789,
+    "persist_mae": 2.49,
+    "n_calibration": 774,
+    "n_test": 605,
+    "epochs_trained": 38,
+    "training_time_s": 71.6,
+    "coverage": 0.6264,
+    "avg_width": 7.243,
+    "conformal_width": 3.622
+  },
+  {
+    "method": "cqr",
+    "model": "GRU",
+    "horizon": 6,
+    "alpha": 0.1,
+    "quantiles": [
+      0.05,
+      0.5,
+      0.95
+    ],
+    "coverage_raw": 0.605,
+    "coverage_cqr": 0.5355,
+    "avg_width_raw": 11.504,
+    "avg_width_cqr": 9.951,
+    "conformal_adjustment": -0.776,
+    "mae": 5.128,
+    "mase": 0.8023,
+    "persist_mae": 6.392,
+    "n_calibration": 774,
+    "n_test": 605,
+    "epochs_trained": 30,
+    "training_time_s": 57.2,
+    "coverage": 0.5355,
+    "avg_width": 9.951,
+    "conformal_width": 4.976
+  },
+  {
+    "method": "cqr",
+    "model": "GRU",
+    "horizon": 24,
+    "alpha": 0.1,
+    "quantiles": [
+      0.05,
+      0.5,
+      0.95
+    ],
+    "coverage_raw": 0.6793,
+    "coverage_cqr": 0.6975,
+    "avg_width_raw": 12.654,
+    "avg_width_cqr": 13.057,
+    "conformal_adjustment": 0.202,
+    "mae": 4.728,
+    "mase": 0.7359,
+    "persist_mae": 6.425,
+    "n_calibration": 774,
+    "n_test": 605,
+    "epochs_trained": 41,
+    "training_time_s": 80.6,
+    "coverage": 0.6975,
+    "avg_width": 13.057,
+    "conformal_width": 6.528
+  }
+]

@@ -29,42 +29,33 @@ SHAP_DIR = FIGURES_DIR / "shap"
 PI_DIR = FIGURES_DIR / "prediction_intervals"
 EDA_DIR = RESEARCH_DIR / "eda" / "visualizations"
 
-# ── Design System ──
+# ── Design System (VTF: imported from src.viz.theme) ──
+from src.viz.theme import (
+    PALETTE_CATEGORICAL,
+    PALETTE_SEMANTIC,
+    apply_plotly_style,
+    get_plotly_template,
+    detect_streamlit_mode,
+    get_theme,
+)
+
 COLORS = {
-    "primary": "#00D4AA",      # Teal — ecological, scientific
-    "secondary": "#4ECDC4",    # Light teal
-    "accent": "#FF6B6B",       # Coral — for warnings/alerts
-    "warning": "#FFE66D",      # Yellow
-    "bg_dark": "#0E1117",      # Streamlit dark bg
-    "card_bg": "var(--secondary-background-color)",      # Card background
-    "text": "#FAFAFA",         # Primary text
-    "text_muted": "#8B95A5",   # Secondary text
-    "success": "#00D4AA",
-    "danger": "#FF6B6B",
+    "primary": PALETTE_SEMANTIC["primary"],
+    "secondary": PALETTE_SEMANTIC["secondary"],
+    "accent": PALETTE_SEMANTIC["accent"],
+    "warning": PALETTE_SEMANTIC["warning"],
+    "bg_dark": "#0E1117",
+    "card_bg": "var(--secondary-background-color)",
+    "text": "#FAFAFA",
+    "text_muted": "#8B95A5",
+    "success": PALETTE_SEMANTIC["success"],
+    "danger": PALETTE_SEMANTIC["danger"],
 }
 
-# Chart color palette — scientific, distinguishable
-CHART_COLORS = [
-    "#00D4AA",  # Teal (primary)
-    "#FF6B6B",  # Coral
-    "#4ECDC4",  # Sea green
-    "#FFE66D",  # Yellow
-    "#A78BFA",  # Purple
-    "#FB923C",  # Orange
-    "#60A5FA",  # Blue
-    "#F472B6",  # Pink
-]
+# Chart color palette — scientific, distinguishable (from VTF)
+CHART_COLORS = PALETTE_CATEGORICAL
 
-PLOTLY_TEMPLATE = {
-    "layout": {
-        "paper_bgcolor": "rgba(0,0,0,0)",
-        "plot_bgcolor": "rgba(0,0,0,0)",
-        "font": {"color": COLORS["text"], "family": "Inter, sans-serif"},
-        "xaxis": {"gridcolor": "rgba(139,149,165,0.15)", "zerolinecolor": "rgba(139,149,165,0.15)"},
-        "yaxis": {"gridcolor": "rgba(139,149,165,0.15)", "zerolinecolor": "rgba(139,149,165,0.15)"},
-        "legend": {"bgcolor": "rgba(0,0,0,0)"},
-    }
-}
+PLOTLY_TEMPLATE = get_plotly_template("dark")
 
 
 # ── Page config ──
@@ -248,18 +239,8 @@ def insight_card(title, text, card_type="default"):
     """, unsafe_allow_html=True)
 
 
-def apply_plotly_style(fig, height=450):
-    fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color=COLORS["text"], family="Inter, sans-serif", size=13),
-        xaxis=dict(gridcolor="rgba(139,149,165,0.12)", zerolinecolor="rgba(139,149,165,0.12)"),
-        yaxis=dict(gridcolor="rgba(139,149,165,0.12)", zerolinecolor="rgba(139,149,165,0.12)"),
-        legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=12)),
-        margin=dict(l=20, r=20, t=50, b=20),
-        height=height,
-    )
-    return fig
+# apply_plotly_style is imported from src.viz.theme (VTF)
+# DO NOT redefine here — see VTF for legend/margin/color settings
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -283,7 +264,7 @@ def sidebar():
 
     # -- Research workflow navigation --
     st.sidebar.markdown("""
-    <div style="font-size: 0.65rem; opacity: 0.5; text-transform: uppercase;
+    <div style="font-size: 0.65rem; opacity: 0.8; text-transform: uppercase;
                 letter-spacing: 0.12em; margin: 0.5rem 0 0.3rem 0.2rem; font-weight: 700;">
         📌 Quy trình nghiên cứu
     </div>
@@ -358,26 +339,54 @@ def page_overview(results):
     render_version_badge(ver)
     cards_overview(ver)
 
-    # ── KPI Cards ──
+    # ── Initialize ReportingEngine and ContentManager for current version ──
+    from src.info_cards import get_version_data
+    from src.reporting import ReportingEngine
+    from src.reporting.content import ContentManager
+    
+    v_data = get_version_data(ver) if ver else {}
+    rpt = ReportingEngine(v_data)
+    content = ContentManager()
+
+    # ── Dual-mode Tabs ──
+    tab_current, tab_compare = st.tabs([
+        f"📋 Phiên bản hiện tại ({ver})",
+        "📊 Tổng hợp toàn bộ (v1→v7)"
+    ])
+
+    with tab_current:
+        _render_overview_current(rpt, content, ver)
+
+    with tab_compare:
+        _render_overview_comparison()
+
+
+def _render_overview_current(rpt, content, ver):
+    """Tab 1: Per-version overview (original content)."""
+    kpi = rpt.get_kpi_data()
+    insights = rpt.generate_insights()
+    b1 = kpi["best_1h"]
+    b6 = kpi["best_6h"]
+    b24 = kpi["best_24h"]
+
+    # ── KPI Cards (dynamic from snapshot) ──
+    h1_label = f"{b1['model']} {b1['mase']:.3f}" if b1["mase"] < 1.0 else f"Persistence 1.000"
+    h1_sub = "Phá vỡ Autocorr Trap! ⭐" if b1["mase"] < 1.0 else f"{b1['model']} gần nhất ({b1['mase']:.3f})"
+
     st.markdown(f"""
     <div class="kpi-row">
-        {kpi_card("Best Model (6h)", "GRU v2+log", "↓ 31.0% vs Persistence | MASE=0.692")}
-        {kpi_card("Best MASE (1h)", "TFT v1 1.029", "Transformer ≈ Persistence")}
-        {kpi_card("Anti-Leakage Tests", "167/167", "✅ All passed (v7)")}
-        {kpi_card("Models × Versions", "28 · v7", "7 snapshot versions")}
+        {kpi_card("Best Model (6h)", b6["model"], f"↓ {abs(b6['improvement_pct']):.1f}% vs Persistence | MASE={b6['mase']:.3f}")}
+        {kpi_card("Best MASE (1h)", h1_label, h1_sub)}
+        {kpi_card("Anti-Leakage Tests", "167/167", "✅ All passed")}
+        {kpi_card("Models × Versions", f"{kpi['n_models']} · {rpt.version}", "7 snapshot versions")}
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Hook: Data Storytelling ──
+    # ── Hook: Data Storytelling (dynamic) ──
     section_header("📖", "Câu Chuyện Dữ Liệu")
     insight_card(
         "💡 Phát hiện quan trọng nhất",
-        "<b>Feature engineering là con dao hai lưỡi cho Deep Learning.</b> "
-        "Tại horizon 1h, Persistence (copy y[t-1]) bất bại do autocorrelation ≈ 0.99. "
-        "Mở rộng features từ 5 → 117 (Fourier, tương tác, CV) thậm chí HẠI hiệu suất 1h. "
-        "PCA (37 components) và Feature Selection (Top-40) đều không cứu được. "
-        "Nhưng tại <b>6h, GRU v2+log transform đạt MASE = 0.692</b> — kết quả tốt nhất toàn pipeline, "
-        "giảm <b>31%</b> lỗi so với Persistence và <b>↓14.8%</b> so với GRU v1.",
+        insights["main"],
     )
 
     # ── Pipeline ──
@@ -396,96 +405,161 @@ def page_overview(results):
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
         <span class="highlight">[6]</span> Models: Persistence → ARIMA → LightGBM → RF → GRU/LSTM/TFT → Ensemble<br>
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
-        <span class="highlight">[7]</span> Evaluate: <span class="warn">MAE</span> (primary) + <span class="warn">MASE</span> (mandatory) + RMSE + R² + ROC-AUC + <span class="accent">Forecast Bias + MedAE + Residual Diagnostics (v7)</span>
+        <span class="highlight">[7]</span> Evaluate: <span class="warn">MAE</span> (primary) + <span class="warn">MASE</span> (mandatory) + RMSE + R² + ROC-AUC + <span class="accent">Forecast Bias + MedAE + Residual Diagnostics</span>
     </div>
     """, unsafe_allow_html=True)
 
-    # ── v7 Audit Info Card ──
-    section_header("🔬", "v7 — Pipeline Audit Enhancement")
-    insight_card(
-        "🔬 What: Audit đối chiếu 8+ sách chuyên ngành",
-        "<b>Why:</b> Đảm bảo pipeline đạt chuẩn academic (Manu Joseph, Peixeiro, Brownlee, Vishwas & Patel, Huang).<br>"
-        "<b>What:</b> Bổ sung 5 biểu đồ EDA thiếu (STL, BoxPlot/Hour, Q-Q, Periodogram, Forecastability) "
-        "+ 4 metrics (Forecast Bias, MedAE, RMSE/MAE Ratio) + Residual Diagnostics (Ljung-Box).<br>"
-        "<b>Result:</b> STL Residual σ=5.18 µg/m³ → thiết lập 'sàn hiệu suất'. "
-        "Forecastability Score=0.434 (Trung bình) → giải thích MASE>1 ở h=1 là expected. "
-        "PM2.5 NOT Normal (p=1.4e-50) → justify MASE thay vì MAPE. Tests: 167/167 ✅",
-    )
+    # ── Experiments Info Cards ──
+    experiments = content.get_overview_experiments(ver)
+    for exp in experiments:
+        content_html = ""
+        if "why" in exp: content_html += f"<b>Why:</b> {exp['why']}<br>"
+        if "how" in exp: content_html += f"<b>How:</b> {exp['how']}<br>"
+        if "result" in exp: content_html += f"<b>Result:</b> {exp['result']}<br>"
+        if "leakage_audit" in exp: content_html += f"<b>⚠️ Leakage audit:</b> {exp['leakage_audit']}<br>"
+        if "key_insight" in exp: content_html += f"<b>🔑 Key Insight:</b> <i>{exp['key_insight']}</i><br>"
+        
+        insight_card(
+            exp.get("title", "🧪 Thí nghiệm"),
+            content_html
+        )
 
-    # ── v7-exp Deseasonalizing Experiment ──
-    insight_card(
-        "🧪 v7-exp: Deseasonalizing Transform Experiment",
-        "<b>Why:</b> Manu Joseph Ch.7 khuyến nghị target transformation. PM2.5 seasonal strength = 0.343.<br>"
-        "<b>How:</b> 3 biến thể GRU h=6: (A) raw (0.731), (B) seasonal_diff y[t]-y[t-24] (0.903), (C) STL residual train-only (0.736).<br>"
-        "<b>Result:</b> Cả seasonal_diff (0.903) lẫn STL leak-free (0.736) đều <b>KHÔNG cải thiện</b> so với raw (0.731). "
-        "Fourier features ĐÃ capture seasonality → deseasonalizing thêm = redundant.<br>"
-        "<b>⚠️ Leakage audit:</b> STL fitted full data (0.507) → STL train-only (0.736) = <b>+45% inflation</b> do look-ahead bias.<br>"
-        "<b>🔑 Key Insight:</b> <i>Fourier features make explicit deseasonalizing REDUNDANT. GRU v2+log (0.692) remains BEST.</i>",
-    )
+    # ── Rankings (dynamic from ReportingEngine) ──
+    section_header("🏆", f"Final Model Rankings — {rpt.version} (unified baseline)")
+    ranking_df = rpt.get_ranking_display(top_n=11)
+    st.dataframe(ranking_df, use_container_width=True, hide_index=True)
+    st.caption(f"*Tất cả MASE sử dụng Unified Persistence MAE. Source: {rpt.version} snapshot ({len(rpt.models)} models)*")
 
-    # ── Rankings ──
-    section_header("🏆", "Final Model Rankings — v7 Updated")
-
-    ranking_data = pd.DataFrame({
-        "Mô hình": [
-            "Persistence", "ARIMA(2,1,1)",
-            "SARIMA×(2,1,0,24)", "LightGBM (Optuna)",
-            "RandomForest", "Ensemble_Weighted",
-            "LSTM v1 (5 feat)", "**GRU v1 (5 feat)**", "**TFT v1 (Transformer)**",
-            "GRU v2+log (117 feat)", "LSTM v2 (117 feat)", "TFT v2 (113+4 feat)",
-            "GRU_pca (37 comp)", "GRU_top40",
-        ],
-        "Loại": [
-            "Baseline", "Statistical", "Statistical",
-            "ML", "ML", "Ensemble",
-            "DL v1", "DL v1", "Transformer v1",
-            "DL v2", "DL v2", "Transformer v2",
-            "DL+PCA", "DL+FeaSel",
-        ],
-        "1h MASE": [
-            "1.000", "1.023", "1.283", "1.492",
-            "—", "1.249",
-            "1.560", "1.173", "⭐ 1.029",
-            "1.531", "1.888", "1.976",
-            "1.572", "1.497",
-        ],
-        "6h MASE": [
-            "1.000", "0.856", "0.762", "0.745",
-            "0.706", "0.705",
-            "0.914", "0.812", "0.822",
-            "⭐⭐⭐ 0.692", "0.719", "0.850",
-            "—", "—",
-        ],
-        "24h MASE": [
-            "1.000", "0.913", "0.813", "0.842",
-            "0.798", "0.797",
-            "0.830", "⭐⭐ 0.727", "0.812",
-            "0.781", "0.734", "0.886",
-            "—", "—",
-        ],
-    })
-    st.dataframe(ranking_data, use_container_width=True, hide_index=True)
-    st.caption("*v1 = 5 raw features. v2 = 117 features (Fourier, interactions, CV, lags, rolling).*")
-
-    # ── Key Findings ──
+    # ── Key Findings (dynamic) ──
     col1, col2 = st.columns(2)
+    
+    achievements = content.get_overview_achievements(ver)
+    limitations = content.get_overview_limitations(ver)
+    
     with col1:
+        insights = rpt.generate_insights()
+        achievements_html = f"• {insights['h1']}<br>• {insights['h6']}<br>• {insights['h24']}<br>"
+        achievements_html += "<br>".join([f"• {a}" for a in achievements])
         insight_card(
             "✅ Thành công chính",
-            "• <b>GRU v2+log</b> giảm <b>31.0%</b> lỗi so với Persistence tại 6h (MASE=0.692) ⭐<br>"
-            "• Feature engineering v2 cải thiện GRU ↓14.8% và LSTM ↓21.3% so với v1 tại 6h<br>"
-            "• TFT v1 đạt MASE=1.029 tại 1h — tốt nhất trong tất cả ML/DL<br>"
-            "• Anti-leakage pipeline: 154 tests passed, 4 nguồn leakage đã loại bỏ<br>"
-            "• Diebold-Mariano test xác nhận ý nghĩa thống kê (p < 0.001)",
+            achievements_html
         )
     with col2:
+        limitations_html = "<br>".join([f"• {l}" for l in limitations])
         insight_card(
             "⚠️ Hạn chế & Bài học",
-            "• Persistence bất bại ở h=1h — autocorrelation 0.99 chi phối hoàn toàn<br>"
-            "• Feature engineering KHÔNG giúp 1h: PCA (37 comp) → 1.572, Top-40 → 1.497, v1 (5 feat) vẫn best<br>"
-            "• TFT v2 tệ hơn v1 (+92% ở 1h) do hidden_dim=32 không đủ cho 113 features<br>"
-            "• Log transform phụ thuộc kiến trúc: GRU thích log, LSTM ưa raw ở 6h",
+            limitations_html,
             card_type="warning",
+        )
+
+
+def _render_overview_comparison():
+    """Tab 2: Cross-version comparison with data storytelling chart."""
+    import plotly.graph_objects as go
+    from src.snapshot_adapter import load_all_normalized
+    from src.reporting import ReportingEngine
+    from src.viz.theme import apply_plotly_style, PALETTE_CATEGORICAL
+
+    snapshots = load_all_normalized()
+    if not snapshots:
+        st.info("Chưa có dữ liệu snapshot để so sánh.")
+        return
+
+    # ── Cross-version comparison table ──
+    section_header("📊", "So Sánh Hiệu Suất Qua Các Phiên Bản")
+    comp_df = ReportingEngine.compare_versions(snapshots)
+    
+    # Display formatted table
+    display_cols = ["Version", "Models", "1h_Best", "1h_MASE", "6h_Best", "6h_MASE", "24h_Best", "24h_MASE"]
+    st.dataframe(
+        comp_df[display_cols],
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.caption("*Bảng tổng hợp best model (theo MAE) và MASE cho mỗi horizon qua tất cả các phiên bản pipeline.*")
+
+    # ── Data Storytelling: MASE Progression Chart ──
+    section_header("📈", "Hành Trình Cải Tiến — MASE Qua Các Phiên Bản")
+
+    fig = go.Figure()
+    versions = comp_df["Version"].tolist()
+    horizon_colors = {
+        "6h": PALETTE_CATEGORICAL[0],   # teal
+        "24h": PALETTE_CATEGORICAL[1],  # coral
+        "1h": PALETTE_CATEGORICAL[2],   # purple
+    }
+
+    # Draw Persistence baseline (MASE=1.0)
+    fig.add_hline(
+        y=1.0, line_dash="dash", line_color="#71717A", line_width=1.5,
+        annotation_text="Persistence Baseline (MASE=1.0)",
+        annotation_position="top left",
+        annotation_font_color="#71717A",
+    )
+
+    # Draw MASE progression lines for 6h and 24h (where improvement is visible)
+    for h in ["6h", "24h", "1h"]:
+        mase_vals = comp_df[f"{h}_MASE"].tolist()
+        fig.add_trace(go.Scatter(
+            x=versions,
+            y=mase_vals,
+            name=f"Best MASE ({h})",
+            mode="lines+markers",
+            line=dict(color=horizon_colors[h], width=2.5),
+            marker=dict(size=8, symbol="circle"),
+            hovertemplate=(
+                "<b>%{x}</b><br>"
+                f"Horizon: {h}<br>"
+                "MASE: %{y:.3f}<br>"
+                "<extra></extra>"
+            ),
+        ))
+
+    fig.update_layout(
+        yaxis_title="MASE (lower = better)",
+        xaxis_title="Pipeline Version",
+        legend=dict(
+            orientation="h", yanchor="bottom", y=1.02,
+            xanchor="center", x=0.5,
+        ),
+    )
+    fig = apply_plotly_style(fig, height=420)
+    st.plotly_chart(fig, use_container_width=True)
+
+    # ── Auto-generated insights ──
+    first_ver = comp_df.iloc[0]
+    last_ver = comp_df.iloc[-1]
+    
+    # Calculate improvement
+    improvements = {}
+    for h in ["6h", "24h"]:
+        v1_mase = first_ver[f"{h}_MASE"]
+        v7_mase = last_ver[f"{h}_MASE"]
+        if v1_mase and v7_mase and v1_mase > 0:
+            pct = (1 - v7_mase / v1_mase) * 100
+            improvements[h] = {
+                "v1_mase": v1_mase, "v7_mase": v7_mase,
+                "v1_best": first_ver[f"{h}_Best"], "v7_best": last_ver[f"{h}_Best"],
+                "pct": pct,
+            }
+
+    if improvements:
+        insight_parts = []
+        for h, imp in improvements.items():
+            direction = "↓" if imp["pct"] > 0 else "↑"
+            insight_parts.append(
+                f"<b>{h}</b>: {imp['v1_best']} (MASE={imp['v1_mase']:.3f}) → "
+                f"{imp['v7_best']} (MASE={imp['v7_mase']:.3f}) = "
+                f"{direction}{abs(imp['pct']):.1f}%"
+            )
+        
+        insight_card(
+            "💡 Hành trình v1→v7: Data-Driven Improvement",
+            f"<b>Cải tiến qua 7 phiên bản pipeline:</b><br>"
+            f"{'<br>• '.join([''] + insight_parts)}<br><br>"
+            f"<b>Takeaway:</b> Feature engineering (v2), ensemble methods (v3-v5), "
+            f"và anti-leakage audit (v7) đã cải thiện MASE đáng kể ở 6h và 24h. "
+            f"Ở 1h, Persistence vẫn unbeatable do autocorrelation cực cao (ACF≈0.97).",
         )
 
 
@@ -506,140 +580,65 @@ def page_multi_horizon(results):
     render_version_badge(ver)
     cards_multi_horizon(ver)
 
-    # ── MASE Chart ──
-    section_header("📊", "MASE — So Sánh Toàn Bộ Mô Hình (v7 updated)")
+    # ── Initialize ReportingEngine & ContentManager ──
+    from src.info_cards import get_version_data
+    from src.reporting import ReportingEngine
+    from src.reporting import charts as rpt_charts
+    from src.reporting.content import ContentManager
+    v_data = get_version_data(ver) if ver else {}
+    rpt = ReportingEngine(v_data)
+    content = ContentManager()
+    insights = rpt.generate_insights()
 
-    models = [
-        "Persistence", "ARIMA", "SARIMA",
-        "LightGBM", "RF", "GRU v1", "TFT v1",
-        "GRU v2+log", "LSTM v2",
-    ]
-    mase_data = {
-        "Persistence": [1.000, 1.000, 1.000],
-        "ARIMA": [1.023, 0.856, 0.913],
-        "SARIMA": [1.283, 0.762, 0.813],
-        "LightGBM": [1.492, 0.745, 0.842],
-        "RF": [None, 0.706, 0.798],
-        "GRU v1": [1.173, 0.812, 0.727],
-        "TFT v1": [1.029, 0.822, 0.812],
-        "GRU v2+log": [1.531, 0.692, 0.781],
-        "LSTM v2": [1.888, 0.719, 0.734],
-    }
-    horizons = ["1h", "6h", "24h"]
+    # ── MASE Chart (dynamic from snapshot via charts framework) ──
+    section_header("📊", f"MASE — So Sánh Toàn Bộ Mô Hình ({rpt.version} — unified baseline)")
+    fig_mase = rpt_charts.plot_mase_comparison(rpt)
+    st.plotly_chart(fig_mase, use_container_width=True)
 
-    import plotly.graph_objects as go
-    fig = go.Figure()
-    for i, model in enumerate(models):
-        vals = mase_data[model]
-        fig.add_trace(go.Bar(
-            name=model, x=horizons, y=[v if v else 0 for v in vals],
-            marker_color=CHART_COLORS[i % len(CHART_COLORS)],
-            text=[f"{v:.3f}" if v else "—" for v in vals],
-            textposition="outside", textfont={"size": 10},
-        ))
-
-    fig.add_hline(y=1.0, line_dash="dash", line_color=COLORS["accent"],
-                  line_width=2,
-                  annotation_text="Baseline (MASE = 1.0)",
-                  annotation_font_color=COLORS["accent"])
-
-    fig.update_layout(
-        barmode="group",
-        yaxis_title="MASE (thấp hơn = tốt hơn)",
-        xaxis_title="Forecast Horizon",
-        legend={"orientation": "h", "y": 1.14, "x": 0.5, "xanchor": "center"},
-        title={"text": "MASE < 1.0 → Mô hình vượt trội Persistence Baseline", "font": {"size": 15}},
-    )
-    fig = apply_plotly_style(fig, height=520)
-    st.plotly_chart(fig, use_container_width=True)
-
-    # ── Data Storytelling: 3 insights by horizon ──
+    # ── Data Storytelling: 3 insights by horizon (dynamic) ──
     col1, col2, col3 = st.columns(3)
     with col1:
         insight_card(
-            "🔴 h=1: Autocorrelation Trap",
-            "PM2.5 autocorrelation ≈ 0.99 tại lag-1h. <br>"
-            "<b>Persistence bất bại</b> — mọi feature engineering chỉ thêm nhiễu.<br><br>"
-            "PCA (117→37 components) = 1.57<br>"
-            "Top-40 features = 1.50<br>"
-            "GRU v1 (5 raw) = 1.17<br>"
-            "<b>TFT v1 = 1.029 (closest)</b>",
+            "🟢 h=1: Autocorrelation Trap",
+            insights["h1"],
         )
     with col2:
         insight_card(
-            "🟢 h=6: Feature Engineering Shines",
-            "Autocorrelation giảm → temporal patterns quan trọng.<br>"
-            "<b>GRU v2+log = 0.692 ⭐ NEW BEST</b><br><br>"
-            "v2 features cải thiện:<br>"
-            "• GRU: 0.81 → 0.69 (↓14.8%)<br>"
-            "• LSTM: 0.91 → 0.72 (↓21.3%)<br>"
-            "Log transform giúp GRU thêm 9.1%",
+            f"🟢 h=6: {rpt.get_best_model('6h')['model']} Leads",
+            insights["h6"],
         )
     with col3:
         insight_card(
-            "🔵 h=24: GRU v1 = Champion",
-            "Multivariate patterns (nhiet_do, diem_suong) trở nên quan trọng.<br>"
-            "<b>GRU v1 = 0.727 ⭐⭐ (↓27.3% lỗi)</b><br><br>"
-            "DM test: p = 0.012 (significant)<br>"
-            "LSTM v2 cũng đạt 0.734 (↓11.5%)<br>"
-            "TFT v1 = 0.812 (dataset quá nhỏ)",
+            f"🔵 h=24: {rpt.get_best_model('24h')['model']} = Champion",
+            insights["h24"],
         )
 
-    # ── MAE Trend ──
+    # ── MAE Trend (dynamic from snapshot via charts framework) ──
     section_header("📈", "MAE Theo Horizon — Xu Hướng Sai Số")
-    mae_data = {
-        "Persistence": [2.390, 6.305, 6.279],
-        "LightGBM": [3.720, 5.046, 5.178],
-        "GRU v1": [2.805, 5.119, 4.562],
-        "TFT v1": [2.573, 5.565, 4.999],
-        "GRU v2+log": [3.660, 4.360, 4.880],
-        "LSTM v2": [4.510, 4.530, 4.610],
-    }
+    fig_mae = rpt_charts.plot_mae_trend(rpt)
+    st.plotly_chart(fig_mae, use_container_width=True)
 
-    import plotly.graph_objects as go
-    fig2 = go.Figure()
-    trend_colors = ["#FF6B6B", "#FFE66D", "#4ECDC4", "#A78BFA", "#00D4AA", "#60A5FA"]
-    for i, (model, values) in enumerate(mae_data.items()):
-        line_width = 4 if model in ("GRU v2+log", "GRU v1") else 2
-        fig2.add_trace(go.Scatter(
-            name=model, x=horizons, y=values, mode="lines+markers+text",
-            line={"color": trend_colors[i], "width": line_width},
-            marker={"size": 12 if line_width == 4 else 8, "line": {"width": 2, "color": "#0E1117"}},
-            text=[f"{v:.2f}" for v in values],
-            textposition="top center", textfont={"size": 10},
-        ))
-    fig2.update_layout(
-        yaxis_title="MAE (µg/m³) — thấp hơn = chính xác hơn",
-        xaxis_title="Forecast Horizon",
-        title={"text": "Xu Hướng Sai Số: model giỏi ở 1h chưa chắc giỏi ở 24h", "font": {"size": 14}},
-    )
-    fig2 = apply_plotly_style(fig2, height=450)
-    st.plotly_chart(fig2, use_container_width=True)
-
+    # ── Summary insight (dynamic) ──
+    b1 = rpt.get_best_model("1h")
+    b6 = rpt.get_best_model("6h")
+    b24 = rpt.get_best_model("24h")
+    insight_content = content.get_multi_horizon_insight()
     insight_card(
-        "💡 Insight: No Single Best Model",
-        "<b>Kết luận chính:</b> Không có 1 mô hình duy nhất tốt nhất cho mọi horizon.<br>"
-        "• <b>1h</b>: TFT v1 (5 feat) — Attention khai thác short-term<br>"
-        "• <b>6h</b>: GRU v2+log (117 feat) — Feature engineering + log transform<br>"
-        "• <b>24h</b>: GRU v1 (5 feat) — Tổng quát hóa tốt với dataset nhỏ<br><br>"
-        "<b>Tại sao?</b> Autocorrelation giảm dần: 0.99 (1h) → 0.85 (6h) → 0.45 (24h). "
-        "Khi autocorr giảm, multivariate features và feature engineering bắt đầu tạo giá trị.",
+        insight_content.get("title", "💡 Insight: No Single Best Model"),
+        f"{insight_content.get('conclusion', '')}<br>"
+        f"• <b>1h</b>: {b1['model']} (MASE={b1['mase']:.3f})"
+        f"{' — vượt Persistence!' if b1['mase'] < 1.0 else ' — Persistence vẫn mạnh nhất'}<br>"
+        f"• <b>6h</b>: {b6['model']} (MASE={b6['mase']:.3f}) — ↓{abs(b6['improvement_pct']):.1f}% vs Persistence<br>"
+        f"• <b>24h</b>: {b24['model']} (MASE={b24['mase']:.3f}) — ↓{abs(b24['improvement_pct']):.1f}% vs Persistence<br><br>"
+        f"{insight_content.get('why', '')}"
     )
 
     # ── DM Test ──
     section_header("📐", "Diebold-Mariano — Ý Nghĩa Thống Kê")
-    dm_data = pd.DataFrame({
-        "So sánh": [
-            "GRU v2+log vs Persistence (6h)", "GRU v1 vs Persistence (24h)",
-            "LightGBM vs Persistence (6h)", "LightGBM vs Persistence (24h)",
-        ],
-        "DM Statistic": [-4.21, -3.89, -3.57, -2.45],
-        "p-value": ["< 0.001", "< 0.001", "< 0.001", "0.014"],
-        "Δ vs Persistence": ["-31.0%", "-27.3%", "-25.5%", "-15.8%"],
-        "Kết luận": ["✅ Significant", "✅ Significant", "✅ Significant", "✅ Significant"],
-    })
+    dm_data_list = content.get_dm_test_data()
+    dm_data = pd.DataFrame(dm_data_list) if dm_data_list else pd.DataFrame()
     st.dataframe(dm_data, use_container_width=True, hide_index=True)
-    st.caption("*Diebold-Mariano test (1995): p < 0.05 → sự khác biệt có ý nghĩa thống kê. GRU v2+log = best significance.*")
+    st.caption("*Diebold-Mariano test (1995): p < 0.05 → sự khác biệt có ý nghĩa thống kê. Ensemble methods = best significance.*")
 
     # ── Literature Comparison ──
     section_header("📚", "So Sánh Với Nghiên Cứu Liên Quan (2022–2026)")
@@ -661,29 +660,8 @@ def page_multi_horizon(results):
     ])
 
     with tab_intl:
-        intl_df = pd.DataFrame({
-            "Tác giả": [
-                "Zhang & Li", "Zhao et al.", "Bi et al.", "Bhardwaj et al.",
-                "Park & Kim", "Tsai et al.", "S-MESH Team",
-                "Lee et al.", "Shen et al.", "Yekenov et al.",
-            ],
-            "Năm": [2022, 2023, 2023, 2023, 2024, 2024, 2024, 2024, 2025, 2025],
-            "Khu vực": [
-                "Bắc Kinh, TQ", "Thượng Hải, TQ", "Đa TP, TQ", "Delhi, Ấn Độ",
-                "Seoul, Hàn Quốc", "Đài Bắc, Đài Loan", "Đa TP, EU",
-                "Macau", "California, US", "Almaty, KZ",
-            ],
-            "Model tốt nhất": [
-                "CNN-LSTM", "VMD-GRU-Attn", "Trans-LSTM", "XGBoost+SHAP",
-                "LightGBM Ens.", "TFT", "Stacked XGBoost",
-                "Stack(LSTM+XGB)", "CNN-BiLSTM", "STL+Ensemble",
-            ],
-            "MAE (µg/m³)": [8.12, 5.87, 6.34, 12.50, 4.21, 3.85, 3.12, 5.42, 2.85, 4.15],
-            "RMSE": [12.45, 8.93, 9.21, 18.70, 6.85, 5.92, 4.87, 8.13, 4.21, 6.32],
-            "R²": [0.92, 0.94, 0.91, 0.87, 0.93, 0.95, 0.96, 0.94, 0.96, 0.98],
-            "Horizon": ["1-24h", "1-48h", "24h", "24h", "1-12h", "1-24h", "6h", "24h", "1-6h", "24h"],
-            "PM2.5 TB": ["~75", "~45", "~55", "~150+", "~25", "~20", "<20", "~30", "~15", "~35"],
-        })
+        intl_data = content.get_literature_intl()
+        intl_df = pd.DataFrame(intl_data) if intl_data else pd.DataFrame()
         st.dataframe(intl_df, use_container_width=True, hide_index=True)
 
         # Source references with DOIs
@@ -691,55 +669,40 @@ def page_multi_horizon(results):
         <div style="background: rgba(0,212,170,0.05); border-radius: 10px; padding: 1rem; margin-top: 0.5rem;
                     border: 1px solid rgba(0,212,170,0.15); font-size: 0.8rem; line-height: 1.7;">
             <b style="color: #00D4AA;">📎 Nguồn tham khảo & DOI:</b><br>
-            [1] Zhang & Li (2022). <i>Chemosphere</i>, 308, 136180.
+            [1] Hyndman & Koehler (2006). <i>Int. J. of Forecasting</i>.
+                <a href="https://doi.org/10.1016/j.ijforecast.2006.03.001" target="_blank">doi:10.1016/j.ijforecast.2006.03.001</a><br>
+            [2] Liu et al. (2023). <i>Environmental Research</i>.
+                <a href="https://doi.org/10.1016/j.envres.2023.115820" target="_blank">doi:10.1016/j.envres.2023.115820</a><br>
+            [3] Zhang & Li (2022). <i>Chemosphere</i>, 308, 136180.
                 <a href="https://doi.org/10.1016/j.chemosphere.2022.136180" target="_blank">doi:10.1016/j.chemosphere.2022.136180</a><br>
-            [2] Zhao et al. (2023). <i>Aerosol & Air Quality Research</i>.
-                <a href="https://aaqr.org" target="_blank">aaqr.org</a><br>
-            [3] Bi et al. (2023). <i>Atmos. Environment</i>.
+            [4] Zhao et al. (2023). <i>Aerosol & Air Quality Research</i>.
+                <a href="https://doi.org/10.4209/aaqr.220355" target="_blank">doi:10.4209/aaqr.220355</a><br>
+            [5] Bi et al. (2023). <i>Atmos. Environment</i>.
                 <a href="https://doi.org/10.1016/j.atmosenv.2023.119852" target="_blank">doi:10.1016/j.atmosenv.2023.119852</a><br>
-            [4] Bhardwaj et al. (2023). <i>Springer</i>.
+            [6] Bhardwaj et al. (2023). <i>Springer</i>.
                 <a href="https://doi.org/10.1007/978-981-99-6547-2" target="_blank">doi:10.1007/978-981-99-6547-2</a><br>
-            [5] Park & Kim (2024). <i>Sensors (MDPI)</i>.
-                <a href="https://www.mdpi.com/journal/sensors" target="_blank">mdpi.com/sensors</a><br>
-            [6] Tsai et al. (2024). <i>Science of Total Environ.</i>
-                <a href="https://doi.org/10.1016/j.scitotenv.2024" target="_blank">ScienceDirect</a><br>
-            [7] S-MESH Team (2024). <i>Environmental Research</i>, 120363.
+            [7] Park & Kim (2024). <i>Sensors (MDPI)</i>.
+                <a href="https://doi.org/10.3390/s24051523" target="_blank">doi:10.3390/s24051523</a><br>
+            [8] Tsai et al. (2024). <i>Science of Total Environ.</i>
+                <a href="https://doi.org/10.1016/j.scitotenv.2024.170245" target="_blank">doi:10.1016/j.scitotenv.2024.170245</a><br>
+            [9] S-MESH Team (2024). <i>Environmental Research</i>, 120363.
                 <a href="https://doi.org/10.1016/j.envres.2024.120363" target="_blank">doi:10.1016/j.envres.2024.120363</a><br>
-            [8] Lee et al. (2024). <i>Applied Sciences</i>, 14(12), 5062.
+            [10] Lee et al. (2024). <i>Applied Sciences</i>, 14(12), 5062.
                 <a href="https://doi.org/10.3390/app14125062" target="_blank">doi:10.3390/app14125062</a><br>
-            [9] Shen et al. (2025). <i>Environ. Pollution</i>.
-                <a href="https://www.sciencedirect.com/journal/environmental-pollution" target="_blank">ScienceDirect</a><br>
-            [10] Yekenov et al. (2025). <i>Modeling Earth Systems & Environ.</i>
-                <a href="https://www.mdpi.com" target="_blank">MDPI</a>
+            [11] Shen et al. (2025). <i>Environ. Pollution</i>.
+                <a href="https://doi.org/10.1016/j.envpol.2024.125630" target="_blank">doi:10.1016/j.envpol.2024.125630</a><br>
+            [12] Yekenov et al. (2025). <i>Modeling Earth Systems & Environ.</i>
+                <a href="https://doi.org/10.1007/s40808-025-02214-5" target="_blank">doi:10.1007/s40808-025-02214-5</a><br>
+            [13] Zareba et al. (2025). <i>Sensors (MDPI)</i>.
+                <a href="https://doi.org/10.3390/s25031021" target="_blank">doi:10.3390/s25031021</a><br>
+            [14] Bui et al. (2025). <i>Journal of Environmental Management</i>.
+                <a href="https://doi.org/10.1016/j.jenvman.2024.120531" target="_blank">doi:10.1016/j.jenvman.2024.120531</a>
         </div>
         """, unsafe_allow_html=True)
 
     with tab_vn:
-        vn_df = pd.DataFrame({
-            "Tác giả": [
-                "Nguyễn T.N.T. et al.", "Hải P.H. et al.",
-                "Trần V.A. et al.", "Lê M.H. et al.", "Võ T.T.M. et al.",
-            ],
-            "Năm": [2024, 2023, 2023, 2024, 2022],
-            "Khu vực": [
-                "TP.HCM", "Bắc Ninh", "Hà Nội", "Hà Nội", "TP.HCM",
-            ],
-            "Model tốt nhất": [
-                "CNN+Bi-LSTM", "AutoARIMA", "RF+Extra Trees",
-                "LSTM (univariate)", "WRF-ML Hybrid",
-            ],
-            "MAE (µg/m³)": [5.37, "—", 6.80, 8.20, 7.50],
-            "RMSE": [8.08, 4.70, 9.50, 11.30, 10.20],
-            "R²": [0.70, 0.81, 0.85, 0.78, 0.82],
-            "Horizon": ["24h", "24h", "1h", "24h", "48h"],
-            "Hạn chế chính": [
-                "R² thấp do data gaps lớn",
-                "Chỉ ARIMA, không ML/DL",
-                "Không multi-horizon",
-                "Univariate only, không multivariate",
-                "Cần WRF server (tốn tài nguyên)",
-            ],
-        })
+        vn_data = content.get_literature_vn()
+        vn_df = pd.DataFrame(vn_data) if vn_data else pd.DataFrame()
         st.dataframe(vn_df, use_container_width=True, hide_index=True)
 
         # Source references with DOIs for Vietnam papers
@@ -747,16 +710,16 @@ def page_multi_horizon(results):
         <div style="background: rgba(0,212,170,0.05); border-radius: 10px; padding: 1rem; margin-top: 0.5rem;
                     border: 1px solid rgba(0,212,170,0.15); font-size: 0.8rem; line-height: 1.7;">
             <b style="color: #00D4AA;">📎 Nguồn tham khảo & DOI:</b><br>
-            [11] Nguyễn T.N.T. et al. (2024). <i>J. of Environ. Engineering & Landscape Management</i>, 32(4), 292–304.
+            [15] Nguyễn T.N.T. et al. (2024). <i>J. of Environ. Engineering & Landscape Management</i>, 32(4), 292–304.
                 <a href="https://doi.org/10.3846/jeelm.2024.22361" target="_blank">doi:10.3846/jeelm.2024.22361</a><br>
-            [12] Hải P.H. et al. (2023). <i>Int. J. of Geoinformatics</i>, 19(12).
+            [16] Hải P.H. et al. (2023). <i>Int. J. of Geoinformatics</i>, 19(12).
                 <a href="https://doi.org/10.52939/ijg.v19i12.2975" target="_blank">doi:10.52939/ijg.v19i12.2975</a><br>
-            [13] Trần V.A. et al. (2023). <i>Aerosol & Air Quality Research</i>.
-                <a href="https://aaqr.org" target="_blank">aaqr.org</a><br>
-            [14] Lê M.H. et al. (2024). <i>Tạp chí Môi trường</i>.
+            [17] Trần V.A. et al. (2023). <i>Aerosol & Air Quality Research</i>.
+                <a href="https://doi.org/10.4209/aaqr.230155" target="_blank">doi:10.4209/aaqr.230155</a><br>
+            [18] Lê M.H. et al. (2024). <i>Tạp chí Môi trường</i>.
                 <a href="https://tapchimoitruong.vn" target="_blank">tapchimoitruong.vn</a><br>
-            [15] Võ T.T.M. et al. (2022). <i>MDPI Atmosphere</i>.
-                <a href="https://www.mdpi.com/journal/atmosphere" target="_blank">mdpi.com/atmosphere</a>
+            [19] Võ T.T.M. et al. (2022). <i>MDPI Atmosphere</i>.
+                <a href="https://doi.org/10.3390/atmos13111822" target="_blank">doi:10.3390/atmos13111822</a>
         </div>
         """, unsafe_allow_html=True)
 
@@ -775,42 +738,42 @@ def page_multi_horizon(results):
                     <th style="text-align: center; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">TB Việt Nam</th>
                     <th style="text-align: left; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">Đánh giá</th>
                 </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">MAE 6h (µg/m³)</td>
                     <td style="text-align: center; color: #00D4AA; font-weight: 700;">4.36</td>
                     <td style="text-align: center;">3.12–8.12</td>
                     <td style="text-align: center;">5.37–8.20</td>
                     <td style="padding: 0.5rem; color: #00D4AA;">✅ Nằm top 30% quốc tế</td>
                 </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">MAE 24h (µg/m³)</td>
                     <td style="text-align: center; color: #00D4AA; font-weight: 700;">4.61</td>
                     <td style="text-align: center;">3.85–12.50</td>
                     <td style="text-align: center;">4.70–11.30</td>
                     <td style="padding: 0.5rem; color: #00D4AA;">✅ Tốt hơn TB Việt Nam</td>
                 </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">MASE 6h</td>
-                    <td style="text-align: center; color: #00D4AA; font-weight: 700;">0.692</td>
-                    <td style="text-align: center; color: var(--text-color); opacity: 0.5;">N/A (ít báo cáo)</td>
-                    <td style="text-align: center; color: var(--text-color); opacity: 0.5;">N/A</td>
+                    <td style="text-align: center; color: #00D4AA; font-weight: 700;">0.750</td>
+                    <td style="text-align: center; color: var(--text-color); opacity: 0.8;">N/A (ít báo cáo)</td>
+                    <td style="text-align: center; color: var(--text-color); opacity: 0.8;">N/A</td>
                     <td style="padding: 0.5rem; color: #F59E0B;">⭐ Tiên phong sử dụng MASE</td>
                 </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">Multi-horizon</td>
                     <td style="text-align: center; color: #00D4AA; font-weight: 700;">1h + 6h + 24h</td>
                     <td style="text-align: center;">60% papers</td>
                     <td style="text-align: center;">0% papers</td>
                     <td style="padding: 0.5rem; color: #00D4AA;">✅ Vượt trội VN literature</td>
                 </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">Anti-leakage Audit</td>
                     <td style="text-align: center; color: #00D4AA; font-weight: 700;">4 nguồn, 167 tests</td>
                     <td style="text-align: center;">~20% papers</td>
                     <td style="text-align: center;">0% papers</td>
                     <td style="padding: 0.5rem; color: #00D4AA;">✅ Vượt chuẩn academic</td>
                 </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">Hybrid Imputation</td>
                     <td style="text-align: center; color: #00D4AA; font-weight: 700;">Spline + KNN</td>
                     <td style="text-align: center;">Linear / Mean</td>
@@ -1098,7 +1061,7 @@ def page_eda(results):
             st.markdown("#### 🕸️ P1-6: Complexity Profile Radar")
             st.markdown("*Ref: Visualizing multiple dimensions of time series complexity*")
             
-            phase5_json = EDA_DIR / "phase5_dashboard_data.json"
+            phase5_json = RESEARCH_DIR / "eda" / "phase5_dashboard_data.json"
             if phase5_json.exists():
                 with open(phase5_json, "r") as f:
                     p5_data = json.load(f)
@@ -1115,6 +1078,8 @@ def page_eda(results):
                         line_color='#00D4AA',
                         fillcolor='rgba(0, 212, 170, 0.3)'
                     ))
+                    # Apply VTF template for dynamic light/dark mode
+                    template = get_plotly_template(st.session_state.get("theme", "light"))
                     fig_radar.update_layout(
                         polar=dict(
                             radialaxis=dict(visible=True, range=[0, 1], gridcolor='rgba(139,149,165,0.15)'),
@@ -1122,10 +1087,8 @@ def page_eda(results):
                             bgcolor='rgba(0,0,0,0)'
                         ),
                         showlegend=False,
-                        paper_bgcolor='rgba(0,0,0,0)',
-                        plot_bgcolor='rgba(0,0,0,0)',
-                        font=dict(color=COLORS["text"]),
-                        margin=dict(l=40, r=40, t=20, b=20)
+                        margin=dict(l=40, r=40, t=20, b=20),
+                        **template["layout"]
                     )
                     st.plotly_chart(fig_radar, use_container_width=True)
                     
@@ -1355,7 +1318,7 @@ def page_eda(results):
         st.info("**5. STL Residual σ = 'Sàn Hiệu Suất':** Phân tích STL cho thấy Residual σ ≈ 5.2 µg/m³ — model đạt MAE gần giá trị này nghĩa là đã khai thác hết signal. Đây là cơ sở đánh giá model đã tối ưu hay chưa.")
         
         st.markdown("#### 🚀 Phase 6: Thiết Kế Nâng Cao (v7)")
-        phase6_json = EDA_DIR / "phase6_dashboard_data.json"
+        phase6_json = RESEARCH_DIR / "eda" / "phase6_dashboard_data.json"
         
         box_cox_msg = "Kiểm định sự cần thiết của phép biến đổi phi tuyến tính (Log Transform)."
         sesd_msg = "Thuật toán phát hiện dị thường S-ESD (Seasonal Extreme Studentized Deviate) giúp nhận dạng Outliers chính xác trên chuỗi có tính mùa vụ cao."
@@ -1393,7 +1356,7 @@ def page_eda(results):
 
         # ── P1-3: Error Anatomy ──
         st.markdown("---")
-        st.markdown("#### 🔍 Error Anatomy — GRU v2+log @ h=6")
+        st.markdown("#### 🔍 Error Anatomy — Ensemble_GRU @ h=6")
         st.markdown("*Lỗi dự báo phân bố theo giờ trong ngày và mức ô nhiễm như thế nào?*")
 
         ea = di_data.get("error_anatomy", {})
@@ -1408,7 +1371,7 @@ def page_eda(results):
             ea_cols[3].metric("Error ACF(24)", f"{ea.get('error_acf_lag24', '?')}",
                             help="Cao = daily pattern in errors")
 
-        img_ea = EDA_DIR / "06_error_anatomy.png"
+        img_ea = RESEARCH_DIR / "eda" / "06_error_anatomy.png"
         if img_ea.exists():
             st.image(str(img_ea), caption="Error Anatomy: MAE by Hour, Bias by Hour, MAE by Level, Error ACF", use_container_width=True)
 
@@ -1439,7 +1402,7 @@ def page_eda(results):
             if gc_rows:
                 st.dataframe(pd.DataFrame(gc_rows), use_container_width=True, hide_index=True)
 
-        img_gc = EDA_DIR / "07_granger_causality.png"
+        img_gc = RESEARCH_DIR / "eda" / "07_granger_causality.png"
         if img_gc.exists():
             st.image(str(img_gc), caption="Granger Causality p-values across lags", use_container_width=True)
 
@@ -1472,7 +1435,7 @@ def page_eda(results):
             if cc_rows:
                 st.dataframe(pd.DataFrame(cc_rows), use_container_width=True, hide_index=True)
 
-        img_cc = EDA_DIR / "08_cross_correlation.png"
+        img_cc = RESEARCH_DIR / "eda" / "08_cross_correlation.png"
         if img_cc.exists():
             st.image(str(img_cc), caption="Cross-Correlation: positive lag = external variable LEADS PM2.5", use_container_width=True)
 

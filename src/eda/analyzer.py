@@ -17,25 +17,10 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.stattools import adfuller, kpss
 
 from src.data.loader import FEATURE_COLS, TARGET_COL
+from src.viz.theme import apply_mpl_theme
 
 # Use non-interactive backend for saving plots
 matplotlib.use("Agg")
-
-# ============================================================
-# Style Configuration (per visualization-storytelling.md)
-# ============================================================
-STYLE_CONFIG = {
-    "figure.figsize": (14, 6),
-    "axes.titlesize": 14,
-    "axes.labelsize": 12,
-    "xtick.labelsize": 10,
-    "ytick.labelsize": 10,
-    "axes.grid": True,
-    "grid.alpha": 0.3,
-    "axes.facecolor": "#fafafa",
-    "figure.facecolor": "white",
-    "font.family": "sans-serif",
-}
 
 # WHO PM2.5 guidelines (µg/m³)
 WHO_PM25_ANNUAL = 5.0
@@ -70,7 +55,7 @@ def run_full_eda(
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    plt.rcParams.update(STYLE_CONFIG)
+    apply_mpl_theme("light")
     sns.set_palette("husl")
 
     logger.info("=" * 60)

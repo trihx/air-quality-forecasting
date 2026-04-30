@@ -1,0 +1,89 @@
+{
+  "1h": {
+    "Persistence": {
+      "mae": 2.5964,
+      "rmse": 4.2473,
+      "mase": 1.0
+    },
+    "LightGBM": {
+      "mae": 3.9003,
+      "rmse": 5.35,
+      "mase": 1.5022
+    },
+    "GRU": {
+      "mae": 2.8166,
+      "rmse": 4.2196,
+      "mase": 1.0848
+    },
+    "Ensemble_Stack": {
+      "mae": 3.0402,
+      "rmse": 4.2507,
+      "mase": 1.3281,
+      "weights": "LightGBM=1.054, GRU=-0.037, intercept=-1.412"
+    },
+    "Ensemble_Weighted": {
+      "mae": 3.8934,
+      "rmse": 5.3414,
+      "mase": 1.4995,
+      "best_weight": "LightGBM=0.95, GRU=0.05"
+    }
+  },
+  "6h": {
+    "Persistence": {
+      "mae": 6.9323,
+      "rmse": 9.4702,
+      "mase": 1.0
+    },
+    "LightGBM": {
+      "mae": 5.3121,
+      "rmse": 7.2688,
+      "mase": 0.7663
+    },
+    "GRU": {
+      "mae": 4.7627,
+      "rmse": 6.5555,
+      "mase": 0.687
+    },
+    "Ensemble_Stack": {
+      "mae": 4.8189,
+      "rmse": 6.0535,
+      "mase": 0.8138,
+      "weights": "LightGBM=0.584, GRU=-0.378, intercept=8.502"
+    },
+    "Ensemble_Weighted": {
+      "mae": 5.1659,
+      "rmse": 7.0143,
+      "mase": 0.7452,
+      "best_weight": "LightGBM=0.60, GRU=0.40"
+    }
+  },
+  "24h": {
+    "Persistence": {
+      "mae": 6.3192,
+      "rmse": 8.967,
+      "mase": 1.0
+    },
+    "LightGBM": {
+      "mae": 5.9274,
+      "rmse": 7.475,
+      "mase": 0.938
+    },
+    "GRU": {
+      "mae": 4.5097,
+      "rmse": 6.5405,
+      "mase": 0.7136
+    },
+    "Ensemble_Stack": {
+      "mae": 4.5421,
+      "rmse": 6.0855,
+      "mase": 0.8134,
+      "weights": "LightGBM=0.497, GRU=-0.405, intercept=7.619"
+    },
+    "Ensemble_Weighted": {
+      "mae": 5.0804,
+      "rmse": 6.9664,
+      "mase": 0.804,
+      "best_weight": "LightGBM=0.25, GRU=0.75"
+    }
+  }
+}
