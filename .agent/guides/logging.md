@@ -200,3 +200,36 @@ except ValueError as e:
     logger.error(f"Processing failed: {e}", exc_info=True)
     raise
 ```
+
+---
+
+## Experiment Tracking
+
+### Cấu trúc mỗi Run
+
+```
+research/runs/YYYYMMDD_HHMMSS/
+├── config.json            # Toàn bộ tham số
+├── metrics.csv            # MAE, RMSE, R², MAPE, MASE
+├── predictions.csv        # y_true, y_pred
+├── training_log.csv       # Loss/metric theo epoch (DL)
+├── plots/
+│   ├── actual_vs_predicted.png
+│   ├── residuals.png
+│   └── feature_importance.png
+└── model.joblib           # hoặc model.pt
+```
+
+### Auto-Logging Directory Mẫu
+
+```python
+from datetime import datetime
+from pathlib import Path
+
+def create_run_directory() -> Path:
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_dir = Path(f"research/runs/{timestamp}")
+    run_dir.mkdir(parents=True, exist_ok=True)
+    (run_dir / "plots").mkdir(exist_ok=True)
+    return run_dir
+```

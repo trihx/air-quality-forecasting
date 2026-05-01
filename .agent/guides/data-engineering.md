@@ -360,3 +360,32 @@ def create_data_manifest(data_dir: str = "dataset") -> dict:
 1. Sau mỗi pipeline run → generate manifest
 2. Lưu manifest vào `research/runs/YYYYMMDD_HHMMSS/data_manifest.json`
 3. So sánh manifests giữa các runs → detect data changes
+
+---
+
+## 6. Feature Engineering
+
+### 6.1 Temporal Features
+
+```python
+LAG_FEATURES = [1, 2, 3, 6, 12, 24, 48, 168]      # hours (dựa trên ACF/PACF)
+ROLLING_WINDOWS = [3, 6, 12, 24, 48, 168]           # hours
+ROLLING_FUNCS = ['mean', 'std', 'min', 'max']
+EWM_SPANS = [12, 24, 48]                             # hours
+```
+
+### 6.2 Calendar Features
+
+```python
+CALENDAR_FEATURES = ['hour', 'day_of_week', 'day_of_month', 'month',
+                     'is_weekend', 'is_rush_hour', 'season']
+```
+
+### 6.3 Domain-Specific (Air Quality)
+
+- Chỉ số AQI breakpoint categories
+- Tỷ lệ CO2/PM2.5
+- Rate of change (đạo hàm bậc 1 PM2.5)
+
+> [!TIP]
+> Sau khi tạo features, **LUÔN** kiểm tra multicollinearity (VIF > 10 → loại bỏ) và feature importance (SHAP).

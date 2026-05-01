@@ -62,4 +62,15 @@ class ContentManager:
 
     # === Helpers for Info Cards ===
     def get_info_card_text(self, key: str, default: str = "") -> str:
-        return self.get_global_content().get("info_cards", {}).get(key, default)
+        """Get info card content from API (PostgreSQL)."""
+        try:
+            from src.frontend.api_client import APIClient
+            client = APIClient()
+            result = client.get_info_card(key)
+            if isinstance(result, dict) and "content" in result:
+                return result["content"]
+        except Exception as e:
+            from loguru import logger
+            logger.warning(f"Failed to fetch info card '{key}' from API: {e}")
+        
+        return default

@@ -1,0 +1,45 @@
+============================================================
+📦 Sync Experiments JSON → Database
+Timestamp: 2026-05-01T12:01:43.580661
+Source: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v8_final
+============================================================
+2026-05-01 12:01:43.751 | INFO     | src.api.experiment_logger:_init_db:69 - ExperimentLogger: DB mode initialized
+
+📄 lightgbm_20260429_163822.json
+2026-05-01 12:01:43.767 | INFO     | src.api.experiment_logger:log_full_result:204 - Created experiment: v8_lightgbm_20260429 (id=1)
+2026-05-01 12:01:43.777 | INFO     | src.api.experiment_logger:log_full_result:258 -   → Logged 3 model records across 3 horizons
+  ✅ Synced → experiment_id=1
+
+📄 sklearn_20260429_163822.json
+2026-05-01 12:01:43.779 | INFO     | src.api.experiment_logger:log_full_result:204 - Created experiment: v8_sklearn_20260429 (id=2)
+2026-05-01 12:01:43.802 | INFO     | src.api.experiment_logger:log_full_result:258 -   → Logged 15 model records across 3 horizons
+  ✅ Synced → experiment_id=2
+
+📄 arima_20260429_163822.json
+2026-05-01 12:01:43.804 | INFO     | src.api.experiment_logger:log_full_result:204 - Created experiment: v8_arima_20260429 (id=3)
+2026-05-01 12:01:43.814 | INFO     | src.api.experiment_logger:log_full_result:258 -   → Logged 6 model records across 3 horizons
+  ✅ Synced → experiment_id=3
+
+📄 dl_20260501_071715.json
+2026-05-01 12:01:43.816 | INFO     | src.api.experiment_logger:log_full_result:204 - Created experiment: v8_dl_20260501 (id=4)
+2026-05-01 12:01:43.829 | INFO     | src.api.experiment_logger:log_full_result:258 -   → Logged 6 model records across 3 horizons
+  ✅ Synced → experiment_id=4
+
+📄 tft_multi_horizon_20260429_163633.json
+2026-05-01 12:01:43.831 | INFO     | src.api.experiment_logger:log_full_result:204 - Created experiment: v8_tft_20260429 (id=5)
+2026-05-01 12:01:43.844 | INFO     | src.api.experiment_logger:log_full_result:258 -   → Logged 6 model records across 3 horizons
+  ✅ Synced → experiment_id=5
+
+============================================================
+📊 SYNC SUMMARY
+  Synced:  5
+  Skipped: 0
+  Errors:  0
+  Time:    0.1s
+============================================================
+
+📋 DB Counts:
+  Experiments: 5
+  Runs:        15
+  RunModels:   36
+  Metrics:     36

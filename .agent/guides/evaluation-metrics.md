@@ -307,3 +307,30 @@ def check_ensemble_diversity(predictions_dict: Dict[str, np.ndarray]) -> pd.Data
 | **Breusch-Pagan** | Homoscedastic errors | Heteroscedastic ❌ | Use robust SEs or transform |
 
 > **Nhớ**: ADF và KPSS có null hypothesis **NGƯỢC NHAU**. Chạy CẢ HAI để confirm.
+
+---
+
+## 7. Explainable AI (SHAP)
+
+Sau mỗi model tốt nhất → chạy SHAP để giải thích:
+1. Summary plot (feature importance tổng thể)
+2. Dependence plot (ảnh hưởng từng feature)
+3. Force plot (giải thích 1 dự báo cụ thể)
+
+---
+
+## 8. Tổng quan Metrics
+
+| Metric | Ý nghĩa | Vai trò |
+|--------|---------|---------|
+| **MAE** | Sai số tuyệt đối trung bình | **Primary metric** |
+| **RMSE** | Phạt nặng outlier errors | Secondary |
+| **MAPE** | % sai số | Interpretability |
+| **MASE** | So với naive baseline | **BẮT BUỘC** benchmark |
+| **R²** | % variance giải thích | Overall fit |
+
+**Quy tắc**:
+- MASE < 1.0 ✅ (tốt hơn naive) | MASE ≥ 1.0 ❌ (cần cải thiện)
+- **Multi-Horizon**: PHẢI đánh giá TỪNG horizon (1h, 6h, 24h) riêng biệt
+- **Confidence Intervals**: Mọi forecast PHẢI kèm **95% CI** (bootstrap hoặc built-in)
+- **Diebold-Mariano Test**: Khi MAE difference < 10% giữa 2 models → PHẢI chạy DM test (p < 0.05)

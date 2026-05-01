@@ -27,7 +27,6 @@ docs/PLAYBOOK_SETUP_GUIDE.md
 
 # === DEVELOPMENT ONLY ===
 notebooks/
-scripts/
 tests/
 Makefile
 

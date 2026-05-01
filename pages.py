@@ -676,6 +676,10 @@ def _predict_ensemble(recent: pd.DataFrame, horizon: int) -> dict:
 def _run_prediction(model_type: str, horizon: int, recent: pd.DataFrame) -> dict:
     """Run prediction based on model type.
 
+    Strategy: API-first with local fallback.
+    1. Try APIClient.predict() (if API server is running).
+    2. If API unavailable → fallback to local inference.
+
     Uses MPS (Apple Silicon GPU) for GRU inference when available.
     Supports GRU, LightGBM, Ensemble, ARIMA, SARIMA, Persistence.
 
@@ -683,6 +687,18 @@ def _run_prediction(model_type: str, horizon: int, recent: pd.DataFrame) -> dict
     OMP segfault when mixing PyTorch + LightGBM on Apple Silicon.
     See LESSONS_LEARNED.md [2026-04-12].
     """
+    # ── API-first attempt ──
+    try:
+        from src.frontend.api_client import APIClient
+        client = APIClient()
+        api_result = client.predict(horizon=horizon, model_name=model_type.lower())
+        if isinstance(api_result, dict) and "error" not in api_result:
+            # API returned valid result — use it
+            return api_result
+    except Exception:
+        pass  # API unavailable — proceed with local inference
+
+    # ── Local inference fallback ──
     eval_metrics = _get_eval_metrics(model_type, horizon)
 
     if model_type == "Persistence":
@@ -1573,6 +1589,7 @@ def page_training(results):
 
     # ── Version-aware info cards ──
     from src.info_cards import cards_training, get_current_version, render_version_badge
+    from src.frontend.citations import cite, step, render_references_section
     ver = get_current_version()
     render_version_badge(ver)
     cards_training(ver)
@@ -1593,11 +1610,12 @@ def page_training(results):
     defaults = get_default_params(model_type)
 
     # ── Hyperparameter form ──
-    st.markdown("""
+    model_cite = cite('ke2017') if model_type == "LightGBM" else cite('cho2014')
+    st.markdown(f"""
     <div style="background: var(--secondary-background-color); color: var(--text-color) !important; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
                 border: 1px solid rgba(0,212,170,0.2);">
         <div style="font-size: 0.85rem; opacity: 0.65;">
-            💡 Các thông số bên dưới là cấu hình tối ưu (best params). Bạn có thể điều chỉnh trước khi huấn luyện.
+            💡 Các thông số bên dưới là cấu hình tối ưu (best params) {cite('akiba2019')}. Mô hình: {model_type} {model_cite}. Bạn có thể điều chỉnh trước khi huấn luyện.
         </div>
     </div>
     """, unsafe_allow_html=True)

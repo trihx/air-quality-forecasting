@@ -147,3 +147,46 @@ uv run ruff check src/ --fix && uv run ruff format src/ && uv run bandit -r src/
 ## Strict Rule
 
 > **Không có code nào được commit hoặc báo cáo "done" mà không pass toàn bộ lint checks.**
+
+---
+
+## Unit Testing
+
+> [!IMPORTANT]
+> **MỌI** chức năng mới hoặc bug fix **PHẢI** có unit test đi kèm.
+
+### Test Pyramid
+
+- **70% Unit Tests**: Từng hàm (loader, cleaner, metrics, features)
+- **20% Integration Tests**: Pipeline end-to-end
+- **10% Model Validation**: Performance checks
+
+### Checklist Test Bắt buộc
+
+- **Data Tests**: Load đúng format, missing values xử lý đúng, outlier detection, resampling frequency, NO data leakage, scaler fit chỉ trên train.
+- **Feature Tests**: Lag/rolling tạo đúng giá trị, calendar features đúng, không NaN bất ngờ.
+- **Model Tests**: Fit không exception, predict đúng shape, save/load consistent, metrics tính đúng.
+- **Pipeline Tests**: End-to-end không lỗi, output đúng format, run directory đúng cấu trúc.
+
+### Pytest Fixtures Mẫu
+
+```python
+# tests/conftest.py - Shared fixtures
+import pytest
+import pandas as pd
+import numpy as np
+
+@pytest.fixture
+def sample_timeseries():
+    np.random.seed(42)
+    n = 1000
+    dates = pd.date_range('2024-01-01', periods=n, freq='h')
+    return pd.DataFrame({
+        'ngay_tao': dates,
+        'nhiet_do': 25 + 5 * np.sin(np.arange(n) * 2*np.pi/24) + np.random.randn(n),
+        'do_am': 60 + 10 * np.cos(np.arange(n) * 2*np.pi/24) + np.random.randn(n)*2,
+        'diem_suong': 20 + 3 * np.sin(np.arange(n) * 2*np.pi/24) + np.random.randn(n),
+        'co2': 400 + 50 * np.random.randn(n),
+        'pm25': np.abs(15 + 10*np.sin(np.arange(n)*2*np.pi/24) + 5*np.random.randn(n)),
+    })
+```

@@ -56,7 +56,7 @@ def _insight_card(title: str, text: str, card_type: str = "default"):
     st.markdown(f"""
     <div class="insight-card {cls}">
         <h4>{title}</h4>
-        <p>{text}</p>
+        <div class="insight-text">{text}</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -435,9 +435,11 @@ def _tab_feature_explainability():
 
     shap_data = _load_json(SHAP_DIR / "shap_results.json")
 
+    from src.frontend.citations import cite
+
     _insight_card(
         "💡 Tại sao Explainability quan trọng?",
-        "SHAP giải thích <b>tại sao</b> mô hình dự đoán giá trị cụ thể, "
+        f"SHAP {cite('lundberg2017')} giải thích <b>tại sao</b> mô hình dự đoán giá trị cụ thể, "
         "không chỉ <b>chính xác bao nhiêu</b>. Điều này giúp xác nhận mô hình "
         "học đúng pattern vật lý (nhiệt độ, chu kỳ ngày đêm) thay vì exploit noise."
         "<br><br><b>Tại sao chỉ LightGBM?</b> SHAP TreeExplainer chỉ hỗ trợ "

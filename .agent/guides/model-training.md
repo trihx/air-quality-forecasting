@@ -311,3 +311,74 @@ def set_seed(seed: int = 42):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 ```
+
+---
+
+## 7. Deep Learning Models Config
+
+### 7.1 LSTM / GRU Config
+
+```python
+DL_CONFIG = {
+    "hidden_dim": 64,              # Kích thước hidden state
+    "num_layers": 2,               # Số lớp stacked
+    "dropout": 0.2,                # Dropout giữa các layers
+    "bidirectional": False,
+    "sequence_length": 168,        # 7 ngày lookback
+}
+```
+
+### 7.2 Transformer Config
+
+```python
+TRANSFORMER_CONFIG = {
+    "d_model": 64,                 # Embedding dimension
+    "nhead": 4,                    # Attention heads
+    "num_encoder_layers": 3,
+    "dim_feedforward": 256,
+    "dropout": 0.1,
+}
+```
+
+### 7.3 Quy tắc Deep Learning
+
+1. **Normalize/Scale** dữ liệu trước khi đưa vào model (`MinMaxScaler` hoặc `StandardScaler`).
+2. **LUÔN** dùng Early Stopping (patience ≥ 10).
+3. **Log** training/validation loss mỗi epoch → `training_log.csv`.
+4. **Inverse transform** predictions trước khi tính metrics.
+5. **Set seed** cho torch, numpy, random → dùng `set_seed(42)` helper.
+6. **LR Scheduler**: Dùng `ReduceLROnPlateau` (LSTM/GRU) hoặc `CosineAnnealingWarmRestarts` (Transformer).
+7. **Gradient Clipping**: `max_norm=1.0` để tránh exploding gradients.
+8. **Data Windowing**: Dùng `TimeSeriesDataset` class — KHÔNG tự viết sliding window mỗi lần.
+
+---
+
+## 8. Phương pháp Nâng cao
+
+### 8.1 Ensemble Methods
+
+| Phương pháp | Mô tả | Khi nào dùng |
+|------------|--------|-------------|
+| **Simple Average** | Trung bình dự báo | Baseline ensemble |
+| **Weighted Average** | Trung bình có trọng số | Biết model nào tốt hơn |
+| **Stacking** | Meta-learner (Ridge) kết hợp | ≥3 models đa dạng |
+| **Blending** | Stacking với holdout set | Nhanh hơn Stacking |
+
+### 8.2 Optuna Hyperparameter Optimization
+
+```python
+import optuna
+
+study = optuna.create_study(
+    direction='minimize',
+    study_name='xgboost_pm25',
+    storage='sqlite:///research/experiments/optuna.db',  # PHẢI persist!
+    load_if_exists=True,                                  # Resume được
+    sampler=optuna.samplers.TPESampler(seed=42),
+    pruner=optuna.pruners.MedianPruner()
+)
+study.optimize(objective, n_trials=100, show_progress_bar=True)
+```
+
+> [!IMPORTANT]
+> Optuna study **PHẢI** persist vào SQLite để resume và phân tích sau.

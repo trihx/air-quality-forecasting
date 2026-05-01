@@ -1,40 +1,115 @@
 # ═══════════════════════════════════════════
-# PM2.5 Forecasting Dashboard — Docker Compose
-# Usage: docker compose up -d
-# Dashboard: http://localhost:8501
+# PM2.5 Forecasting — 3-Tier Docker Compose
+# Services: API (FastAPI) + Dashboard (Streamlit) + DB (PostgreSQL)
+#
+# Usage:
+#   docker compose up -d --build
+#   Dashboard: http://localhost:8501
+#   API Docs:  http://localhost:8000/docs
 # ═══════════════════════════════════════════
 
 services:
-  pm25-dashboard:
+  # ── FastAPI Backend ──
+  api:
     image: trihx/pm25-forecasting:latest
     build:
       context: .
       dockerfile: Dockerfile
+    command: >
+      uvicorn src.api.main:app
+      --host 0.0.0.0
+      --port 8000
+      --workers 2
+      --log-level info
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-pm25}:${POSTGRES_PASSWORD:-pm25dev}@db:5432/${POSTGRES_DB:-forecasting}
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    volumes:
+      # Share model weights with dashboard (read-only for API in inference mode)
+      - model_weights:/app/models/exported
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+    shm_size: '1gb'
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ── Streamlit Dashboard ──
+  dashboard:
+    image: trihx/pm25-forecasting:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Default CMD from Dockerfile runs Streamlit — no override needed
     ports:
       - "8501:8501"
     environment:
+      # Point dashboard API client to the api service
+      - API_BASE_URL=http://api:8000
       # LM Studio running on host machine
       - LM_STUDIO_URL=http://host.docker.internal:8888/v1
-      # Cloud LLM API keys — inject via .env file or -e flag
-      # NEVER bake keys into image
+      # Database (for direct fallback queries if needed)
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-pm25}:${POSTGRES_PASSWORD:-pm25dev}@db:5432/${POSTGRES_DB:-forecasting}
+      # Cloud LLM API keys — inject via .env file
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - GROQ_API_KEY=${GROQ_API_KEY:-}
     extra_hosts:
       # Required for Linux to resolve host.docker.internal
       - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"]
+      interval: 30s
+      timeout: 10s
+      start_period: 45s
+      retries: 3
     volumes:
       # Persist ChromaDB index across restarts
       - chroma_data:/app/.chroma_db
-      # Persist user-trained models
-      - user_models:/app/models/user_trained
+      # Share model weights
+      - model_weights:/app/models/exported
     deploy:
       resources:
         limits:
           memory: 4G
     shm_size: '2gb'    # PyTorch DataLoader shared memory
     restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+
+  # ── PostgreSQL Database ──
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pm25}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pm25dev}
+      POSTGRES_DB: ${POSTGRES_DB:-forecasting}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pm25} -d ${POSTGRES_DB:-forecasting}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
   chroma_data:
-  user_models:
+  model_weights:
+  pgdata:
