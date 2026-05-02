@@ -1,0 +1,102 @@
+======================================================================
+v9 DL EXPERT RETRAIN — Ablation Study (Base Dataset)
+Timestamp: 20260502_141922
+======================================================================
+
+======================================================================
+[DL-EXPERT] GRU & LSTM - 30m Base Dataset
+  Device: mps
+======================================================================
+  Features (26): ['nhiet_do', 'do_am', 'diem_suong', 'co2', 'pm25', 'hour_sin', 'hour_cos', 'month_sin', 'month_cos', 'dow_sin', 'dow_cos', 'is_weekend', 'is_rush_hour', 'season', 'fourier_daily_sin_1', 'fourier_daily_cos_1', 'fourier_daily_sin_2', 'fourier_daily_cos_2', 'fourier_daily_sin_3', 'fourier_daily_cos_3', 'fourier_weekly_sin_1', 'fourier_weekly_cos_1', 'fourier_weekly_sin_2', 'fourier_weekly_cos_2', 'fourier_weekly_sin_3', 'fourier_weekly_cos_3']
+  Dataset rows: 13,685 (vs Fair pipeline's tabular-engineered dataset)
+
+  ── Horizon 1h (2 steps, lookback 144 steps) ──
+2026-05-02 14:22:35.459 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   GRU_v9_expert (h=1): MAE=2.7773, RMSE=4.3607, MASE=0.9519 ✅
+2026-05-02 14:22:35.459 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0194 AUC=0.756 (n=17)
+2026-05-02 14:22:35.459 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 AUC=0.798 (n=6)
+2026-05-02 14:22:35.459 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train sequences: 7,183 | Test sequences (real only): 876
+    GRU_v9_expert: MAE=2.7773, MASE=0.9519
+2026-05-02 14:23:26.407 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LSTM_v9_expert (h=1): MAE=3.4087, RMSE=4.8168, MASE=1.1683 ❌
+2026-05-02 14:23:26.408 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0194 AUC=0.706 (n=17)
+2026-05-02 14:23:26.408 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 AUC=0.730 (n=6)
+2026-05-02 14:23:26.408 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    LSTM_v9_expert: MAE=3.4087, MASE=1.1683
+
+  ── Horizon 6h (12 steps, lookback 144 steps) ──
+2026-05-02 14:26:21.021 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   GRU_v9_expert (h=6): MAE=5.3293, RMSE=7.3155, MASE=0.9654 ✅
+2026-05-02 14:26:21.021 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0430 AUC=0.706 (n=17)
+2026-05-02 14:26:21.022 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0070 AUC=0.709 (n=6)
+2026-05-02 14:26:21.022 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train sequences: 7,056 | Test sequences (real only): 860
+    GRU_v9_expert: MAE=5.3293, MASE=0.9654
+2026-05-02 14:26:50.424 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LSTM_v9_expert (h=6): MAE=4.0724, RMSE=5.7421, MASE=0.7377 ✅
+2026-05-02 14:26:50.424 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0198 AUC=0.564 (n=17)
+2026-05-02 14:26:50.424 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0070 AUC=0.512 (n=6)
+2026-05-02 14:26:50.424 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    LSTM_v9_expert: MAE=4.0724, MASE=0.7377
+
+  ── Horizon 24h (48 steps, lookback 144 steps) ──
+2026-05-02 14:29:33.821 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   GRU_v9_expert (h=24): MAE=4.7841, RMSE=6.9316, MASE=0.9884 ✅
+2026-05-02 14:29:33.822 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0434 AUC=0.497 (n=19)
+2026-05-02 14:29:33.822 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0084 AUC=0.520 (n=7)
+2026-05-02 14:29:33.822 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train sequences: 6,630 | Test sequences (real only): 829
+    GRU_v9_expert: MAE=4.7841, MASE=0.9884
+2026-05-02 14:30:01.717 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LSTM_v9_expert (h=24): MAE=4.0877, RMSE=5.8421, MASE=0.8445 ✅
+2026-05-02 14:30:01.717 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0229 AUC=0.410 (n=19)
+2026-05-02 14:30:01.717 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0084 AUC=0.366 (n=7)
+2026-05-02 14:30:01.717 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    LSTM_v9_expert: MAE=4.0877, MASE=0.8445
+
+[v9] ✅ DL Expert (30m) saved.
+
+======================================================================
+[DL-EXPERT] GRU & LSTM - 15m Base Dataset
+  Device: mps
+======================================================================
+  Features (26): ['nhiet_do', 'do_am', 'diem_suong', 'co2', 'pm25', 'hour_sin', 'hour_cos', 'month_sin', 'month_cos', 'dow_sin', 'dow_cos', 'is_weekend', 'is_rush_hour', 'season', 'fourier_daily_sin_1', 'fourier_daily_cos_1', 'fourier_daily_sin_2', 'fourier_daily_cos_2', 'fourier_daily_sin_3', 'fourier_daily_cos_3', 'fourier_weekly_sin_1', 'fourier_weekly_cos_1', 'fourier_weekly_sin_2', 'fourier_weekly_cos_2', 'fourier_weekly_sin_3', 'fourier_weekly_cos_3']
+  Dataset rows: 23,878 (vs Fair pipeline's tabular-engineered dataset)
+
+  ── Horizon 1h (4 steps, lookback 288 steps) ──
+2026-05-02 14:40:07.104 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   GRU_v9_expert (h=1): MAE=3.2651, RMSE=5.0914, MASE=0.9122 ✅
+2026-05-02 14:40:07.104 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 25.0µg/m³: P=0.100 R=0.025 F1=0.040 Brier=0.0314 AUC=0.759 (n=40)
+2026-05-02 14:40:07.104 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0046 AUC=0.573 (n=7)
+2026-05-02 14:40:07.105 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0013 AUC=0.750 (n=2)
+    Train sequences: 12,245 | Test sequences (real only): 1,531
+    GRU_v9_expert: MAE=3.2651, MASE=0.9122
+2026-05-02 14:41:38.269 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LSTM_v9_expert (h=1): MAE=3.5949, RMSE=5.2746, MASE=1.0044 ❌
+2026-05-02 14:41:38.278 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0261 AUC=0.758 (n=40)
+2026-05-02 14:41:38.278 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0046 AUC=0.634 (n=7)
+2026-05-02 14:41:38.278 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0013 AUC=0.867 (n=2)
+    LSTM_v9_expert: MAE=3.5949, MASE=1.0044
+
+  ── Horizon 6h (24 steps, lookback 288 steps) ──
+2026-05-02 14:51:37.569 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   GRU_v9_expert (h=6): MAE=5.6878, RMSE=7.8444, MASE=1.0669 ❌
+2026-05-02 14:51:37.569 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 25.0µg/m³: P=0.141 R=0.325 F1=0.197 Brier=0.0702 AUC=0.693 (n=40)
+2026-05-02 14:51:37.570 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 35.0µg/m³: P=0.125 R=0.143 F1=0.133 Brier=0.0086 AUC=0.537 (n=7)
+2026-05-02 14:51:37.570 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0013 AUC=0.738 (n=2)
+    Train sequences: 12,069 | Test sequences (real only): 1,509
+    GRU_v9_expert: MAE=5.6878, MASE=1.0669
+2026-05-02 14:53:07.238 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LSTM_v9_expert (h=6): MAE=4.4167, RMSE=6.0302, MASE=0.8285 ✅
+2026-05-02 14:53:07.241 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0265 AUC=0.693 (n=40)
+2026-05-02 14:53:07.241 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0046 AUC=0.543 (n=7)
+2026-05-02 14:53:07.242 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0013 AUC=0.728 (n=2)
+    LSTM_v9_expert: MAE=4.4167, MASE=0.8285
+
+  ── Horizon 24h (96 steps, lookback 288 steps) ──
+2026-05-02 15:02:36.268 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   GRU_v9_expert (h=24): MAE=6.1698, RMSE=8.8379, MASE=1.4663 ❌
+2026-05-02 15:02:36.269 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 25.0µg/m³: P=0.050 R=0.241 F1=0.083 Brier=0.1077 AUC=0.620 (n=29)
+2026-05-02 15:02:36.269 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0112 AUC=0.585 (n=7)
+2026-05-02 15:02:36.269 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9_expert @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0014 AUC=0.821 (n=2)
+    Train sequences: 11,436 | Test sequences (real only): 1,430
+    GRU_v9_expert: MAE=6.1698, MASE=1.4663
+2026-05-02 15:03:59.915 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LSTM_v9_expert (h=24): MAE=3.8067, RMSE=5.6436, MASE=0.9047 ✅
+2026-05-02 15:03:59.916 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0203 AUC=0.612 (n=29)
+2026-05-02 15:03:59.916 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0049 AUC=0.518 (n=7)
+2026-05-02 15:03:59.916 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LSTM_v9_expert @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0014 AUC=0.914 (n=2)
+    LSTM_v9_expert: MAE=3.8067, MASE=0.9047
+
+[v9] ✅ DL Expert (15m) saved.
+
+✅ Total DL Expert time: 2678.0s

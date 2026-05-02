@@ -1,0 +1,75 @@
+[v8] Preparing data (KNN past-only)...
+[DATA] Loading raw data...
+2026-05-02 07:37:01.430 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-05-02 07:37:01.430 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-05-02 07:37:01.555 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:37:01.576 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:37:01.578 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-05-02 07:37:01.598 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-05-02 07:37:01.603 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:37:01.604 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-05-02 07:37:01.607 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-05-02 07:37:01.613 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-05-02 07:37:01.616 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-05-02 07:37:01.616 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-05-02 07:37:01.616 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 07:37:01.626 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,466 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,396 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN]   Gap at 2-16: skipped (only 2 past donors, need 5)
+      [KNN] Filled 571 values via KNN (past-only, 1 gaps skipped)
+    [D-Hybrid] Phase 3: Dropping 19,825 rows with gaps >24h
+  [Imputer] Output: 7,743 rows (7,112 real + 631 imputed)
+  [Imputer] Dropped 19,825 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.1%
+2026-05-02 07:37:02.073 | INFO     | src.data.imputer:impute_missing_data:110 - Imputation [hybrid]: 7,743 rows (7,112 real + 631 imputed, 19,825 dropped)
+2026-05-02 07:37:02.073 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-05-02 07:37:02.073 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-05-02 07:37:02.073 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-05-02 07:37:02.081 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-05-02 07:37:02.084 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 07:37:02.090 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 07:37:02.103 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 07:37:02.111 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 07:37:02.115 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:37:02.119 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 07:37:02.122 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-05-02 07:37:02.122 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-05-02 07:37:02.122 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,743 → 7,575 rows
+2026-05-02 07:37:02.122 | INFO     | src.features.builder:build_features:117 - ============================================================
+[DATA] Final: 7,575 rows × 120 cols
+
+======================================================================
+[v8] Retraining: LIGHTGBM
+======================================================================
+
+======================================================================
+[ML] LightGBM (Optuna-tuned)
+======================================================================
+
+  ── Horizon 1h ──
+2026-05-02 07:37:03.083 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LightGBM_tuned (h=1): MAE=3.3035, RMSE=5.0426, MASE=1.2723 ❌
+2026-05-02 07:37:03.083 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_tuned @ 25.0µg/m³: P=0.500 R=0.043 F1=0.080 Brier=0.0383 AUC=0.861 (n=23)
+2026-05-02 07:37:03.083 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_tuned @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0100 AUC=0.831 (n=6)
+2026-05-02 07:37:03.083 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    LightGBM_tuned: MAE=3.3035, MASE=1.2723 (0.8s)
+
+  ── Horizon 6h ──
+2026-05-02 07:37:04.049 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LightGBM_tuned (h=6): MAE=5.0651, RMSE=7.0647, MASE=0.7307 ✅
+2026-05-02 07:37:04.049 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_tuned @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0454 AUC=0.620 (n=27)
+2026-05-02 07:37:04.049 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_tuned @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0118 AUC=0.624 (n=7)
+2026-05-02 07:37:04.049 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    LightGBM_tuned: MAE=5.0651, MASE=0.7307 (0.9s)
+
+  ── Horizon 24h ──
+2026-05-02 07:37:05.169 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LightGBM_tuned (h=24): MAE=4.985, RMSE=6.7964, MASE=0.7878 ✅
+2026-05-02 07:37:05.170 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_tuned @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0392 AUC=0.617 (n=23)
+2026-05-02 07:37:05.170 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_tuned @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.726 (n=6)
+2026-05-02 07:37:05.170 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    LightGBM_tuned: MAE=4.985, MASE=0.7878 (1.1s)
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v8_final/lightgbm_20260502_073700.json
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v8_final/lightgbm_preds_20260502_073700.json
+[v8] ✅ LIGHTGBM saved.

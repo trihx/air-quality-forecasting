@@ -1,0 +1,96 @@
+[v8] Preparing data (KNN past-only)...
+[DATA] Loading raw data...
+2026-05-02 07:42:42.502 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-05-02 07:42:42.502 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-05-02 07:42:42.631 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:42:42.648 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:42:42.650 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-05-02 07:42:42.668 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-05-02 07:42:42.672 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:42:42.674 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-05-02 07:42:42.678 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-05-02 07:42:42.684 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-05-02 07:42:42.688 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-05-02 07:42:42.688 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-05-02 07:42:42.688 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 07:42:42.697 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 27,649 rows, 20,466 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤6h
+    [D-Hybrid]   After Spline: 20,396 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 47 medium gaps (586h)
+      [KNN]   Gap at 2-16: skipped (only 2 past donors, need 5)
+      [KNN] Filled 571 values via KNN (past-only, 1 gaps skipped)
+    [D-Hybrid] Phase 3: Dropping 19,825 rows with gaps >24h
+  [Imputer] Output: 7,743 rows (7,112 real + 631 imputed)
+  [Imputer] Dropped 19,825 rows with unfillable gaps
+  [Imputer] Imputed ratio: 8.1%
+2026-05-02 07:42:43.079 | INFO     | src.data.imputer:impute_missing_data:110 - Imputation [hybrid]: 7,743 rows (7,112 real + 631 imputed, 19,825 dropped)
+2026-05-02 07:42:43.079 | INFO     | src.features.builder:build_features:64 - ============================================================
+2026-05-02 07:42:43.079 | INFO     | src.features.builder:build_features:65 - Feature Engineering Pipeline Started
+2026-05-02 07:42:43.079 | INFO     | src.features.builder:build_features:66 - ============================================================
+2026-05-02 07:42:43.085 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-05-02 07:42:43.089 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 07:42:43.097 | INFO     | src.features.temporal:create_lag_features:51 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 07:42:43.111 | INFO     | src.features.temporal:create_rolling_features:107 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 07:42:43.116 | INFO     | src.features.temporal:create_ewm_features:140 - Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 07:42:43.121 | INFO     | src.features.temporal:create_diff_features:176 - Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:42:43.127 | INFO     | src.features.builder:_create_domain_features:180 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 07:42:43.130 | INFO     | src.features.builder:build_features:108 - Dropped 168 warmup rows with NaN
+2026-05-02 07:42:43.130 | INFO     | src.features.builder:build_features:113 - ============================================================
+2026-05-02 07:42:43.130 | INFO     | src.features.builder:build_features:114 - Feature Engineering Complete: 5 → 119 columns, 7,743 → 7,575 rows
+2026-05-02 07:42:43.131 | INFO     | src.features.builder:build_features:117 - ============================================================
+[DATA] Final: 7,575 rows × 120 cols
+
+======================================================================
+[v8] Retraining: ARIMA
+======================================================================
+
+======================================================================
+[STAT] ARIMA/SARIMA (rolling window)
+======================================================================
+
+  ── Horizon 1h ──
+/Users/trihx/Desktop/time-series-forecasting/.venv/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:978: UserWarning: Non-invertible starting MA parameters found. Using zeros as starting parameters.
+  warn('Non-invertible starting MA parameters found.'
+2026-05-02 07:42:49.955 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   ARIMA(2,1,1) (h=1): MAE=3.6268, RMSE=6.5855, MASE=1.3973 ❌
+2026-05-02 07:42:49.956 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1) @ 25.0µg/m³: P=0.125 R=0.042 F1=0.062 Brier=0.0432 AUC=0.828 (n=24)
+2026-05-02 07:42:49.956 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1) @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0115 AUC=0.727 (n=7)
+2026-05-02 07:42:49.956 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1) @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0029 AUC=0.355 (n=1)
+    ARIMA(2,1,1): MAE=3.6268, MASE=1.3973
+2026-05-02 07:45:17.910 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   SARIMA (h=1): MAE=4.0183, RMSE=7.1084, MASE=1.5481 ❌
+2026-05-02 07:45:17.911 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     SARIMA @ 25.0µg/m³: P=0.125 R=0.042 F1=0.062 Brier=0.0432 AUC=0.820 (n=24)
+2026-05-02 07:45:17.911 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     SARIMA @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0159 AUC=0.773 (n=7)
+2026-05-02 07:45:17.911 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     SARIMA @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0058 AUC=0.482 (n=1)
+    SARIMA: MAE=4.0183, MASE=1.5481
+
+  ── Horizon 6h ──
+/Users/trihx/Desktop/time-series-forecasting/.venv/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:978: UserWarning: Non-invertible starting MA parameters found. Using zeros as starting parameters.
+  warn('Non-invertible starting MA parameters found.'
+2026-05-02 07:45:22.986 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   ARIMA(2,1,1) (h=6): MAE=4.5358, RMSE=7.2822, MASE=0.7709 ✅
+2026-05-02 07:45:22.986 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1) @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0348 AUC=0.520 (n=24)
+2026-05-02 07:45:22.986 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1) @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0102 AUC=0.323 (n=7)
+2026-05-02 07:45:22.987 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1) @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.006 (n=1)
+    ARIMA(2,1,1): MAE=4.5358, MASE=0.7709
+2026-05-02 07:47:48.299 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   SARIMA (h=6): MAE=5.035, RMSE=7.9831, MASE=0.8558 ✅
+2026-05-02 07:47:48.300 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     SARIMA @ 25.0µg/m³: P=0.200 R=0.042 F1=0.069 Brier=0.0392 AUC=0.673 (n=24)
+2026-05-02 07:47:48.300 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     SARIMA @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0145 AUC=0.659 (n=7)
+2026-05-02 07:47:48.300 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     SARIMA @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.289 (n=1)
+    SARIMA: MAE=5.035, MASE=0.8558
+
+  ── Horizon 24h ──
+/Users/trihx/Desktop/time-series-forecasting/.venv/lib/python3.11/site-packages/statsmodels/tsa/statespace/sarimax.py:978: UserWarning: Non-invertible starting MA parameters found. Using zeros as starting parameters.
+  warn('Non-invertible starting MA parameters found.'
+2026-05-02 07:47:53.194 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   ARIMA(2,1,1) (h=24): MAE=4.5638, RMSE=7.3715, MASE=0.7638 ✅
+2026-05-02 07:47:53.194 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1) @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0358 AUC=0.434 (n=24)
+2026-05-02 07:47:53.194 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1) @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0104 AUC=0.336 (n=7)
+2026-05-02 07:47:53.194 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1) @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.033 (n=1)
+    ARIMA(2,1,1): MAE=4.5638, MASE=0.7638
+2026-05-02 07:50:12.540 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   SARIMA (h=24): MAE=5.0649, RMSE=8.0345, MASE=0.8477 ✅
+2026-05-02 07:50:12.541 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     SARIMA @ 25.0µg/m³: P=0.200 R=0.042 F1=0.069 Brier=0.0402 AUC=0.642 (n=24)
+2026-05-02 07:50:12.541 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     SARIMA @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0149 AUC=0.646 (n=7)
+2026-05-02 07:50:12.541 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     SARIMA @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0015 AUC=0.304 (n=1)
+    SARIMA: MAE=5.0649, MASE=0.8477
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v8_final/arima_20260502_074241.json
+  → Saved: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v8_final/arima_preds_20260502_074241.json
+[v8] ✅ ARIMA saved.

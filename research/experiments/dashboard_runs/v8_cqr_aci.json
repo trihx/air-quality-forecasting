@@ -1,0 +1,250 @@
+{
+  "version": "v8_scientific_audit",
+  "description": "Final v8 pipeline after KNN look-ahead fix and unified MASE",
+  "timestamp": "2026-05-02T08:06:22.711687",
+  "metrics": {
+    "1h": {
+      "Persistence": {
+        "mae": 2.5964,
+        "rmse": null,
+        "mase": 1.0,
+        "mase_unified": 1.0,
+        "r2": 0.5862,
+        "n_test": 600,
+        "source": "unified"
+      },
+      "LightGBM_tuned": {
+        "mae": 3.3035,
+        "rmse": null,
+        "mase_unified": 0.9747,
+        "r2": 0.4167,
+        "source": "v8_final"
+      },
+      "Ensemble_Weighted": {
+        "mae": 5.4188,
+        "rmse": null,
+        "mase_unified": 1.5988,
+        "r2": -0.4755,
+        "source": "v8_final"
+      },
+      "GradientBoosting": {
+        "mae": 5.272,
+        "rmse": null,
+        "mase_unified": 1.5555,
+        "r2": -0.3785,
+        "source": "v8_final"
+      },
+      "RandomForest": {
+        "mae": 5.2634,
+        "rmse": null,
+        "mase_unified": 1.5529,
+        "r2": -0.3994,
+        "source": "v8_final"
+      },
+      "Stacking": {
+        "mae": 5.8505,
+        "rmse": null,
+        "mase_unified": 1.7261,
+        "r2": -0.7272,
+        "source": "v8_final"
+      },
+      "GRU_v2_log": {
+        "mae": 5.7848,
+        "rmse": null,
+        "mase_unified": 1.7068,
+        "r2": -0.4954,
+        "source": "v8_final"
+      },
+      "LSTM_v2_log": {
+        "mae": 5.816,
+        "rmse": null,
+        "mase_unified": 1.716,
+        "r2": -0.5195,
+        "source": "v8_final"
+      },
+      "TFT": {
+        "mae": NaN,
+        "rmse": null,
+        "mase_unified": NaN,
+        "r2": NaN,
+        "source": "v8_final"
+      },
+      "ARIMA": {
+        "mae": 5.6493,
+        "rmse": null,
+        "mase_unified": 1.6668,
+        "r2": -0.4758,
+        "source": "v8_final"
+      },
+      "SARIMA": {
+        "mae": 6.2473,
+        "rmse": null,
+        "mase_unified": 1.8432,
+        "r2": -0.7612,
+        "source": "v8_final"
+      }
+    },
+    "6h": {
+      "Persistence": {
+        "mae": 6.9323,
+        "rmse": null,
+        "mase": 1.0,
+        "mase_unified": 1.0,
+        "r2": -0.7744,
+        "n_test": 595,
+        "source": "unified"
+      },
+      "LightGBM_tuned": {
+        "mae": 5.0651,
+        "rmse": null,
+        "mase_unified": 0.6138,
+        "r2": 0.0125,
+        "source": "v8_final"
+      },
+      "Ensemble_Weighted": {
+        "mae": 5.1806,
+        "rmse": null,
+        "mase_unified": 0.6278,
+        "r2": -0.2585,
+        "source": "v8_final"
+      },
+      "GradientBoosting": {
+        "mae": 5.2007,
+        "rmse": null,
+        "mase_unified": 0.6302,
+        "r2": -0.2998,
+        "source": "v8_final"
+      },
+      "RandomForest": {
+        "mae": 5.2024,
+        "rmse": null,
+        "mase_unified": 0.6304,
+        "r2": -0.2599,
+        "source": "v8_final"
+      },
+      "Stacking": {
+        "mae": 5.0989,
+        "rmse": null,
+        "mase_unified": 0.6179,
+        "r2": -0.2506,
+        "source": "v8_final"
+      },
+      "GRU_v2_log": {
+        "mae": 5.3458,
+        "rmse": null,
+        "mase_unified": 0.6478,
+        "r2": -0.325,
+        "source": "v8_final"
+      },
+      "LSTM_v2_log": {
+        "mae": 5.3965,
+        "rmse": null,
+        "mase_unified": 0.6539,
+        "r2": -0.3346,
+        "source": "v8_final"
+      },
+      "TFT": {
+        "mae": NaN,
+        "rmse": null,
+        "mase_unified": NaN,
+        "r2": NaN,
+        "source": "v8_final"
+      },
+      "ARIMA": {
+        "mae": 5.2372,
+        "rmse": null,
+        "mase_unified": 0.6346,
+        "r2": -0.2464,
+        "source": "v8_final"
+      },
+      "SARIMA": {
+        "mae": 6.3706,
+        "rmse": null,
+        "mase_unified": 0.772,
+        "r2": -0.751,
+        "source": "v8_final"
+      }
+    },
+    "24h": {
+      "Persistence": {
+        "mae": 6.3273,
+        "rmse": null,
+        "mase": 1.0,
+        "mase_unified": 1.0,
+        "r2": -0.7609,
+        "n_test": 586,
+        "source": "unified"
+      },
+      "LightGBM_tuned": {
+        "mae": 4.985,
+        "rmse": null,
+        "mase_unified": 0.7682,
+        "r2": -0.0103,
+        "source": "v8_final"
+      },
+      "Ensemble_Weighted": {
+        "mae": 4.9221,
+        "rmse": null,
+        "mase_unified": 0.7586,
+        "r2": -0.1348,
+        "source": "v8_final"
+      },
+      "GradientBoosting": {
+        "mae": 5.0148,
+        "rmse": null,
+        "mase_unified": 0.7728,
+        "r2": -0.1687,
+        "source": "v8_final"
+      },
+      "RandomForest": {
+        "mae": 4.9136,
+        "rmse": null,
+        "mase_unified": 0.7573,
+        "r2": -0.1392,
+        "source": "v8_final"
+      },
+      "Stacking": {
+        "mae": 5.396,
+        "rmse": null,
+        "mase_unified": 0.8316,
+        "r2": -0.3672,
+        "source": "v8_final"
+      },
+      "GRU_v2_log": {
+        "mae": 5.0759,
+        "rmse": null,
+        "mase_unified": 0.7823,
+        "r2": -0.1718,
+        "source": "v8_final"
+      },
+      "LSTM_v2_log": {
+        "mae": 5.0789,
+        "rmse": null,
+        "mase_unified": 0.7827,
+        "r2": -0.1763,
+        "source": "v8_final"
+      },
+      "TFT": {
+        "mae": NaN,
+        "rmse": null,
+        "mase_unified": NaN,
+        "r2": NaN,
+        "source": "v8_final"
+      },
+      "ARIMA": {
+        "mae": 5.3565,
+        "rmse": null,
+        "mase_unified": 0.8255,
+        "r2": -0.2723,
+        "source": "v8_final"
+      },
+      "SARIMA": {
+        "mae": 6.0126,
+        "rmse": null,
+        "mase_unified": 0.9266,
+        "r2": -0.5971,
+        "source": "v8_final"
+      }
+    }
+  }
+}

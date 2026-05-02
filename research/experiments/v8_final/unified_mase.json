@@ -1,0 +1,173 @@
+{
+  "1h": {
+    "LightGBM_tuned": {
+      "mase_hyndman": 0.9747,
+      "mae": 3.3035,
+      "n_samples": 600
+    },
+    "Persistence": {
+      "mase_hyndman": 0.766,
+      "mae": 2.5964,
+      "n_samples": 600
+    },
+    "Ensemble_Weighted": {
+      "mase_hyndman": 1.5988,
+      "mae": 5.4188,
+      "n_samples": 600
+    },
+    "GradientBoosting": {
+      "mase_hyndman": 1.5555,
+      "mae": 5.272,
+      "n_samples": 600
+    },
+    "RandomForest": {
+      "mase_hyndman": 1.5529,
+      "mae": 5.2634,
+      "n_samples": 600
+    },
+    "Stacking": {
+      "mase_hyndman": 1.7261,
+      "mae": 5.8505,
+      "n_samples": 600
+    },
+    "GRU_v2_log": {
+      "mase_hyndman": 1.7068,
+      "mae": 5.7848,
+      "n_samples": 688
+    },
+    "LSTM_v2_log": {
+      "mase_hyndman": 1.716,
+      "mae": 5.816,
+      "n_samples": 688
+    },
+    "TFT": {
+      "mase_hyndman": NaN,
+      "mae": NaN,
+      "n_samples": 604
+    },
+    "ARIMA": {
+      "mase_hyndman": 1.6668,
+      "mae": 5.6493,
+      "n_samples": 694
+    },
+    "SARIMA": {
+      "mase_hyndman": 1.8432,
+      "mae": 6.2473,
+      "n_samples": 694
+    }
+  },
+  "6h": {
+    "LightGBM_tuned": {
+      "mase_hyndman": 0.6138,
+      "mae": 5.0651,
+      "n_samples": 595
+    },
+    "Persistence": {
+      "mase_hyndman": 0.8401,
+      "mae": 6.9323,
+      "n_samples": 595
+    },
+    "Ensemble_Weighted": {
+      "mase_hyndman": 0.6278,
+      "mae": 5.1806,
+      "n_samples": 595
+    },
+    "GradientBoosting": {
+      "mase_hyndman": 0.6302,
+      "mae": 5.2007,
+      "n_samples": 595
+    },
+    "RandomForest": {
+      "mase_hyndman": 0.6304,
+      "mae": 5.2024,
+      "n_samples": 595
+    },
+    "Stacking": {
+      "mase_hyndman": 0.6179,
+      "mae": 5.0989,
+      "n_samples": 595
+    },
+    "GRU_v2_log": {
+      "mase_hyndman": 0.6478,
+      "mae": 5.3458,
+      "n_samples": 687
+    },
+    "LSTM_v2_log": {
+      "mase_hyndman": 0.6539,
+      "mae": 5.3965,
+      "n_samples": 687
+    },
+    "TFT": {
+      "mase_hyndman": NaN,
+      "mae": NaN,
+      "n_samples": 601
+    },
+    "ARIMA": {
+      "mase_hyndman": 0.6346,
+      "mae": 5.2372,
+      "n_samples": 689
+    },
+    "SARIMA": {
+      "mase_hyndman": 0.772,
+      "mae": 6.3706,
+      "n_samples": 689
+    }
+  },
+  "24h": {
+    "LightGBM_tuned": {
+      "mase_hyndman": 0.7682,
+      "mae": 4.985,
+      "n_samples": 586
+    },
+    "Persistence": {
+      "mase_hyndman": 0.9751,
+      "mae": 6.3273,
+      "n_samples": 586
+    },
+    "Ensemble_Weighted": {
+      "mase_hyndman": 0.7586,
+      "mae": 4.9221,
+      "n_samples": 586
+    },
+    "GradientBoosting": {
+      "mase_hyndman": 0.7728,
+      "mae": 5.0148,
+      "n_samples": 586
+    },
+    "RandomForest": {
+      "mase_hyndman": 0.7573,
+      "mae": 4.9136,
+      "n_samples": 586
+    },
+    "Stacking": {
+      "mase_hyndman": 0.8316,
+      "mae": 5.396,
+      "n_samples": 586
+    },
+    "GRU_v2_log": {
+      "mase_hyndman": 0.7823,
+      "mae": 5.0759,
+      "n_samples": 685
+    },
+    "LSTM_v2_log": {
+      "mase_hyndman": 0.7827,
+      "mae": 5.0789,
+      "n_samples": 685
+    },
+    "TFT": {
+      "mase_hyndman": NaN,
+      "mae": NaN,
+      "n_samples": 601
+    },
+    "ARIMA": {
+      "mase_hyndman": 0.8255,
+      "mae": 5.3565,
+      "n_samples": 671
+    },
+    "SARIMA": {
+      "mase_hyndman": 0.9266,
+      "mae": 6.0126,
+      "n_samples": 671
+    }
+  }
+}

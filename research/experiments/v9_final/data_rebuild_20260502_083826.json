@@ -1,0 +1,69 @@
+{
+  "timestamp": "20260502_083826",
+  "description": "v9 high-resolution segmented data rebuild",
+  "results": {
+    "30min": {
+      "freq": "30min",
+      "min_segment_steps": 48,
+      "shape": [
+        8625,
+        121
+      ],
+      "n_segments": 36,
+      "pm25_mean": 14.4081,
+      "pm25_std": 10.9026,
+      "imputation": {
+        "total": 14950,
+        "real": 13824,
+        "imputed": 1126,
+        "imputed_pct": 7.5
+      },
+      "segments": {
+        "n_segments": 36,
+        "total_rows": 13685,
+        "min_length": 50,
+        "max_length": 4003,
+        "mean_length": 380.1,
+        "median_length": 136.5,
+        "p25_length": 135.8,
+        "p75_length": 306.5
+      },
+      "elapsed_s": 1.7
+    },
+    "15min": {
+      "freq": "15min",
+      "min_segment_steps": 96,
+      "shape": [
+        18355,
+        121
+      ],
+      "n_segments": 34,
+      "pm25_mean": 14.0548,
+      "pm25_std": 11.2955,
+      "imputation": {
+        "total": 28255,
+        "real": 26913,
+        "imputed": 1342,
+        "imputed_pct": 4.7
+      },
+      "segments": {
+        "n_segments": 34,
+        "total_rows": 23878,
+        "min_length": 104,
+        "max_length": 6662,
+        "mean_length": 702.3,
+        "median_length": 270.0,
+        "p25_length": 269.0,
+        "p75_length": 634.2
+      },
+      "elapsed_s": 3.0
+    },
+    "1h_v8": {
+      "shape": [
+        7575,
+        120
+      ],
+      "pm25_mean": 13.8076
+    }
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "1h": [
+    {
+      "DM_statistic": 2.4832,
+      "p_value": 0.01302,
+      "HLN_statistic": 2.4811,
+      "HLN_p_value": 0.013369,
+      "n_samples": 600,
+      "conclusion": "SIGNIFICANT at 5% \u2014 forecasts differ",
+      "model_a": "LightGBM_tuned",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -4.8224,
+      "p_value": 1e-06,
+      "HLN_statistic": -4.8184,
+      "HLN_p_value": 2e-06,
+      "n_samples": 600,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "GRU_v2_log",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -3.9793,
+      "p_value": 6.9e-05,
+      "HLN_statistic": -3.976,
+      "HLN_p_value": 7.9e-05,
+      "n_samples": 600,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "LSTM_v2_log",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -0.6835,
+      "p_value": 0.494259,
+      "HLN_statistic": -0.683,
+      "HLN_p_value": 0.494884,
+      "n_samples": 600,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "GRU_v2_log",
+      "model_b": "LightGBM_tuned"
+    },
+    {
+      "DM_statistic": 1.6006,
+      "p_value": 0.10946,
+      "HLN_statistic": 1.5993,
+      "HLN_p_value": 0.110284,
+      "n_samples": 600,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "LSTM_v2_log",
+      "model_b": "LightGBM_tuned"
+    },
+    {
+      "DM_statistic": -3.8728,
+      "p_value": 0.000108,
+      "HLN_statistic": -3.8695,
+      "HLN_p_value": 0.000121,
+      "n_samples": 600,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "Ensemble_Weighted",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": 3.1302,
+      "p_value": 0.001747,
+      "HLN_statistic": 3.1276,
+      "HLN_p_value": 0.001848,
+      "n_samples": 600,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "Ensemble_Weighted",
+      "model_b": "LightGBM_tuned"
+    },
+    {
+      "DM_statistic": 2.1121,
+      "p_value": 0.034682,
+      "HLN_statistic": 2.1103,
+      "HLN_p_value": 0.035247,
+      "n_samples": 600,
+      "conclusion": "SIGNIFICANT at 5% \u2014 forecasts differ",
+      "model_a": "Ensemble_Weighted",
+      "model_b": "GRU_v2_log"
+    },
+    {
+      "DM_statistic": -4.3345,
+      "p_value": 1.5e-05,
+      "HLN_statistic": -4.3309,
+      "HLN_p_value": 1.7e-05,
+      "n_samples": 600,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "RandomForest",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -5.3491,
+      "p_value": 0.0,
+      "HLN_statistic": -5.3446,
+      "HLN_p_value": 0.0,
+      "n_samples": 600,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "ARIMA",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": NaN,
+      "p_value": NaN,
+      "HLN_statistic": NaN,
+      "HLN_p_value": NaN,
+      "n_samples": 600,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "TFT",
+      "model_b": "Persistence"
+    }
+  ],
+  "6h": [
+    {
+      "DM_statistic": -3.9674,
+      "p_value": 7.3e-05,
+      "HLN_statistic": -3.9307,
+      "HLN_p_value": 9.5e-05,
+      "n_samples": 595,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "LightGBM_tuned",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -2.2809,
+      "p_value": 0.022557,
+      "HLN_statistic": -2.2598,
+      "HLN_p_value": 0.024196,
+      "n_samples": 595,
+      "conclusion": "SIGNIFICANT at 5% \u2014 forecasts differ",
+      "model_a": "GRU_v2_log",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -1.9573,
+      "p_value": 0.050318,
+      "HLN_statistic": -1.9392,
+      "HLN_p_value": 0.052955,
+      "n_samples": 595,
+      "conclusion": "MARGINAL at 10% \u2014 weak evidence of difference",
+      "model_a": "LSTM_v2_log",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -0.4876,
+      "p_value": 0.625821,
+      "HLN_statistic": -0.4831,
+      "HLN_p_value": 0.629196,
+      "n_samples": 595,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "GRU_v2_log",
+      "model_b": "LightGBM_tuned"
+    },
+    {
+      "DM_statistic": 0.0803,
+      "p_value": 0.935971,
+      "HLN_statistic": 0.0796,
+      "HLN_p_value": 0.936589,
+      "n_samples": 595,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "LSTM_v2_log",
+      "model_b": "LightGBM_tuned"
+    },
+    {
+      "DM_statistic": -2.1799,
+      "p_value": 0.029266,
+      "HLN_statistic": -2.1597,
+      "HLN_p_value": 0.031193,
+      "n_samples": 595,
+      "conclusion": "SIGNIFICANT at 5% \u2014 forecasts differ",
+      "model_a": "Ensemble_Weighted",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -1.1686,
+      "p_value": 0.242566,
+      "HLN_statistic": -1.1578,
+      "HLN_p_value": 0.247413,
+      "n_samples": 595,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "Ensemble_Weighted",
+      "model_b": "LightGBM_tuned"
+    },
+    {
+      "DM_statistic": 0.1276,
+      "p_value": 0.89843,
+      "HLN_statistic": 0.1265,
+      "HLN_p_value": 0.899406,
+      "n_samples": 595,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "Ensemble_Weighted",
+      "model_b": "GRU_v2_log"
+    },
+    {
+      "DM_statistic": -2.1644,
+      "p_value": 0.030437,
+      "HLN_statistic": -2.1444,
+      "HLN_p_value": 0.03241,
+      "n_samples": 595,
+      "conclusion": "SIGNIFICANT at 5% \u2014 forecasts differ",
+      "model_a": "RandomForest",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -2.85,
+      "p_value": 0.004372,
+      "HLN_statistic": -2.8236,
+      "HLN_p_value": 0.004907,
+      "n_samples": 595,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "ARIMA",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": NaN,
+      "p_value": NaN,
+      "HLN_statistic": NaN,
+      "HLN_p_value": NaN,
+      "n_samples": 595,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "TFT",
+      "model_b": "Persistence"
+    }
+  ],
+  "24h": [
+    {
+      "DM_statistic": -3.8388,
+      "p_value": 0.000124,
+      "HLN_statistic": -3.6848,
+      "HLN_p_value": 0.00025,
+      "n_samples": 586,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "LightGBM_tuned",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -2.6819,
+      "p_value": 0.007321,
+      "HLN_statistic": -2.5743,
+      "HLN_p_value": 0.010289,
+      "n_samples": 586,
+      "conclusion": "SIGNIFICANT at 5% \u2014 forecasts differ",
+      "model_a": "GRU_v2_log",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -2.7871,
+      "p_value": 0.005318,
+      "HLN_statistic": -2.6753,
+      "HLN_p_value": 0.007675,
+      "n_samples": 586,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "LSTM_v2_log",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": 0.0407,
+      "p_value": 0.967506,
+      "HLN_statistic": 0.0391,
+      "HLN_p_value": 0.968822,
+      "n_samples": 586,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "GRU_v2_log",
+      "model_b": "LightGBM_tuned"
+    },
+    {
+      "DM_statistic": 0.0467,
+      "p_value": 0.962762,
+      "HLN_statistic": 0.0448,
+      "HLN_p_value": 0.96427,
+      "n_samples": 586,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "LSTM_v2_log",
+      "model_b": "LightGBM_tuned"
+    },
+    {
+      "DM_statistic": -3.1855,
+      "p_value": 0.001445,
+      "HLN_statistic": -3.0578,
+      "HLN_p_value": 0.002332,
+      "n_samples": 586,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "Ensemble_Weighted",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": 0.1113,
+      "p_value": 0.911403,
+      "HLN_statistic": 0.1068,
+      "HLN_p_value": 0.914979,
+      "n_samples": 586,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "Ensemble_Weighted",
+      "model_b": "LightGBM_tuned"
+    },
+    {
+      "DM_statistic": -0.0249,
+      "p_value": 0.980171,
+      "HLN_statistic": -0.0239,
+      "HLN_p_value": 0.980974,
+      "n_samples": 586,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "Ensemble_Weighted",
+      "model_b": "GRU_v2_log"
+    },
+    {
+      "DM_statistic": -3.3145,
+      "p_value": 0.000918,
+      "HLN_statistic": -3.1816,
+      "HLN_p_value": 0.001542,
+      "n_samples": 586,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "RandomForest",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": -2.7055,
+      "p_value": 0.00682,
+      "HLN_statistic": -2.597,
+      "HLN_p_value": 0.00964,
+      "n_samples": 586,
+      "conclusion": "SIGNIFICANT at 1% \u2014 forecasts differ",
+      "model_a": "ARIMA",
+      "model_b": "Persistence"
+    },
+    {
+      "DM_statistic": NaN,
+      "p_value": NaN,
+      "HLN_statistic": NaN,
+      "HLN_p_value": NaN,
+      "n_samples": 586,
+      "conclusion": "NOT SIGNIFICANT \u2014 no evidence forecasts differ",
+      "model_a": "TFT",
+      "model_b": "Persistence"
+    }
+  ]
+}

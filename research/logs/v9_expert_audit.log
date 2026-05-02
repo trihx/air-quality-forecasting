@@ -1,0 +1,253 @@
+======================================================================
+  v9 EXPERT RESULTS AUDIT — Overfitting & Leakage Check
+  Rule: MASE < 0.1 = leakage. Too-good = verify.
+======================================================================
+======================================================================
+  CHECK 1: Test Set Consistency (Fair vs Expert)
+======================================================================
+
+  --- 30m ---
+
+  Horizon 1h:
+    DL Fair n=693, Expert n=876 → ❌ DIFFERENT test set sizes! Δ=183
+       Fair values found in Expert: 693/693
+       Fair  Actuals: mean=9.42, std=4.95, min=1.93, max=35.60
+       Expert Actuals: mean=9.62, std=5.69, min=1.07, max=38.93
+    TFT Fair n=693, Expert n=876 → ❌ DIFFERENT sizes! Δ=183
+
+  Horizon 6h:
+    DL Fair n=684, Expert n=860 → ❌ DIFFERENT test set sizes! Δ=176
+       Fair values found in Expert: 684/684
+       Fair  Actuals: mean=9.45, std=4.97, min=1.93, max=35.60
+       Expert Actuals: mean=9.68, std=5.74, min=1.07, max=38.93
+    TFT Fair n=684, Expert n=860 → ❌ DIFFERENT sizes! Δ=176
+
+  Horizon 24h:
+    DL Fair n=652, Expert n=829 → ❌ DIFFERENT test set sizes! Δ=177
+       Fair values found in Expert: 652/652
+       Fair  Actuals: mean=9.76, std=5.05, min=2.20, max=35.60
+       Expert Actuals: mean=9.98, std=5.96, min=1.07, max=38.93
+    TFT Fair n=652, Expert n=829 → ❌ DIFFERENT sizes! Δ=177
+
+  --- 15m ---
+
+  Horizon 1h:
+    DL Fair n=1353, Expert n=1531 → ❌ DIFFERENT test set sizes! Δ=178
+       Fair values found in Expert: 1353/1353
+       Fair  Actuals: mean=9.90, std=5.48, min=1.14, max=64.57
+       Expert Actuals: mean=10.39, std=6.16, min=1.14, max=83.29
+    TFT Fair n=1353, Expert n=1531 → ❌ DIFFERENT sizes! Δ=178
+
+  Horizon 6h:
+    DL Fair n=1333, Expert n=1509 → ❌ DIFFERENT test set sizes! Δ=176
+       Fair values found in Expert: 1333/1333
+       Fair  Actuals: mean=9.87, std=5.49, min=1.14, max=64.57
+       Expert Actuals: mean=10.33, std=6.18, min=1.14, max=83.29
+    TFT Fair n=1333, Expert n=1509 → ❌ DIFFERENT sizes! Δ=176
+
+  Horizon 24h:
+    DL Fair n=1261, Expert n=1430 → ❌ DIFFERENT test set sizes! Δ=169
+       Fair values found in Expert: 1261/1261
+       Fair  Actuals: mean=9.51, std=5.18, min=1.14, max=64.57
+       Expert Actuals: mean=10.05, std=5.87, min=1.14, max=83.29
+    TFT Fair n=1261, Expert n=1430 → ❌ DIFFERENT sizes! Δ=169
+
+======================================================================
+  CHECK 2: Persistence Baseline Audit
+======================================================================
+
+  --- 30m ---
+    1h: Fair Pers MAE=2.9072 (n=693), Expert Pers MAE=2.9175 (n=876)
+    6h: Fair Pers MAE=4.8519 (n=684), Expert Pers MAE=5.5205 (n=860)
+         ⚠️ Persistence MAE differs by 0.6686!
+         → MASE denominator is DIFFERENT → scores NOT directly comparable!
+    24h: Fair Pers MAE=3.6830 (n=652), Expert Pers MAE=4.8401 (n=829)
+         ⚠️ Persistence MAE differs by 1.1571!
+         → MASE denominator is DIFFERENT → scores NOT directly comparable!
+
+  --- 15m ---
+    1h: Fair Pers MAE=3.4205 (n=1353), Expert Pers MAE=3.5793 (n=1531)
+    6h: Fair Pers MAE=5.0525 (n=1333), Expert Pers MAE=5.3313 (n=1509)
+    24h: Fair Pers MAE=3.8053 (n=1261), Expert Pers MAE=4.2076 (n=1430)
+
+======================================================================
+  CHECK 3: MASE Recomputation from Scratch
+======================================================================
+
+  --- 30m ---
+  Fair train samples: 6,900
+  Expert (base) train samples: 10,948
+
+    Horizon 1h (h=2 steps):
+      GRU_v9 (Fair):
+        MAE=3.0073
+        MASE (fair y_train): 0.7328
+        MASE (base y_train): 0.7640
+      LSTM_v9 (Fair):
+        MAE=3.0972
+        MASE (fair y_train): 0.7547
+        MASE (base y_train): 0.7869
+      GRU_v9_expert (Expert):
+        MAE=2.7773
+        MASE (base y_train): 0.7056
+        MASE (fair y_train): 0.6767
+      LSTM_v9_expert (Expert):
+        MAE=3.4087
+        MASE (base y_train): 0.8660
+        MASE (fair y_train): 0.8306
+
+    Horizon 6h (h=12 steps):
+      GRU_v9 (Fair):
+        MAE=4.5250
+        MASE (fair y_train): 0.4946
+        MASE (base y_train): 0.5219
+      LSTM_v9 (Fair):
+        MAE=3.6206
+        MASE (fair y_train): 0.3958
+        MASE (base y_train): 0.4176
+      GRU_v9_expert (Expert):
+        MAE=5.3293
+        MASE (base y_train): 0.6147
+        MASE (fair y_train): 0.5825
+      LSTM_v9_expert (Expert):
+        MAE=4.0724
+        MASE (base y_train): 0.4697
+        MASE (fair y_train): 0.4452
+
+    Horizon 24h (h=48 steps):
+      GRU_v9 (Fair):
+        MAE=3.5903
+        MASE (fair y_train): 0.4922
+        MASE (base y_train): 0.5137
+      LSTM_v9 (Fair):
+        MAE=3.8193
+        MASE (fair y_train): 0.5236
+        MASE (base y_train): 0.5465
+      GRU_v9_expert (Expert):
+        MAE=4.7841
+        MASE (base y_train): 0.6846
+        MASE (fair y_train): 0.6559
+      LSTM_v9_expert (Expert):
+        MAE=4.0877
+        MASE (base y_train): 0.5849
+        MASE (fair y_train): 0.5604
+
+  --- 15m ---
+  Fair train samples: 14,684
+  Expert (base) train samples: 19,102
+
+    Horizon 1h (h=4 steps):
+      GRU_v9 (Fair):
+        MAE=2.9437
+        MASE (fair y_train): 0.6669
+        MASE (base y_train): 0.6734
+      LSTM_v9 (Fair):
+        MAE=3.5700
+        MASE (fair y_train): 0.8088
+        MASE (base y_train): 0.8166
+      GRU_v9_expert (Expert):
+        MAE=3.2651
+        MASE (base y_train): 0.7469
+        MASE (fair y_train): 0.7397
+      LSTM_v9_expert (Expert):
+        MAE=3.5949
+        MASE (base y_train): 0.8223
+        MASE (fair y_train): 0.8145
+
+    Horizon 6h (h=24 steps):
+      GRU_v9 (Fair):
+        MAE=3.8707
+        MASE (fair y_train): 0.4257
+        MASE (base y_train): 0.4343
+      LSTM_v9 (Fair):
+        MAE=4.0502
+        MASE (fair y_train): 0.4455
+        MASE (base y_train): 0.4545
+      GRU_v9_expert (Expert):
+        MAE=5.6878
+        MASE (base y_train): 0.6382
+        MASE (fair y_train): 0.6256
+      LSTM_v9_expert (Expert):
+        MAE=4.4167
+        MASE (base y_train): 0.4956
+        MASE (fair y_train): 0.4858
+
+    Horizon 24h (h=96 steps):
+      GRU_v9 (Fair):
+        MAE=4.0086
+        MASE (fair y_train): 0.5342
+        MASE (base y_train): 0.5405
+      LSTM_v9 (Fair):
+        MAE=3.7302
+        MASE (fair y_train): 0.4971
+        MASE (base y_train): 0.5029
+      GRU_v9_expert (Expert):
+        MAE=6.1698
+        MASE (base y_train): 0.8319
+        MASE (fair y_train): 0.8222
+      LSTM_v9_expert (Expert):
+        MAE=3.8067
+        MASE (base y_train): 0.5132
+        MASE (fair y_train): 0.5073
+
+======================================================================
+  CHECK 4: MAE Sanity Check (Resolution-Independent)
+======================================================================
+  If MASE improved but MAE didn't, the MASE denominator is suspect.
+
+  --- 30m ---
+
+    1h:
+      GRU_v9         : Fair MAE=3.0073 vs Expert MAE=2.7773 (Δ=-0.2300, -7.6%) ✅ Lower (better)
+      LSTM_v9        : Fair MAE=3.0972 vs Expert MAE=3.4087 (Δ=+0.3115, +10.1%) ⚠️ Higher (worse!)
+
+    6h:
+      GRU_v9         : Fair MAE=4.5250 vs Expert MAE=5.3293 (Δ=+0.8043, +17.8%) ⚠️ Higher (worse!)
+      LSTM_v9        : Fair MAE=3.6206 vs Expert MAE=4.0724 (Δ=+0.4518, +12.5%) ⚠️ Higher (worse!)
+
+    24h:
+      GRU_v9         : Fair MAE=3.5903 vs Expert MAE=4.7841 (Δ=+1.1938, +33.3%) ⚠️ Higher (worse!)
+      LSTM_v9        : Fair MAE=3.8193 vs Expert MAE=4.0877 (Δ=+0.2684, +7.0%) ⚠️ Higher (worse!)
+
+  --- 15m ---
+
+    1h:
+      GRU_v9         : Fair MAE=2.9437 vs Expert MAE=3.2651 (Δ=+0.3214, +10.9%) ⚠️ Higher (worse!)
+      LSTM_v9        : Fair MAE=3.5700 vs Expert MAE=3.5949 (Δ=+0.0249, +0.7%) ⚠️ Higher (worse!)
+
+    6h:
+      GRU_v9         : Fair MAE=3.8707 vs Expert MAE=5.6878 (Δ=+1.8171, +46.9%) ⚠️ Higher (worse!)
+      LSTM_v9        : Fair MAE=4.0502 vs Expert MAE=4.4167 (Δ=+0.3665, +9.0%) ⚠️ Higher (worse!)
+
+    24h:
+      GRU_v9         : Fair MAE=4.0086 vs Expert MAE=6.1698 (Δ=+2.1611, +53.9%) ⚠️ Higher (worse!)
+      LSTM_v9        : Fair MAE=3.7302 vs Expert MAE=3.8067 (Δ=+0.0765, +2.1%) ⚠️ Higher (worse!)
+
+======================================================================
+  CHECK 5: v9_statistical_methods.py — MASE y_train Source Audit
+======================================================================
+  The script uses marts_features_{freq}.csv (FAIR dataset) for ALL models.
+  This means Expert models have MASE computed with FAIR y_train.
+  → If base y_train has HIGHER naive MAE, Expert MASE would be LOWER.
+  → This is a CONFOUND, not a real improvement!
+
+  --- 15m ---
+  Fair y_train: 14,684 samples
+  Base y_train: 19,102 samples
+    1h (h=4): Naive MAE fair=4.4139, base=4.3716 (Δ=-1.0%)
+    6h (h=24): Naive MAE fair=9.0918, base=8.9118 (Δ=-2.0%)
+    24h (h=96): Naive MAE fair=7.5041, base=7.4168 (Δ=-1.2%)
+
+  --- 30m ---
+  Fair y_train: 6,900 samples
+  Base y_train: 10,948 samples
+    1h (h=2): Naive MAE fair=4.1040, base=3.9360 (Δ=-4.1%)
+    6h (h=12): Naive MAE fair=9.1483, base=8.6699 (Δ=-5.2%)
+         ⚠️ >5% difference in naive baseline!
+         → Expert MASE denominator would be SMALLER
+         → Expert MASE would appear WORSE even with SAME model MAE!
+    24h (h=48): Naive MAE fair=7.2938, base=6.9886 (Δ=-4.2%)
+
+======================================================================
+  AUDIT COMPLETE
+======================================================================

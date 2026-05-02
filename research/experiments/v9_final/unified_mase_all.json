@@ -1,0 +1,746 @@
+{
+  "1h": {
+    "ARIMA_v9_15m": {
+      "mase_hyndman": 1.7481,
+      "mae": 7.7158,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "ElasticNet_v9_15m": {
+      "mase_hyndman": 1.0429,
+      "mae": 4.6032,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "Ensemble_Weighted_v9_15m": {
+      "mase_hyndman": 0.8142,
+      "mae": 3.5937,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "GRU_v9_15m": {
+      "mase_hyndman": 0.6669,
+      "mae": 2.9437,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "GRU_v9_expert_15m": {
+      "mase_hyndman": 0.7928,
+      "mae": 3.4993,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "GradientBoosting_v9_15m": {
+      "mase_hyndman": 1.1291,
+      "mae": 4.9838,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "LSTM_v9_15m": {
+      "mase_hyndman": 0.8088,
+      "mae": 3.57,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "LSTM_v9_expert_15m": {
+      "mase_hyndman": 0.7433,
+      "mae": 3.2808,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "LightGBM_v9_15m": {
+      "mase_hyndman": 1.137,
+      "mae": 5.0187,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "RandomForest_v9_15m": {
+      "mase_hyndman": 1.144,
+      "mae": 5.0497,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "Stacking_v9_15m": {
+      "mase_hyndman": 1.1922,
+      "mae": 5.2624,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "TFT_v9_15m": {
+      "mase_hyndman": 1.1792,
+      "mae": 5.2049,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "TFT_v9_expert_15m": {
+      "mase_hyndman": 1.0322,
+      "mae": 4.5562,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "VotingEnsemble_v9_15m": {
+      "mase_hyndman": 1.1283,
+      "mae": 4.9801,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "Persistence_15m": {
+      "mase_hyndman": 0.7749,
+      "mae": 3.4205,
+      "n_samples": 1353,
+      "freq": "15m"
+    },
+    "ARIMA_v9_30m": {
+      "mase_hyndman": 1.7362,
+      "mae": 7.1253,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "ElasticNet_v9_30m": {
+      "mase_hyndman": 1.0126,
+      "mae": 4.1556,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "Ensemble_Weighted_v9_30m": {
+      "mase_hyndman": 0.7821,
+      "mae": 3.2096,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "GRU_v9_30m": {
+      "mase_hyndman": 0.7328,
+      "mae": 3.0073,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "GRU_v9_expert_30m": {
+      "mase_hyndman": 1.254,
+      "mae": 5.1464,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "GradientBoosting_v9_30m": {
+      "mase_hyndman": 0.9947,
+      "mae": 4.0822,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "LSTM_v9_30m": {
+      "mase_hyndman": 0.7547,
+      "mae": 3.0972,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "LSTM_v9_expert_30m": {
+      "mase_hyndman": 1.0644,
+      "mae": 4.3682,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "LightGBM_v9_30m": {
+      "mase_hyndman": 0.9647,
+      "mae": 3.9592,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "RandomForest_v9_30m": {
+      "mase_hyndman": 0.981,
+      "mae": 4.026,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "Stacking_v9_30m": {
+      "mase_hyndman": 1.0421,
+      "mae": 4.2766,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "TFT_v9_30m": {
+      "mase_hyndman": 1.0516,
+      "mae": 4.3159,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "TFT_v9_expert_30m": {
+      "mase_hyndman": 1.0774,
+      "mae": 4.4215,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "VotingEnsemble_v9_30m": {
+      "mase_hyndman": 0.9733,
+      "mae": 3.9944,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "Persistence_30m": {
+      "mase_hyndman": 1.3875,
+      "mae": 5.6941,
+      "n_samples": 693,
+      "freq": "30m"
+    },
+    "ARIMA_1h": {
+      "mase_hyndman": 1.1113,
+      "mae": 3.7666,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "Ensemble_Weighted_1h": {
+      "mase_hyndman": 0.9491,
+      "mae": 3.2167,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "GRU_v2_log_1h": {
+      "mase_hyndman": 1.0455,
+      "mae": 3.5435,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "GradientBoosting_1h": {
+      "mase_hyndman": 1.091,
+      "mae": 3.6976,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "LSTM_v2_log_1h": {
+      "mase_hyndman": 1.0734,
+      "mae": 3.6382,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "LightGBM_tuned_1h": {
+      "mase_hyndman": 0.9747,
+      "mae": 3.3035,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "RandomForest_1h": {
+      "mase_hyndman": 0.9591,
+      "mae": 3.2506,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "SARIMA_1h": {
+      "mase_hyndman": 1.2479,
+      "mae": 4.2295,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "Stacking_1h": {
+      "mase_hyndman": 0.9993,
+      "mae": 3.387,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "TFT_1h": {
+      "mase_hyndman": NaN,
+      "mae": NaN,
+      "n_samples": 600,
+      "freq": "1h"
+    },
+    "Persistence_1h": {
+      "mase_hyndman": 0.766,
+      "mae": 2.5964,
+      "n_samples": 600,
+      "freq": "1h"
+    }
+  },
+  "6h": {
+    "ARIMA_v9_15m": {
+      "mase_hyndman": 0.8268,
+      "mae": 7.5172,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "ElasticNet_v9_15m": {
+      "mase_hyndman": 0.4663,
+      "mae": 4.2399,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "Ensemble_Weighted_v9_15m": {
+      "mase_hyndman": 0.4542,
+      "mae": 4.1298,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "GRU_v9_15m": {
+      "mase_hyndman": 0.4257,
+      "mae": 3.8707,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "GRU_v9_expert_15m": {
+      "mase_hyndman": 0.5929,
+      "mae": 5.3902,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "GradientBoosting_v9_15m": {
+      "mase_hyndman": 0.5473,
+      "mae": 4.9763,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "LSTM_v9_15m": {
+      "mase_hyndman": 0.4455,
+      "mae": 4.0502,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "LSTM_v9_expert_15m": {
+      "mase_hyndman": 0.5271,
+      "mae": 4.7924,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "LightGBM_v9_15m": {
+      "mase_hyndman": 0.5057,
+      "mae": 4.5976,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "RandomForest_v9_15m": {
+      "mase_hyndman": 0.5135,
+      "mae": 4.6691,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "Stacking_v9_15m": {
+      "mase_hyndman": 0.5214,
+      "mae": 4.74,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "TFT_v9_15m": {
+      "mase_hyndman": 0.4912,
+      "mae": 4.4657,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "TFT_v9_expert_15m": {
+      "mase_hyndman": 0.4718,
+      "mae": 4.2891,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "VotingEnsemble_v9_15m": {
+      "mase_hyndman": 0.5071,
+      "mae": 4.61,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "Persistence_15m": {
+      "mase_hyndman": 0.5557,
+      "mae": 5.0525,
+      "n_samples": 1333,
+      "freq": "15m"
+    },
+    "ARIMA_v9_30m": {
+      "mase_hyndman": 0.7734,
+      "mae": 7.075,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "ElasticNet_v9_30m": {
+      "mase_hyndman": 0.4108,
+      "mae": 3.7583,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "Ensemble_Weighted_v9_30m": {
+      "mase_hyndman": 0.3818,
+      "mae": 3.4932,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "GRU_v9_30m": {
+      "mase_hyndman": 0.4946,
+      "mae": 4.525,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "GRU_v9_expert_30m": {
+      "mase_hyndman": 0.5076,
+      "mae": 4.6435,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "GradientBoosting_v9_30m": {
+      "mase_hyndman": 0.4399,
+      "mae": 4.0243,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "LSTM_v9_30m": {
+      "mase_hyndman": 0.3958,
+      "mae": 3.6206,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "LSTM_v9_expert_30m": {
+      "mase_hyndman": 0.5097,
+      "mae": 4.6628,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "LightGBM_v9_30m": {
+      "mase_hyndman": 0.4176,
+      "mae": 3.8204,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "RandomForest_v9_30m": {
+      "mase_hyndman": 0.4241,
+      "mae": 3.8795,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "Stacking_v9_30m": {
+      "mase_hyndman": 0.4415,
+      "mae": 4.0386,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "TFT_v9_30m": {
+      "mase_hyndman": 0.5886,
+      "mae": 5.3848,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "TFT_v9_expert_30m": {
+      "mase_hyndman": 0.4879,
+      "mae": 4.4635,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "VotingEnsemble_v9_30m": {
+      "mase_hyndman": 0.4225,
+      "mae": 3.8651,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "Persistence_30m": {
+      "mase_hyndman": 0.5683,
+      "mae": 5.1993,
+      "n_samples": 684,
+      "freq": "30m"
+    },
+    "ARIMA_1h": {
+      "mase_hyndman": 0.6715,
+      "mae": 5.5411,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "Ensemble_Weighted_1h": {
+      "mase_hyndman": 0.596,
+      "mae": 4.9184,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "GRU_v2_log_1h": {
+      "mase_hyndman": 0.6298,
+      "mae": 5.1969,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "GradientBoosting_1h": {
+      "mase_hyndman": 0.6031,
+      "mae": 4.9773,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "LSTM_v2_log_1h": {
+      "mase_hyndman": 0.6343,
+      "mae": 5.2341,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "LightGBM_tuned_1h": {
+      "mase_hyndman": 0.6138,
+      "mae": 5.0651,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "RandomForest_1h": {
+      "mase_hyndman": 0.5975,
+      "mae": 4.9304,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "SARIMA_1h": {
+      "mase_hyndman": 0.7172,
+      "mae": 5.9189,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "Stacking_1h": {
+      "mase_hyndman": 0.6148,
+      "mae": 5.0735,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "TFT_1h": {
+      "mase_hyndman": NaN,
+      "mae": NaN,
+      "n_samples": 595,
+      "freq": "1h"
+    },
+    "Persistence_1h": {
+      "mase_hyndman": 0.8401,
+      "mae": 6.9323,
+      "n_samples": 595,
+      "freq": "1h"
+    }
+  },
+  "24h": {
+    "ARIMA_v9_15m": {
+      "mase_hyndman": 0.9552,
+      "mae": 7.1679,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "ElasticNet_v9_15m": {
+      "mase_hyndman": 0.6335,
+      "mae": 4.7539,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "Ensemble_Weighted_v9_15m": {
+      "mase_hyndman": 0.5434,
+      "mae": 4.0776,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "GRU_v9_15m": {
+      "mase_hyndman": 0.5342,
+      "mae": 4.0086,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "GRU_v9_expert_15m": {
+      "mase_hyndman": 0.8156,
+      "mae": 6.1205,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "GradientBoosting_v9_15m": {
+      "mase_hyndman": 0.7349,
+      "mae": 5.5149,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "LSTM_v9_15m": {
+      "mase_hyndman": 0.4971,
+      "mae": 3.7302,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "LSTM_v9_expert_15m": {
+      "mase_hyndman": 0.5261,
+      "mae": 3.948,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "LightGBM_v9_15m": {
+      "mase_hyndman": 0.7131,
+      "mae": 5.3509,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "RandomForest_v9_15m": {
+      "mase_hyndman": 0.6828,
+      "mae": 5.1236,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "Stacking_v9_15m": {
+      "mase_hyndman": 0.7074,
+      "mae": 5.3083,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "TFT_v9_15m": {
+      "mase_hyndman": 0.6562,
+      "mae": 4.9241,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "TFT_v9_expert_15m": {
+      "mase_hyndman": 0.6504,
+      "mae": 4.8808,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "VotingEnsemble_v9_15m": {
+      "mase_hyndman": 0.6756,
+      "mae": 5.0696,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "Persistence_15m": {
+      "mase_hyndman": 0.5071,
+      "mae": 3.8053,
+      "n_samples": 1261,
+      "freq": "15m"
+    },
+    "ARIMA_v9_30m": {
+      "mase_hyndman": 1.0154,
+      "mae": 7.4062,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "ElasticNet_v9_30m": {
+      "mase_hyndman": 0.5546,
+      "mae": 4.0452,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "Ensemble_Weighted_v9_30m": {
+      "mase_hyndman": 0.4685,
+      "mae": 3.4169,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "GRU_v9_30m": {
+      "mase_hyndman": 0.4922,
+      "mae": 3.5903,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "GRU_v9_expert_30m": {
+      "mase_hyndman": 0.5819,
+      "mae": 4.2442,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "GradientBoosting_v9_30m": {
+      "mase_hyndman": 0.5427,
+      "mae": 3.958,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "LSTM_v9_30m": {
+      "mase_hyndman": 0.5236,
+      "mae": 3.8193,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "LSTM_v9_expert_30m": {
+      "mase_hyndman": 0.5253,
+      "mae": 3.8316,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "LightGBM_v9_30m": {
+      "mase_hyndman": 0.5328,
+      "mae": 3.8861,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "RandomForest_v9_30m": {
+      "mase_hyndman": 0.5523,
+      "mae": 4.0284,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "Stacking_v9_30m": {
+      "mase_hyndman": 0.5957,
+      "mae": 4.345,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "TFT_v9_30m": {
+      "mase_hyndman": 0.5329,
+      "mae": 3.8867,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "TFT_v9_expert_30m": {
+      "mase_hyndman": 0.6331,
+      "mae": 4.6174,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "VotingEnsemble_v9_30m": {
+      "mase_hyndman": 0.5493,
+      "mae": 4.0062,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "Persistence_30m": {
+      "mase_hyndman": 0.7173,
+      "mae": 5.232,
+      "n_samples": 652,
+      "freq": "30m"
+    },
+    "ARIMA_1h": {
+      "mase_hyndman": 0.7887,
+      "mae": 5.1179,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "Ensemble_Weighted_1h": {
+      "mase_hyndman": 0.7519,
+      "mae": 4.879,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "GRU_v2_log_1h": {
+      "mase_hyndman": 0.7746,
+      "mae": 5.0264,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "GradientBoosting_1h": {
+      "mase_hyndman": 0.7581,
+      "mae": 4.9193,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "LSTM_v2_log_1h": {
+      "mase_hyndman": 0.7472,
+      "mae": 4.8487,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "LightGBM_tuned_1h": {
+      "mase_hyndman": 0.7682,
+      "mae": 4.985,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "RandomForest_1h": {
+      "mase_hyndman": 0.7645,
+      "mae": 4.9604,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "SARIMA_1h": {
+      "mase_hyndman": 0.8593,
+      "mae": 5.5756,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "Stacking_1h": {
+      "mase_hyndman": 0.8304,
+      "mae": 5.3883,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "TFT_1h": {
+      "mase_hyndman": NaN,
+      "mae": NaN,
+      "n_samples": 586,
+      "freq": "1h"
+    },
+    "Persistence_1h": {
+      "mase_hyndman": 0.9751,
+      "mae": 6.3273,
+      "n_samples": 586,
+      "freq": "1h"
+    }
+  }
+}

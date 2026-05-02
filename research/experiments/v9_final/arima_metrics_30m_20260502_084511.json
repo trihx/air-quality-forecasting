@@ -1,0 +1,140 @@
+{
+  "1h": {
+    "ARIMA_v9": {
+      "model": "ARIMA(2,1,1)_v9",
+      "mae": 7.5538,
+      "rmse": 9.5253,
+      "mape": 68.72,
+      "smape": 108.94,
+      "mase": 2.4788,
+      "r2": -1.5617,
+      "medae": 6.2382,
+      "forecast_bias": -0.7638,
+      "rmse_mae_ratio": 1.261,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0225,
+          "roc_auc": 0.7361
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0083,
+          "roc_auc": 0.7223
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN,
+          "roc_auc": NaN
+        }
+      },
+      "train_time_s": 0.28
+    }
+  },
+  "6h": {
+    "ARIMA_v9": {
+      "model": "ARIMA(2,1,1)_v9",
+      "mae": 7.5207,
+      "rmse": 9.5831,
+      "mape": 67.38,
+      "smape": 106.3,
+      "mase": 1.329,
+      "r2": -1.5645,
+      "medae": 6.1878,
+      "forecast_bias": -0.7571,
+      "rmse_mae_ratio": 1.2742,
+      "horizon": 6,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0226,
+          "roc_auc": 0.4442
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0083,
+          "roc_auc": 0.5223
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN,
+          "roc_auc": NaN
+        }
+      },
+      "train_time_s": 0.22
+    }
+  },
+  "24h": {
+    "ARIMA_v9": {
+      "model": "ARIMA(2,1,1)_v9",
+      "mae": 7.174,
+      "rmse": 8.8045,
+      "mape": 67.6,
+      "smape": 106.44,
+      "mase": 1.5952,
+      "r2": -1.8912,
+      "medae": 6.1152,
+      "forecast_bias": -0.7501,
+      "rmse_mae_ratio": 1.2273,
+      "horizon": 24,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0088,
+          "roc_auc": 0.6924
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0025,
+          "roc_auc": 0.7648
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN,
+          "roc_auc": NaN
+        }
+      },
+      "train_time_s": 0.21
+    }
+  }
+}

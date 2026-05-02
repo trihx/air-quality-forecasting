@@ -1,0 +1,13 @@
+======================================================================
+v9 DL EXPERT RETRAIN — Ablation Study (Base Dataset)
+Timestamp: 20260502_160822
+======================================================================
+
+======================================================================
+[DL-EXPERT] GRU & LSTM - 30m Base Dataset
+  Device: mps
+======================================================================
+  Features (26): ['nhiet_do', 'do_am', 'diem_suong', 'co2', 'pm25', 'hour_sin', 'hour_cos', 'month_sin', 'month_cos', 'dow_sin', 'dow_cos', 'is_weekend', 'is_rush_hour', 'season', 'fourier_daily_sin_1', 'fourier_daily_cos_1', 'fourier_daily_sin_2', 'fourier_daily_cos_2', 'fourier_daily_sin_3', 'fourier_daily_cos_3', 'fourier_weekly_sin_1', 'fourier_weekly_cos_1', 'fourier_weekly_sin_2', 'fourier_weekly_cos_2', 'fourier_weekly_sin_3', 'fourier_weekly_cos_3']
+  Dataset rows: 13,685 (vs Fair pipeline's tabular-engineered dataset)
+
+  ── Horizon 1h (2 steps, lookback 144 steps) ──

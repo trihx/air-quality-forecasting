@@ -19,6 +19,7 @@ import pandas as pd
 from loguru import logger
 from scipy.interpolate import CubicSpline
 from sklearn.impute import KNNImputer
+from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 
 from src.data.loader import FEATURE_COLS, TARGET_COL
@@ -395,6 +396,12 @@ def _apply_knn_imputation(
     """Apply KNN imputation for specified gap segments.
 
     Uses auxiliary features + temporal features to predict missing PM2.5.
+
+    ANTI-LEAKAGE (v8 fix): For each gap segment, KNN is fitted ONLY on
+    complete rows BEFORE the gap start. This prevents future data from
+    being used as neighbors (look-ahead bias).
+
+    Ref: v8_audit_knn_temporal.py found 54.92% of points used future neighbors.
     """
 
     def _log(msg: str) -> None:
@@ -403,18 +410,9 @@ def _apply_knn_imputation(
 
     df = df.copy()
 
-    # Combine features with target for KNN
+    # Prepare feature matrix
     knn_data = knn_features.copy()
     knn_data[TARGET_COL] = df[TARGET_COL]
-
-    # Get indices to impute
-    positions_to_fill = set()
-    for _, gap in gap_info.iterrows():
-        positions_to_fill.update(range(gap["start_idx"], gap["end_idx"] + 1))
-
-    _log(f"Positions to fill: {len(positions_to_fill)}")
-
-    # Standardize features (important for KNN distance)
     feature_cols = [c for c in knn_data.columns if c != TARGET_COL]
 
     # Fill feature NaNs with column mean for KNN to work
@@ -422,26 +420,63 @@ def _apply_knn_imputation(
         if knn_data[col].isna().any():
             knn_data[col] = knn_data[col].fillna(knn_data[col].mean())
 
+    # Standardize features (fit on all known data — features only, not target)
     scaler = StandardScaler()
     knn_data[feature_cols] = scaler.fit_transform(knn_data[feature_cols])
 
-    # Apply KNN imputation
-    imputer = KNNImputer(n_neighbors=n_neighbors, weights="distance")
-    imputed_array = imputer.fit_transform(knn_data.values)
-
-    # Extract imputed PM2.5 values
-    target_col_idx = list(knn_data.columns).index(TARGET_COL)
     n_filled = 0
+    n_skipped_gaps = 0
+    target_col_idx = list(knn_data.columns).index(TARGET_COL)
 
-    for pos in positions_to_fill:
-        if pos < len(df):
-            imputed_val = imputed_array[pos, target_col_idx]
+    # Process each gap segment individually — PAST-ONLY neighbors
+    for gap_idx, gap in gap_info.iterrows():
+        gap_start = gap["start_idx"]
+        gap_end = gap["end_idx"]
+        gap_len = gap["length"]
+
+        # Get ONLY complete rows BEFORE this gap as donors
+        past_data = knn_data.iloc[:gap_start]
+        past_complete_mask = past_data[TARGET_COL].notna()
+        past_complete = past_data[past_complete_mask]
+
+        if len(past_complete) < n_neighbors:
+            _log(f"  Gap at {gap_start}-{gap_end}: skipped (only {len(past_complete)} past donors, need {n_neighbors})")
+            n_skipped_gaps += 1
+            continue
+
+        # Build KNN using ONLY past complete rows
+        past_features = past_complete[feature_cols].values
+        past_targets = past_complete[TARGET_COL].values
+
+        # Use NearestNeighbors for explicit control (past-only)
+        nn = NearestNeighbors(n_neighbors=n_neighbors, metric="euclidean")
+        nn.fit(past_features)
+
+        # Impute each position in this gap
+        for pos in range(gap_start, gap_end + 1):
+            if pos >= len(knn_data):
+                break
+
+            point_features = knn_data.iloc[pos][feature_cols].values.reshape(1, -1)
+            distances, neighbor_indices = nn.kneighbors(point_features)
+
+            # Distance-weighted average of neighbor targets
+            dists = distances[0]
+            neighbor_targets = past_targets[neighbor_indices[0]]
+
+            # Handle zero distances (exact matches)
+            if np.any(dists == 0):
+                imputed_val = np.mean(neighbor_targets[dists == 0])
+            else:
+                weights = 1.0 / dists
+                imputed_val = np.average(neighbor_targets, weights=weights)
+
             # Clip to physical range
             imputed_val = max(0.0, min(500.0, imputed_val))
             df.iloc[pos, df.columns.get_loc(TARGET_COL)] = imputed_val
             n_filled += 1
 
-    _log(f"Filled {n_filled} values via KNN")
+    _log(f"Filled {n_filled} values via KNN (past-only, {n_skipped_gaps} gaps skipped)")
     return df
 
 

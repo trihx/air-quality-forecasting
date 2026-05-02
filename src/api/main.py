@@ -44,6 +44,22 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables ready.")
 
+    # Auto-seed info_cards if empty (first-run in Docker)
+    try:
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT COUNT(*) FROM info_cards"))
+            count = result.scalar()
+        if count == 0:
+            logger.info("info_cards table empty — running auto-seed...")
+            from scripts.seed_info_cards import seed as seed_info_cards
+            seed_info_cards()
+            logger.info("Auto-seed complete.")
+        else:
+            logger.info(f"info_cards table has {count} rows — skipping seed.")
+    except Exception as e:
+        logger.warning(f"Auto-seed skipped (table may not exist yet): {e}")
+
     # Log model availability
     models_dir = Path("models/exported")
     if models_dir.exists():

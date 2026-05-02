@@ -73,6 +73,47 @@ def mase(y_true: np.ndarray, y_pred: np.ndarray, y_naive: np.ndarray) -> float:
     return float(mae_model / mae_naive)
 
 
+def mase_hyndman(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    y_train: np.ndarray,
+    horizon: int = 1,
+) -> float:
+    """MASE per Hyndman & Koehler (2006) — standard academic definition.
+
+    Denominator = in-sample naive MAE (mean |y_train[t] - y_train[t-h]|).
+    This is scale-independent and allows cross-dataset comparison.
+
+    Reference: R.J. Hyndman & A.B. Koehler (2006), "Another look at measures
+    of forecast accuracy", IJF 22(4), pp.679-688.
+    DOI: 10.1016/j.ijforecast.2006.03.001
+
+    Args:
+        y_true: Out-of-sample actual values (test set).
+        y_pred: Model predictions.
+        y_train: In-sample actual values (training set).
+        horizon: Forecast horizon h (for computing naive errors).
+
+    Returns:
+        MASE score. < 1.0 means better than in-sample naive.
+    """
+    y_true = np.asarray(y_true, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+    y_train = np.asarray(y_train, dtype=float)
+
+    mae_model = np.mean(np.abs(y_true - y_pred))
+
+    # In-sample naive errors: |y_train[t] - y_train[t-h]|
+    naive_errors = np.abs(y_train[horizon:] - y_train[:-horizon])
+    mae_naive_insample = np.mean(naive_errors)
+
+    if mae_naive_insample < 1e-10:
+        logger.warning("MASE_hyndman: in-sample naive MAE is near zero, returning inf")
+        return float("inf")
+
+    return float(mae_model / mae_naive_insample)
+
+
 def r2_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """R² (coefficient of determination)."""
     ss_res = np.sum((y_true - y_pred) ** 2)

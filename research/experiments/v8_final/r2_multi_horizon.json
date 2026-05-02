@@ -1,0 +1,140 @@
+{
+  "1h": {
+    "LightGBM_tuned": {
+      "r2": 0.4167,
+      "n_samples": 600
+    },
+    "Persistence": {
+      "r2": 0.5862,
+      "n_samples": 600
+    },
+    "Ensemble_Weighted": {
+      "r2": -0.4755,
+      "n_samples": 600
+    },
+    "GradientBoosting": {
+      "r2": -0.3785,
+      "n_samples": 600
+    },
+    "RandomForest": {
+      "r2": -0.3994,
+      "n_samples": 600
+    },
+    "Stacking": {
+      "r2": -0.7272,
+      "n_samples": 600
+    },
+    "GRU_v2_log": {
+      "r2": -0.4954,
+      "n_samples": 688
+    },
+    "LSTM_v2_log": {
+      "r2": -0.5195,
+      "n_samples": 688
+    },
+    "TFT": {
+      "r2": NaN,
+      "n_samples": 604
+    },
+    "ARIMA": {
+      "r2": -0.4758,
+      "n_samples": 694
+    },
+    "SARIMA": {
+      "r2": -0.7612,
+      "n_samples": 694
+    }
+  },
+  "6h": {
+    "LightGBM_tuned": {
+      "r2": 0.0125,
+      "n_samples": 595
+    },
+    "Persistence": {
+      "r2": -0.7744,
+      "n_samples": 595
+    },
+    "Ensemble_Weighted": {
+      "r2": -0.2585,
+      "n_samples": 595
+    },
+    "GradientBoosting": {
+      "r2": -0.2998,
+      "n_samples": 595
+    },
+    "RandomForest": {
+      "r2": -0.2599,
+      "n_samples": 595
+    },
+    "Stacking": {
+      "r2": -0.2506,
+      "n_samples": 595
+    },
+    "GRU_v2_log": {
+      "r2": -0.325,
+      "n_samples": 687
+    },
+    "LSTM_v2_log": {
+      "r2": -0.3346,
+      "n_samples": 687
+    },
+    "TFT": {
+      "r2": NaN,
+      "n_samples": 601
+    },
+    "ARIMA": {
+      "r2": -0.2464,
+      "n_samples": 689
+    },
+    "SARIMA": {
+      "r2": -0.751,
+      "n_samples": 689
+    }
+  },
+  "24h": {
+    "LightGBM_tuned": {
+      "r2": -0.0103,
+      "n_samples": 586
+    },
+    "Persistence": {
+      "r2": -0.7609,
+      "n_samples": 586
+    },
+    "Ensemble_Weighted": {
+      "r2": -0.1348,
+      "n_samples": 586
+    },
+    "GradientBoosting": {
+      "r2": -0.1687,
+      "n_samples": 586
+    },
+    "RandomForest": {
+      "r2": -0.1392,
+      "n_samples": 586
+    },
+    "Stacking": {
+      "r2": -0.3672,
+      "n_samples": 586
+    },
+    "GRU_v2_log": {
+      "r2": -0.1718,
+      "n_samples": 685
+    },
+    "LSTM_v2_log": {
+      "r2": -0.1763,
+      "n_samples": 685
+    },
+    "TFT": {
+      "r2": NaN,
+      "n_samples": 601
+    },
+    "ARIMA": {
+      "r2": -0.2723,
+      "n_samples": 671
+    },
+    "SARIMA": {
+      "r2": -0.5971,
+      "n_samples": 671
+    }
+  }
+}

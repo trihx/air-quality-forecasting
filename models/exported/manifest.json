@@ -1,41 +1,115 @@
 {
-  "exported_at": "2026-04-05T10:16:41.677997",
+  "version": "v8_scientific_audit",
+  "generated_at": "2026-05-02T19:37:52.880606",
   "models": [
     {
       "model": "GRU",
       "format": "TorchScript",
       "horizon": 1,
-      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/gru_1h.pt"
+      "filename": "gru_1h.pt",
+      "expected_md5": "144980e9d60541b0ccc3e20e010edf05"
+    },
+    {
+      "model": "GRU",
+      "format": "TorchScript",
+      "horizon": 24,
+      "filename": "gru_24h.pt",
+      "expected_md5": "9045f9945dc4d04eca60daba595cc87a"
+    },
+    {
+      "model": "GRU",
+      "format": "TorchScript",
+      "horizon": 6,
+      "filename": "gru_6h.pt",
+      "expected_md5": "0506bba360d633daf3b400244b9e6e33"
+    },
+    {
+      "model": "GRU_Quantile",
+      "format": "TorchScript",
+      "horizon": 1,
+      "filename": "gru_quantile_1h.pt",
+      "expected_md5": "4451a01247df5223f97b9a446bc17214"
+    },
+    {
+      "model": "GRU_Quantile",
+      "format": "TorchScript",
+      "horizon": 24,
+      "filename": "gru_quantile_24h.pt",
+      "expected_md5": "4d7e7e43c26c6f34a4b5106074f63ada"
+    },
+    {
+      "model": "GRU_Quantile",
+      "format": "TorchScript",
+      "horizon": 6,
+      "filename": "gru_quantile_6h.pt",
+      "expected_md5": "2f09488be1259365011d5846a4397a50"
     },
     {
       "model": "LightGBM",
       "format": "Native (.txt)",
       "horizon": 1,
-      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/lgbm_1h.txt"
-    },
-    {
-      "model": "GRU",
-      "format": "TorchScript",
-      "horizon": 6,
-      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/gru_6h.pt"
-    },
-    {
-      "model": "LightGBM",
-      "format": "Native (.txt)",
-      "horizon": 6,
-      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/lgbm_6h.txt"
-    },
-    {
-      "model": "GRU",
-      "format": "TorchScript",
-      "horizon": 24,
-      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/gru_24h.pt"
+      "filename": "lgbm_1h.txt",
+      "expected_md5": "4278f933448bea9d360a7436802055ad"
     },
     {
       "model": "LightGBM",
       "format": "Native (.txt)",
       "horizon": 24,
-      "path": "/Users/trihx/Desktop/time-series-forecasting/models/exported/lgbm_24h.txt"
+      "filename": "lgbm_24h.txt",
+      "expected_md5": "f070219949f566e728e7fbd3cf846818"
+    },
+    {
+      "model": "LightGBM",
+      "format": "Native (.txt)",
+      "horizon": 6,
+      "filename": "lgbm_6h.txt",
+      "expected_md5": "64ddb0788bcbc65c9cc19222bd9b5f25"
+    }
+  ],
+  "data_files": [
+    {
+      "path": "dataset/processed/marts_features.csv",
+      "expected_md5": "8fe5a7217828e3f3868c520a2515233e"
+    },
+    {
+      "path": "dataset/raw/final_dataset.csv",
+      "expected_md5": "8d5b37c2439e17e2103a8254d1ef873c"
+    },
+    {
+      "path": "models/exported/gru_quantile_1h_config.json",
+      "expected_md5": "3079dd15ab3e1fd3a28eb28e5be44dc0"
+    },
+    {
+      "path": "models/exported/gru_quantile_24h_config.json",
+      "expected_md5": "4d4fe88557cd4c221fedccc5352b2afb"
+    },
+    {
+      "path": "models/exported/gru_quantile_6h_config.json",
+      "expected_md5": "64209fa6c46822d3d9edf2fb3079f608"
+    },
+    {
+      "path": "models/exported/lgbm_1h_features.json",
+      "expected_md5": "a751e18ebb0fdb76af36e7b3f8fca41d"
+    },
+    {
+      "path": "models/exported/lgbm_24h_features.json",
+      "expected_md5": "2e0ba9ea932ce919ae6a50c92d39cdea"
+    },
+    {
+      "path": "models/exported/lgbm_6h_features.json",
+      "expected_md5": "fcb7e2df8e32e784d0b84ee88bfd1fcc"
+    },
+    {
+      "path": "models/exported/scalers_1h.json",
+      "expected_md5": "60861fe03f08480dbb30f33a25c6a404"
+    },
+    {
+      "path": "models/exported/scalers_24h.json",
+      "expected_md5": "358c7b68787f91a5c06a2e06ebe7ae04"
+    },
+    {
+      "path": "models/exported/scalers_6h.json",
+      "expected_md5": "72fadfaa90954cafb3ebf54857f0ccdf"
     }
   ]
 }

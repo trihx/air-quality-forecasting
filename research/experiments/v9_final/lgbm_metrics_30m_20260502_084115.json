@@ -1,0 +1,140 @@
+{
+  "1h": {
+    "LightGBM_v9": {
+      "model": "LightGBM_v9",
+      "mae": 3.0576,
+      "rmse": 4.7256,
+      "mape": 35.38,
+      "smape": 31.08,
+      "mase": 1.0033,
+      "r2": 0.3695,
+      "medae": 2.0347,
+      "forecast_bias": -0.0116,
+      "rmse_mae_ratio": 1.5455,
+      "horizon": 1,
+      "pass_naive": "❌",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0248,
+          "roc_auc": 0.7433
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0083,
+          "roc_auc": 0.7386
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN,
+          "roc_auc": NaN
+        }
+      },
+      "train_time_s": 0.81
+    }
+  },
+  "6h": {
+    "LightGBM_v9": {
+      "model": "LightGBM_v9",
+      "mae": 4.0397,
+      "rmse": 5.7376,
+      "mape": 50.05,
+      "smape": 40.44,
+      "mase": 0.7139,
+      "r2": 0.0807,
+      "medae": 3.086,
+      "forecast_bias": 0.022,
+      "rmse_mae_ratio": 1.4203,
+      "horizon": 6,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0226,
+          "roc_auc": 0.5992
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0083,
+          "roc_auc": 0.5896
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN,
+          "roc_auc": NaN
+        }
+      },
+      "train_time_s": 0.96
+    }
+  },
+  "24h": {
+    "LightGBM_v9": {
+      "model": "LightGBM_v9",
+      "mae": 4.2636,
+      "rmse": 5.4811,
+      "mape": 57.73,
+      "smape": 43.46,
+      "mase": 0.9481,
+      "r2": -0.1205,
+      "medae": 3.6672,
+      "forecast_bias": 0.1587,
+      "rmse_mae_ratio": 1.2856,
+      "horizon": 24,
+      "pass_naive": "✅",
+      "classification": {
+        "threshold_25": {
+          "threshold": 25.0,
+          "n_exceed": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0163,
+          "roc_auc": 0.4926
+        },
+        "threshold_35": {
+          "threshold": 35.0,
+          "n_exceed": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0025,
+          "roc_auc": 0.417
+        },
+        "threshold_50": {
+          "threshold": 50.0,
+          "n_exceed": 0,
+          "precision": NaN,
+          "recall": NaN,
+          "f1": NaN,
+          "brier_score": NaN,
+          "roc_auc": NaN
+        }
+      },
+      "train_time_s": 1.12
+    }
+  }
+}

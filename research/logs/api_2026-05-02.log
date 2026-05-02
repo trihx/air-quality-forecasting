@@ -1,0 +1,1529 @@
+2026-05-02 07:25:13 | INFO     | POST /api/v1/experiments → 201 (9ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | GET /api/v1/experiments → 200 (3ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | GET /api/v1/experiments/1 → 200 (2ms)
+2026-05-02 07:25:13 | INFO     | GET /api/v1/experiments/9999 → 404 (3ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/experiments → 201 (3ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/runs → 201 (3ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/runs → 404 (1ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | GET /api/v1/experiments/1/runs → 200 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/run-models → 201 (4ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/run-models → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/metrics → 201 (4ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/run-models → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | POST /api/v1/metrics → 201 (2ms)
+2026-05-02 07:25:13 | INFO     | GET /api/v1/run-models/1/metrics → 200 (2ms)
+2026-05-02 07:25:13 | INFO     | GET /api/v1/audit/report → 200 (50ms)
+2026-05-02 07:25:13 | INFO     | GET /api/v1/audit/data-hashes → 200 (38ms)
+2026-05-02 07:25:13 | INFO     | GET /api/v1/audit/model-weights → 200 (4ms)
+2026-05-02 07:25:13 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 07:25:13 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 07:25:13 | INFO     | Imputation [extended_interp]: 152 rows (141 real + 11 imputed, 48 dropped)
+2026-05-02 07:25:13 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 07:25:13 | INFO     | Imputation [ml_impute]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 07:25:13 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 07:25:14 | INFO     | Imputation [hybrid]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 07:25:14 | INFO     | Imputation [hybrid]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 07:25:14 | INFO     | Imputation [hybrid]: 300 rows (292 real + 8 imputed, 0 dropped)
+2026-05-02 07:25:14 | INFO     |   Model: MAE=2.0, RMSE=2.0, MASE=2.0 ❌
+2026-05-02 07:25:14 | INFO     |   Model: MAE=4.4, RMSE=8.9554, MASE=4.4 ❌
+2026-05-02 07:25:14 | INFO     |   Model: MAE=2.0, RMSE=2.0, MASE=2.0 ❌
+2026-05-02 07:25:14 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 07:25:14 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 07:25:14 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 07:25:14 | INFO     |   SeasonalNaive: fitted, period=24h, seasonal_mean=14.95
+2026-05-02 07:25:14 | INFO     |   HistoricalMean: fitted, mean=14.80 ± 4.66
+2026-05-02 07:25:14 | INFO     |   HistoricalMean: fitted, mean=14.80 ± 4.66
+2026-05-02 07:25:14 | INFO     |   HourlyMean: fitted, peak_hour=17, trough_hour=14
+2026-05-02 07:25:14 | INFO     | [1/7] No exact duplicates found
+2026-05-02 07:25:14 | INFO     | [1/7] Removed 5 exact duplicate rows
+2026-05-02 07:25:14 | INFO     | [1/7] No exact duplicates found
+2026-05-02 07:25:14 | INFO     | [1/7] Removed 1 duplicate timestamps (kept first)
+2026-05-02 07:25:14 | INFO     | [3/7] All values within physical bounds
+2026-05-02 07:25:14 | INFO     | [3/7] Clipped 1 values to physical bounds
+2026-05-02 07:25:14 | INFO     | [3/7] Clipped 1 values to physical bounds
+2026-05-02 07:25:14 | INFO     | [4/7] Replaced 1 outliers with NaN (method=iqr, threshold=1.5, PM2.5=domain)
+2026-05-02 07:25:14 | INFO     | [4/7] Replaced 1 outliers with NaN (method=zscore, threshold=3.0, PM2.5=domain)
+2026-05-02 07:25:14 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 07:25:14 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | [1/7] No exact duplicates found
+2026-05-02 07:25:14 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 07:25:14 | INFO     | [3/7] All values within physical bounds
+2026-05-02 07:25:14 | INFO     | [4/7] No outliers detected
+2026-05-02 07:25:14 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 07:25:14 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 07:25:14 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 0, 'n_outliers_replaced': 0, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | [1/7] No exact duplicates found
+2026-05-02 07:25:14 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 07:25:14 | INFO     | [3/7] Clipped 2 values to physical bounds
+2026-05-02 07:25:14 | INFO     | [4/7] Replaced 1 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 07:25:14 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 07:25:14 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 07:25:14 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 2, 'n_outliers_replaced': 1, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 07:25:14 | INFO     | ============================================================
+2026-05-02 07:25:14 | INFO     | [1/7] No exact duplicates found
+2026-05-02 07:25:14 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 07:25:14 | INFO     | [3/7] All values within physical bounds
+2026-05-02 07:25:14 | INFO     | [4/7] No outliers detected
+2026-05-02 07:25:14 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 07:25:14 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 07:25:15 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 0, 'n_outliers_replaced': 0, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Loading data from final_dataset.csv
+2026-05-02 07:25:15 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:25:15 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | [1/7] No exact duplicates found
+2026-05-02 07:25:15 | INFO     | [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:25:15 | INFO     | [3/7] All values within physical bounds
+2026-05-02 07:25:15 | INFO     | [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 07:25:15 | INFO     | [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+2026-05-02 07:25:15 | INFO     | [6/7] Interpolated 1,183 values (method=linear, max_gap=2h, remaining NaN: 101,776)
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Cleaning Complete: 209,591 → 6,859 rows (3.3% retained)
+2026-05-02 07:25:15 | INFO     | Report: {'n_input': 209591, 'n_after_dedup': 209591, 'n_clipped': 0, 'n_outliers_replaced': 21428, 'n_after_resample': 27649, 'n_interpolated': np.int64(1183), 'n_dropped_nan': np.int64(20790), 'n_output': 6859, 'pct_retained': 3.3}
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     |   Test: MAE=0.22, RMSE=0.2646, MASE=0.11 ✅
+2026-05-02 07:25:15 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 07:25:15 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 07:25:15 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 07:25:15 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 07:25:15 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 07:25:15 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 07:25:15 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 07:25:15 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 07:25:15 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 07:25:15 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 07:25:15 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 07:25:15 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 07:25:15 | INFO     | Created 3 lag features (lags=[1, 2, 3])
+2026-05-02 07:25:15 | INFO     | Created 1 lag features (lags=[1])
+2026-05-02 07:25:15 | INFO     | Created 1 lag features (lags=[1])
+2026-05-02 07:25:15 | INFO     | Created 2 lag features (lags=[1, 24])
+2026-05-02 07:25:15 | INFO     | Created 5 lag features (lags=[1])
+2026-05-02 07:25:15 | INFO     | Created 8 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 07:25:15 | INFO     | Created 1 rolling features (windows=[3], funcs=['mean'])
+2026-05-02 07:25:15 | INFO     | Created 1 rolling features (windows=[3], funcs=['mean'])
+2026-05-02 07:25:15 | INFO     | Created 1 rolling features (windows=[3], funcs=['std'])
+2026-05-02 07:25:15 | INFO     | Created 5 rolling features (windows=[3], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 07:25:15 | INFO     | Created 2 EWM features (spans=[12])
+2026-05-02 07:25:15 | INFO     | Created 2 EWM features (spans=[12])
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:25:15 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 07:25:15 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 07:25:15 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 07:25:15 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 07:25:15 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:25:15 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 07:25:15 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 07:25:15 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 07:25:15 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 07:25:15 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 07:25:15 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:25:15 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 07:25:15 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 07:25:15 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 07:25:15 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 07:25:15 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 07:25:15 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:25:15 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 07:25:15 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 07:25:15 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 07:25:15 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 07:25:15 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 07:25:15 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:25:15 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 07:25:15 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 07:25:15 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 07:25:15 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 07:25:15 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 07:25:15 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:25:15 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 200 rows
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Created 13 calendar features
+2026-05-02 07:25:15 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 07:25:15 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 07:25:15 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 07:25:15 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 07:25:15 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 07:25:15 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 07:25:15 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 07:25:15 | INFO     | ============================================================
+2026-05-02 07:25:15 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 07:25:15 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 07:25:15 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 07:25:15 | INFO     |   ❌ [🟡 WARNING] feature_variance: Zero-variance features (remove!): ['month', 'is_weekend', 'season', 'month_sin', 'month_cos', 'pm25_roll_168h_max']
+2026-05-02 07:25:15 | INFO     | ✅ Marts validation passed
+2026-05-02 07:25:15 | INFO     | 💾 Marts data saved to /private/var/folders/9z/vcl4zft142dfhz8lfr1ywpgr0000gn/T/pytest-of-trihx/pytest-48/test_save_marts_data0/test_marts.csv (32 rows × 119 cols)
+2026-05-02 07:25:15 | INFO     | Feature summary: {'original': 4, 'target': 1, 'lag': 40, 'rolling': 30, 'ewm': 6, 'diff': 4, 'fourier': 12, 'calendar': 13, 'interaction': 6, 'domain': 3}
+2026-05-02 07:25:15 | INFO     | Loading data from final_dataset.csv
+2026-05-02 07:25:15 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:25:15 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:25:15 | INFO     | Loading data from final_dataset.csv
+2026-05-02 07:25:15 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:25:15 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:25:15 | INFO     | Loading data from final_dataset.csv
+2026-05-02 07:25:15 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:25:15 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:25:15 | INFO     | Validation: All checks passed ✅
+2026-05-02 07:25:15 | WARNING  | Validation: Negative values in pm25: 1
+2026-05-02 07:25:15 | WARNING  | Validation: Duplicated timestamps: 1
+2026-05-02 07:25:15 | WARNING  | Validation: Large time gaps (>1h): 1 gaps, max gap: 0 days 03:00:00
+2026-05-02 07:25:15 | INFO     | Loading data from final_dataset.csv
+2026-05-02 07:25:15 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:25:15 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:25:15 | INFO     | Loading data from final_dataset.csv
+2026-05-02 07:25:16 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:25:16 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:25:16 | INFO     | Loading data from final_dataset.csv
+2026-05-02 07:25:16 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:25:16 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:25:16 | WARNING  | Validation: Large time gaps (>1h): 116 gaps, max gap: 144 days 14:22:39
+2026-05-02 07:25:16 | INFO     | --- STAGING Validation: 7 passed, 1 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 1000 rows
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 07:25:16 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 1 days (0.0 years)
+2026-05-02 07:25:16 | INFO     | --- STAGING Validation: 5 passed, 2 failed ---
+2026-05-02 07:25:16 | INFO     |   ❌ [🔴 CRITICAL] columns_exist: Missing columns: {'pm25'}
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 07:25:16 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 07:25:16 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 07:25:16 | INFO     | --- STAGING Validation: 5 passed, 1 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 07:25:16 | INFO     |   ❌ [🔴 CRITICAL] non_empty: DataFrame is empty!
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 07:25:16 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 07:25:16 | INFO     | --- STAGING Validation: 5 passed, 3 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 07:25:16 | INFO     |   ❌ [🟡 WARNING] pm25_range: PM2.5 out of [0, 500]: 1 values
+2026-05-02 07:25:16 | INFO     |   ❌ [🟡 WARNING] feature_ranges: Out-of-range values: {'pm25': 1}
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 07:25:16 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 07:25:16 | INFO     | --- STAGING Validation: 6 passed, 2 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 07:25:16 | INFO     |   ❌ [🟡 WARNING] missing_rates: Columns with >10.0% missing: {'pm25': np.float64(15.0)}
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 07:25:16 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 07:25:16 | INFO     | --- INTERMEDIATE Validation: 5 passed, 0 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 07:25:16 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 07:25:16 | INFO     | --- INTERMEDIATE Validation: 4 passed, 1 failed ---
+2026-05-02 07:25:16 | INFO     |   ❌ [🔴 CRITICAL] no_nan: NaN values remaining: {'nhiet_do': 1}
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 07:25:16 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 07:25:16 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 07:25:16 | INFO     | --- INTERMEDIATE Validation: 3 passed, 2 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 07:25:16 | INFO     |   ❌ [🔴 CRITICAL] monotonic_index: Time index NOT monotonic!
+2026-05-02 07:25:16 | INFO     |   ❌ [🟡 WARNING] regular_frequency: Irregular frequency — check for gaps
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 07:25:16 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 07:25:16 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 07:25:16 | INFO     | --- INTERMEDIATE Validation: 4 passed, 1 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 07:25:16 | INFO     |   ❌ [🟡 WARNING] sufficient_data: Data has 50 rows (min required: 1,000)
+2026-05-02 07:25:16 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 07:25:16 | INFO     | --- MARTS Validation: 3 passed, 0 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] feature_variance: All features have non-zero variance
+2026-05-02 07:25:16 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 07:25:16 | INFO     |   ❌ [🔴 CRITICAL] no_leakage: Potential leakage — near-perfect correlation: ['leaked_pm25_copy (corr=1.0000)']
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] feature_variance: All features have non-zero variance
+2026-05-02 07:25:16 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 07:25:16 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 07:25:16 | INFO     |   ❌ [🟡 WARNING] feature_variance: Zero-variance features (remove!): ['constant_feature']
+2026-05-02 07:25:16 | INFO     | --- STAGING Validation: 7 passed, 1 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 1000 rows
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 07:25:16 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 1 days (0.0 years)
+2026-05-02 07:25:16 | INFO     | --- STAGING Validation: 5 passed, 2 failed ---
+2026-05-02 07:25:16 | INFO     |   ❌ [🔴 CRITICAL] columns_exist: Missing columns: {'pm25'}
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 07:25:16 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 07:25:16 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 07:25:16 | INFO     | Loading data from final_dataset.csv
+2026-05-02 07:25:16 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 07:25:16 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 07:25:16 | INFO     | --- STAGING Validation: 8 passed, 0 failed ---
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 07:25:16 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 209591 rows
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 07:25:16 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal issues: 0 negative diffs, 103 gaps >6h
+2026-05-02 07:25:16 | INFO     |   ✅ [🔵 INFO] data_freshness: Data spans 1151 days (3.2 years)
+2026-05-02 07:25:17 | INFO     | Shuffle test R²: -1.9572 (should be near 0 or negative)
+2026-05-02 07:25:17 | WARNING  | Suspicious feature patterns found:
+  ['co2_pm25_ratio'] — ratio features may use current target
+  ['pm25_aqi_cat'] — AQI category may use current target
+2026-05-02 08:06:34 | INFO     | POST /api/v1/experiments → 201 (11ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/experiments → 201 (3ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | GET /api/v1/experiments → 200 (3ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | GET /api/v1/experiments/1 → 200 (2ms)
+2026-05-02 08:06:34 | INFO     | GET /api/v1/experiments/9999 → 404 (1ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/experiments → 201 (3ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/runs → 201 (3ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/runs → 404 (1ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/runs → 201 (3ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | GET /api/v1/experiments/1/runs → 200 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/run-models → 201 (5ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/runs → 201 (3ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/run-models → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/metrics → 201 (4ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/run-models → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | POST /api/v1/metrics → 201 (2ms)
+2026-05-02 08:06:34 | INFO     | GET /api/v1/run-models/1/metrics → 200 (2ms)
+2026-05-02 08:06:34 | INFO     | GET /api/v1/audit/report → 200 (49ms)
+2026-05-02 08:06:34 | INFO     | GET /api/v1/audit/data-hashes → 200 (39ms)
+2026-05-02 08:06:34 | INFO     | GET /api/v1/audit/model-weights → 200 (4ms)
+2026-05-02 08:06:34 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:06:34 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:06:34 | INFO     | Imputation [extended_interp]: 152 rows (141 real + 11 imputed, 48 dropped)
+2026-05-02 08:06:34 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:06:34 | INFO     | Imputation [ml_impute]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 08:06:34 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:06:34 | INFO     | Imputation [hybrid]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 08:06:34 | INFO     | Imputation [hybrid]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 08:06:34 | INFO     | Imputation [hybrid]: 300 rows (292 real + 8 imputed, 0 dropped)
+2026-05-02 08:06:34 | INFO     |   Model: MAE=2.0, RMSE=2.0, MASE=2.0 ❌
+2026-05-02 08:06:34 | INFO     |   Model: MAE=4.4, RMSE=8.9554, MASE=4.4 ❌
+2026-05-02 08:06:34 | INFO     |   Model: MAE=2.0, RMSE=2.0, MASE=2.0 ❌
+2026-05-02 08:06:35 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 08:06:35 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 08:06:35 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 08:06:35 | INFO     |   SeasonalNaive: fitted, period=24h, seasonal_mean=14.95
+2026-05-02 08:06:35 | INFO     |   HistoricalMean: fitted, mean=14.80 ± 4.66
+2026-05-02 08:06:35 | INFO     |   HistoricalMean: fitted, mean=14.80 ± 4.66
+2026-05-02 08:06:35 | INFO     |   HourlyMean: fitted, peak_hour=17, trough_hour=14
+2026-05-02 08:06:35 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:06:35 | INFO     | [1/7] Removed 5 exact duplicate rows
+2026-05-02 08:06:35 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:06:35 | INFO     | [1/7] Removed 1 duplicate timestamps (kept first)
+2026-05-02 08:06:35 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:06:35 | INFO     | [3/7] Clipped 1 values to physical bounds
+2026-05-02 08:06:35 | INFO     | [3/7] Clipped 1 values to physical bounds
+2026-05-02 08:06:35 | INFO     | [4/7] Replaced 1 outliers with NaN (method=iqr, threshold=1.5, PM2.5=domain)
+2026-05-02 08:06:35 | INFO     | [4/7] Replaced 1 outliers with NaN (method=zscore, threshold=3.0, PM2.5=domain)
+2026-05-02 08:06:35 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:06:35 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:06:35 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 08:06:35 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:06:35 | INFO     | [4/7] No outliers detected
+2026-05-02 08:06:35 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:06:35 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 08:06:35 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 0, 'n_outliers_replaced': 0, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:06:35 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 08:06:35 | INFO     | [3/7] Clipped 2 values to physical bounds
+2026-05-02 08:06:35 | INFO     | [4/7] Replaced 1 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 08:06:35 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:06:35 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 08:06:35 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 2, 'n_outliers_replaced': 1, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:06:35 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 08:06:35 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:06:35 | INFO     | [4/7] No outliers detected
+2026-05-02 08:06:35 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:06:35 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 08:06:35 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 0, 'n_outliers_replaced': 0, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:06:35 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:06:35 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:06:35 | INFO     | [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:06:35 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:06:35 | INFO     | [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 08:06:35 | INFO     | [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+2026-05-02 08:06:35 | INFO     | [6/7] Interpolated 1,183 values (method=linear, max_gap=2h, remaining NaN: 101,776)
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Cleaning Complete: 209,591 → 6,859 rows (3.3% retained)
+2026-05-02 08:06:35 | INFO     | Report: {'n_input': 209591, 'n_after_dedup': 209591, 'n_clipped': 0, 'n_outliers_replaced': 21428, 'n_after_resample': 27649, 'n_interpolated': np.int64(1183), 'n_dropped_nan': np.int64(20790), 'n_output': 6859, 'pct_retained': 3.3}
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     |   Test: MAE=0.22, RMSE=0.2646, MASE=0.11 ✅
+2026-05-02 08:06:35 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 08:06:35 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 08:06:35 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 08:06:35 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 08:06:35 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 08:06:35 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 08:06:35 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 08:06:35 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 08:06:35 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 08:06:35 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 08:06:35 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 08:06:35 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 08:06:35 | INFO     | Created 3 lag features (lags=[1, 2, 3])
+2026-05-02 08:06:35 | INFO     | Created 1 lag features (lags=[1])
+2026-05-02 08:06:35 | INFO     | Created 1 lag features (lags=[1])
+2026-05-02 08:06:35 | INFO     | Created 2 lag features (lags=[1, 24])
+2026-05-02 08:06:35 | INFO     | Created 5 lag features (lags=[1])
+2026-05-02 08:06:35 | INFO     | Created 8 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 08:06:35 | INFO     | Created 1 rolling features (windows=[3], funcs=['mean'])
+2026-05-02 08:06:35 | INFO     | Created 1 rolling features (windows=[3], funcs=['mean'])
+2026-05-02 08:06:35 | INFO     | Created 1 rolling features (windows=[3], funcs=['std'])
+2026-05-02 08:06:35 | INFO     | Created 5 rolling features (windows=[3], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 08:06:35 | INFO     | Created 2 EWM features (spans=[12])
+2026-05-02 08:06:35 | INFO     | Created 2 EWM features (spans=[12])
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 08:06:35 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:06:35 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 08:06:35 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 08:06:35 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 08:06:35 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 08:06:35 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:06:35 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:06:35 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 08:06:35 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 08:06:35 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 08:06:35 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 08:06:35 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:06:35 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:06:35 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 08:06:35 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 08:06:35 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 08:06:35 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 08:06:35 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:06:35 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:06:35 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 08:06:35 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 08:06:35 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 08:06:35 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 08:06:35 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:06:35 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:06:35 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 08:06:35 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 08:06:35 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 08:06:35 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 08:06:35 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 200 rows
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Pipeline Started
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Created 13 calendar features
+2026-05-02 08:06:35 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:06:35 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168])
+2026-05-02 08:06:35 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'])
+2026-05-02 08:06:35 | INFO     | Created 6 EWM features (spans=[12, 24, 48])
+2026-05-02 08:06:35 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage)
+2026-05-02 08:06:35 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:06:35 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:06:35 | INFO     | ============================================================
+2026-05-02 08:06:35 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 08:06:35 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 08:06:35 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:06:35 | INFO     |   ❌ [🟡 WARNING] feature_variance: Zero-variance features (remove!): ['month', 'is_weekend', 'season', 'month_sin', 'month_cos', 'pm25_roll_168h_max']
+2026-05-02 08:06:35 | INFO     | ✅ Marts validation passed
+2026-05-02 08:06:35 | INFO     | 💾 Marts data saved to /private/var/folders/9z/vcl4zft142dfhz8lfr1ywpgr0000gn/T/pytest-of-trihx/pytest-49/test_save_marts_data0/test_marts.csv (32 rows × 119 cols)
+2026-05-02 08:06:35 | INFO     | Feature summary: {'original': 4, 'target': 1, 'lag': 40, 'rolling': 30, 'ewm': 6, 'diff': 4, 'fourier': 12, 'calendar': 13, 'interaction': 6, 'domain': 3}
+2026-05-02 08:06:35 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:06:35 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:06:36 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:06:36 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:06:36 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:06:36 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:06:36 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:06:36 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:06:36 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:06:36 | INFO     | Validation: All checks passed ✅
+2026-05-02 08:06:36 | WARNING  | Validation: Negative values in pm25: 1
+2026-05-02 08:06:36 | WARNING  | Validation: Duplicated timestamps: 1
+2026-05-02 08:06:36 | WARNING  | Validation: Large time gaps (>1h): 1 gaps, max gap: 0 days 03:00:00
+2026-05-02 08:06:36 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:06:36 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:06:36 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:06:36 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:06:36 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:06:36 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:06:36 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:06:36 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:06:36 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:06:36 | WARNING  | Validation: Large time gaps (>1h): 116 gaps, max gap: 144 days 14:22:39
+2026-05-02 08:06:36 | INFO     | --- STAGING Validation: 7 passed, 1 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 1000 rows
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:06:36 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 1 days (0.0 years)
+2026-05-02 08:06:36 | INFO     | --- STAGING Validation: 5 passed, 2 failed ---
+2026-05-02 08:06:36 | INFO     |   ❌ [🔴 CRITICAL] columns_exist: Missing columns: {'pm25'}
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:06:36 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:06:36 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:06:36 | INFO     | --- STAGING Validation: 5 passed, 1 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:06:36 | INFO     |   ❌ [🔴 CRITICAL] non_empty: DataFrame is empty!
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:06:36 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:06:36 | INFO     | --- STAGING Validation: 5 passed, 3 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:06:36 | INFO     |   ❌ [🟡 WARNING] pm25_range: PM2.5 out of [0, 500]: 1 values
+2026-05-02 08:06:36 | INFO     |   ❌ [🟡 WARNING] feature_ranges: Out-of-range values: {'pm25': 1}
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:06:36 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:06:36 | INFO     | --- STAGING Validation: 6 passed, 2 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:06:36 | INFO     |   ❌ [🟡 WARNING] missing_rates: Columns with >10.0% missing: {'pm25': np.float64(15.0)}
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:06:36 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:06:36 | INFO     | --- INTERMEDIATE Validation: 5 passed, 0 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 08:06:36 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:06:36 | INFO     | --- INTERMEDIATE Validation: 4 passed, 1 failed ---
+2026-05-02 08:06:36 | INFO     |   ❌ [🔴 CRITICAL] no_nan: NaN values remaining: {'nhiet_do': 1}
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 08:06:36 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:06:36 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:06:36 | INFO     | --- INTERMEDIATE Validation: 3 passed, 2 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:06:36 | INFO     |   ❌ [🔴 CRITICAL] monotonic_index: Time index NOT monotonic!
+2026-05-02 08:06:36 | INFO     |   ❌ [🟡 WARNING] regular_frequency: Irregular frequency — check for gaps
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 08:06:36 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:06:36 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:06:36 | INFO     | --- INTERMEDIATE Validation: 4 passed, 1 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 08:06:36 | INFO     |   ❌ [🟡 WARNING] sufficient_data: Data has 50 rows (min required: 1,000)
+2026-05-02 08:06:36 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:06:36 | INFO     | --- MARTS Validation: 3 passed, 0 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] feature_variance: All features have non-zero variance
+2026-05-02 08:06:36 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 08:06:36 | INFO     |   ❌ [🔴 CRITICAL] no_leakage: Potential leakage — near-perfect correlation: ['leaked_pm25_copy (corr=1.0000)']
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] feature_variance: All features have non-zero variance
+2026-05-02 08:06:36 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:06:36 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:06:36 | INFO     |   ❌ [🟡 WARNING] feature_variance: Zero-variance features (remove!): ['constant_feature']
+2026-05-02 08:06:36 | INFO     | --- STAGING Validation: 7 passed, 1 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 1000 rows
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:06:36 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 1 days (0.0 years)
+2026-05-02 08:06:36 | INFO     | --- STAGING Validation: 5 passed, 2 failed ---
+2026-05-02 08:06:36 | INFO     |   ❌ [🔴 CRITICAL] columns_exist: Missing columns: {'pm25'}
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:06:36 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:06:36 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:06:36 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:06:36 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:06:36 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:06:36 | INFO     | --- STAGING Validation: 8 passed, 0 failed ---
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:06:36 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 209591 rows
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:06:36 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal issues: 0 negative diffs, 103 gaps >6h
+2026-05-02 08:06:36 | INFO     |   ✅ [🔵 INFO] data_freshness: Data spans 1151 days (3.2 years)
+2026-05-02 08:06:37 | INFO     | Shuffle test R²: -1.2710 (should be near 0 or negative)
+2026-05-02 08:06:37 | WARNING  | Suspicious feature patterns found:
+  ['co2_pm25_ratio'] — ratio features may use current target
+  ['pm25_aqi_cat'] — AQI category may use current target
+2026-05-02 08:35:22 | INFO     | POST /api/v1/experiments → 201 (9ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | GET /api/v1/experiments → 200 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/experiments → 201 (4ms)
+2026-05-02 08:35:22 | INFO     | GET /api/v1/experiments/1 → 200 (2ms)
+2026-05-02 08:35:22 | INFO     | GET /api/v1/experiments/9999 → 404 (1ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/experiments → 201 (3ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/runs → 201 (3ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/runs → 404 (1ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | GET /api/v1/experiments/1/runs → 200 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/run-models → 201 (4ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/run-models → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/metrics → 201 (3ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/run-models → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | POST /api/v1/metrics → 201 (2ms)
+2026-05-02 08:35:22 | INFO     | GET /api/v1/run-models/1/metrics → 200 (2ms)
+2026-05-02 08:35:22 | INFO     | GET /api/v1/audit/report → 200 (54ms)
+2026-05-02 08:35:22 | INFO     | GET /api/v1/audit/data-hashes → 200 (38ms)
+2026-05-02 08:35:22 | INFO     | GET /api/v1/audit/model-weights → 200 (4ms)
+2026-05-02 08:35:22 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:35:22 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:35:22 | INFO     | Imputation [extended_interp]: 152 rows (141 real + 11 imputed, 48 dropped)
+2026-05-02 08:35:22 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:35:22 | INFO     | Imputation [ml_impute]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 08:35:22 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:35:22 | INFO     | Imputation [hybrid]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 08:35:22 | INFO     | Imputation [hybrid]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 08:35:22 | INFO     | Imputation [hybrid]: 300 rows (292 real + 8 imputed, 0 dropped)
+2026-05-02 08:35:22 | INFO     |   Model: MAE=2.0, RMSE=2.0, MASE=2.0 ❌
+2026-05-02 08:35:22 | INFO     |   Model: MAE=4.4, RMSE=8.9554, MASE=4.4 ❌
+2026-05-02 08:35:22 | INFO     |   Model: MAE=2.0, RMSE=2.0, MASE=2.0 ❌
+2026-05-02 08:35:23 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 08:35:23 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 08:35:23 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 08:35:23 | INFO     |   SeasonalNaive: fitted, period=24h, seasonal_mean=14.95
+2026-05-02 08:35:23 | INFO     |   HistoricalMean: fitted, mean=14.80 ± 4.66
+2026-05-02 08:35:23 | INFO     |   HistoricalMean: fitted, mean=14.80 ± 4.66
+2026-05-02 08:35:23 | INFO     |   HourlyMean: fitted, peak_hour=17, trough_hour=14
+2026-05-02 08:35:23 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:35:23 | INFO     | [1/7] Removed 5 exact duplicate rows
+2026-05-02 08:35:23 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:35:23 | INFO     | [1/7] Removed 1 duplicate timestamps (kept first)
+2026-05-02 08:35:23 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:35:23 | INFO     | [3/7] Clipped 1 values to physical bounds
+2026-05-02 08:35:23 | INFO     | [3/7] Clipped 1 values to physical bounds
+2026-05-02 08:35:23 | INFO     | [4/7] Replaced 1 outliers with NaN (method=iqr, threshold=1.5, PM2.5=domain)
+2026-05-02 08:35:23 | INFO     | [4/7] Replaced 1 outliers with NaN (method=zscore, threshold=3.0, PM2.5=domain)
+2026-05-02 08:35:23 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:35:23 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:35:23 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 08:35:23 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:35:23 | INFO     | [4/7] No outliers detected
+2026-05-02 08:35:23 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:35:23 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 08:35:23 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 0, 'n_outliers_replaced': 0, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:35:23 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 08:35:23 | INFO     | [3/7] Clipped 2 values to physical bounds
+2026-05-02 08:35:23 | INFO     | [4/7] Replaced 1 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 08:35:23 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:35:23 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 08:35:23 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 2, 'n_outliers_replaced': 1, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:35:23 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 08:35:23 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:35:23 | INFO     | [4/7] No outliers detected
+2026-05-02 08:35:23 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:35:23 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 08:35:23 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 0, 'n_outliers_replaced': 0, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:35:23 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:35:23 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:35:23 | INFO     | [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:35:23 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:35:23 | INFO     | [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 08:35:23 | INFO     | [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+2026-05-02 08:35:23 | INFO     | [6/7] Interpolated 1,183 values (method=linear, max_gap=2h, remaining NaN: 101,776)
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     | Cleaning Complete: 209,591 → 6,859 rows (3.3% retained)
+2026-05-02 08:35:23 | INFO     | Report: {'n_input': 209591, 'n_after_dedup': 209591, 'n_clipped': 0, 'n_outliers_replaced': 21428, 'n_after_resample': 27649, 'n_interpolated': np.int64(1183), 'n_dropped_nan': np.int64(20790), 'n_output': 6859, 'pct_retained': 3.3}
+2026-05-02 08:35:23 | INFO     | ============================================================
+2026-05-02 08:35:23 | INFO     |   Test: MAE=0.22, RMSE=0.2646, MASE=0.11 ✅
+2026-05-02 08:35:23 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 08:35:23 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 08:35:23 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 08:35:23 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 08:35:23 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 08:35:23 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 08:35:23 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 08:35:23 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 08:35:23 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 08:35:23 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 08:35:23 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 08:35:23 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 08:35:23 | INFO     | Created 3 lag features (lags=[1, 2, 3], mode=global)
+2026-05-02 08:35:23 | INFO     | Created 1 lag features (lags=[1], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 1 lag features (lags=[1], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 2 lag features (lags=[1, 24], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 5 lag features (lags=[1], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 8 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 1 rolling features (windows=[3], funcs=['mean'], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 1 rolling features (windows=[3], funcs=['mean'], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 1 rolling features (windows=[3], funcs=['std'], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 5 rolling features (windows=[3], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 2 EWM features (spans=[12], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 2 EWM features (spans=[12], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 13 calendar features
+2026-05-02 08:35:24 | INFO     | Created 13 calendar features
+2026-05-02 08:35:24 | INFO     | Created 13 calendar features
+2026-05-02 08:35:24 | INFO     | Created 13 calendar features
+2026-05-02 08:35:24 | INFO     | Created 13 calendar features
+2026-05-02 08:35:24 | INFO     | Created 13 calendar features
+2026-05-02 08:35:24 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:35:24 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | Created 13 calendar features
+2026-05-02 08:35:24 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:35:24 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:35:24 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:35:24 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | Created 13 calendar features
+2026-05-02 08:35:24 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:35:24 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:35:24 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:35:24 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:35:24 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:35:24 | INFO     | ============================================================
+2026-05-02 08:35:24 | INFO     | Created 13 calendar features
+2026-05-02 08:35:24 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:35:25 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:35:25 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:35:25 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Created 13 calendar features
+2026-05-02 08:35:25 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:35:25 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:35:25 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:35:25 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Created 13 calendar features
+2026-05-02 08:35:25 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:35:25 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:35:25 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 200 rows
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Created 13 calendar features
+2026-05-02 08:35:25 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:35:25 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:35:25 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:35:25 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:35:25 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:35:25 | INFO     | ============================================================
+2026-05-02 08:35:25 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:35:25 | INFO     |   ❌ [🟡 WARNING] feature_variance: Zero-variance features (remove!): ['month', 'is_weekend', 'season', 'month_sin', 'month_cos', 'pm25_roll_168s_max']
+2026-05-02 08:35:25 | INFO     | ✅ Marts validation passed
+2026-05-02 08:35:25 | INFO     | 💾 Marts data saved to /private/var/folders/9z/vcl4zft142dfhz8lfr1ywpgr0000gn/T/pytest-of-trihx/pytest-50/test_save_marts_data0/test_marts.csv (32 rows × 119 cols)
+2026-05-02 08:35:25 | INFO     | Feature summary: {'original': 4, 'target': 1, 'lag': 40, 'rolling': 30, 'ewm': 6, 'diff': 4, 'fourier': 12, 'calendar': 13, 'interaction': 6, 'domain': 3}
+2026-05-02 08:35:25 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:35:25 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:35:25 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:35:25 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:35:25 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:35:25 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:35:25 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:35:25 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:35:25 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:35:25 | INFO     | Validation: All checks passed ✅
+2026-05-02 08:35:25 | WARNING  | Validation: Negative values in pm25: 1
+2026-05-02 08:35:25 | WARNING  | Validation: Duplicated timestamps: 1
+2026-05-02 08:35:25 | WARNING  | Validation: Large time gaps (>1h): 1 gaps, max gap: 0 days 03:00:00
+2026-05-02 08:35:25 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:35:25 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:35:25 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:35:25 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:35:25 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:35:25 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:35:25 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:35:25 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:35:25 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:35:25 | WARNING  | Validation: Large time gaps (>1h): 116 gaps, max gap: 144 days 14:22:39
+2026-05-02 08:35:25 | INFO     | --- STAGING Validation: 7 passed, 1 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 1000 rows
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:35:25 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 1 days (0.0 years)
+2026-05-02 08:35:25 | INFO     | --- STAGING Validation: 5 passed, 2 failed ---
+2026-05-02 08:35:25 | INFO     |   ❌ [🔴 CRITICAL] columns_exist: Missing columns: {'pm25'}
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:35:25 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:35:25 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:35:25 | INFO     | --- STAGING Validation: 5 passed, 1 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:35:25 | INFO     |   ❌ [🔴 CRITICAL] non_empty: DataFrame is empty!
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:35:25 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:35:25 | INFO     | --- STAGING Validation: 5 passed, 3 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:35:25 | INFO     |   ❌ [🟡 WARNING] pm25_range: PM2.5 out of [0, 500]: 1 values
+2026-05-02 08:35:25 | INFO     |   ❌ [🟡 WARNING] feature_ranges: Out-of-range values: {'pm25': 1}
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:35:25 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:35:25 | INFO     | --- STAGING Validation: 6 passed, 2 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:35:25 | INFO     |   ❌ [🟡 WARNING] missing_rates: Columns with >10.0% missing: {'pm25': np.float64(15.0)}
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:35:25 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:35:25 | INFO     | --- INTERMEDIATE Validation: 5 passed, 0 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 08:35:25 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:35:25 | INFO     | --- INTERMEDIATE Validation: 4 passed, 1 failed ---
+2026-05-02 08:35:25 | INFO     |   ❌ [🔴 CRITICAL] no_nan: NaN values remaining: {'nhiet_do': 1}
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 08:35:25 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:35:25 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:35:25 | INFO     | --- INTERMEDIATE Validation: 3 passed, 2 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:35:25 | INFO     |   ❌ [🔴 CRITICAL] monotonic_index: Time index NOT monotonic!
+2026-05-02 08:35:25 | INFO     |   ❌ [🟡 WARNING] regular_frequency: Irregular frequency — check for gaps
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 08:35:25 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:35:25 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:35:25 | INFO     | --- INTERMEDIATE Validation: 4 passed, 1 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 08:35:25 | INFO     |   ❌ [🟡 WARNING] sufficient_data: Data has 50 rows (min required: 1,000)
+2026-05-02 08:35:25 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:35:25 | INFO     | --- MARTS Validation: 3 passed, 0 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] feature_variance: All features have non-zero variance
+2026-05-02 08:35:25 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 08:35:25 | INFO     |   ❌ [🔴 CRITICAL] no_leakage: Potential leakage — near-perfect correlation: ['leaked_pm25_copy (corr=1.0000)']
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] feature_variance: All features have non-zero variance
+2026-05-02 08:35:25 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:35:25 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:35:25 | INFO     |   ❌ [🟡 WARNING] feature_variance: Zero-variance features (remove!): ['constant_feature']
+2026-05-02 08:35:25 | INFO     | --- STAGING Validation: 7 passed, 1 failed ---
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 1000 rows
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:35:25 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 1 days (0.0 years)
+2026-05-02 08:35:25 | INFO     | --- STAGING Validation: 5 passed, 2 failed ---
+2026-05-02 08:35:25 | INFO     |   ❌ [🔴 CRITICAL] columns_exist: Missing columns: {'pm25'}
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:35:25 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:35:25 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:35:25 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:35:25 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:35:25 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:35:26 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:35:26 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:35:26 | INFO     | --- STAGING Validation: 8 passed, 0 failed ---
+2026-05-02 08:35:26 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:35:26 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:35:26 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 209591 rows
+2026-05-02 08:35:26 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:35:26 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:35:26 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:35:26 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal issues: 0 negative diffs, 103 gaps >6h
+2026-05-02 08:35:26 | INFO     |   ✅ [🔵 INFO] data_freshness: Data spans 1151 days (3.2 years)
+2026-05-02 08:35:26 | INFO     | Shuffle test R²: -1.2710 (should be near 0 or negative)
+2026-05-02 08:35:26 | WARNING  | Suspicious feature patterns found:
+  ['co2_pm25_ratio'] — ratio features may use current target
+  ['pm25_aqi_cat'] — AQI category may use current target
+2026-05-02 08:36:40 | INFO     | POST /api/v1/experiments → 201 (9ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | GET /api/v1/experiments → 200 (3ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | GET /api/v1/experiments/1 → 200 (2ms)
+2026-05-02 08:36:40 | INFO     | GET /api/v1/experiments/9999 → 404 (1ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/runs → 201 (3ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/runs → 404 (1ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | GET /api/v1/experiments/1/runs → 200 (3ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/run-models → 201 (3ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/runs → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/run-models → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/metrics → 201 (3ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/experiments → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/runs → 201 (3ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/run-models → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | POST /api/v1/metrics → 201 (2ms)
+2026-05-02 08:36:40 | INFO     | GET /api/v1/run-models/1/metrics → 200 (2ms)
+2026-05-02 08:36:40 | INFO     | GET /api/v1/audit/report → 200 (42ms)
+2026-05-02 08:36:40 | INFO     | GET /api/v1/audit/data-hashes → 200 (39ms)
+2026-05-02 08:36:40 | INFO     | GET /api/v1/audit/model-weights → 200 (5ms)
+2026-05-02 08:36:40 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:36:40 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:36:40 | INFO     | Imputation [extended_interp]: 152 rows (141 real + 11 imputed, 48 dropped)
+2026-05-02 08:36:40 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:36:40 | INFO     | Imputation [ml_impute]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 08:36:40 | INFO     | Imputation [segment_only]: 149 rows (141 real + 8 imputed, 51 dropped)
+2026-05-02 08:36:40 | INFO     | Imputation [hybrid]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 08:36:40 | INFO     | Imputation [hybrid]: 170 rows (141 real + 29 imputed, 30 dropped)
+2026-05-02 08:36:40 | INFO     | Imputation [hybrid]: 300 rows (292 real + 8 imputed, 0 dropped)
+2026-05-02 08:36:40 | INFO     |   Model: MAE=2.0, RMSE=2.0, MASE=2.0 ❌
+2026-05-02 08:36:40 | INFO     |   Model: MAE=4.4, RMSE=8.9554, MASE=4.4 ❌
+2026-05-02 08:36:40 | INFO     |   Model: MAE=2.0, RMSE=2.0, MASE=2.0 ❌
+2026-05-02 08:36:41 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 08:36:41 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 08:36:41 | INFO     |   Persistence: fitted, last_value=9.29
+2026-05-02 08:36:41 | INFO     |   SeasonalNaive: fitted, period=24h, seasonal_mean=14.95
+2026-05-02 08:36:41 | INFO     |   HistoricalMean: fitted, mean=14.80 ± 4.66
+2026-05-02 08:36:41 | INFO     |   HistoricalMean: fitted, mean=14.80 ± 4.66
+2026-05-02 08:36:41 | INFO     |   HourlyMean: fitted, peak_hour=17, trough_hour=14
+2026-05-02 08:36:41 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:36:41 | INFO     | [1/7] Removed 5 exact duplicate rows
+2026-05-02 08:36:41 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:36:41 | INFO     | [1/7] Removed 1 duplicate timestamps (kept first)
+2026-05-02 08:36:41 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:36:41 | INFO     | [3/7] Clipped 1 values to physical bounds
+2026-05-02 08:36:41 | INFO     | [3/7] Clipped 1 values to physical bounds
+2026-05-02 08:36:41 | INFO     | [4/7] Replaced 1 outliers with NaN (method=iqr, threshold=1.5, PM2.5=domain)
+2026-05-02 08:36:41 | INFO     | [4/7] Replaced 1 outliers with NaN (method=zscore, threshold=3.0, PM2.5=domain)
+2026-05-02 08:36:41 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:36:41 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:36:41 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 08:36:41 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:36:41 | INFO     | [4/7] No outliers detected
+2026-05-02 08:36:41 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:36:41 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 08:36:41 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 0, 'n_outliers_replaced': 0, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:36:41 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 08:36:41 | INFO     | [3/7] Clipped 2 values to physical bounds
+2026-05-02 08:36:41 | INFO     | [4/7] Replaced 1 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 08:36:41 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:36:41 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 08:36:41 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 2, 'n_outliers_replaced': 1, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:36:41 | INFO     | [2/7] Datetime index set: 2024-01-01 00:00:00 → 2024-01-01 16:38:00
+2026-05-02 08:36:41 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:36:41 | INFO     | [4/7] No outliers detected
+2026-05-02 08:36:41 | INFO     | [5/7] Resampled: 500 → 17 rows (freq=1h)
+2026-05-02 08:36:41 | INFO     | [6/7] No missing values to interpolate
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Cleaning Complete: 500 → 17 rows (3.4% retained)
+2026-05-02 08:36:41 | INFO     | Report: {'n_input': 500, 'n_after_dedup': 500, 'n_clipped': 0, 'n_outliers_replaced': 0, 'n_after_resample': 17, 'n_interpolated': 0, 'n_dropped_nan': np.int64(0), 'n_output': 17, 'pct_retained': 3.4}
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:36:41 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:36:41 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Data Cleaning Pipeline Started
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | [1/7] No exact duplicates found
+2026-05-02 08:36:41 | INFO     | [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:36:41 | INFO     | [3/7] All values within physical bounds
+2026-05-02 08:36:41 | INFO     | [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 08:36:41 | INFO     | [5/7] Resampled: 209,591 → 27,649 rows (freq=1h)
+2026-05-02 08:36:41 | INFO     | [6/7] Interpolated 1,183 values (method=linear, max_gap=2h, remaining NaN: 101,776)
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Cleaning Complete: 209,591 → 6,859 rows (3.3% retained)
+2026-05-02 08:36:41 | INFO     | Report: {'n_input': 209591, 'n_after_dedup': 209591, 'n_clipped': 0, 'n_outliers_replaced': 21428, 'n_after_resample': 27649, 'n_interpolated': np.int64(1183), 'n_dropped_nan': np.int64(20790), 'n_output': 6859, 'pct_retained': 3.3}
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     |   Test: MAE=0.22, RMSE=0.2646, MASE=0.11 ✅
+2026-05-02 08:36:41 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 08:36:41 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 08:36:41 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 08:36:41 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 08:36:41 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 08:36:41 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 08:36:41 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 08:36:41 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 08:36:41 | INFO     | Temporal Split (NO shuffle):
+2026-05-02 08:36:41 | INFO     |   Train: 80 rows [2024-01-01 00:00:00 → 2024-01-04 07:00:00]
+2026-05-02 08:36:41 | INFO     |   Val:   10 rows [2024-01-04 08:00:00 → 2024-01-04 17:00:00]
+2026-05-02 08:36:41 | INFO     |   Test:  10 rows [2024-01-04 18:00:00 → 2024-01-05 03:00:00]
+2026-05-02 08:36:41 | INFO     | Created 3 lag features (lags=[1, 2, 3], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 1 lag features (lags=[1], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 1 lag features (lags=[1], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 2 lag features (lags=[1, 24], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 5 lag features (lags=[1], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 8 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 1 lag features (lags=[1], mode=segment-aware (segment_id))
+2026-05-02 08:36:41 | INFO     | Created 1 rolling features (windows=[3], funcs=['mean'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 1 rolling features (windows=[3], funcs=['mean'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 1 rolling features (windows=[3], funcs=['std'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 5 rolling features (windows=[3], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 1 rolling features (windows=[3], funcs=['mean'], mode=segment-aware (segment_id))
+2026-05-02 08:36:41 | INFO     | Created 2 EWM features (spans=[12], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 2 EWM features (spans=[12], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=segment-aware (segment_id))
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:36:41 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:36:41 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:36:41 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:36:41 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:36:41 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:36:41 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:36:41 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:36:41 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:36:41 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:36:41 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:36:41 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:36:41 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:36:41 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:36:41 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 200 rows
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Pipeline Started (mode=segment-aware (segment_id))
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:36:41 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=segment-aware (segment_id))
+2026-05-02 08:36:41 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=segment-aware (segment_id))
+2026-05-02 08:36:41 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=segment-aware (segment_id))
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=segment-aware (segment_id))
+2026-05-02 08:36:41 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:36:41 | INFO     | Dropped 200 warmup rows with NaN
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Complete: 6 → 120 columns, 200 → 0 rows
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Pipeline Started (mode=global)
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Created 13 calendar features
+2026-05-02 08:36:41 | INFO     | Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:36:41 | INFO     | Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 6 EWM features (spans=[12, 24, 48], mode=global)
+2026-05-02 08:36:41 | INFO     | Created 4 diff/pct_change features (shift(1) anti-leakage, mode=global)
+2026-05-02 08:36:41 | INFO     | Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:36:41 | INFO     | Dropped 168 warmup rows with NaN
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | Feature Engineering Complete: 5 → 119 columns, 200 → 32 rows
+2026-05-02 08:36:41 | INFO     | ============================================================
+2026-05-02 08:36:41 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 08:36:41 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 08:36:41 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:36:41 | INFO     |   ❌ [🟡 WARNING] feature_variance: Zero-variance features (remove!): ['month', 'is_weekend', 'season', 'month_sin', 'month_cos', 'pm25_roll_168s_max']
+2026-05-02 08:36:41 | INFO     | ✅ Marts validation passed
+2026-05-02 08:36:41 | INFO     | 💾 Marts data saved to /private/var/folders/9z/vcl4zft142dfhz8lfr1ywpgr0000gn/T/pytest-of-trihx/pytest-51/test_save_marts_data0/test_marts.csv (32 rows × 119 cols)
+2026-05-02 08:36:41 | INFO     | Feature summary: {'original': 4, 'target': 1, 'lag': 40, 'rolling': 30, 'ewm': 6, 'diff': 4, 'fourier': 12, 'calendar': 13, 'interaction': 6, 'domain': 3}
+2026-05-02 08:36:41 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:36:41 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:36:41 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:36:41 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:36:42 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:36:42 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:36:42 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:36:42 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:36:42 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:36:42 | INFO     | Validation: All checks passed ✅
+2026-05-02 08:36:42 | WARNING  | Validation: Negative values in pm25: 1
+2026-05-02 08:36:42 | WARNING  | Validation: Duplicated timestamps: 1
+2026-05-02 08:36:42 | WARNING  | Validation: Large time gaps (>1h): 1 gaps, max gap: 0 days 03:00:00
+2026-05-02 08:36:42 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:36:42 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:36:42 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:36:42 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:36:42 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:36:42 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:36:42 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:36:42 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:36:42 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:36:42 | WARNING  | Validation: Large time gaps (>1h): 116 gaps, max gap: 144 days 14:22:39
+2026-05-02 08:36:42 | INFO     | --- STAGING Validation: 7 passed, 1 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 1000 rows
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:36:42 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 1 days (0.0 years)
+2026-05-02 08:36:42 | INFO     | --- STAGING Validation: 5 passed, 2 failed ---
+2026-05-02 08:36:42 | INFO     |   ❌ [🔴 CRITICAL] columns_exist: Missing columns: {'pm25'}
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:36:42 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:36:42 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:36:42 | INFO     | --- STAGING Validation: 5 passed, 1 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:36:42 | INFO     |   ❌ [🔴 CRITICAL] non_empty: DataFrame is empty!
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:36:42 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:36:42 | INFO     | --- STAGING Validation: 5 passed, 3 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:36:42 | INFO     |   ❌ [🟡 WARNING] pm25_range: PM2.5 out of [0, 500]: 1 values
+2026-05-02 08:36:42 | INFO     |   ❌ [🟡 WARNING] feature_ranges: Out-of-range values: {'pm25': 1}
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:36:42 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:36:42 | INFO     | --- STAGING Validation: 6 passed, 2 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:36:42 | INFO     |   ❌ [🟡 WARNING] missing_rates: Columns with >10.0% missing: {'pm25': np.float64(15.0)}
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:36:42 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:36:42 | INFO     | --- INTERMEDIATE Validation: 5 passed, 0 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 08:36:42 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:36:42 | INFO     | --- INTERMEDIATE Validation: 4 passed, 1 failed ---
+2026-05-02 08:36:42 | INFO     |   ❌ [🔴 CRITICAL] no_nan: NaN values remaining: {'nhiet_do': 1}
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 08:36:42 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:36:42 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:36:42 | INFO     | --- INTERMEDIATE Validation: 3 passed, 2 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:36:42 | INFO     |   ❌ [🔴 CRITICAL] monotonic_index: Time index NOT monotonic!
+2026-05-02 08:36:42 | INFO     |   ❌ [🟡 WARNING] regular_frequency: Irregular frequency — check for gaps
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] sufficient_data: Data has 5,000 rows (min required: 1,000)
+2026-05-02 08:36:42 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:36:42 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:36:42 | INFO     | --- INTERMEDIATE Validation: 4 passed, 1 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] monotonic_index: Time index is monotonically increasing
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] regular_frequency: Regular frequency detected: h
+2026-05-02 08:36:42 | INFO     |   ❌ [🟡 WARNING] sufficient_data: Data has 50 rows (min required: 1,000)
+2026-05-02 08:36:42 | INFO     |   ✅ [🔵 INFO] stats_sanity: All features have reasonable variance
+2026-05-02 08:36:42 | INFO     | --- MARTS Validation: 3 passed, 0 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] feature_variance: All features have non-zero variance
+2026-05-02 08:36:42 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 08:36:42 | INFO     |   ❌ [🔴 CRITICAL] no_leakage: Potential leakage — near-perfect correlation: ['leaked_pm25_copy (corr=1.0000)']
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] feature_variance: All features have non-zero variance
+2026-05-02 08:36:42 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:36:42 | INFO     | --- MARTS Validation: 2 passed, 1 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] no_leakage: No obvious data leakage detected
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] no_nan: No NaN values — data is complete
+2026-05-02 08:36:42 | INFO     |   ❌ [🟡 WARNING] feature_variance: Zero-variance features (remove!): ['constant_feature']
+2026-05-02 08:36:42 | INFO     | --- STAGING Validation: 7 passed, 1 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 1000 rows
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:36:42 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 1 days (0.0 years)
+2026-05-02 08:36:42 | INFO     | --- STAGING Validation: 5 passed, 2 failed ---
+2026-05-02 08:36:42 | INFO     |   ❌ [🔴 CRITICAL] columns_exist: Missing columns: {'pm25'}
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 100 rows
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal order consistent
+2026-05-02 08:36:42 | INFO     |   ❌ [🔵 INFO] data_freshness: Data spans 0 days (0.0 years)
+2026-05-02 08:36:42 | ERROR    |   ⛔ 1 CRITICAL failures — pipeline should STOP
+2026-05-02 08:36:42 | INFO     | Loading data from final_dataset.csv
+2026-05-02 08:36:42 | WARNING  | Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:36:42 | INFO     | Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:36:42 | INFO     | --- STAGING Validation: 8 passed, 0 failed ---
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] columns_exist: All expected columns present
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] schema_types: All dtypes correct
+2026-05-02 08:36:42 | INFO     |   ✅ [🔴 CRITICAL] non_empty: DataFrame has 209591 rows
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] pm25_range: PM2.5 within valid range [0, 500]
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] feature_ranges: All features within physical bounds
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] missing_rates: All columns have <10.0% missing values
+2026-05-02 08:36:42 | INFO     |   ✅ [🟡 WARNING] temporal_consistency: Temporal issues: 0 negative diffs, 103 gaps >6h
+2026-05-02 08:36:42 | INFO     |   ✅ [🔵 INFO] data_freshness: Data spans 1151 days (3.2 years)
+2026-05-02 08:36:43 | INFO     | Shuffle test R²: -1.2710 (should be near 0 or negative)
+2026-05-02 08:36:43 | WARNING  | Suspicious feature patterns found:
+  ['co2_pm25_ratio'] — ratio features may use current target
+  ['pm25_aqi_cat'] — AQI category may use current target

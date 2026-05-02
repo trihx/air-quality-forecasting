@@ -108,6 +108,10 @@ class APIClient:
         """Get full audit report."""
         return self._get("/api/v1/audit/report")
 
+    def verify_integrity(self) -> dict:
+        """Verify file integrity against manifest.json expected MD5 hashes."""
+        return self._get("/api/v1/audit/verify")
+
     # ── Content (Info Cards) ──
 
     def get_info_cards(self, page: str | None = None) -> list[dict]:

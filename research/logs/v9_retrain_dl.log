@@ -1,0 +1,46 @@
+======================================================================
+v9 DL RETRAIN — Segment-Aware
+Timestamp: 20260502_084622
+======================================================================
+
+======================================================================
+[DL] GRU & LSTM - 30m Dataset
+  Device: mps
+======================================================================
+
+  ── Horizon 1h (2 steps, lookback 144 steps) ──
+2026-05-02 08:49:21.939 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   GRU_v9 (h=1): MAE=2.668, RMSE=4.1081, MASE=0.9193 ✅
+2026-05-02 08:49:21.939 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0087 AUC=0.583 (n=6)
+2026-05-02 08:49:21.940 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     GRU_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0029 AUC=0.659 (n=2)
+2026-05-02 08:49:21.940 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train sequences: 5,484 | Test sequences: 686
+    GRU_v9: MAE=2.668, MASE=0.9193
+Traceback (most recent call last):
+  File "/Users/trihx/Desktop/time-series-forecasting/scripts/v9_retrain_dl.py", line 250, in <module>
+    main()
+  File "/Users/trihx/Desktop/time-series-forecasting/scripts/v9_retrain_dl.py", line 234, in main
+    run_pipeline("30m", df_30m)
+  File "/Users/trihx/Desktop/time-series-forecasting/scripts/v9_retrain_dl.py", line 203, in run_pipeline
+    train_model(lstm, train_loader, epochs=15)
+  File "/Users/trihx/Desktop/time-series-forecasting/scripts/v9_retrain_dl.py", line 90, in train_model
+    out = model(batch_x)
+          ^^^^^^^^^^^^^^
+  File "/Users/trihx/Desktop/time-series-forecasting/.venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/trihx/Desktop/time-series-forecasting/.venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/trihx/Desktop/time-series-forecasting/scripts/v9_retrain_dl.py", line 57, in forward
+    out, _ = self.rnn(x)
+             ^^^^^^^^^^^
+  File "/Users/trihx/Desktop/time-series-forecasting/.venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/trihx/Desktop/time-series-forecasting/.venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/trihx/Desktop/time-series-forecasting/.venv/lib/python3.11/site-packages/torch/nn/modules/rnn.py", line 1169, in forward
+    result = _VF.lstm(
+             ^^^^^^^^^
+RuntimeError: MPS backend out of memory (MPS allocated: 1.05 GiB, other allocations: 17.06 GiB, max allowed: 18.13 GiB). Tried to allocate 18.00 MiB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure).

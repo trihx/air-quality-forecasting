@@ -1,0 +1,199 @@
+{
+  "audit": "KNN Temporal Order",
+  "verdict": "FAIL_LOOK_AHEAD_BIAS",
+  "total_gap_segments": 143,
+  "medium_gap_segments": 97,
+  "total_imputed_positions": 834,
+  "positions_with_future_neighbors": 458,
+  "pct_future_leak": 54.92,
+  "knn_neighbors": 5,
+  "max_gap_ml": 24,
+  "complete_donor_rows": 6859,
+  "examples": [
+    {
+      "imputed_pos": 2211,
+      "neighbor_positions": [
+        10780,
+        11448,
+        10776,
+        10756,
+        10108
+      ],
+      "future_neighbor_positions": [
+        10780,
+        11448,
+        10776,
+        10756,
+        10108
+      ],
+      "n_future": 5,
+      "max_future_offset": 9237
+    },
+    {
+      "imputed_pos": 2212,
+      "neighbor_positions": [
+        10780,
+        11789,
+        10756,
+        10108,
+        11788
+      ],
+      "future_neighbor_positions": [
+        10780,
+        11789,
+        10756,
+        10108,
+        11788
+      ],
+      "n_future": 5,
+      "max_future_offset": 9577
+    },
+    {
+      "imputed_pos": 2213,
+      "neighbor_positions": [
+        11789,
+        10780,
+        10756,
+        10108,
+        11788
+      ],
+      "future_neighbor_positions": [
+        11789,
+        10780,
+        10756,
+        10108,
+        11788
+      ],
+      "n_future": 5,
+      "max_future_offset": 9576
+    },
+    {
+      "imputed_pos": 2214,
+      "neighbor_positions": [
+        11789,
+        11457,
+        10449,
+        10780,
+        10450
+      ],
+      "future_neighbor_positions": [
+        11789,
+        11457,
+        10449,
+        10780,
+        10450
+      ],
+      "n_future": 5,
+      "max_future_offset": 9575
+    },
+    {
+      "imputed_pos": 2215,
+      "neighbor_positions": [
+        11457,
+        10449,
+        10450,
+        11289,
+        11792
+      ],
+      "future_neighbor_positions": [
+        11457,
+        10449,
+        10450,
+        11289,
+        11792
+      ],
+      "n_future": 5,
+      "max_future_offset": 9577
+    },
+    {
+      "imputed_pos": 2216,
+      "neighbor_positions": [
+        11457,
+        10449,
+        10450,
+        11289,
+        10787
+      ],
+      "future_neighbor_positions": [
+        11457,
+        10449,
+        10450,
+        11289,
+        10787
+      ],
+      "n_future": 5,
+      "max_future_offset": 9241
+    },
+    {
+      "imputed_pos": 2217,
+      "neighbor_positions": [
+        10450,
+        11457,
+        10449,
+        10787,
+        10451
+      ],
+      "future_neighbor_positions": [
+        10450,
+        11457,
+        10449,
+        10787,
+        10451
+      ],
+      "n_future": 5,
+      "max_future_offset": 9240
+    },
+    {
+      "imputed_pos": 2218,
+      "neighbor_positions": [
+        10450,
+        10787,
+        10451,
+        10955,
+        11457
+      ],
+      "future_neighbor_positions": [
+        10450,
+        10787,
+        10451,
+        10955,
+        11457
+      ],
+      "n_future": 5,
+      "max_future_offset": 9239
+    },
+    {
+      "imputed_pos": 5015,
+      "neighbor_positions": [
+        5041,
+        4993,
+        4992,
+        12745,
+        5329
+      ],
+      "future_neighbor_positions": [
+        5041,
+        12745,
+        5329
+      ],
+      "n_future": 3,
+      "max_future_offset": 7730
+    },
+    {
+      "imputed_pos": 5016,
+      "neighbor_positions": [
+        5041,
+        4993,
+        12745,
+        4994,
+        4992
+      ],
+      "future_neighbor_positions": [
+        5041,
+        12745
+      ],
+      "n_future": 2,
+      "max_future_offset": 7729
+    }
+  ]
+}

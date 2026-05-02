@@ -161,6 +161,98 @@ def _ljung_box_test(
     return results
 
 
+def dm_test_hln(
+    e1: np.ndarray,
+    e2: np.ndarray,
+    horizon: int = 1,
+    alternative: str = "two-sided",
+) -> dict[str, float | str]:
+    """Diebold-Mariano test with Harvey-Leybourne-Newbold (1997) small-sample correction.
+
+    Tests whether two forecasts have equal predictive accuracy.
+
+    References:
+        - Diebold & Mariano (1995), JBES 13(3), pp.253-263.
+        - Harvey, Leybourne & Newbold (1997), IJF 13(2), pp.281-291.
+          DOI: 10.1016/S0169-2070(96)00719-4
+
+    Args:
+        e1: Forecast errors from model 1 (y_true - y_pred_1).
+        e2: Forecast errors from model 2 (y_true - y_pred_2).
+        horizon: Forecast horizon h (for HLN correction).
+        alternative: 'two-sided', 'less' (e1 < e2), or 'greater'.
+
+    Returns:
+        Dict with DM_statistic, p_value, HLN_statistic, HLN_p_value, conclusion.
+    """
+    e1 = np.asarray(e1, dtype=float)
+    e2 = np.asarray(e2, dtype=float)
+    n = len(e1)
+
+    # Loss differential (squared error)
+    d = e1**2 - e2**2
+    d_bar = np.mean(d)
+
+    # Autocovariance estimation (Newey-West style)
+    gamma_0 = np.var(d, ddof=1)
+    gamma_sum = 0.0
+    for k in range(1, horizon):
+        gamma_k = np.mean((d[k:] - d_bar) * (d[:-k] - d_bar))
+        gamma_sum += 2 * gamma_k
+
+    # Long-run variance
+    V_d = (gamma_0 + gamma_sum) / n
+
+    if V_d <= 0:
+        return {
+            "DM_statistic": float("nan"),
+            "p_value": float("nan"),
+            "HLN_statistic": float("nan"),
+            "HLN_p_value": float("nan"),
+            "conclusion": "INVALID — negative variance estimate",
+        }
+
+    # Standard DM statistic (Normal)
+    DM = d_bar / np.sqrt(V_d)
+
+    # HLN correction factor
+    # Corrected variance: multiply by (n + 1 - 2h + h(h-1)/n) / n
+    hln_correction = np.sqrt(
+        (n + 1 - 2 * horizon + horizon * (horizon - 1) / n) / n
+    )
+    DM_hln = DM * hln_correction
+
+    # p-values: DM uses Normal, HLN uses t(n-1)
+    if alternative == "two-sided":
+        p_dm = float(2 * (1 - stats.norm.cdf(abs(DM))))
+        p_hln = float(2 * (1 - stats.t.cdf(abs(DM_hln), df=n - 1)))
+    elif alternative == "less":
+        p_dm = float(stats.norm.cdf(DM))
+        p_hln = float(stats.t.cdf(DM_hln, df=n - 1))
+    else:  # greater
+        p_dm = float(1 - stats.norm.cdf(DM))
+        p_hln = float(1 - stats.t.cdf(DM_hln, df=n - 1))
+
+    # Conclusion
+    if p_hln < 0.01:
+        conclusion = "SIGNIFICANT at 1% — forecasts differ"
+    elif p_hln < 0.05:
+        conclusion = "SIGNIFICANT at 5% — forecasts differ"
+    elif p_hln < 0.10:
+        conclusion = "MARGINAL at 10% — weak evidence of difference"
+    else:
+        conclusion = "NOT SIGNIFICANT — no evidence forecasts differ"
+
+    return {
+        "DM_statistic": round(float(DM), 4),
+        "p_value": round(p_dm, 6),
+        "HLN_statistic": round(float(DM_hln), 4),
+        "HLN_p_value": round(p_hln, 6),
+        "n_samples": n,
+        "conclusion": conclusion,
+    }
+
+
 def _generate_diagnostic_chart(
     residuals: np.ndarray,
     model_name: str,

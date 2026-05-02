@@ -33,6 +33,7 @@ def build_features(
     include_fourier: bool = True,
     fourier_order: int = 3,
     drop_na: bool = True,
+    segment_col: str | None = None,
 ) -> pd.DataFrame:
     """Build all features and produce Marts-ready DataFrame.
 
@@ -57,12 +58,15 @@ def build_features(
         include_feature_lags: Create lags for FEATURE_COLS too.
         include_feature_rolling: Create rolling for FEATURE_COLS too.
         drop_na: Drop rows with NaN from warmup period.
+        segment_col: If provided, all temporal features (lag, rolling, ewm, diff)
+            are computed within each segment to prevent False Continuity.
 
     Returns:
         Marts-ready DataFrame with all features.
     """
     logger.info("=" * 60)
-    logger.info("Feature Engineering Pipeline Started")
+    mode = f"segment-aware ({segment_col})" if segment_col and segment_col in df.columns else "global"
+    logger.info(f"Feature Engineering Pipeline Started (mode={mode})")
     logger.info("=" * 60)
 
     n_before = len(df)
@@ -81,6 +85,7 @@ def build_features(
         target_col=TARGET_COL,
         lags=lag_hours,
         include_features=include_feature_lags,
+        segment_col=segment_col,
     )
 
     # 3. Rolling features
@@ -90,13 +95,14 @@ def build_features(
         windows=rolling_windows,
         funcs=rolling_funcs,
         include_features=include_feature_rolling,
+        segment_col=segment_col,
     )
 
     # 4. EWM features
-    df = create_ewm_features(df, target_col=TARGET_COL, spans=ewm_spans)
+    df = create_ewm_features(df, target_col=TARGET_COL, spans=ewm_spans, segment_col=segment_col)
 
     # 5. Diff features
-    df = create_diff_features(df, target_col=TARGET_COL)
+    df = create_diff_features(df, target_col=TARGET_COL, segment_col=segment_col)
 
     # 6. Domain-specific features
     df = _create_domain_features(df)
@@ -127,8 +133,13 @@ def _create_domain_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.copy()
 
-    # Determine PM2.5 source: use lag_1h (past value) to prevent leakage
-    pm25_past_col = "pm25_lag_1h" if "pm25_lag_1h" in df.columns else None
+    # Determine PM2.5 source: use lag_1 (past value) to prevent leakage
+    # Support both legacy naming (pm25_lag_1h) and new naming (pm25_lag_1s)
+    pm25_past_col = None
+    for candidate in ["pm25_lag_1s", "pm25_lag_1h"]:
+        if candidate in df.columns:
+            pm25_past_col = candidate
+            break
 
     # CO2/PM2.5 ratio (interaction feature) — uses PAST pm25 value
     if "co2" in df.columns and pm25_past_col is not None:
@@ -173,8 +184,13 @@ def _create_domain_features(df: pd.DataFrame) -> pd.DataFrame:
         df["temp_dew_diff"] = df["nhiet_do"] - df["diem_suong"]
 
     # PM2.5 relative to 24h rolling mean (deviation indicator)
-    roll_24_col = "pm25_roll_24h_mean"
-    if pm25_past_col is not None and roll_24_col in df.columns:
+    # Support both legacy naming (pm25_roll_24h_mean) and new naming (pm25_roll_24s_mean)
+    roll_24_col = None
+    for candidate in ["pm25_roll_24s_mean", "pm25_roll_24h_mean"]:
+        if candidate in df.columns:
+            roll_24_col = candidate
+            break
+    if pm25_past_col is not None and roll_24_col is not None:
         df["pm25_relative_24h"] = df[pm25_past_col] / (df[roll_24_col] + 0.1)
 
     logger.info("Created domain + interaction features (anti-leakage: using pm25_lag_1h)")

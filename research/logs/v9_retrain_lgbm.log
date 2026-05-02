@@ -1,0 +1,66 @@
+======================================================================
+v9 LIGHTGBM RETRAIN — Segment-Aware
+Timestamp: 20260502_084115
+======================================================================
+
+======================================================================
+[ML] LightGBM - 30m Dataset
+======================================================================
+
+  ── Horizon 1h (2 steps) ──
+2026-05-02 08:41:16.734 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LightGBM_v9 (h=1): MAE=3.0576, RMSE=4.7256, MASE=1.0033 ❌
+2026-05-02 08:41:16.735 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0248 AUC=0.743 (n=19)
+2026-05-02 08:41:16.735 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0083 AUC=0.739 (n=7)
+2026-05-02 08:41:16.735 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train size: 6,876 | Test size (real only): 846
+    LightGBM_v9: MAE=3.0576, MASE=1.0033 (0.8s)
+
+  ── Horizon 6h (12 steps) ──
+2026-05-02 08:41:17.707 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LightGBM_v9 (h=6): MAE=4.0397, RMSE=5.7376, MASE=0.7139 ✅
+2026-05-02 08:41:17.707 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0226 AUC=0.599 (n=19)
+2026-05-02 08:41:17.707 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0083 AUC=0.590 (n=7)
+2026-05-02 08:41:17.708 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train size: 6,756 | Test size (real only): 841
+    LightGBM_v9: MAE=4.0397, MASE=0.7139 (1.0s)
+
+  ── Horizon 24h (48 steps) ──
+2026-05-02 08:41:18.842 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LightGBM_v9 (h=24): MAE=4.2636, RMSE=5.4811, MASE=0.9481 ✅
+2026-05-02 08:41:18.843 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0163 AUC=0.493 (n=7)
+2026-05-02 08:41:18.843 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0025 AUC=0.417 (n=2)
+2026-05-02 08:41:18.843 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train size: 6,370 | Test size (real only): 797
+    LightGBM_v9: MAE=4.2636, MASE=0.9481 (1.1s)
+
+[v9] ✅ LightGBM (30m) saved.
+
+======================================================================
+[ML] LightGBM - 15m Dataset
+======================================================================
+
+  ── Horizon 1h (4 steps) ──
+2026-05-02 08:41:20.037 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LightGBM_v9 (h=1): MAE=2.6554, RMSE=4.3269, MASE=1.0005 ❌
+2026-05-02 08:41:20.037 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0115 AUC=0.708 (n=21)
+2026-05-02 08:41:20.037 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0033 AUC=0.895 (n=6)
+2026-05-02 08:41:20.038 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0005 AUC=0.712 (n=1)
+    Train size: 14,591 | Test size (real only): 1,824
+    LightGBM_v9: MAE=2.6554, MASE=1.0005 (1.0s)
+
+  ── Horizon 6h (24 steps) ──
+2026-05-02 08:41:21.278 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LightGBM_v9 (h=6): MAE=3.5369, RMSE=5.1636, MASE=0.7564 ✅
+2026-05-02 08:41:21.279 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0113 AUC=0.465 (n=20)
+2026-05-02 08:41:21.279 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0028 AUC=0.643 (n=5)
+2026-05-02 08:41:21.279 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0011 AUC=0.353 (n=2)
+    Train size: 14,127 | Test size (real only): 1,766
+    LightGBM_v9: MAE=3.5369, MASE=0.7564 (1.2s)
+
+  ── Horizon 24h (96 steps) ──
+2026-05-02 08:41:22.611 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   LightGBM_v9 (h=24): MAE=4.336, RMSE=6.0311, MASE=1.0331 ❌
+2026-05-02 08:41:22.611 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 25.0µg/m³: P=0.200 R=0.056 F1=0.087 Brier=0.0267 AUC=0.697 (n=36)
+2026-05-02 08:41:22.611 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0045 AUC=0.593 (n=7)
+2026-05-02 08:41:22.611 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     LightGBM_v9 @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0013 AUC=0.682 (n=2)
+    Train size: 12,580 | Test size (real only): 1,573
+    LightGBM_v9: MAE=4.336, MASE=1.0331 (1.3s)
+
+[v9] ✅ LightGBM (15m) saved.
+
+✅ Total LightGBM time: 6.8s

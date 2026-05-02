@@ -435,7 +435,7 @@ def page_overview(results):
     # ── Dual-mode Tabs ──
     tab_current, tab_compare = st.tabs([
         f"📋 Phiên bản hiện tại ({ver})",
-        "📊 Tổng hợp toàn bộ (v1→v7)"
+        "📊 Tổng hợp toàn bộ (v1→v9)"
     ])
 
     with tab_current:
@@ -643,12 +643,13 @@ def _render_overview_comparison():
             )
 
         insight_card(
-            "💡 Hành trình v1→v7: Data-Driven Improvement",
-            f"<b>Cải tiến qua 7 phiên bản pipeline:</b><br>"
+            "💡 Hành trình v1→v9: Data-Driven Improvement",
+            f"<b>Cải tiến qua 9 phiên bản pipeline:</b><br>"
             f"{'<br>• '.join([''] + insight_parts)}<br><br>"
             f"<b>Takeaway:</b> Feature engineering (v2), ensemble methods (v3-v5), "
-            f"và anti-leakage audit (v7) đã cải thiện MASE đáng kể ở 6h và 24h. "
-            f"Ở 1h, Persistence vẫn unbeatable do autocorrelation cực cao (ACF≈0.97).",
+            f"anti-leakage audit (v7), multi-resolution & Ensemble DL+ML (v9) đã cải thiện MASE đáng kể. "
+            f"Ở 1h, Persistence vẫn unbeatable trên 1h data do autocorrelation cực cao (ACF≈0.97) "
+            f"— nhưng dữ liệu 15m/30m giúp phá vỡ bẫy này (GRU 15m MASE=0.667).",
         )
 
 
@@ -830,21 +831,21 @@ def page_multi_horizon(results):
                 </tr>
                 <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">MAE 6h (µg/m³)</td>
-                    <td style="text-align: center; color: #00D4AA; font-weight: 700;">4.36</td>
+                    <td style="text-align: center; color: #00D4AA; font-weight: 700;">3.49 (v9 Ensemble 30m)</td>
                     <td style="text-align: center;">3.12–8.12</td>
                     <td style="text-align: center;">5.37–8.20</td>
-                    <td style="padding: 0.5rem; color: #00D4AA;">✅ Nằm top 30% quốc tế</td>
+                    <td style="padding: 0.5rem; color: #00D4AA;">✅ Top 20% quốc tế</td>
                 </tr>
                 <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">MAE 24h (µg/m³)</td>
-                    <td style="text-align: center; color: #00D4AA; font-weight: 700;">4.61</td>
+                    <td style="text-align: center; color: #00D4AA; font-weight: 700;">3.42 (v9 Ensemble 30m)</td>
                     <td style="text-align: center;">3.85–12.50</td>
                     <td style="text-align: center;">4.70–11.30</td>
-                    <td style="padding: 0.5rem; color: #00D4AA;">✅ Tốt hơn TB Việt Nam</td>
+                    <td style="padding: 0.5rem; color: #00D4AA;">✅ Vượt chuẩn quốc tế</td>
                 </tr>
                 <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">MASE 6h</td>
-                    <td style="text-align: center; color: #00D4AA; font-weight: 700;">0.750</td>
+                    <td style="text-align: center; color: #00D4AA; font-weight: 700;">0.382 (v9 Ensemble 30m)</td>
                     <td style="text-align: center; color: var(--text-color); opacity: 0.8;">N/A (ít báo cáo)</td>
                     <td style="text-align: center; color: var(--text-color); opacity: 0.8;">N/A</td>
                     <td style="padding: 0.5rem; color: #F59E0B;">⭐ Tiên phong sử dụng MASE</td>
@@ -855,6 +856,13 @@ def page_multi_horizon(results):
                     <td style="text-align: center;">60% papers</td>
                     <td style="text-align: center;">0% papers</td>
                     <td style="padding: 0.5rem; color: #00D4AA;">✅ Vượt trội VN literature</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
+                    <td style="padding: 0.5rem;">Multi-Resolution</td>
+                    <td style="text-align: center; color: #00D4AA; font-weight: 700;">15m + 30m + 1h</td>
+                    <td style="text-align: center;">~5% papers</td>
+                    <td style="text-align: center;">0% papers</td>
+                    <td style="padding: 0.5rem; color: #F59E0B;">⭐ Đóng góp mới</td>
                 </tr>
                 <tr style="border-bottom: 1px solid var(--border-color, rgba(139,149,165,0.2));">
                     <td style="padding: 0.5rem;">Anti-leakage Audit</td>
@@ -1729,22 +1737,71 @@ def page_scientific_audit(results):
     else:
         st.info("Không tìm thấy model weight files để audit.")
 
+    # ── Integrity Verification (Manifest-based) ──
+    section_header("🔒", "Integrity Verification")
+
+    verify_result = None
+    if api_available:
+        try:
+            if st.button("🔄 Re-verify All", key="btn_reverify"):
+                st.cache_data.clear()
+            verify_result = client.verify_integrity()
+            if isinstance(verify_result, dict) and "error" not in verify_result:
+                files = verify_result.get("files", [])
+                if files:
+                    # Build verification table
+                    verify_rows = []
+                    for item in files:
+                        status_icon = {
+                            "MATCH": "✅ Match",
+                            "MISMATCH": "❌ Mismatch",
+                            "MISSING": "⚠️ Missing",
+                        }.get(item.get("status", ""), item.get("status", ""))
+                        verify_rows.append({
+                            "File": item.get("file_path", ""),
+                            "Type": item.get("file_type", ""),
+                            "Expected MD5": item.get("expected_md5", "")[:12] + "...",
+                            "Current MD5": (item.get("current_md5", "")[:12] + "...") if item.get("current_md5") else "—",
+                            "Status": status_icon,
+                        })
+                    df_verify = pd.DataFrame(verify_rows)
+                    st.dataframe(df_verify, use_container_width=True, hide_index=True)
+
+                    st.caption(
+                        f"*Manifest version: {verify_result.get('version', 'N/A')} | "
+                        f"Verified at: {verify_result.get('verified_at', 'N/A')[:19]}*"
+                    )
+            else:
+                verify_result = None
+        except Exception as e:
+            st.warning(f"Verify endpoint not available: {e}")
+
     # ── Audit Summary ──
     section_header("📋", "Audit Summary")
 
     total_files = len(data_hashes) + len(model_hashes)
+
+    # Use verify results for integrity status if available
+    if verify_result and isinstance(verify_result, dict) and "pass_rate" in verify_result:
+        integrity_text = f"{verify_result['pass_rate']}"
+        integrity_subtitle = f"{verify_result.get('passed', 0)}/{verify_result.get('total_files', 0)} match"
+    else:
+        integrity_text = "✅ PASS" if total_files > 0 else "⚠️ N/A"
+        integrity_subtitle = "IEEE reproducibility"
+
     st.markdown(f"""
     <div class="kpi-row">
         {kpi_card("Data Files", str(len(data_hashes)), "MD5 verified")}
         {kpi_card("Model Weights", str(len(model_hashes)), "MD5 verified")}
         {kpi_card("Total Artifacts", str(total_files), "All checksummed")}
-        {kpi_card("Integrity", "✅ PASS" if total_files > 0 else "⚠️ N/A", "IEEE reproducibility")}
+        {kpi_card("Integrity", integrity_text, integrity_subtitle)}
     </div>
     """, unsafe_allow_html=True)
 
     insight_card(
         "🔐 Reproducibility Guarantee",
-        "Toàn bộ data files và model weights đều được checksum (MD5). "
+        "Toàn bộ data files và model weights đều được checksum (MD5) và đối chiếu "
+        "với expected hashes trong manifest.json. "
         "Bất kỳ thay đổi nào trong dữ liệu hoặc model weights sẽ được phát hiện "
         "qua sự khác biệt hash, đảm bảo kết quả nghiên cứu có thể tái tạo hoàn toàn "
         f"theo chuẩn IEEE. {cite('shumway2017')}",

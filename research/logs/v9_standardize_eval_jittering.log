@@ -1,0 +1,41 @@
+===============================================================
+  PHASE 6: STANDARDIZE EVALUATION (FAIR VS EXPERT)
+===============================================================
+
+--- 30m Standardization ---
+  [1h] ❌ ALIGNMENT FAILED! Actuals do not match.
+  [1h] ❌ Alignment completely failed. Skip.
+  [6h] ❌ ALIGNMENT FAILED! Actuals do not match.
+  [6h] ✅ Alignment found at offset 1
+    Denominator (Naive MAE from Fair): 9.1483
+    Fair   GRU_v9     | MAE: 4.5250 | MASE: 0.4946
+    Fair   LSTM_v9    | MAE: 3.6206 | MASE: 0.3958
+    Expert GRU_v9_expert | MAE: 4.7482 | MASE: 0.5190
+    Expert LSTM_v9_expert | MAE: 4.6558 | MASE: 0.5089
+  [24h] ❌ ALIGNMENT FAILED! Actuals do not match.
+  [24h] ✅ Alignment found at offset 9
+    Denominator (Naive MAE from Fair): 7.2938
+    Fair   GRU_v9     | MAE: 3.5903 | MASE: 0.4922
+    Fair   LSTM_v9    | MAE: 3.8193 | MASE: 0.5236
+    Expert GRU_v9_expert | MAE: 4.4654 | MASE: 0.6122
+    Expert LSTM_v9_expert | MAE: 3.9383 | MASE: 0.5400
+
+--- 15m Standardization ---
+  [1h] ✅ Aligned correctly from the end. Offset = 178
+    Denominator (Naive MAE from Fair): 4.4139
+    Fair   GRU_v9     | MAE: 2.9437 | MASE: 0.6669
+    Fair   LSTM_v9    | MAE: 3.5700 | MASE: 0.8088
+    Expert GRU_v9_expert | MAE: 3.4993 | MASE: 0.7928
+    Expert LSTM_v9_expert | MAE: 3.2808 | MASE: 0.7433
+  [6h] ✅ Aligned correctly from the end. Offset = 176
+    Denominator (Naive MAE from Fair): 9.0918
+    Fair   GRU_v9     | MAE: 3.8707 | MASE: 0.4257
+    Fair   LSTM_v9    | MAE: 4.0502 | MASE: 0.4455
+    Expert GRU_v9_expert | MAE: 5.3902 | MASE: 0.5929
+    Expert LSTM_v9_expert | MAE: 4.7924 | MASE: 0.5271
+  [24h] ✅ Aligned correctly from the end. Offset = 169
+    Denominator (Naive MAE from Fair): 7.5041
+    Fair   GRU_v9     | MAE: 4.0086 | MASE: 0.5342
+    Fair   LSTM_v9    | MAE: 3.7302 | MASE: 0.4971
+    Expert GRU_v9_expert | MAE: 6.1205 | MASE: 0.8156
+    Expert LSTM_v9_expert | MAE: 3.9480 | MASE: 0.5261

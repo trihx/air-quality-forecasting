@@ -1,0 +1,74 @@
+======================================================================
+v9 TFT EXPERT RETRAIN — Ablation Study (Base Dataset)
+Timestamp: 20260502_152351
+======================================================================
+
+======================================================================
+[TFT-EXPERT] Temporal Fusion Transformer - 30m Base Dataset
+  Device: mps
+======================================================================
+  Temporal features (5): ['nhiet_do', 'do_am', 'diem_suong', 'co2', 'pm25']
+  Static features (18): ['hour_sin', 'hour_cos', 'month_sin', 'month_cos', 'dow_sin', 'dow_cos', 'fourier_daily_sin_1', 'fourier_daily_cos_1', 'fourier_daily_sin_2', 'fourier_daily_cos_2', 'fourier_daily_sin_3', 'fourier_daily_cos_3', 'fourier_weekly_sin_1', 'fourier_weekly_cos_1', 'fourier_weekly_sin_2', 'fourier_weekly_cos_2', 'fourier_weekly_sin_3', 'fourier_weekly_cos_3']
+  Dataset rows: 13,685 (vs Fair pipeline's tabular-engineered dataset)
+
+  ── Horizon 1h (2 steps, lookback 144 steps) ──
+2026-05-02 15:25:58.411 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   TFT_v9_expert (h=1): MAE=4.6944, RMSE=5.9132, MASE=1.609 ❌
+2026-05-02 15:25:58.412 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0194 AUC=0.855 (n=17)
+2026-05-02 15:25:58.412 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0068 AUC=0.923 (n=6)
+2026-05-02 15:25:58.412 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train sequences: 7,183 | Test sequences (real only): 876
+    TFT_v9_expert: MAE=4.6944, MASE=1.609
+
+  ── Horizon 6h (12 steps, lookback 144 steps) ──
+2026-05-02 15:27:57.927 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   TFT_v9_expert (h=6): MAE=4.7801, RMSE=6.0297, MASE=0.8659 ✅
+2026-05-02 15:27:57.927 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0198 AUC=0.336 (n=17)
+2026-05-02 15:27:57.927 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0070 AUC=0.301 (n=6)
+2026-05-02 15:27:57.927 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train sequences: 7,056 | Test sequences (real only): 860
+    TFT_v9_expert: MAE=4.7801, MASE=0.8659
+
+  ── Horizon 24h (48 steps, lookback 144 steps) ──
+2026-05-02 15:29:52.225 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   TFT_v9_expert (h=24): MAE=5.0529, RMSE=6.2978, MASE=1.044 ❌
+2026-05-02 15:29:52.226 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0229 AUC=0.629 (n=19)
+2026-05-02 15:29:52.226 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0084 AUC=0.638 (n=7)
+2026-05-02 15:29:52.226 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Train sequences: 6,630 | Test sequences (real only): 829
+    TFT_v9_expert: MAE=5.0529, MASE=1.044
+
+[v9] ✅ TFT Expert (30m) saved.
+
+======================================================================
+[TFT-EXPERT] Temporal Fusion Transformer - 15m Base Dataset
+  Device: mps
+======================================================================
+  Temporal features (5): ['nhiet_do', 'do_am', 'diem_suong', 'co2', 'pm25']
+  Static features (18): ['hour_sin', 'hour_cos', 'month_sin', 'month_cos', 'dow_sin', 'dow_cos', 'fourier_daily_sin_1', 'fourier_daily_cos_1', 'fourier_daily_sin_2', 'fourier_daily_cos_2', 'fourier_daily_sin_3', 'fourier_daily_cos_3', 'fourier_weekly_sin_1', 'fourier_weekly_cos_1', 'fourier_weekly_sin_2', 'fourier_weekly_cos_2', 'fourier_weekly_sin_3', 'fourier_weekly_cos_3']
+  Dataset rows: 23,878 (vs Fair pipeline's tabular-engineered dataset)
+
+  ── Horizon 1h (4 steps, lookback 288 steps) ──
+2026-05-02 15:34:11.701 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   TFT_v9_expert (h=1): MAE=4.7497, RMSE=6.2609, MASE=1.327 ❌
+2026-05-02 15:34:11.708 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0261 AUC=0.692 (n=40)
+2026-05-02 15:34:11.709 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0046 AUC=0.598 (n=7)
+2026-05-02 15:34:11.709 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0013 AUC=0.744 (n=2)
+    Train sequences: 12,245 | Test sequences (real only): 1,531
+    TFT_v9_expert: MAE=4.7497, MASE=1.327
+
+  ── Horizon 6h (24 steps, lookback 288 steps) ──
+2026-05-02 15:38:36.544 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   TFT_v9_expert (h=6): MAE=4.5307, RMSE=6.1999, MASE=0.8498 ✅
+2026-05-02 15:38:36.546 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0265 AUC=0.652 (n=40)
+2026-05-02 15:38:36.546 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0046 AUC=0.665 (n=7)
+2026-05-02 15:38:36.546 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0013 AUC=0.784 (n=2)
+    Train sequences: 12,069 | Test sequences (real only): 1,509
+    TFT_v9_expert: MAE=4.5307, MASE=0.8498
+
+  ── Horizon 24h (96 steps, lookback 288 steps) ──
+2026-05-02 15:42:37.244 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   TFT_v9_expert (h=24): MAE=4.9611, RMSE=6.3257, MASE=1.1791 ❌
+2026-05-02 15:42:37.245 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0203 AUC=0.722 (n=29)
+2026-05-02 15:42:37.245 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0049 AUC=0.826 (n=7)
+2026-05-02 15:42:37.246 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     TFT_v9_expert @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0014 AUC=0.788 (n=2)
+    Train sequences: 11,436 | Test sequences (real only): 1,430
+    TFT_v9_expert: MAE=4.9611, MASE=1.1791
+
+[v9] ✅ TFT Expert (15m) saved.
+
+✅ Total TFT Expert time: 1126.2s

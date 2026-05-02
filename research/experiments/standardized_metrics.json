@@ -1,293 +1,1122 @@
 {
   "_metadata": {
-    "description": "Standardized metrics with unified Persistence baseline",
-    "generated": "2026-04-05",
-    "unified_test": "val_end to end, real-only, consistent across all models",
-    "note": "mase_unified uses common Persistence MAE; mase_original uses each run's own Persistence"
+    "description": "Standardized metrics with multi-resolution v9 models",
+    "generated": "2026-05-02T19:37:52.826356",
+    "unified_test": "val_end to end, anchored by test set"
   },
-  "unified_persistence": {
-    "1h": {
-      "mae": 2.4928,
-      "rmse": 4.0914,
-      "n_samples": 604
-    },
-    "6h": {
-      "mae": 6.4217,
-      "rmse": 8.8494,
-      "n_samples": 601
-    },
-    "24h": {
-      "mae": 6.4536,
-      "rmse": 9.1583,
-      "n_samples": 601
-    }
-  },
+  "unified_persistence": {},
   "results": {
     "1h": {
-      "Persistence": {
-        "mae": 2.4928,
-        "rmse": 4.0914,
-        "mase": 1.0,
-        "n_test": 604,
-        "source": "unified"
-      },
-      "LightGBM_tuned": {
-        "mae": 3.2976,
-        "rmse": 5.0632,
-        "mase_original": 1.2701,
-        "mase_unified": 1.3228,
-        "original_persist_mae": null,
-        "source": "lightgbm_20260428_161819"
-      },
-      "RandomForest": {
-        "mae": 3.2478,
-        "rmse": 4.9694,
-        "mase_original": 1.2509,
-        "mase_unified": 1.3029,
-        "original_persist_mae": 2.5964,
-        "source": "sklearn_20260428_161819"
-      },
-      "GradientBoosting": {
-        "mae": 3.664,
-        "rmse": 5.288,
-        "mase_original": 1.4112,
-        "mase_unified": 1.4698,
-        "original_persist_mae": 2.5964,
-        "source": "sklearn_20260428_161819"
-      },
-      "ARIMA": {
-        "mae": 2.5638,
-        "rmse": 3.9255,
-        "mase_original": 1.023,
-        "mase_unified": 1.0285,
-        "original_persist_mae": 2.5061,
-        "source": "arima_195931"
-      },
-      "SARIMA": {
-        "mae": 3.2143,
-        "rmse": 4.6821,
-        "mase_original": 1.2826,
-        "mase_unified": 1.2894,
-        "original_persist_mae": 2.5061,
-        "source": "arima_195931"
-      },
-      "GRU": {
-        "mae": 3.1428,
-        "rmse": 5.8272,
-        "mase_original": null,
-        "mase_unified": 1.2608,
-        "original_persist_mae": null,
-        "source": "dl_20260428_161819"
-      },
-      "LSTM": {
-        "mae": 3.4184,
-        "rmse": 5.8285,
-        "mase_original": null,
-        "mase_unified": 1.3713,
-        "original_persist_mae": null,
-        "source": "dl_20260428_161819"
-      },
-      "TFT": {
-        "mae": 2.4599,
-        "rmse": 3.6656,
-        "mase_original": 1.0291,
-        "mase_unified": 0.9868,
-        "original_persist_mae": 2.3902,
-        "source": "tft_102245"
-      },
-      "Ensemble_GRU": {
-        "mae": 2.7264,
+      "ARIMA_v9_15m": {
+        "mae": 7.7158,
         "rmse": null,
-        "mase_original": 1.0501,
-        "mase_unified": 1.0937,
-        "original_persist_mae": 2.5964,
-        "source": "ensemble_210135"
+        "mase_unified": 1.7481,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "Ensemble_Stack": {
-        "mae": 3.0375,
+      "ElasticNet_v9_15m": {
+        "mae": 4.6032,
         "rmse": null,
-        "mase_original": 1.3269,
-        "mase_unified": 1.2185,
-        "original_persist_mae": 2.5964,
-        "source": "ensemble_210135"
+        "mase_unified": 1.0429,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "Ensemble_Weighted_v9_15m": {
+        "mae": 3.5937,
+        "rmse": null,
+        "mase_unified": 0.8142,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "GRU_v9_15m": {
+        "mae": 2.9437,
+        "rmse": null,
+        "mase_unified": 0.6669,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "GRU_v9_expert_15m": {
+        "mae": 3.4993,
+        "rmse": null,
+        "mase_unified": 0.7928,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "GradientBoosting_v9_15m": {
+        "mae": 4.9838,
+        "rmse": null,
+        "mase_unified": 1.1291,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_15m": {
+        "mae": 3.57,
+        "rmse": null,
+        "mase_unified": 0.8088,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_expert_15m": {
+        "mae": 3.2808,
+        "rmse": null,
+        "mase_unified": 0.7433,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "LightGBM_v9_15m": {
+        "mae": 5.0187,
+        "rmse": null,
+        "mase_unified": 1.137,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "RandomForest_v9_15m": {
+        "mae": 5.0497,
+        "rmse": null,
+        "mase_unified": 1.144,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "Stacking_v9_15m": {
+        "mae": 5.2624,
+        "rmse": null,
+        "mase_unified": 1.1922,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "TFT_v9_15m": {
+        "mae": 5.2049,
+        "rmse": null,
+        "mase_unified": 1.1792,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "TFT_v9_expert_15m": {
+        "mae": 4.5562,
+        "rmse": null,
+        "mase_unified": 1.0322,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "VotingEnsemble_v9_15m": {
+        "mae": 4.9801,
+        "rmse": null,
+        "mase_unified": 1.1283,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "Persistence_15m": {
+        "mae": 3.4205,
+        "rmse": null,
+        "mase_unified": 0.7749,
+        "r2": null,
+        "n_samples": 1353,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "ARIMA_v9_30m": {
+        "mae": 7.1253,
+        "rmse": null,
+        "mase_unified": 1.7362,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "ElasticNet_v9_30m": {
+        "mae": 4.1556,
+        "rmse": null,
+        "mase_unified": 1.0126,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "Ensemble_Weighted_v9_30m": {
+        "mae": 3.2096,
+        "rmse": null,
+        "mase_unified": 0.7821,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "GRU_v9_30m": {
+        "mae": 3.0073,
+        "rmse": null,
+        "mase_unified": 0.7328,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "GRU_v9_expert_30m": {
+        "mae": 5.1464,
+        "rmse": null,
+        "mase_unified": 1.254,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "GradientBoosting_v9_30m": {
+        "mae": 4.0822,
+        "rmse": null,
+        "mase_unified": 0.9947,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_30m": {
+        "mae": 3.0972,
+        "rmse": null,
+        "mase_unified": 0.7547,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_expert_30m": {
+        "mae": 4.3682,
+        "rmse": null,
+        "mase_unified": 1.0644,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "LightGBM_v9_30m": {
+        "mae": 3.9592,
+        "rmse": null,
+        "mase_unified": 0.9647,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "RandomForest_v9_30m": {
+        "mae": 4.026,
+        "rmse": null,
+        "mase_unified": 0.981,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "Stacking_v9_30m": {
+        "mae": 4.2766,
+        "rmse": null,
+        "mase_unified": 1.0421,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "TFT_v9_30m": {
+        "mae": 4.3159,
+        "rmse": null,
+        "mase_unified": 1.0516,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "TFT_v9_expert_30m": {
+        "mae": 4.4215,
+        "rmse": null,
+        "mase_unified": 1.0774,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "VotingEnsemble_v9_30m": {
+        "mae": 3.9944,
+        "rmse": null,
+        "mase_unified": 0.9733,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "Persistence_30m": {
+        "mae": 5.6941,
+        "rmse": null,
+        "mase_unified": 1.3875,
+        "r2": null,
+        "n_samples": 693,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "ARIMA_1h": {
+        "mae": 3.7666,
+        "rmse": null,
+        "mase_unified": 1.1113,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "Ensemble_Weighted_1h": {
+        "mae": 3.2167,
+        "rmse": null,
+        "mase_unified": 0.9491,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "GRU_v2_log_1h": {
+        "mae": 3.5435,
+        "rmse": null,
+        "mase_unified": 1.0455,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "GradientBoosting_1h": {
+        "mae": 3.6976,
+        "rmse": null,
+        "mase_unified": 1.091,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "LSTM_v2_log_1h": {
+        "mae": 3.6382,
+        "rmse": null,
+        "mase_unified": 1.0734,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "LightGBM_tuned_1h": {
+        "mae": 3.3035,
+        "rmse": null,
+        "mase_unified": 0.9747,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "RandomForest_1h": {
+        "mae": 3.2506,
+        "rmse": null,
+        "mase_unified": 0.9591,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "SARIMA_1h": {
+        "mae": 4.2295,
+        "rmse": null,
+        "mase_unified": 1.2479,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "Stacking_1h": {
+        "mae": 3.387,
+        "rmse": null,
+        "mase_unified": 0.9993,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "TFT_1h": {
+        "mae": NaN,
+        "rmse": null,
+        "mase_unified": NaN,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "Persistence_1h": {
+        "mae": 2.5964,
+        "rmse": null,
+        "mase_unified": 0.766,
+        "r2": null,
+        "n_samples": 600,
+        "freq": "1h",
+        "source": "v9_final"
       }
     },
     "6h": {
-      "Persistence": {
-        "mae": 6.4217,
-        "rmse": 8.8494,
-        "mase": 1.0,
-        "n_test": 601,
-        "source": "unified"
-      },
-      "LightGBM_tuned": {
-        "mae": 5.081,
-        "rmse": 7.0864,
-        "mase_original": 0.7329,
-        "mase_unified": 0.7912,
-        "original_persist_mae": null,
-        "source": "lightgbm_20260428_161819"
-      },
-      "RandomForest": {
-        "mae": 4.886,
-        "rmse": 6.8371,
-        "mase_original": 0.7048,
-        "mase_unified": 0.7609,
-        "original_persist_mae": 6.9323,
-        "source": "sklearn_20260428_161819"
-      },
-      "GradientBoosting": {
-        "mae": 4.9451,
-        "rmse": 7.0837,
-        "mase_original": 0.7133,
-        "mase_unified": 0.7701,
-        "original_persist_mae": 6.9323,
-        "source": "sklearn_20260428_161819"
-      },
-      "ARIMA": {
-        "mae": 5.8433,
-        "rmse": 7.6852,
-        "mase_original": 0.8557,
-        "mase_unified": 0.9099,
-        "original_persist_mae": 6.8286,
-        "source": "arima_195931"
-      },
-      "SARIMA": {
-        "mae": 5.2066,
-        "rmse": 6.9079,
-        "mase_original": 0.7625,
-        "mase_unified": 0.8108,
-        "original_persist_mae": 6.8286,
-        "source": "arima_195931"
-      },
-      "GRU": {
-        "mae": 4.9415,
-        "rmse": 7.7129,
-        "mase_original": 0.8796,
-        "mase_unified": 0.7695,
-        "original_persist_mae": null,
-        "source": "dl_20260428_161819"
-      },
-      "LSTM": {
-        "mae": 4.8018,
-        "rmse": 7.5427,
-        "mase_original": 0.8547,
-        "mase_unified": 0.7477,
-        "original_persist_mae": null,
-        "source": "dl_20260428_161819"
-      },
-      "TFT": {
-        "mae": 5.1806,
-        "rmse": 6.6866,
-        "mase_original": 0.8216,
-        "mase_unified": 0.8067,
-        "original_persist_mae": 6.3053,
-        "source": "tft_102245"
-      },
-      "Ensemble_GRU": {
-        "mae": 4.874,
+      "ARIMA_v9_15m": {
+        "mae": 7.5172,
         "rmse": null,
-        "mase_original": 0.7031,
-        "mase_unified": 0.759,
-        "original_persist_mae": 6.9323,
-        "source": "ensemble_210135"
+        "mase_unified": 0.8268,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "Ensemble_Stack": {
-        "mae": 4.7813,
+      "ElasticNet_v9_15m": {
+        "mae": 4.2399,
         "rmse": null,
-        "mase_original": 0.8075,
-        "mase_unified": 0.7446,
-        "original_persist_mae": 6.9323,
-        "source": "ensemble_210135"
+        "mase_unified": 0.4663,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "Ensemble_Weighted_v9_15m": {
+        "mae": 4.1298,
+        "rmse": null,
+        "mase_unified": 0.4542,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "GRU_v9_15m": {
+        "mae": 3.8707,
+        "rmse": null,
+        "mase_unified": 0.4257,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "GRU_v9_expert_15m": {
+        "mae": 5.3902,
+        "rmse": null,
+        "mase_unified": 0.5929,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "GradientBoosting_v9_15m": {
+        "mae": 4.9763,
+        "rmse": null,
+        "mase_unified": 0.5473,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_15m": {
+        "mae": 4.0502,
+        "rmse": null,
+        "mase_unified": 0.4455,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_expert_15m": {
+        "mae": 4.7924,
+        "rmse": null,
+        "mase_unified": 0.5271,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "LightGBM_v9_15m": {
+        "mae": 4.5976,
+        "rmse": null,
+        "mase_unified": 0.5057,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "RandomForest_v9_15m": {
+        "mae": 4.6691,
+        "rmse": null,
+        "mase_unified": 0.5135,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "Stacking_v9_15m": {
+        "mae": 4.74,
+        "rmse": null,
+        "mase_unified": 0.5214,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "TFT_v9_15m": {
+        "mae": 4.4657,
+        "rmse": null,
+        "mase_unified": 0.4912,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "TFT_v9_expert_15m": {
+        "mae": 4.2891,
+        "rmse": null,
+        "mase_unified": 0.4718,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "VotingEnsemble_v9_15m": {
+        "mae": 4.61,
+        "rmse": null,
+        "mase_unified": 0.5071,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "Persistence_15m": {
+        "mae": 5.0525,
+        "rmse": null,
+        "mase_unified": 0.5557,
+        "r2": null,
+        "n_samples": 1333,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "ARIMA_v9_30m": {
+        "mae": 7.075,
+        "rmse": null,
+        "mase_unified": 0.7734,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "ElasticNet_v9_30m": {
+        "mae": 3.7583,
+        "rmse": null,
+        "mase_unified": 0.4108,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "Ensemble_Weighted_v9_30m": {
+        "mae": 3.4932,
+        "rmse": null,
+        "mase_unified": 0.3818,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "GRU_v9_30m": {
+        "mae": 4.525,
+        "rmse": null,
+        "mase_unified": 0.4946,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "GRU_v9_expert_30m": {
+        "mae": 4.6435,
+        "rmse": null,
+        "mase_unified": 0.5076,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "GradientBoosting_v9_30m": {
+        "mae": 4.0243,
+        "rmse": null,
+        "mase_unified": 0.4399,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_30m": {
+        "mae": 3.6206,
+        "rmse": null,
+        "mase_unified": 0.3958,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_expert_30m": {
+        "mae": 4.6628,
+        "rmse": null,
+        "mase_unified": 0.5097,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "LightGBM_v9_30m": {
+        "mae": 3.8204,
+        "rmse": null,
+        "mase_unified": 0.4176,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "RandomForest_v9_30m": {
+        "mae": 3.8795,
+        "rmse": null,
+        "mase_unified": 0.4241,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "Stacking_v9_30m": {
+        "mae": 4.0386,
+        "rmse": null,
+        "mase_unified": 0.4415,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "TFT_v9_30m": {
+        "mae": 5.3848,
+        "rmse": null,
+        "mase_unified": 0.5886,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "TFT_v9_expert_30m": {
+        "mae": 4.4635,
+        "rmse": null,
+        "mase_unified": 0.4879,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "VotingEnsemble_v9_30m": {
+        "mae": 3.8651,
+        "rmse": null,
+        "mase_unified": 0.4225,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "Persistence_30m": {
+        "mae": 5.1993,
+        "rmse": null,
+        "mase_unified": 0.5683,
+        "r2": null,
+        "n_samples": 684,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "ARIMA_1h": {
+        "mae": 5.5411,
+        "rmse": null,
+        "mase_unified": 0.6715,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "Ensemble_Weighted_1h": {
+        "mae": 4.9184,
+        "rmse": null,
+        "mase_unified": 0.596,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "GRU_v2_log_1h": {
+        "mae": 5.1969,
+        "rmse": null,
+        "mase_unified": 0.6298,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "GradientBoosting_1h": {
+        "mae": 4.9773,
+        "rmse": null,
+        "mase_unified": 0.6031,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "LSTM_v2_log_1h": {
+        "mae": 5.2341,
+        "rmse": null,
+        "mase_unified": 0.6343,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "LightGBM_tuned_1h": {
+        "mae": 5.0651,
+        "rmse": null,
+        "mase_unified": 0.6138,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "RandomForest_1h": {
+        "mae": 4.9304,
+        "rmse": null,
+        "mase_unified": 0.5975,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "SARIMA_1h": {
+        "mae": 5.9189,
+        "rmse": null,
+        "mase_unified": 0.7172,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "Stacking_1h": {
+        "mae": 5.0735,
+        "rmse": null,
+        "mase_unified": 0.6148,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "TFT_1h": {
+        "mae": NaN,
+        "rmse": null,
+        "mase_unified": NaN,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "Persistence_1h": {
+        "mae": 6.9323,
+        "rmse": null,
+        "mase_unified": 0.8401,
+        "r2": null,
+        "n_samples": 595,
+        "freq": "1h",
+        "source": "v9_final"
       }
     },
     "24h": {
-      "Persistence": {
-        "mae": 6.4536,
-        "rmse": 9.1583,
-        "mase": 1.0,
-        "n_test": 601,
-        "source": "unified"
+      "ARIMA_v9_15m": {
+        "mae": 7.1679,
+        "rmse": null,
+        "mase_unified": 0.9552,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "LightGBM_tuned": {
-        "mae": 5.0156,
-        "rmse": 6.8497,
-        "mase_original": 0.7937,
-        "mase_unified": 0.7772,
-        "original_persist_mae": null,
-        "source": "lightgbm_20260428_161819"
+      "ElasticNet_v9_15m": {
+        "mae": 4.7539,
+        "rmse": null,
+        "mase_unified": 0.6335,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "RandomForest": {
-        "mae": 4.9989,
-        "rmse": 6.8385,
-        "mase_original": 0.7911,
-        "mase_unified": 0.7746,
-        "original_persist_mae": 6.3192,
-        "source": "sklearn_20260428_161819"
+      "Ensemble_Weighted_v9_15m": {
+        "mae": 4.0776,
+        "rmse": null,
+        "mase_unified": 0.5434,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "GradientBoosting": {
-        "mae": 5.0807,
-        "rmse": 7.0384,
-        "mase_original": 0.804,
-        "mase_unified": 0.7873,
-        "original_persist_mae": 6.3192,
-        "source": "sklearn_20260428_161819"
+      "GRU_v9_15m": {
+        "mae": 4.0086,
+        "rmse": null,
+        "mase_unified": 0.5342,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "ARIMA": {
-        "mae": 5.5981,
-        "rmse": 7.3247,
-        "mase_original": 0.9135,
-        "mase_unified": 0.8674,
-        "original_persist_mae": 6.1279,
-        "source": "arima_195931"
+      "GRU_v9_expert_15m": {
+        "mae": 6.1205,
+        "rmse": null,
+        "mase_unified": 0.8156,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "SARIMA": {
-        "mae": 4.9814,
-        "rmse": 6.5101,
-        "mase_original": 0.8129,
-        "mase_unified": 0.7719,
-        "original_persist_mae": 6.1279,
-        "source": "arima_195931"
+      "GradientBoosting_v9_15m": {
+        "mae": 5.5149,
+        "rmse": null,
+        "mase_unified": 0.7349,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "GRU": {
-        "mae": 5.1711,
-        "rmse": 8.3244,
-        "mase_original": 0.8582,
-        "mase_unified": 0.8013,
-        "original_persist_mae": null,
-        "source": "dl_20260428_161819"
+      "LSTM_v9_15m": {
+        "mae": 3.7302,
+        "rmse": null,
+        "mase_unified": 0.4971,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "LSTM": {
-        "mae": 4.3598,
-        "rmse": 7.2498,
-        "mase_original": 0.7236,
+      "LSTM_v9_expert_15m": {
+        "mae": 3.948,
+        "rmse": null,
+        "mase_unified": 0.5261,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "LightGBM_v9_15m": {
+        "mae": 5.3509,
+        "rmse": null,
+        "mase_unified": 0.7131,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "RandomForest_v9_15m": {
+        "mae": 5.1236,
+        "rmse": null,
+        "mase_unified": 0.6828,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "Stacking_v9_15m": {
+        "mae": 5.3083,
+        "rmse": null,
+        "mase_unified": 0.7074,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "TFT_v9_15m": {
+        "mae": 4.9241,
+        "rmse": null,
+        "mase_unified": 0.6562,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "TFT_v9_expert_15m": {
+        "mae": 4.8808,
+        "rmse": null,
+        "mase_unified": 0.6504,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
+      },
+      "VotingEnsemble_v9_15m": {
+        "mae": 5.0696,
+        "rmse": null,
         "mase_unified": 0.6756,
-        "original_persist_mae": null,
-        "source": "dl_20260428_161819"
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "TFT": {
-        "mae": 5.0933,
-        "rmse": 6.7252,
-        "mase_original": 0.8116,
-        "mase_unified": 0.7892,
-        "original_persist_mae": 6.2758,
-        "source": "tft_102245"
-      },
-      "Ensemble_GRU": {
-        "mae": 4.7969,
+      "Persistence_15m": {
+        "mae": 3.8053,
         "rmse": null,
-        "mase_original": 0.7591,
-        "mase_unified": 0.7433,
-        "original_persist_mae": 6.3192,
-        "source": "ensemble_210135"
+        "mase_unified": 0.5071,
+        "r2": null,
+        "n_samples": 1261,
+        "freq": "15m",
+        "source": "v9_final"
       },
-      "Ensemble_Stack": {
-        "mae": 4.491,
+      "ARIMA_v9_30m": {
+        "mae": 7.4062,
         "rmse": null,
-        "mase_original": 0.8042,
-        "mase_unified": 0.6959,
-        "original_persist_mae": 6.3192,
-        "source": "ensemble_210135"
+        "mase_unified": 1.0154,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "ElasticNet_v9_30m": {
+        "mae": 4.0452,
+        "rmse": null,
+        "mase_unified": 0.5546,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "Ensemble_Weighted_v9_30m": {
+        "mae": 3.4169,
+        "rmse": null,
+        "mase_unified": 0.4685,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "GRU_v9_30m": {
+        "mae": 3.5903,
+        "rmse": null,
+        "mase_unified": 0.4922,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "GRU_v9_expert_30m": {
+        "mae": 4.2442,
+        "rmse": null,
+        "mase_unified": 0.5819,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "GradientBoosting_v9_30m": {
+        "mae": 3.958,
+        "rmse": null,
+        "mase_unified": 0.5427,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_30m": {
+        "mae": 3.8193,
+        "rmse": null,
+        "mase_unified": 0.5236,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "LSTM_v9_expert_30m": {
+        "mae": 3.8316,
+        "rmse": null,
+        "mase_unified": 0.5253,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "LightGBM_v9_30m": {
+        "mae": 3.8861,
+        "rmse": null,
+        "mase_unified": 0.5328,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "RandomForest_v9_30m": {
+        "mae": 4.0284,
+        "rmse": null,
+        "mase_unified": 0.5523,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "Stacking_v9_30m": {
+        "mae": 4.345,
+        "rmse": null,
+        "mase_unified": 0.5957,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "TFT_v9_30m": {
+        "mae": 3.8867,
+        "rmse": null,
+        "mase_unified": 0.5329,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "TFT_v9_expert_30m": {
+        "mae": 4.6174,
+        "rmse": null,
+        "mase_unified": 0.6331,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "VotingEnsemble_v9_30m": {
+        "mae": 4.0062,
+        "rmse": null,
+        "mase_unified": 0.5493,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "Persistence_30m": {
+        "mae": 5.232,
+        "rmse": null,
+        "mase_unified": 0.7173,
+        "r2": null,
+        "n_samples": 652,
+        "freq": "30m",
+        "source": "v9_final"
+      },
+      "ARIMA_1h": {
+        "mae": 5.1179,
+        "rmse": null,
+        "mase_unified": 0.7887,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "Ensemble_Weighted_1h": {
+        "mae": 4.879,
+        "rmse": null,
+        "mase_unified": 0.7519,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "GRU_v2_log_1h": {
+        "mae": 5.0264,
+        "rmse": null,
+        "mase_unified": 0.7746,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "GradientBoosting_1h": {
+        "mae": 4.9193,
+        "rmse": null,
+        "mase_unified": 0.7581,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "LSTM_v2_log_1h": {
+        "mae": 4.8487,
+        "rmse": null,
+        "mase_unified": 0.7472,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "LightGBM_tuned_1h": {
+        "mae": 4.985,
+        "rmse": null,
+        "mase_unified": 0.7682,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "RandomForest_1h": {
+        "mae": 4.9604,
+        "rmse": null,
+        "mase_unified": 0.7645,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "SARIMA_1h": {
+        "mae": 5.5756,
+        "rmse": null,
+        "mase_unified": 0.8593,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "Stacking_1h": {
+        "mae": 5.3883,
+        "rmse": null,
+        "mase_unified": 0.8304,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "TFT_1h": {
+        "mae": NaN,
+        "rmse": null,
+        "mase_unified": NaN,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
+      },
+      "Persistence_1h": {
+        "mae": 6.3273,
+        "rmse": null,
+        "mase_unified": 0.9751,
+        "r2": null,
+        "n_samples": 586,
+        "freq": "1h",
+        "source": "v9_final"
       }
     }
   }

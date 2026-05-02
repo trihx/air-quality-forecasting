@@ -1,0 +1,134 @@
+======================================================================
+v9 DATA REBUILD — High-Resolution Segmented Pipeline
+Timestamp: 20260502_083826
+======================================================================
+
+======================================================================
+  BUILDING 30min PIPELINE (min_segment=48 steps)
+======================================================================
+[1/5] Loading + Cleaning...
+2026-05-02 08:38:27.282 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-05-02 08:38:27.282 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-05-02 08:38:27.393 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:38:27.408 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:38:27.409 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-05-02 08:38:27.424 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-05-02 08:38:27.427 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:38:27.429 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-05-02 08:38:27.433 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-05-02 08:38:27.439 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-05-02 08:38:27.442 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-05-02 08:38:27.442 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-05-02 08:38:27.442 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 08:38:27.452 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 55,296 rows (freq=30min)
+  After resample (30min): (55296, 5)
+[2/5] Imputing (hybrid, KNN past-only)...
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 55,296 rows, 41,052 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤12h
+    [D-Hybrid]   After Spline: 40,896 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 48 medium gaps (1227h)
+      [KNN]   Gap at 2-32: skipped (only 2 past donors, need 5)
+      [KNN] Filled 1196 values via KNN (past-only, 1 gaps skipped)
+    [D-Hybrid] Phase 3: Dropping 39,700 rows with gaps >48h
+  [Imputer] Output: 14,950 rows (13,824 real + 1,126 imputed)
+  [Imputer] Dropped 39,700 rows with unfillable gaps
+  [Imputer] Imputed ratio: 7.5%
+2026-05-02 08:38:28.226 | INFO     | src.data.imputer:impute_missing_data:110 - Imputation [hybrid]: 14,950 rows (13,824 real + 1,126 imputed, 39,700 dropped)
+  Imputed: {'total': 14950, 'real': 13824, 'imputed': 1126, 'imputed_pct': 7.5}
+[3/5] Segmenting by time gaps...
+  Dropped 54 short segments (1265 rows)
+  Segments: {'n_segments': 36, 'total_rows': 13685, 'min_length': 50, 'max_length': 4003, 'mean_length': 380.1, 'median_length': 136.5, 'p25_length': 135.8, 'p75_length': 306.5}
+2026-05-02 08:38:28.236 | INFO     | src.data.segmenter:validate_segment_boundaries:177 - [Segmenter] ✅ All 36 segments validated (no gap > 0.75h)
+[4/5] Building features (segment-aware)...
+2026-05-02 08:38:28.236 | INFO     | src.features.builder:build_features:67 - ============================================================
+2026-05-02 08:38:28.236 | INFO     | src.features.builder:build_features:69 - Feature Engineering Pipeline Started (mode=segment-aware (segment_id))
+2026-05-02 08:38:28.236 | INFO     | src.features.builder:build_features:70 - ============================================================
+2026-05-02 08:38:28.245 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-05-02 08:38:28.249 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:38:28.262 | INFO     | src.features.temporal:create_lag_features:149 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=segment-aware (segment_id))
+2026-05-02 08:38:28.372 | INFO     | src.features.temporal:create_rolling_features:200 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=segment-aware (segment_id))
+2026-05-02 08:38:28.399 | INFO     | src.features.temporal:create_ewm_features:237 - Created 6 EWM features (spans=[12, 24, 48], mode=segment-aware (segment_id))
+2026-05-02 08:38:28.407 | INFO     | src.features.temporal:create_diff_features:283 - Created 4 diff/pct_change features (shift(1) anti-leakage, mode=segment-aware (segment_id))
+2026-05-02 08:38:28.413 | INFO     | src.features.builder:_create_domain_features:196 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:38:28.417 | INFO     | src.features.builder:build_features:114 - Dropped 5060 warmup rows with NaN
+2026-05-02 08:38:28.417 | INFO     | src.features.builder:build_features:119 - ============================================================
+2026-05-02 08:38:28.417 | INFO     | src.features.builder:build_features:120 - Feature Engineering Complete: 6 → 120 columns, 13,685 → 8,625 rows
+2026-05-02 08:38:28.417 | INFO     | src.features.builder:build_features:123 - ============================================================
+  Features: (8625, 121)
+[5/5] Saving...
+  Saved to: /Users/trihx/Desktop/time-series-forecasting/dataset/processed/marts_features_30m.csv
+
+  ✅ 30min pipeline complete in 2s
+     Shape: [8625, 121], Segments: 36
+
+======================================================================
+  BUILDING 15min PIPELINE (min_segment=96 steps)
+======================================================================
+[1/5] Loading + Cleaning...
+2026-05-02 08:38:28.963 | DEBUG    | src.utils.path_validator:validate_path:33 - Path validated: /Users/trihx/Desktop/time-series-forecasting/dataset/raw/final_dataset.csv
+2026-05-02 08:38:28.963 | INFO     | src.data.loader:load_raw_data:46 - Loading data from final_dataset.csv
+2026-05-02 08:38:29.078 | WARNING  | src.data.loader:load_raw_data:60 - Dropped 3 rows with missing datetime (NaT)
+2026-05-02 08:38:29.093 | INFO     | src.data.loader:load_raw_data:67 - Loaded: 209,591 rows, 6 cols | Date range: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:38:29.093 | DEBUG    | src.data.loader:load_raw_data:71 - Memory: 10.1 MB | Dtypes: {'nhiet_do': dtype('float64'), 'do_am': dtype('float64'), 'diem_suong': dtype('float64'), 'co2': dtype('float64'), 'pm25': dtype('float64'), 'ngay_tao': dtype('<M8[us]')}
+2026-05-02 08:38:29.109 | INFO     | src.data.cleaner:_remove_duplicates:104 - [1/7] No exact duplicates found
+2026-05-02 08:38:29.112 | INFO     | src.data.cleaner:_set_datetime_index:119 - [2/7] Datetime index set: 2022-03-16 15:51:31 → 2025-05-11 15:02:32
+2026-05-02 08:38:29.114 | INFO     | src.data.cleaner:_clip_physical_bounds:140 - [3/7] All values within physical bounds
+2026-05-02 08:38:29.117 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   nhiet_do: 2 outliers → NaN (range: [15.0, 43.0])
+2026-05-02 08:38:29.123 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   diem_suong: 13989 outliers → NaN (range: [22.0, 29.0])
+2026-05-02 08:38:29.126 | DEBUG    | src.data.cleaner:_handle_outliers:204 -   co2: 7437 outliers → NaN (range: [-616.0, 1386.0])
+2026-05-02 08:38:29.126 | DEBUG    | src.data.cleaner:_handle_outliers:185 -   pm25: using DOMAIN bounds [0.0, 500.0] (fat-tailed, WHO AQI)
+2026-05-02 08:38:29.126 | INFO     | src.data.cleaner:_handle_outliers:208 - [4/7] Replaced 21428 outliers with NaN (method=iqr, threshold=3.0, PM2.5=domain)
+2026-05-02 08:38:29.137 | INFO     | src.data.cleaner:_resample:221 - [5/7] Resampled: 209,591 → 110,590 rows (freq=15min)
+  After resample (15min): (110590, 5)
+[2/5] Imputing (hybrid, KNN past-only)...
+  [Imputer] Strategy: hybrid
+  [Imputer] Input: 110,590 rows, 82,248 missing PM2.5
+    [D-Hybrid] Phase 1: Cubic Spline for gaps ≤24h
+    [D-Hybrid]   After Spline: 81,952 NaN remaining
+    [D-Hybrid] Phase 2: KNN for 50 medium gaps (2551h)
+      [KNN]   Gap at 2-65: skipped (only 2 past donors, need 5)
+      [KNN] Filled 2487 values via KNN (past-only, 1 gaps skipped)
+    [D-Hybrid] Phase 3: Dropping 79,465 rows with gaps >96h
+  [Imputer] Output: 28,255 rows (26,913 real + 1,342 imputed)
+  [Imputer] Dropped 79,465 rows with unfillable gaps
+  [Imputer] Imputed ratio: 4.7%
+2026-05-02 08:38:30.701 | INFO     | src.data.imputer:impute_missing_data:110 - Imputation [hybrid]: 28,255 rows (26,913 real + 1,342 imputed, 79,465 dropped)
+  Imputed: {'total': 28255, 'real': 26913, 'imputed': 1342, 'imputed_pct': 4.7}
+[3/5] Segmenting by time gaps...
+  Dropped 91 short segments (4377 rows)
+  Segments: {'n_segments': 34, 'total_rows': 23878, 'min_length': 104, 'max_length': 6662, 'mean_length': 702.3, 'median_length': 270.0, 'p25_length': 269.0, 'p75_length': 634.2}
+2026-05-02 08:38:30.709 | INFO     | src.data.segmenter:validate_segment_boundaries:177 - [Segmenter] ✅ All 34 segments validated (no gap > 0.375h)
+[4/5] Building features (segment-aware)...
+2026-05-02 08:38:30.709 | INFO     | src.features.builder:build_features:67 - ============================================================
+2026-05-02 08:38:30.710 | INFO     | src.features.builder:build_features:69 - Feature Engineering Pipeline Started (mode=segment-aware (segment_id))
+2026-05-02 08:38:30.710 | INFO     | src.features.builder:build_features:70 - ============================================================
+2026-05-02 08:38:30.722 | INFO     | src.features.calendar:create_calendar_features:51 - Created 13 calendar features
+2026-05-02 08:38:30.728 | INFO     | src.features.fourier:create_fourier_features:63 - Created 12 Fourier features (order=3, daily=True, weekly=True)
+2026-05-02 08:38:30.746 | INFO     | src.features.temporal:create_lag_features:149 - Created 40 lag features (lags=[1, 2, 3, 6, 12, 24, 48, 168], mode=segment-aware (segment_id))
+2026-05-02 08:38:30.854 | INFO     | src.features.temporal:create_rolling_features:200 - Created 30 rolling features (windows=[3, 6, 12, 24, 48, 168], funcs=['mean', 'std', 'min', 'max', 'range'], mode=segment-aware (segment_id))
+2026-05-02 08:38:30.881 | INFO     | src.features.temporal:create_ewm_features:237 - Created 6 EWM features (spans=[12, 24, 48], mode=segment-aware (segment_id))
+2026-05-02 08:38:30.892 | INFO     | src.features.temporal:create_diff_features:283 - Created 4 diff/pct_change features (shift(1) anti-leakage, mode=segment-aware (segment_id))
+2026-05-02 08:38:30.906 | INFO     | src.features.builder:_create_domain_features:196 - Created domain + interaction features (anti-leakage: using pm25_lag_1h)
+2026-05-02 08:38:30.913 | INFO     | src.features.builder:build_features:114 - Dropped 5523 warmup rows with NaN
+2026-05-02 08:38:30.913 | INFO     | src.features.builder:build_features:119 - ============================================================
+2026-05-02 08:38:30.913 | INFO     | src.features.builder:build_features:120 - Feature Engineering Complete: 6 → 120 columns, 23,878 → 18,355 rows
+2026-05-02 08:38:30.913 | INFO     | src.features.builder:build_features:123 - ============================================================
+  Features: (18355, 121)
+[5/5] Saving...
+  Saved to: /Users/trihx/Desktop/time-series-forecasting/dataset/processed/marts_features_15m.csv
+
+  ✅ 15min pipeline complete in 3s
+     Shape: [18355, 121], Segments: 34
+
+======================================================================
+FINAL COMPARISON
+======================================================================
+Pipeline         Rows   Cols   PM2.5 Mean   Segments
+1h_v8           7,575    120      13.8076        N/A
+30min           8,625    121      14.4081         36
+15min          18,355    121      14.0548         34
+
+✅ Total elapsed: 5s
+   Report: /Users/trihx/Desktop/time-series-forecasting/research/experiments/v9_final/data_rebuild_20260502_083826.json
+======================================================================

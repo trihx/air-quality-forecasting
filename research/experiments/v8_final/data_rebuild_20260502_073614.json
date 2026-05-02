@@ -1,0 +1,34 @@
+{
+  "timestamp": "20260502_073614",
+  "description": "v8 data rebuild with KNN past-only fix",
+  "old_data": {
+    "shape": [
+      6689,
+      119
+    ],
+    "pm25_mean": 12.8856,
+    "pm25_std": 9.1778,
+    "pm25_median": 10.0939
+  },
+  "new_data": {
+    "shape": [
+      7575,
+      120
+    ],
+    "pm25_mean": 13.8076,
+    "pm25_std": 10.1839,
+    "pm25_median": 10.9655,
+    "imputation": {
+      "total": 7743,
+      "real": 7112,
+      "imputed": 631,
+      "imputed_pct": 8.1
+    }
+  },
+  "changes": {
+    "rows_delta": 886,
+    "cols_delta": 1,
+    "pm25_mean_delta": 0.922,
+    "pm25_std_delta": 1.0061
+  }
+}

@@ -1,0 +1,66 @@
+======================================================================
+v9 ARIMA RETRAIN — Segment-Aware
+Timestamp: 20260502_084511
+======================================================================
+
+======================================================================
+[STAT] ARIMA(2,1,1) - 30m Dataset
+======================================================================
+
+  ── Horizon 1h (2 steps) ──
+2026-05-02 08:45:12.204 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   ARIMA(2,1,1)_v9 (h=1): MAE=7.5538, RMSE=9.5253, MASE=2.4788 ❌
+2026-05-02 08:45:12.204 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0225 AUC=0.736 (n=19)
+2026-05-02 08:45:12.204 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0083 AUC=0.722 (n=7)
+2026-05-02 08:45:12.204 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Training ARIMA on largest train segment: 2 (3835 rows)
+    ARIMA_v9: MAE=7.5538, MASE=2.4788 (0.3s)
+
+  ── Horizon 6h (12 steps) ──
+2026-05-02 08:45:12.434 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   ARIMA(2,1,1)_v9 (h=6): MAE=7.5207, RMSE=9.5831, MASE=1.329 ❌
+2026-05-02 08:45:12.434 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0226 AUC=0.444 (n=19)
+2026-05-02 08:45:12.435 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0083 AUC=0.522 (n=7)
+2026-05-02 08:45:12.435 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Training ARIMA on largest train segment: 2 (3835 rows)
+    ARIMA_v9: MAE=7.5207, MASE=1.329 (0.2s)
+
+  ── Horizon 24h (48 steps) ──
+2026-05-02 08:45:12.659 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   ARIMA(2,1,1)_v9 (h=24): MAE=7.174, RMSE=8.8045, MASE=1.5952 ❌
+2026-05-02 08:45:12.659 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0088 AUC=0.692 (n=7)
+2026-05-02 08:45:12.659 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0025 AUC=0.765 (n=2)
+2026-05-02 08:45:12.659 | WARNING  | src.evaluation.metrics:classification_metrics:236 - No samples exceed threshold 50.0 µg/m³
+    Training ARIMA on largest train segment: 2 (3835 rows)
+    ARIMA_v9: MAE=7.174, MASE=1.5952 (0.2s)
+
+[v9] ✅ ARIMA (30m) saved.
+
+======================================================================
+[STAT] ARIMA(2,1,1) - 15m Dataset
+======================================================================
+
+  ── Horizon 1h (4 steps) ──
+2026-05-02 08:45:13.116 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   ARIMA(2,1,1)_v9 (h=1): MAE=4.7708, RMSE=6.8297, MASE=1.7975 ❌
+2026-05-02 08:45:13.116 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0115 AUC=0.682 (n=21)
+2026-05-02 08:45:13.116 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0033 AUC=0.893 (n=6)
+2026-05-02 08:45:13.116 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0005 AUC=0.969 (n=1)
+    Training ARIMA on largest train segment: 3 (6494 rows)
+    ARIMA_v9: MAE=4.7708, MASE=1.7975 (0.2s)
+
+  ── Horizon 6h (24 steps) ──
+2026-05-02 08:45:13.372 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   ARIMA(2,1,1)_v9 (h=6): MAE=4.7424, RMSE=6.9006, MASE=1.0142 ❌
+2026-05-02 08:45:13.373 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0113 AUC=0.457 (n=20)
+2026-05-02 08:45:13.373 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0028 AUC=0.598 (n=5)
+2026-05-02 08:45:13.373 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0011 AUC=0.844 (n=2)
+    Training ARIMA on largest train segment: 3 (6494 rows)
+    ARIMA_v9: MAE=4.7424, MASE=1.0142 (0.2s)
+
+  ── Horizon 24h (96 steps) ──
+2026-05-02 08:45:13.616 | INFO     | src.evaluation.metrics:evaluate_forecast:198 -   ARIMA(2,1,1)_v9 (h=24): MAE=7.5464, RMSE=9.6241, MASE=1.7981 ❌
+2026-05-02 08:45:13.616 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 25.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0229 AUC=0.768 (n=36)
+2026-05-02 08:45:13.617 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 35.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0045 AUC=0.764 (n=7)
+2026-05-02 08:45:13.617 | INFO     | src.evaluation.metrics:evaluate_forecast_full:362 -     ARIMA(2,1,1)_v9 @ 50.0µg/m³: P=0.000 R=0.000 F1=0.000 Brier=0.0013 AUC=0.731 (n=2)
+    Training ARIMA on largest train segment: 3 (6494 rows)
+    ARIMA_v9: MAE=7.5464, MASE=1.7981 (0.2s)
+
+[v9] ✅ ARIMA (15m) saved.
+
+✅ Total ARIMA time: 1.8s

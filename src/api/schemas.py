@@ -207,6 +207,30 @@ class AuditReportResponse(BaseModel):
     computed_at: str
 
 
+class VerifyItemResponse(BaseModel):
+    """Single file integrity check result."""
+
+    file_path: str
+    file_type: str  # "model" or "data"
+    expected_md5: str
+    current_md5: str
+    status: str  # "MATCH" or "MISMATCH" or "MISSING"
+    file_size_bytes: int | None = None
+
+
+class VerifyResponse(BaseModel):
+    """Full integrity verification report."""
+
+    version: str
+    files: list[VerifyItemResponse]
+    total_files: int
+    passed: int
+    failed: int
+    missing: int
+    pass_rate: str
+    verified_at: str
+
+
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # General
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
