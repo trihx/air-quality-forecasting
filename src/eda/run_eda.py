@@ -62,7 +62,7 @@ def main() -> None:
             return float(obj)  # type: ignore[arg-type]
         return str(obj)
 
-    with open(results_path, "w") as f:
+    with open(results_path, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2, default=_serialize)
     logger.info(f"📊 EDA results saved to {results_path}")
 

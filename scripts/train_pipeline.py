@@ -111,7 +111,7 @@ def step_standardize_metrics() -> bool:
     if std_metrics.exists():
         _log(f"Standardized metrics exist: {std_metrics}")
         # Load and print summary
-        with open(std_metrics) as f:
+        with open(std_metrics, encoding="utf-8") as f:
             data = json.load(f)
         results = data.get("results", {})
         for h_key in ["1h", "6h", "24h"]:

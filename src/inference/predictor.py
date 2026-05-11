@@ -50,7 +50,7 @@ class GRUPredictor:
         self.model.eval()
 
         # Load scalers
-        with open(self.scaler_path) as f:
+        with open(self.scaler_path, encoding="utf-8") as f:
             sc = json.load(f)
         self.feat_mean = np.array(sc["feature_scaler_mean"])
         self.feat_scale = np.array(sc["feature_scaler_scale"])
@@ -150,7 +150,7 @@ class GRUQuantilePredictor:
         self.model.eval()
 
         # Load scalers + CQR config
-        with open(self.config_path) as f:
+        with open(self.config_path, encoding="utf-8") as f:
             cfg = json.load(f)
         self.feat_mean = np.array(cfg["feature_scaler_mean"])
         self.feat_scale = np.array(cfg["feature_scaler_scale"])
@@ -237,7 +237,7 @@ class LightGBMPredictor:
 
         # Load feature names
         if self.features_path.exists():
-            with open(self.features_path) as f:
+            with open(self.features_path, encoding="utf-8") as f:
                 info = json.load(f)
             self.feature_names = info["features"]
         else:

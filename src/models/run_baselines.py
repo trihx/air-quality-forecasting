@@ -92,7 +92,7 @@ def main() -> None:
 
     # JSON (for programmatic access)
     json_path = output_dir / "latest_results.json"
-    with open(json_path, "w") as f:
+    with open(json_path, "w", encoding="utf-8") as f:
         json.dump(
             {
                 "timestamp": timestamp,

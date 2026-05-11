@@ -1,6 +1,6 @@
 import json
 
-with open('research/experiments/dashboard_runs/v7_cqr_20260428.json') as f:
+with open('research/experiments/dashboard_runs/v7_cqr_20260428.json', encoding="utf-8") as f:
     data = json.load(f)
 
 for h in ['1h', '6h', '24h']:

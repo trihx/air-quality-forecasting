@@ -1,0 +1,16 @@
+{
+  "timestamp": "20260508_095332",
+  "description": "v10 Ablation: IQR-truncated PM2.5 (mô phỏng lỗi cũ)",
+  "outlier_method": "IQR×3 for ALL columns including PM2.5",
+  "freq": "30m",
+  "shape": [
+    8625,
+    121
+  ],
+  "pm25_max": 60.7315,
+  "pm25_mean": 14.0562,
+  "pm25_gt_54": 4,
+  "v9_pm25_max": 112.4,
+  "v9_pm25_gt_54": 70,
+  "elapsed_s": 4.4
+}

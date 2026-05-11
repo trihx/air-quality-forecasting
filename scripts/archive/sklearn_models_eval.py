@@ -360,7 +360,7 @@ def _save_results(all_results: dict) -> None:
             return obj.tolist()
         return obj
 
-    with open(json_path, "w") as f:
+    with open(json_path, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2, default=_convert, ensure_ascii=False)
     print(f"\n  Results saved: {json_path}", flush=True)
 

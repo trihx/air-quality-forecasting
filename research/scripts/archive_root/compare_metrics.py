@@ -1,16 +1,16 @@
 import json
 
-with open("research/experiments/dashboard_runs/v7_cqr_20260428.json", "r") as f:
+with open("research/experiments/dashboard_runs/v7_cqr_20260428.json", "r", encoding="utf-8") as f:
     old_data = json.load(f)
 
 old_results = old_data.get("data", {}).get("results", {})
 
 # Load new data
-with open("research/experiments/v7_retrain/sklearn_20260428_161819.json", "r") as f:
+with open("research/experiments/v7_retrain/sklearn_20260428_161819.json", "r", encoding="utf-8") as f:
     ml_data = json.load(f)
-with open("research/experiments/v7_retrain/dl_20260428_161819.json", "r") as f:
+with open("research/experiments/v7_retrain/dl_20260428_161819.json", "r", encoding="utf-8") as f:
     dl_data = json.load(f)
-with open("research/experiments/ensemble/ensemble_20260428_170601.json", "r") as f:
+with open("research/experiments/ensemble/ensemble_20260428_170601.json", "r", encoding="utf-8") as f:
     ensemble_data = json.load(f)
 
 models_to_check = ["Persistence", "LightGBM_tuned", "RandomForest", "GradientBoosting", "LSTM", "GRU", "Ensemble_Stack"]

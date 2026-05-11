@@ -50,7 +50,7 @@ def run_quantile_inference(df: pd.DataFrame, horizon: int) -> tuple[np.ndarray, 
     model_path = EXPORT_DIR / f"gru_quantile_{horizon}h.pt"
     config_path = EXPORT_DIR / f"gru_quantile_{horizon}h_config.json"
 
-    with open(config_path) as f:
+    with open(config_path, encoding="utf-8") as f:
         cfg = json.load(f)
 
     feat_mean = np.array(cfg["feature_scaler_mean"])
@@ -121,7 +121,7 @@ def main():
 
         # CQR (static) — use conformal_adjustment from config
         config_path = EXPORT_DIR / f"gru_quantile_{horizon}h_config.json"
-        with open(config_path) as f:
+        with open(config_path, encoding="utf-8") as f:
             cfg = json.load(f)
         cqr_adj = cfg.get("conformal_adjustment", 0.0)
 
@@ -171,7 +171,7 @@ def main():
 
     # Save results
     out_path = OUTPUT_DIR / "aci_results.json"
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(all_results, f, indent=2)
     print(f"\n  ✅ Saved: {out_path}", flush=True)
 

@@ -121,9 +121,9 @@ class APIClient:
             path += f"?page={page}"
         return self._get(path)
 
-    def get_info_card(self, card_key: str) -> dict:
-        """Get a single info card by key."""
-        return self._get(f"/api/v1/content/info-cards/{card_key}")
+    def get_info_card(self, card_key: str, quiet: bool = False) -> dict:
+        \"\"\"Get a single info card by key.\"\"\"
+        return self._get(f"/api/v1/content/info-cards/{card_key}", quiet=quiet)
 
     def update_info_card(self, card_key: str, title: str | None = None, content: str | None = None) -> dict:
         """Update an info card's title and/or content."""
@@ -136,18 +136,20 @@ class APIClient:
 
     # ── Internal ──
 
-    def _get(self, path: str) -> Any:
-        """HTTP GET request."""
+    def _get(self, path: str, quiet: bool = False) -> Any:
+        \"\"\"HTTP GET request.\"\"\"
         url = f"{self.base_url}{path}"
         try:
             resp = self.session.get(url, timeout=30)
             resp.raise_for_status()
             return resp.json()
         except requests.ConnectionError:
-            logger.error(f"API connection failed: {url}")
+            if not quiet:
+                logger.error(f"API connection failed: {url}")
             return {"error": "API server not available"}
         except requests.HTTPError as e:
-            logger.error(f"API error: {e}")
+            if not quiet:
+                logger.error(f"API error: {e}")
             return {"error": str(e)}
 
     def _post(self, path: str, json: dict | None = None) -> Any:

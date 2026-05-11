@@ -38,7 +38,15 @@ EXPORT_DIR = PROJECT_ROOT / "models" / "exported"
 CACHE_DIR = PROJECT_ROOT / "research" / "cache"
 
 # VTF: Reuse design tokens from centralized theme
-from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC, get_plotly_template, get_theme, apply_plotly_style
+from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC, get_theme
+from src.viz.chart_factory import (
+    chart as _chart,
+    render_chart as _render_chart,
+    figure_caption as _caption,
+    styled_bar,
+    add_baseline,
+    add_simple_bar_labels,
+)
 
 COLORS = {
     "primary": PALETTE_SEMANTIC["primary"],
@@ -46,7 +54,7 @@ COLORS = {
     "warning": PALETTE_SEMANTIC["warning"],
     "card_bg": "var(--secondary-background-color)",
     "text": "#FAFAFA",
-    "text_muted": "#8B95A5",
+    "text_muted": "#71717A",
 }
 
 CHART_COLORS = PALETTE_CATEGORICAL
@@ -163,7 +171,7 @@ def _load_model_rankings() -> dict:
     path = RESEARCH_DIR / "experiments" / "standardized_metrics.json"
     if not path.exists():
         return {}
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         data = json.load(f)
     rankings = {}
     for h_str, models_data in data.get("results", {}).items():
@@ -278,7 +286,7 @@ def _load_all_rankings() -> dict:
     path = RESEARCH_DIR / "experiments" / "standardized_metrics.json"
     if not path.exists():
         return {}
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         data = json.load(f)
     rankings = {}
     for h_str, models_data in data.get("results", {}).items():
@@ -566,7 +574,7 @@ def _get_eval_metrics(model: str, horizon: int) -> dict:
         json_files = list(dir_path.glob("prediction_intervals_*.json"))
         if json_files:
             latest_file = max(json_files, key=lambda p: p.stat().st_mtime)
-            with open(latest_file) as f:
+            with open(latest_file, encoding="utf-8") as f:
                 data = json.load(f)
 
             best_match = None
@@ -588,7 +596,7 @@ def _get_eval_metrics(model: str, horizon: int) -> dict:
     # ── Source 2: standardized_metrics.json (accurate MAE per model+horizon) ──
     std_path = RESEARCH_DIR / "experiments" / "standardized_metrics.json"
     if std_path.exists():
-        with open(std_path) as f:
+        with open(std_path, encoding="utf-8") as f:
             std_data = json.load(f)
         h_results = std_data.get("results", {}).get(f"{horizon}h", {})
         # Try exact match, then partial match (e.g. "GRU" matches "GRU")
@@ -852,10 +860,11 @@ def _show_forecast_result(result: dict, recent_data: pd.DataFrame):
         </div>
         <div style="font-size: 3.5rem; font-weight: 700;
                     font-family: 'JetBrains Mono', monospace;
-                    color: {level_color}; margin: 0.5rem 0;">
+                    color: {level_color}; margin: 0.5rem 0;
+                    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
             {pred:.1f} <span style="font-size: 1.2rem;">µg/m³</span>
         </div>
-        <div style="font-size: 1rem; color: {level_color}; font-weight: 600; margin-bottom: 0.5rem;">
+        <div style="font-size: 1rem; color: {level_color}; font-weight: 600; margin-bottom: 0.5rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
             {level_label}
         </div>
         <div style="font-size: 0.85rem; color: var(--text-color); opacity: 0.7; border-top: 1px solid rgba(128,128,128,0.2); padding-top: 0.5rem; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 0.5rem;">
@@ -898,7 +907,11 @@ def _show_forecast_result(result: dict, recent_data: pd.DataFrame):
 
     # ── Chart: History + Prediction point with PI band ──
     if "pm25" in recent_data.columns and len(recent_data) > 10:
-        fig = go.Figure()
+        fig = _chart(
+            xaxis_title="Thời gian (giờ)",
+            yaxis_title="PM2.5 (µg/m³)",
+            height=380,
+        )
         history = recent_data["pm25"].tail(72)
         fig.add_trace(go.Scatter(
             x=list(range(len(history))),
@@ -936,12 +949,8 @@ def _show_forecast_result(result: dict, recent_data: pd.DataFrame):
             marker=dict(size=16, color=level_color, symbol="star",
                         line=dict(width=2, color="white")),
         ))
-        fig.update_layout(
-            xaxis_title="Thời gian (giờ)", yaxis_title="PM2.5 (µg/m³)",
-            title=f"72h Lịch Sử + Dự Báo {result['horizon']}h",
-        )
-        fig = apply_plotly_style(fig, height=380)
-        st.plotly_chart(fig, use_container_width=True)
+        _render_chart(fig, filename="forecast_history")
+        _caption(f"Lịch sử 72 giờ và dự báo PM2.5 tại horizon {result['horizon']}h")
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -959,7 +968,7 @@ def _load_avp_cache(horizon: int) -> dict | None:
     """
     cache_file = CACHE_DIR / f"avp_{horizon}h.json"
     if cache_file.exists():
-        with open(cache_file) as f:
+        with open(cache_file, encoding="utf-8") as f:
             return json.load(f)
     return None
 
@@ -1002,13 +1011,11 @@ def page_actual_vs_predicted(results):
 def _render_avp_chart(data: dict, horizon: int, ver: str):
     """Render the Actual vs Predicted chart from cached data.
 
-    Dynamic Top-3: Reads top models from snapshot ranking and maps them
-    to available prediction arrays in cache. Users can override via multiselect.
+    Resolution-First Design: User selects a resolution (15m/30m/1h),
+    then only models trained at that resolution are shown.
+    Actuals and Persistence are always matched to the selected resolution.
     """
-    test_actuals = np.array(data["actuals"])
-    test_persist = np.array(data["persistence"])
-
-    # ── Discover available models from cache ──
+    # ── Load all model predictions from cache ──
     model_preds = data.get("model_preds", {})
     # Backward compat: old cache format without model_preds
     if not model_preds:
@@ -1017,84 +1024,116 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
         if data.get("lgbm_preds"):
             model_preds["LightGBM"] = data["lgbm_preds"]
 
-    available_models = list(model_preds.keys())
-
-    # ── Hybrid Top-3: snapshot ranking + cache availability ──
     from src.info_cards import get_version_data
     from src.snapshot_adapter import TOP_N, HORIZONS
     v_data = get_version_data(ver)
     h_key = f"{horizon}h"
 
-    # Step 1: Get snapshot top_n for this horizon
+    # ── Determine smart default resolution ──
+    # Pick the resolution that contains the best model for this horizon
     top_models_info = v_data.get("top_n", {}).get(h_key, [])
-    snapshot_top_names = [m["model"] for m in top_models_info]
+    best_model_name = top_models_info[0]["model"] if top_models_info else ""
+    if best_model_name.endswith("_15m"):
+        default_res_idx = 0  # 15m
+    elif best_model_name.endswith("_30m"):
+        default_res_idx = 1  # 30m
+    else:
+        default_res_idx = 2  # 1h
 
-    # Step 2: Build cache MAE ranking as fallback
-    cache_metrics = data.get("metrics", [])
-    cache_mae = {}
-    for m in cache_metrics:
-        name = m.get("Mô hình", "")
-        if name == "Persistence" or name not in available_models:
-            continue
-        try:
-            cache_mae[name] = float(m.get("MAE", 999))
-        except (ValueError, TypeError):
-            cache_mae[name] = 999
-    cache_ranked = sorted(cache_mae.keys(), key=lambda n: cache_mae[n])
+    # ── Resolution selector ──
+    res_options = ["15m", "30m", "1h"]
+    # Build labels with best model hint
+    res_labels = []
+    for res in res_options:
+        suffix = f"_{res}"
+        res_models = [k for k in model_preds if k.endswith(suffix) and not k.startswith("Persistence_")]
+        n_models = len(res_models)
+        # Check if any top model belongs to this resolution
+        is_best = any(m["model"].endswith(suffix) for m in top_models_info[:1])
+        label = f"{res} ({n_models} models)"
+        if is_best:
+            label += " ⭐ Best"
+        res_labels.append(label)
 
-    # Step 3: Hybrid selection — snapshot top_n ∩ cache first, then fill
-    default_selection = []
-    # Priority: models that are BOTH in snapshot top_n AND available in cache
-    for name in snapshot_top_names:
-        if name in available_models and name not in default_selection:
-            default_selection.append(name)
-        if len(default_selection) >= TOP_N:
-            break
-    # Fill remaining with best cache-ranked models
-    for name in cache_ranked:
-        if name not in default_selection:
-            default_selection.append(name)
-        if len(default_selection) >= TOP_N:
-            break
-    # Final fallback
-    if not default_selection:
-        default_selection = available_models[:TOP_N]
-
-    # Models in snapshot top_n that don't have prediction data
-    unavailable_top = [m["model"] for m in top_models_info if m["model"] not in available_models]
-
-    # ── Model selection widget ──
-    selected_models = st.multiselect(
-        "🎯 Chọn mô hình hiển thị trên biểu đồ",
-        options=available_models,
-        default=default_selection,
-        help=f"Mặc định: Top {TOP_N} mô hình tốt nhất cho horizon {horizon}h "
-             f"(ưu tiên từ snapshot ranking, bổ sung từ cache MAE).",
+    selected_res = st.radio(
+        "📐 Độ phân giải dữ liệu",
+        res_options,
+        index=default_res_idx,
+        format_func=lambda x: res_labels[res_options.index(x)],
+        horizontal=True,
+        help="Mỗi độ phân giải có tập Test riêng (số lượng điểm và khoảng thời gian khác nhau). "
+             "Chọn resolution để xem mô hình được train tại tần suất đó.",
     )
 
+    # ── Filter models by selected resolution ──
+    res_suffix = f"_{selected_res}"
+    filtered_models = [
+        k for k in model_preds
+        if k.endswith(res_suffix) and not k.startswith("Persistence_")
+    ]
+
+    # ── Load resolution-matched actuals and persistence ──
+    actuals_multi = data.get("actuals_multi", {})
+    if selected_res in actuals_multi and actuals_multi[selected_res]:
+        test_actuals = np.array(actuals_multi[selected_res])
+    else:
+        test_actuals = np.array(data.get("actuals", []))
+
+    persist_key = f"Persistence_{selected_res}"
+    if persist_key in model_preds:
+        test_persist = np.array(model_preds[persist_key])
+    else:
+        test_persist = np.array(data.get("persistence", []))
+
+    # ── Smart default model selection ──
+    snapshot_top_names = [m["model"] for m in top_models_info]
+    default_selection = [m for m in snapshot_top_names if m in filtered_models]
+    # Fill with remaining models in this resolution
+    for m in filtered_models:
+        if m not in default_selection:
+            default_selection.append(m)
+        if len(default_selection) >= TOP_N:
+            break
+
+    # ── Model selection widget ──
+    if filtered_models:
+        selected_models = st.multiselect(
+            "🎯 Chọn mô hình hiển thị trên biểu đồ",
+            options=filtered_models,
+            default=default_selection[:TOP_N],
+            help=f"Hiển thị các mô hình được train trên dữ liệu {selected_res}. "
+                 f"Mặc định: Top models theo MASE.",
+        )
+    else:
+        selected_models = []
+        st.info(f"ℹ️ Chưa có mô hình nào được train trên dữ liệu {selected_res} cho horizon {horizon}h.")
+
     # ── KPI Summary ──
-    n_test = data.get("n_test", len(test_actuals))
-    n_models_available = len(available_models)
-    n_models_total = len(v_data.get("results", {}).get(h_key, {}))
+    n_test = len(test_actuals)
     st.markdown(f"""
     <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
                 border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
                 padding: 1rem 1.5rem; margin: 1rem 0;">
         <span style="opacity: 0.65; font-size: 0.85rem;">
-            📊 Test samples: <b style="color:#00D4AA">{n_test}</b> (real data only) |
+            📊 Test samples: <b style="color:#00D4AA">{n_test}</b> (real data only, {selected_res}) |
             Horizon: <b style="color:#00D4AA">{horizon}h</b> |
-            Trực quan hóa: <b style="color:#00D4AA">{len(selected_models)}/{n_models_available}</b> mô hình
+            Trực quan hóa: <b style="color:#00D4AA">{len(selected_models)}/{len(filtered_models)}</b> mô hình
         </span>
     </div>
     """, unsafe_allow_html=True)
 
-    fig = go.Figure()
+    # ── Build Plotly chart ──
+    fig = _chart(
+        xaxis_title="Test Sample Index",
+        yaxis_title="PM2.5 (µg/m³)",
+        height=520,
+    )
 
     # Actual line
     fig.add_trace(go.Scatter(
-        x=list(range(len(test_actuals))),
+        x=list(range(n_test)),
         y=test_actuals,
-        name="Actual",
+        name=f"Actual ({selected_res})",
         line=dict(color="#1E293B", width=2.5),
     ))
 
@@ -1102,7 +1141,7 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
     fig.add_trace(go.Scatter(
         x=list(range(len(test_persist))),
         y=test_persist,
-        name="Persistence",
+        name=f"Persistence ({selected_res})",
         line=dict(color="#94A3B8", width=1.5, dash="dash"),
     ))
 
@@ -1116,6 +1155,8 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
         "TFT": "#3B82F6",
         "ARIMA": "#10B981",
         "SARIMA": "#6366F1",
+        "LSTM": "#8B5CF6",
+        "ElasticNet": "#F97316",
     }
     fallback_colors = PALETTE_CATEGORICAL
 
@@ -1123,8 +1164,14 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
         preds = model_preds.get(model_name)
         if not preds:
             continue
+            
+        if len(preds) > n_test:
+            preds = preds[-n_test:]
+            
         preds_clean = [p if p is not None else np.nan for p in preds]
-        color = model_palette.get(model_name, fallback_colors[idx % len(fallback_colors)])
+        base_name = model_name.rsplit("_v9_", 1)[0] if "_v9_" in model_name else model_name
+        base_name_clean = base_name.replace("_expert", "").replace("_v9", "")
+        color = model_palette.get(base_name_clean, fallback_colors[idx % len(fallback_colors)])
         fig.add_trace(go.Scatter(
             x=list(range(len(preds_clean))),
             y=preds_clean,
@@ -1132,20 +1179,17 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
             line=dict(color=color, width=2),
         ))
 
-    fig.update_layout(
-        xaxis_title="Test Sample Index",
-        yaxis_title="PM2.5 (µg/m³)",
-        title=f"Actual vs Predicted — Horizon {horizon}h (Test Set, Real Data Only)",
-    )
-    fig = apply_plotly_style(fig, height=520)
-    st.plotly_chart(fig, use_container_width=True)
+    _render_chart(fig, filename=f"actual_vs_predicted_{horizon}h")
+    _caption(f"Actual vs Predicted — Horizon {horizon}h (Test Set, {selected_res} Resolution)")
 
-    # ── Note about unavailable models ──
+    # ── Note about models ──
+    unavailable_top = [m["model"] for m in top_models_info if m["model"] not in filtered_models]
     if unavailable_top:
-        st.caption(f"*(ℹ️ Các mô hình {', '.join(unavailable_top)} nằm trong Top {TOP_N} (snapshot) nhưng chưa có dữ liệu dự đoán trong cache. "
-                   f"Xem đầy đủ tại bảng Metrics bên dưới.)*")
+        other_res = [r for r in res_options if r != selected_res]
+        st.caption(f"*(ℹ️ Các mô hình {', '.join(unavailable_top)} nằm trong Top {TOP_N} nhưng thuộc resolution khác. "
+                   f"Chuyển sang tab {'/'.join(other_res)} để xem.)*")
     else:
-        st.caption(f"*(Ghi chú: Biểu đồ hiển thị Top {TOP_N} mô hình tốt nhất theo MAE cho horizon {horizon}h. "
+        st.caption(f"*(Ghi chú: Biểu đồ hiển thị mô hình được train trên dữ liệu {selected_res} cho horizon {horizon}h. "
                    f"Bảng Metrics bên dưới liệt kê toàn bộ các mô hình.)*")
 
     # ── Errors if any ──
@@ -1163,21 +1207,36 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
     rank_metric = st.radio(
         "📊 Xếp hạng theo",
         ["MAE", "MASE"],
-        index=0,
+        index=1,
         horizontal=True,
         help="MAE = sai số tuyệt đối (µg/m³). MASE = so với Persistence baseline (< 1.0 = tốt hơn).",
     )
 
     st.markdown(f"### 🏆 Top {TOP_N} Mô Hình Tốt Nhất (theo {rank_metric})")
     st.caption(f"*Persistence Baseline được loại khỏi xếp hạng. {'MASE < 1.0 = tốt hơn Persistence.' if rank_metric == 'MASE' else 'MAE thấp hơn = dự đoán chính xác hơn.'}*")
+    st.caption("*(RMSE, R², DA là các chỉ số tham khảo bổ sung. **RMSE** nhạy cảm với outliers nên không dùng làm metric xếp hạng chính cho dữ liệu IoT PM2.5.)*")
 
     cols = st.columns(len(HORIZONS))
     for idx, h_key in enumerate(HORIZONS):
         h_val = int(h_key.replace("h", ""))
-        raw_top = v_data.get("top_n", {}).get(h_key, [])
-        # Re-sort by user-selected metric
+        
+        # Re-compute top models from ALL models, not just MASE-prefiltered ones
+        h_results_for_rank = v_data.get("results", {}).get(h_key, {})
+        all_models_for_h = []
+        for model_name, metrics in h_results_for_rank.items():
+            if model_name.startswith("Persistence"):
+                continue
+            all_models_for_h.append({
+                "model": model_name,
+                "mae": metrics.get("mae", float("inf")),
+                "mase": metrics.get("mase", float("inf")),
+                "rmse": metrics.get("rmse"),
+                "r2": metrics.get("r2"),
+                "da": metrics.get("da"),
+            })
+            
         sort_key = "mase" if rank_metric == "MASE" else "mae"
-        top_models = sorted(raw_top, key=lambda x: x.get(sort_key, float("inf")))[:TOP_N]
+        top_models = sorted(all_models_for_h, key=lambda x: x.get(sort_key, float("inf")))[:TOP_N]
         is_selected = (h_val == horizon)
 
         with cols[idx]:
@@ -1210,7 +1269,10 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
                 for rank, row in enumerate(top_models):
                     mase_color = "#00D4AA" if row["mase"] < 1.0 else "#FF6B6B"
                     medal = medals[rank] if rank < len(medals) else f"#{rank+1}"
-                    border_color = '#00D4AA' if rank == 0 else '#8B95A5'
+                    border_color = '#00D4AA' if rank == 0 else '#71717A'
+                    rmse_display = f"{row['rmse']:.2f}" if row.get('rmse') else "—"
+                    r2_display = f"{row['r2']:.3f}" if row.get('r2') is not None else "—"
+                    da_display = f"{row['da']:.1f}%" if row.get('da') is not None else "—"
                     st.markdown(f"""
                     <style>
                         .avp-model-card-{rank} {{
@@ -1228,6 +1290,9 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
                         <div style="font-size: 0.85rem; margin-top: 0.2rem; color: var(--background-color);">
                             MAE: <b>{row['mae']:.2f}</b> · MASE: <b style="color: {mase_color};">{row['mase']:.2f}</b>
                         </div>
+                        <div style="font-size: 0.78rem; margin-top: 0.15rem; color: var(--background-color); opacity: 0.8;">
+                            RMSE: <b>{rmse_display}</b> · R²: <b>{r2_display}</b> · DA: <b>{da_display}</b>
+                        </div>
                     </div>""", unsafe_allow_html=True)
             else:
                 st.info(f"Không có dữ liệu cho {h_key}")
@@ -1238,11 +1303,18 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
     if h_results:
         all_metrics = []
         for model_name, m in h_results.items():
+            rmse_val = m.get("rmse", float("inf"))
+            r2_val = m.get("r2")
+            da_val = m.get("da")
+            bias_val = m.get("forecast_bias")
             all_metrics.append({
                 "Mô hình": model_name,
                 "MAE (µg/m³)": round(m["mae"], 2),
-                "RMSE (µg/m³)": round(m["rmse"], 2) if m.get("rmse") else "—",
+                "RMSE (µg/m³)": round(rmse_val, 2) if rmse_val != float("inf") else "—",
                 "MASE": round(m["mase"], 4),
+                "R²": round(r2_val, 4) if r2_val is not None else "—",
+                "DA (%)": round(da_val, 1) if da_val is not None else "—",
+                "Bias": round(bias_val, 4) if bias_val is not None else "—",
             })
         sort_col = "MASE" if rank_metric == "MASE" else "MAE (µg/m³)"
         all_metrics.sort(key=lambda x: x.get(sort_col, float("inf")) if isinstance(x.get(sort_col), (int, float)) else float("inf"))
@@ -1299,7 +1371,7 @@ def _render_version_comparison():
     snapshots = {}
     for jpath in sorted(runs_dir.glob("*.json")):
         try:
-            with open(jpath) as f:
+            with open(jpath, encoding="utf-8") as f:
                 data = json.load(f)
             version = data.get("version", jpath.stem)
             snapshots[version] = data
@@ -1367,9 +1439,12 @@ def _render_version_comparison():
     for idx, (v_name, v_data) in enumerate(snapshots.items()):
         changes = v_data.get("changes", {})
         accent, bg_start, bg_end = card_colors.get(idx, card_colors[0])
-        timestamp = v_data.get("timestamp", "—")[:19]
-        n_models = len(v_data.get("models_included", []))
-        parent = v_data.get("parent_version", "—")
+        v_results = v_data.get("results", v_data.get("metrics", v_data.get("data", {}).get("results", {})))
+        models_inc = v_data.get("models_included", [])
+        if not models_inc and v_results:
+            models_inc = list(set([m for h_res in v_results.values() for m in h_res.keys()]))
+        n_models = len(models_inc)
+        parent = v_data.get("parent_version", "v8_cqr_aci" if idx == 8 else ("v7_cqr" if idx == 7 else "—"))
 
         what = changes.get("what", v_data.get("description", "—"))
         why = changes.get("why", "—")
@@ -1377,7 +1452,7 @@ def _render_version_comparison():
         conclusion = changes.get("conclusion", "")
 
         html_str = f"""<div style="background: linear-gradient(135deg, {bg_start} 0%, {bg_end} 100%); border-left: 4px solid {accent}; border-radius: 0 12px 12px 0; padding: 1rem 1.2rem; margin: 0.8rem 0;">"""
-        html_str += f"""<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;"><span style="font-size: 1.1rem; font-weight: 700; color: {accent};">{'📌' if idx == 0 else '🆕'} {v_name}</span><span style="font-size: 0.75rem; opacity: 0.75;">{timestamp} · {n_models} models · parent: {parent}</span></div>"""
+        html_str += f"""<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;"><span style="font-size: 1.1rem; font-weight: 700; color: {accent};">{'📌' if idx == 0 else '🆕'} {v_name}</span><span style="font-size: 0.75rem; opacity: 0.75;">{n_models} models · parent: {parent}</span></div>"""
         html_str += f"""<div style="display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; font-size: 0.88rem;"><span style="opacity: 0.75; font-weight: 600;">📦 What</span><span>{what}</span><span style="opacity: 0.75; font-weight: 600;">💡 Why</span><span>{why}</span><span style="opacity: 0.75; font-weight: 600;">📊 Result</span><span>{result}</span></div>"""
         if conclusion:
             html_str += f"""<div style="margin-top:0.4rem; padding-top:0.4rem; border-top:1px solid var(--border-color, rgba(139,149,165,0.2)); font-size:0.88rem;"><span style="color:#00D4AA;">✅ Conclusion</span> {conclusion}</div>"""
@@ -1387,8 +1462,8 @@ def _render_version_comparison():
     # ── MASE Comparison Chart ──
     st.markdown(f"### 📊 MASE — So Sánh {v1_name} vs {v2_name}")
 
-    v1_results = v1.get("results", v1.get("data", {}).get("results", {}))
-    v2_results = v2.get("results", v2.get("data", {}).get("results", {}))
+    v1_results = v1.get("results", v1.get("metrics", v1.get("data", {}).get("results", {})))
+    v2_results = v2.get("results", v2.get("metrics", v2.get("data", {}).get("results", {})))
 
     # Find common models across both versions
     horizons = ["1h", "6h", "24h"]
@@ -1427,15 +1502,25 @@ def _render_version_comparison():
         comp_df = pd.DataFrame(comparison_rows)
         st.dataframe(comp_df, use_container_width=True, hide_index=True)
 
-    # ── MASE Bar Chart ──
-    fig = go.Figure()
-
-    # Collect models that exist in v2 for charting
-    chart_models = []
+    # ── Comparison Charts (MASE & MAE) ──
+    st.markdown(f"### 📊 Biểu đồ so sánh — {v2_name} (Top 5 Models)")
+    
+    # Calculate average MASE across horizons for each model to determine Top 5
+    model_mase_avg = {}
     for h in horizons:
         for model in v2_results.get(h, {}):
-            if model not in chart_models and model != "Persistence":
-                chart_models.append(model)
+            if model == "Persistence":
+                continue
+            mase = v2_results[h][model].get("mase_unified", v2_results[h][model].get("mase", v2_results[h][model].get("mase_original", None)))
+            if isinstance(mase, (int, float)):
+                if model not in model_mase_avg:
+                    model_mase_avg[model] = []
+                model_mase_avg[model].append(mase)
+                
+    for m in model_mase_avg:
+        model_mase_avg[m] = sum(model_mase_avg[m]) / len(model_mase_avg[m])
+        
+    chart_models = sorted(model_mase_avg.keys(), key=lambda k: model_mase_avg[k])[:5]
 
     chart_colors = [
         "#00D4AA", "#FF6B6B", "#4ECDC4", "#FFE66D",
@@ -1443,44 +1528,76 @@ def _render_version_comparison():
         "#34D399", "#F87171", "#818CF8", "#FBBF24",
     ]
 
+    fig_mase = go.Figure()
+    fig_mae = go.Figure()
+
     for i, model in enumerate(chart_models):
         v2_mases = []
+        v2_maes = []
         for h in horizons:
             v2_m = v2_results.get(h, {}).get(model, {})
             mase = v2_m.get("mase_unified", v2_m.get("mase", v2_m.get("mase_original", None)))
+            mae = v2_m.get("mae", None)
             v2_mases.append(mase if isinstance(mase, (int, float)) else None)
+            v2_maes.append(mae if isinstance(mae, (int, float)) else None)
 
-        fig.add_trace(go.Bar(
+        color = chart_colors[i % len(chart_colors)]
+        
+        # MASE trace
+        fig_mase.add_trace(go.Bar(
             name=model, x=horizons,
             y=[m if m else 0 for m in v2_mases],
-            marker_color=chart_colors[i % len(chart_colors)],
+            marker_color=color,
             text=[f"{m:.3f}" if m else "—" for m in v2_mases],
-            textposition="outside", textfont={"size": 10},
+        ))
+        
+        # MAE trace
+        fig_mae.add_trace(go.Bar(
+            name=model, x=horizons,
+            y=[m if m else 0 for m in v2_maes],
+            marker_color=color,
+            text=[f"{m:.2f}" if m else "—" for m in v2_maes],
+            showlegend=False, # Share legend with MASE chart
         ))
 
-    fig.add_hline(y=1.0, line_dash="dash", line_color="#FF6B6B",
-                  annotation_text="Baseline (MASE = 1.0)",
-                  annotation_font_color="#FF6B6B")
-    fig.update_layout(
+    # Layout for MASE
+    add_baseline(fig_mase, y=1.0, label="Baseline (MASE = 1.0)", color="#FF6B6B")
+    fig_mase.update_layout(
         barmode="group",
         yaxis_title="MASE (thấp hơn = tốt hơn)",
         xaxis_title="Forecast Horizon",
-        title=f"MASE — {v2_name} (All Models)",
     )
-    fig = apply_plotly_style(fig, height=500)
-    st.plotly_chart(fig, use_container_width=True)
+    
+    # Layout for MAE
+    fig_mae.update_layout(
+        barmode="group",
+        yaxis_title="MAE (µg/m³ - thấp hơn = tốt hơn)",
+        xaxis_title="Forecast Horizon",
+    )
+
+    add_simple_bar_labels(fig_mase, orientation="v")
+    add_simple_bar_labels(fig_mae, orientation="v")
+
+    # Render side by side
+    col_c1, col_c2 = st.columns(2)
+    with col_c1:
+        _render_chart(fig_mase, filename="exp_mase_comparison")
+        _caption("MASE — So sánh giữa Baseline và Model")
+    with col_c2:
+        _render_chart(fig_mae, filename="exp_mae_comparison")
+        _caption("MAE — So sánh giữa Baseline và Model")
 
     # ── Nhắc nhở tối ưu tiếp ──
-    st.markdown("""
-    <div style="background: linear-gradient(135deg, rgba(255,230,109,0.08) 0%, rgba(255,107,107,0.04) 100%);
-                border-left: 4px solid #FFE66D; border-radius: 0 12px 12px 0;
-                padding: 1rem 1.2rem; margin: 1rem 0;">
-        <b>🔔 Ghi nhớ tối ưu tiếp:</b><br>
-        • Retrain DL (GRU/LSTM/TFT) với features mới + Fourier<br>
-        • Thử CV feature (std/mean) với safeguard<br>
-        • So sánh log transform vs raw target cho từng model family
-    </div>
-    """, unsafe_allow_html=True)
+    next_steps = v2.get("changes", {}).get("next_steps", "")
+    if next_steps:
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, rgba(255,230,109,0.08) 0%, rgba(255,107,107,0.04) 100%);
+                    border-left: 4px solid #FFE66D; border-radius: 0 12px 12px 0;
+                    padding: 1rem 1.2rem; margin: 1rem 0;">
+            <b>🔔 Ghi nhớ tối ưu tiếp:</b><br>
+            {next_steps}
+        </div>
+        """, unsafe_allow_html=True)
 
 
 def _render_all_runs():
@@ -1496,7 +1613,7 @@ def _render_all_runs():
     runs = []
     for jpath in all_jsons:
         try:
-            with open(jpath) as f:
+            with open(jpath, encoding="utf-8") as f:
                 data = json.load(f)
 
             if isinstance(data, dict):
@@ -1570,7 +1687,7 @@ def _render_all_runs():
     if selected_file:
         selected_path = next((j for j in all_jsons if j.name == selected_file), None)
         if selected_path:
-            with open(selected_path) as f:
+            with open(selected_path, encoding="utf-8") as f:
                 data = json.load(f)
             with st.expander(f"📄 {selected_file}", expanded=True):
                 st.json(data)

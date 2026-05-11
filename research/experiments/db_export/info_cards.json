@@ -1,0 +1,170 @@
+{
+  "actual_vs_predicted_guide": {
+    "title": "Hướng dẫn: Đối chiếu Thực tế và Dự báo",
+    "content": "Biểu đồ lớp phủ (Overlay chart) cung cấp cái nhìn trực quan nhất về độ bám sát của mô hình so với thực tế trên tập dữ liệu kiểm thử (Test set):\n\n- **Đường màu xanh (Actual)**: Giá trị PM2.5 thực tế đo được từ trạm quan trắc.\n- **Đường màu tím (Predicted)**: Giá trị dự báo của hệ thống Trí tuệ Nhân tạo.\n- **Đường nền**: Phân loại chất lượng không khí (AQI) theo chuẩn của WHO.",
+    "page": "actual_vs_predicted",
+    "display_order": 1
+  },
+  "actual_vs_predicted_lessons": {
+    "title": "Bài Học: Đối Chiếu Thực Tế & Dự Báo",
+    "content": "**Các nguyên tắc quan trọng khi phân tích overlay chart:**\n\n1. **Test-on-Real-Only**: Chỉ đánh giá trên dữ liệu thực (`is_imputed == 0`). Data imputed chỉ dùng cho training.\n2. **WHO Threshold (y=15)**: Đường nền y=15 µg/m³ giúp phân biệt vùng an toàn vs nguy hiểm theo chuẩn WHO.\n3. **Peak tracking**: Quan sát khả năng bám sát đỉnh PM2.5 — DL thường smooth hơn ML → miss extreme values.\n4. **Residual analysis**: Kiểm tra residuals có phân phối chuẩn hay có pattern → Nếu có pattern = model còn thiếu feature.\n5. **Horizon effect**: Overlay chart ở 24h sẽ shift nhiều hơn 1h — đây là tự nhiên, không phải bug.",
+    "page": "actual_vs_predicted",
+    "display_order": 2
+  },
+  "ai_assistant_guide": {
+    "title": "Hướng dẫn: Trợ lý Nghiên cứu AI (RAG)",
+    "content": "Trợ lý ảo RAG đóng vai trò như chuyên gia về dự án:\n\n- Giải đáp các thắc mắc chuyên sâu về thuật toán, MASE, DM-HLN.\n- **Kiến thức v9**: Trợ lý có khả năng tóm tắt tại sao dữ liệu 30 phút là tối ưu, và sự khác biệt giữa Fair DL Pipeline và Expert DL Pipeline.",
+    "page": "ai_assistant",
+    "display_order": 1
+  },
+  "eda_guide": {
+    "title": "Hướng dẫn: Phân Tích Khám Phá (EDA)",
+    "content": "Bước đầu tiên trong quá trình xây dựng hệ thống là hiểu rõ các đặc tính thống kê của dữ liệu ở các tần suất đo lường khác nhau (15 phút, 30 phút, 1 giờ):\n\n1. **Tổng Quan**: Thống kê mô tả đa độ phân giải.\n2. **Gaps & Spikes**: Xử lý các vấn đề chất lượng dữ liệu (dữ liệu thiếu, ngoại lệ) vốn dĩ xuất hiện nhiều hơn ở dữ liệu tần suất cao (15m).\n3. **Tính dừng & Mùa vụ (Stationarity & Seasonality)**: Kiểm định hình thức ADF/KPSS và phân tách chuỗi thời gian STL.\n4. **Tự tương quan (Autocorrelation)**: Đánh giá bẫy tự tương quan ở các độ phân giải khác nhau.",
+    "page": "eda",
+    "display_order": 1
+  },
+  "eda_findings": {
+    "title": "Phát hiện: Tác động của Độ phân giải (Resolution)",
+    "content": "**Phát hiện quan trọng về tần suất đo lường (15m vs 30m vs 1h):**\n\n- **Độ nhiễu (Noise level)**: Dữ liệu 15 phút (15m) chứa rất nhiều nhiễu vi mô và các đợt tăng đột biến ngắn hạn, trong khi dữ liệu 1 giờ (1h) lại quá mịn, vô tình làm mất đi các biến động cực đoan của nồng độ bụi.\n- **Tự tương quan (ACF)**: Ở khung 1 giờ, ACF bậc 1 ≈ 0.97 tạo bẫy tự tương quan. Khi sử dụng dữ liệu 15m và 30m, mô hình có thể nhìn chi tiết hơn vào chuỗi thời gian và bớt phụ thuộc vào giá trị quá khứ trực tiếp.\n- **Khoảng trống dữ liệu (Gaps)**: Ở độ phân giải 15m, số lượng khoảng trống dữ liệu (missing values) nhiều hơn đáng kể, đòi hỏi kỹ thuật điền khuyết (Spline/KNN) cẩn thận hơn để không tạo ra dữ liệu giả.",
+    "page": "eda",
+    "display_order": 2
+  },
+  "eda_lessons": {
+    "title": "Bài Học: Chất Lượng Dữ Liệu IoT",
+    "content": "**Bài học quan trọng từ quá trình phân tích EDA:**\n\n1. **S-ESD vs IQR**: IQR chuẩn loại bỏ seasonal peaks thật. S-ESD (Rosner 1983) phân biệt được outlier thật và biến động theo mùa.\n2. **Cubic Spline chỉ dùng cho gap ≤6h**: Gap dài hơn sẽ tạo oscillation giả. KNN multivariate (k=5) tốt hơn cho gap 6-24h.\n3. **Đa độ phân giải (v9)**: Dữ liệu 15m chứa nhiều nhiễu vi mô nhưng cung cấp nhiều điểm dữ liệu hơn cho DL. 30m là điểm cân bằng tối ưu.\n4. **is_imputed column**: Luôn tracking data nào là imputed vs real. Test set BẮT BUỘC chỉ dùng real data.",
+    "page": "eda",
+    "display_order": 3
+  },
+  "experiment_runs_guide": {
+    "title": "Hướng dẫn: Nhật ký Thí nghiệm (Experiment Tracking)",
+    "content": "Phân hệ lưu trữ toàn bộ lịch sử từ v1 đến v9:\n\n- **Phiên bản 1-4**: Thiết lập cơ sở, Feature Engineering.\n- **Phiên bản 5-7**: Xử lý rò rỉ (Anti-leakage), triển khai Học sâu (LSTM/GRU).\n- **Phiên bản 8**: Conformal Prediction và giải thích phân phối.\n- **Phiên bản 9 (Final)**: Đa độ phân giải (15m, 30m, 1h), Ablation Study (Expert vs Fair DL), MASE thống nhất và Ensemble Pipeline.",
+    "page": "experiment_runs",
+    "display_order": 1
+  },
+  "experiment_runs_lessons": {
+    "title": "Bài Học: Quản Lý Thí Nghiệm",
+    "content": "**Kinh nghiệm tích lũy từ 9 phiên bản thí nghiệm:**\n\n1. **Snapshot versioning**: Mỗi version lưu đầy đủ config + metrics + timestamp → Tái lập bất kỳ lúc nào.\n2. **Docker isolation**: Đóng gói toàn bộ environment (Python, libs, models) → Kết quả nhất quán trên mọi máy.\n3. **Reproducibility**: Set random seed (42) cho tất cả operations (numpy, torch, sklearn).\n4. **Version bump discipline**: Mỗi thay đổi kiến trúc lớn = 1 version mới. KHÔNG overwrite kết quả cũ.\n5. **Anti-regression**: So sánh metrics mới vs version trước — nếu tệ hơn, rollback và phân tích nguyên nhân.",
+    "page": "experiment_runs",
+    "display_order": 2
+  },
+  "fe_ablation_guide": {
+    "title": "Hướng dẫn: Feature Engineering & Ablation Study",
+    "content": "Trang này mô tả cách tạo ra các đặc trưng cho dữ liệu chuỗi thời gian và kiểm chứng sự hiệu quả của chúng thông qua Phân tích Tách bỏ (Ablation Study) ở phiên bản v9.\n\n- **Fair Pipeline**: Cung cấp cho Học sâu (Deep Learning) chính xác cùng bộ đặc trưng bảng (Tabular Features - bao gồm độ trễ, sai phân, Fourier) như các mô hình Học máy (LightGBM).\n- **Expert Pipeline**: Cung cấp cho Học sâu dữ liệu gốc (Raw variables), kỳ vọng thuật toán hồi quy nơ-ron (RNN/LSTM/GRU) tự động trích xuất đặc trưng ẩn.\n- **Kết quả Audit**: Khi đánh giá trên cùng một tập kiểm thử (Anchor Test Set), **Fair Pipeline** vượt trội hoàn toàn. Việc áp đặt các đặc trưng kỹ thuật (Engineered features) cung cấp tín hiệu rõ ràng hơn nhiều so với việc để Deep Learning tự học trên dữ liệu gốc vốn chứa nhiều nhiễu IoT.",
+    "page": "feature_engineering",
+    "display_order": 1
+  },
+  "fe_ablation_findings": {
+    "title": "Cơ sở Khoa học: Tabular Features cho Deep Learning",
+    "content": "**Tại sao Fair Pipeline thắng Expert Pipeline?**\n\nTrong lý thuyết, mạng LSTM/GRU có khả năng tự động trích xuất đặc trưng chuỗi thời gian. Tuy nhiên, trên dữ liệu thực tế IoT với kích thước nhỏ và nhiễu động:\n1. Mạng nơ-ron cần rất nhiều dữ liệu để tự học chu kỳ tuần/ngày. Trong khi đặc trưng Fourier cung cấp sẵn tín hiệu chu kỳ hoàn hảo mà không tốn công tính toán.\n2. Các phép biến đổi sai phân (Diff, Log, tỷ lệ thay đổi) giúp làm mịn phân phối dữ liệu, khiến gradient của Deep Learning hội tụ tốt hơn.\n3. **Kỹ thuật Data Augmentation (Jittering)**: V9 đã thử nghiệm kỹ thuật Jittering để giảm Overfitting cho Expert Pipeline nhưng kết quả không khả quan, chứng tỏ Tabular features là giải pháp tối ưu cho Time Series cấp độ IoT thay vì Augmentation hình ảnh.",
+    "page": "feature_engineering",
+    "display_order": 2
+  },
+  "forecast_guide": {
+    "title": "Hướng dẫn: Công Cụ Dự Báo",
+    "content": "**Sử dụng trang Dự Báo PM2.5:**\n\n1. **Chọn mô hình**: Lựa chọn từ danh sách models đã huấn luyện (GRU, LSTM, LightGBM, Ensemble).\n2. **Chọn horizon**: 1h (cực ngắn), 6h (trung hạn), 24h (dài hạn).\n3. **Xem kết quả**: Giá trị dự báo kèm khoảng tin cậy (Conformal Prediction).\n4. **So sánh**: Đối chiếu với Persistence baseline để đánh giá giá trị gia tăng của AI.\n\n**Khuyến nghị**: Dùng Ensemble_Weighted_30m cho dự báo 6h-24h, GRU_15m cho dự báo 1h.",
+    "page": "forecast",
+    "display_order": 1
+  },
+  "models_guide": {
+    "title": "Kiến trúc v9: Ensemble Đa Mô hình",
+    "content": "Hệ thống v9 tích hợp và kết hợp (Ensemble) sức mạnh từ nhiều họ mô hình:\n\n1. **Nhóm mô hình cây (LightGBM)**: Khai thác cực tốt các tương tác phi tuyến tính và phản ứng tức thì với các biến đổi ngắn hạn (đặc biệt tại độ phân giải 15m, 30m).\n2. **Nhóm Học Sâu (GRU/LSTM/TFT)**: Có khả năng nội suy quá khứ và lưu trữ bộ nhớ dài hạn, đóng vai trò sống còn trong việc dự báo đường đi ở khung thời gian xa (24h).\n3. **Nhóm Ensemble**: Được kết hợp theo công thức Trung bình trọng số (Weighted Average) giữa dự báo xuất sắc nhất của ML và DL. Kết quả ghi nhận **Ensemble** cho ra chỉ số MASE ổn định và thấp nhất vượt qua cả Persistence.",
+    "page": "hyperparams",
+    "display_order": 1
+  },
+  "hyperparams_guide": {
+    "title": "Hướng dẫn: Tối ưu Siêu Tham Số",
+    "content": "**Chiến lược Hyperparameter Tuning trong v9:**\n\n1. **Optuna (100 trials)**: Bayesian optimization cho LightGBM — tối ưu learning_rate, num_leaves, max_depth, subsample.\n2. **TimeSeriesSplit (5 folds)**: Cross-validation temporal — KHÔNG random split để tránh data leakage.\n3. **ReduceLROnPlateau**: Cho Deep Learning — giảm learning rate khi val_loss không cải thiện sau 10 epochs.\n4. **Early Stopping (patience=15)**: Ngăn overfitting cho GRU/LSTM/TFT.\n5. **Segment-aware batching**: Sequences không vượt qua gaps trong data — chống False Continuity.",
+    "page": "hyperparams",
+    "display_order": 2
+  },
+  "multi_horizon_guide": {
+    "title": "Hướng dẫn: Đánh giá Đa khung thời gian",
+    "content": "Trang đánh giá cung cấp cái nhìn toàn diện về hiệu suất của các mô hình qua 3 khung thời gian dự báo (1h, 6h, 24h) và 3 độ phân giải (15m, 30m, 1h):\n\n- **Biểu đồ MASE**: Chỉ số Sai số Tuyệt đối Có hướng (Mean Absolute Scaled Error). Giá trị < 1.0 biểu thị mô hình dự báo học máy hoạt động hiệu quả hơn phương pháp cơ sở (Persistence).\n- **Kiểm định Diebold-Mariano**: Cung cấp bằng chứng thống kê (p-value < 0.05) về độ tin cậy của sự vượt trội.",
+    "page": "multi_horizon",
+    "display_order": 1
+  },
+  "multi_horizon_findings": {
+    "title": "Phát hiện cốt lõi: Ma trận Độ phân giải & Thời gian dự báo",
+    "content": "**Ma trận V9 phát hiện ra quy luật phân bổ tối ưu**:\n\n- **Dự báo 1 giờ (Tầm cực ngắn)**: Dữ liệu 15m giúp mô hình học sâu GRU hoạt động xuất sắc (MASE GRU 15m = 0.667), chính thức phá vỡ bẫy tự tương quan (vốn là điểm mạnh tuyệt đối của Persistence ở dữ liệu 1h).\n- **Dự báo 6 giờ (Tầm trung)**: Đây là điểm mù tuyệt đối của Baseline, mô hình AI áp đảo hoàn toàn. Mô hình Ensemble 30m đạt MASE = 0.382, mức sai số cực kỳ thấp.\n- **Dự báo 24 giờ (Tầm xa)**: Tín hiệu bị suy yếu đáng kể. Dữ liệu 15m bắt đầu cho thấy sự bất lợi do nhiễu dồn tích, trong khi 30m Ensemble tiếp tục duy trì ưu thế với MASE = 0.469.\n\n*Kết luận*: **Độ phân giải 15m phù hợp nhất cho dự báo cực ngắn (GRU), trong khi 30m kết hợp Ensemble là cấu hình vô địch cho dự báo trung và dài hạn.**",
+    "page": "multi_horizon",
+    "display_order": 2
+  },
+  "multi_horizon_comparison": {
+    "title": "So sánh với các Nghiên cứu Hiện hành",
+    "content": "Kết quả của V9 được đối chiếu với các công trình nghiên cứu hiện hành trong và ngoài nước (2022-2025):\n\n1. **Khắc phục sự phụ thuộc nồng độ nền**: Việc tiên phong áp dụng chỉ số MASE (theo Hyndman & Koehler, 2006) thay vì MAE/RMSE giúp so sánh hiệu suất một cách công bằng tại Đồng Tháp (nồng độ nền thấp).\n2. **Đa độ phân giải (Multi-Resolution)**: V9 vượt qua giới hạn của các bài báo khoa học hiện nay vốn chỉ tập trung vào dữ liệu 1 giờ. Sự vượt trội của dữ liệu 30 phút cho thấy hướng tiếp cận này là đóng góp khoa học quan trọng.\n3. **Khoảng tin cậy**: Kết hợp đánh giá bằng Diebold-Mariano với phân tích phương sai, luận văn trình bày minh chứng vững chắc về sức mạnh của trí tuệ nhân tạo so với các phương pháp thống kê truyền thống.",
+    "page": "multi_horizon",
+    "display_order": 3
+  },
+  "multi_horizon_references": {
+    "title": "Tài liệu: Đánh Giá Đa Khung Thời Gian",
+    "content": "**Cơ sở lý thuyết cho phương pháp đánh giá:**\n\n| Chỉ số | Tham chiếu | Vai trò |\n|--------|-----------|---------|\n| MASE | Hyndman & Koehler (2006) | Scale-free, so sánh được giữa datasets |\n| DM-HLN Test | Diebold & Mariano (1995), Harvey et al. (1997) | Kiểm định thống kê sự vượt trội |\n| Persistence | Hyndman & Athanasopoulos (2021) | Baseline: y(t+h) = y(t) |\n| MAE | Willmott & Matsuura (2005) | Primary error metric |\n| RMSE | Chai & Draxler (2014) | Penalize large errors |",
+    "page": "multi_horizon",
+    "display_order": 4
+  },
+  "overview_guide": {
+    "title": "Hướng dẫn: Tổng Quan",
+    "content": "Trang này trình bày **bức tranh toàn cảnh** của dự án nghiên cứu dự báo PM2.5 (phiên bản v9), bao gồm:\n\n- **Các chỉ số chính (KPI)**: Hiển thị mô hình dự báo hiệu quả nhất (Ensemble/DL), độ bao phủ kiểm thử trên dữ liệu thực tế, và tổng số mô hình đã huấn luyện.\n- **Kiến trúc Quy trình (Pipeline Architecture)**: Minh họa 7 bước thực hiện từ thu thập dữ liệu thô đa độ phân giải (15m, 30m, 1h) đến đánh giá mô hình.\n- **Bảng xếp hạng Mô hình**: Đánh giá hiệu suất các mô hình tại 3 khung thời gian dự báo (1 giờ, 6 giờ, 24 giờ) sử dụng chỉ số MASE.\n- **Tổng kết Phát hiện (Key Findings)**: Phân tích cân bằng giữa các thành tựu đạt được và những điểm còn hạn chế của dự án.",
+    "page": "overview",
+    "display_order": 1
+  },
+  "overview_lessons": {
+    "title": "Bài Học Kinh Nghiệm (Key Lessons v1-v9)",
+    "content": "Tổng hợp từ 9 phiên bản phát triển và hàng chục thí nghiệm, dưới đây là những bài học kinh nghiệm quan trọng nhất:\n\n1. **Đa độ phân giải (Multi-Resolution)**: Dữ liệu 15 phút (15m) cung cấp tín hiệu tốt nhất cho dự báo cực ngắn (1h), nhưng lại đưa thêm nhiễu vào dự báo trung và dài hạn (6h, 24h). Dữ liệu 30 phút là điểm cân bằng lý tưởng nhất.\n2. **Sức mạnh của Ensemble**: Việc kết hợp mô hình Học sâu (Deep Learning - LSTM) và Học máy (Machine Learning - LightGBM) giúp tận dụng khả năng nắm bắt xu hướng dài hạn của DL và phản ứng nhanh với thay đổi ngắn hạn của ML.\n3. **Kiểm soát rò rỉ dữ liệu (Data Leakage)**: Việc tính toán tỷ lệ thay đổi trực tiếp sẽ vô tình làm lộ thông tin tương lai. Khắc phục bằng cách sử dụng giá trị trễ (`shift`). Các dấu hiệu cảnh báo rò rỉ bao gồm MASE < 0.1 hoặc R² > 0.99.\n4. **Đặc trưng chu kỳ (Fourier) vs Khử mùa vụ (Deseasonalizing)**: Sử dụng đặc trưng toán học Fourier mang lại kết quả tốt hơn việc chủ động khử mùa vụ, do việc khử kép dễ gây thêm nhiễu tự nhiên.\n5. **Đồng bộ Tập kiểm thử (Test Set Alignment)**: Đánh giá thiên lệch có thể xảy ra nếu tập kiểm thử của mô hình Học sâu (không drop NaN) và Học máy (drop NaN) khác nhau. Giải pháp: Cắt đuôi (tail-alignment) để đánh giá trên cùng một bộ neo (anchor set).",
+    "page": "overview",
+    "display_order": 2
+  },
+  "overview_improvements": {
+    "title": "Cải Tiến Đã Chứng Minh (v1 → v9)",
+    "content": "| Điểm Cải Tiến | Trạng thái trước (v1) | Trạng thái sau (v9) | Mức độ Cải thiện |\n|----------|-----------|------|---------------|\n| Độ phân giải | Chỉ 1 giờ (1h) | Đa phân giải (15m, 30m, 1h) | Chụp tín hiệu nhanh ở 15m/30m |\n| Mô hình Tối ưu | Baseline | Ensemble (DL + ML) | Vượt qua giới hạn Persistence |\n| MASE champion (6h)| Chưa triển khai | MASE = 0.382 (30m Ensemble) | Khả năng đánh bại Persistence tuyệt đối |\n| Rà soát Anti-leakage | 4 nguồn leakage ẩn | Loại bỏ hoàn toàn | Đưa sai số về mức thực tế |\n| Đánh giá thống kê | MAE đơn thuần | Unified MASE + DM Test | Minh bạch khoa học, khách quan tuyệt đối |\n| Kiến trúc dữ liệu | Feature liền mạch | Segment-aware Sequences | Chống False Continuity khi tạo sequences |",
+    "page": "overview",
+    "display_order": 3
+  },
+  "pipeline_guide": {
+    "title": "Hướng dẫn: Quy Trình Pipeline",
+    "content": "Quy trình dự báo được chia thành 7 bước chặt chẽ:\n\n1. **Data Collection**: Xử lý đa phân giải (15m, 30m, 1h).\n2. **Data Cleaning**: Loại bỏ ngoại lệ bằng S-ESD, giữ nguyên seasonal peaks.\n3. **Imputation**: Điền khuyết đa cấp (Spline cho gap ≤6h, KNN cho gap 6-24h).\n4. **Feature Engineering**: Ablation Study (Fair vs Expert DL), 119 features chống leakage.\n5. **Modeling**: Kết hợp ML (LightGBM, ElasticNet) và DL (GRU, LSTM, TFT).\n6. **Evaluation**: Đánh giá MASE, kiểm định DM-HLN, và Conformal Prediction.",
+    "page": "pipeline_walkthrough",
+    "display_order": 1
+  },
+  "pipeline_findings": {
+    "title": "Phát Hiện Từ Quy Trình",
+    "content": "**Các bài học cốt lõi rút ra từ hệ thống v9:**\n\n1. **Tối ưu Độ phân giải**: 30m là điểm cân bằng tốt nhất, giúp Ensemble đánh bại Persistence tuyệt đối (MASE=0.382 tại 6h).\n2. **Ablation Study**: Fair Pipeline (tabular features) đánh bại Expert Pipeline (raw data) trên các mô hình Deep Learning.\n3. **Khắc phục Leakage**: Áp dụng shift(1) và train-only scaler đã khử 100% data leakage ẩn.\n4. **MASE Thống Nhất**: Chuyển đổi từ MAE sang MASE scale-free giúp định chuẩn được baseline (MASE=1.0) để đánh giá AI công bằng.",
+    "page": "pipeline_walkthrough",
+    "display_order": 2
+  },
+  "pi_guide": {
+    "title": "Hướng dẫn: Khoảng Tin cậy (Prediction Intervals)",
+    "content": "Cung cấp một khoảng giá trị an toàn quan trọng hơn điểm dự báo duy nhất. Hệ thống v9 đánh giá mức độ bất định thông qua:\n\n1. **Conformal Prediction**: Đảm bảo mức độ bao phủ.\n2. **Quantile Regression**: Học cách dự báo biên dưới (5%) và biên trên (95%).\n3. **MC Dropout**: Ứng dụng kỹ thuật ngẫu nhiên hóa mạng nơ-ron.",
+    "page": "prediction_intervals",
+    "display_order": 1
+  },
+  "shap_guide": {
+    "title": "Hướng dẫn: Giải thích Quyết định của AI (XAI)",
+    "content": "Để tránh việc mô hình hoạt động như một 'hộp đen', dự án áp dụng các phương pháp Giải thích (Explainability):\n\n- **Biểu đồ cột (Bar chart)**: Xếp hạng tầm quan trọng tổng thể của các đặc trưng.\n- **Biểu đồ đàn ong (Beeswarm)**: Phân bố tác động của một đặc trưng. (TreeSHAP áp dụng cho ML).\n- **Permutation Importance**: Đánh giá sự sụt giảm hiệu năng khi xáo trộn từng đặc trưng (Áp dụng cho Học sâu).\n\n*Phân tích V9 chỉ ra rằng*: Đặc trưng `pm25_lag_1` và độ ẩm luôn chiếm ưu thế, nhưng ở 24h, nhiệt độ và các thành phần Fourier nổi lên như những la bàn định hướng tốt nhất.",
+    "page": "shap",
+    "display_order": 1
+  },
+  "shap_lessons": {
+    "title": "Phát Hiện: Tầm Quan Trọng Đặc Trưng",
+    "content": "**Các phát hiện chính từ SHAP & Permutation Importance (v9):**\n\n1. **pm25_lag_1 dominance**: Ở horizon 1h, lag_1 chiếm >50% importance — giải thích tại sao Persistence mạnh.\n2. **Humidity rising**: Độ ẩm tăng tầm quan trọng ở 6h — phản ánh chu kỳ sương mù buổi sáng tại Sa Đéc.\n3. **Fourier tại 24h**: Các thành phần Fourier (sin/cos hour, day) nổi bật ở horizon dài — la bàn chu kỳ cho model.\n4. **TreeSHAP vs Permutation**: TreeSHAP nhanh hơn nhưng chỉ cho tree-based models. Permutation Importance dùng cho DL (model-agnostic).\n5. **Fair vs Expert insight**: Fair DL có feature importance rõ ràng hơn Expert DL — chứng minh tabular features giúp DL 'nhìn rõ' hơn.",
+    "page": "shap",
+    "display_order": 2
+  },
+  "training_guide": {
+    "title": "Môi trường Huấn Luyện (Training Sandbox)",
+    "content": "Chức năng Huấn Luyện (Sandbox) cho phép chạy thử nghiệm và kiểm chứng tính tái lập (reproducibility) của các mô hình trực tiếp trên hệ thống:\n\n- Cung cấp khả năng tùy chỉnh tỷ lệ phân chia dữ liệu, siêu tham số và khung thời gian dự báo.\n- Trực quan hóa nhật ký huấn luyện (training logs) và các chỉ số đánh giá (MAE, RMSE, MASE, R²) trong thời gian thực.\n- **Lưu ý kỹ thuật**: Để đảm bảo tốc độ phản hồi trên giao diện, kích thước tập dữ liệu đưa vào Sandbox đã được giới hạn tối ưu.",
+    "page": "training",
+    "display_order": 1
+  },
+  "methodology_references": {
+    "title": "Tài liệu Phương Pháp Huấn Luyện",
+    "content": "**Các tham chiếu khoa học cho pipeline huấn luyện:**\n\n| Phương pháp | Tham chiếu |\n|------------|-----------|\n| LightGBM Bayesian | Ke et al. (2017), Bergstra et al. (2011) |\n| GRU Architecture | Cho et al. (2014) |\n| LSTM Architecture | Hochreiter & Schmidhuber (1997) |\n| TFT Architecture | Lim et al. (2021) |\n| Temporal Split | Tashman (2000), Cerqueira et al. (2020) |\n| ReduceLROnPlateau | PyTorch (2019) |\n| Anti-leakage | Hyndman & Athanasopoulos (2021) |",
+    "page": "training",
+    "display_order": 2
+  },
+  "pitfalls_lessons": {
+    "title": "Bẫy Kỹ Thuật & Cách Xử Lý",
+    "content": "**Các vấn đề thực tế gặp phải trong quá trình huấn luyện:**\n\n1. **n_jobs crash trên M1/M2**: LightGBM với n_jobs=-1 gây segfault trên Apple Silicon → Fix: n_jobs=1 hoặc n_jobs=2.\n2. **TFT hidden_dim quá lớn**: hidden_dim=128 gây OOM trên MPS → Fix: hidden_dim=32, attention_heads=4.\n3. **Log transform tradeoff**: Box-Cox (λ≈-0.147) cải thiện distribution nhưng inverse transform khuếch đại lỗi tại extreme values.\n4. **MPS vs CPU**: Không phải mọi PyTorch ops đều hỗ trợ MPS → Fallback CPU cho unsupported operations.\n5. **Lazy imports**: Import PyTorch + LightGBM đồng thời ở top-level gây segfault → Dùng lazy import.",
+    "page": "training",
+    "display_order": 3
+  }
+}

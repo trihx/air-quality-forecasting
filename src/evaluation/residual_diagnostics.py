@@ -393,7 +393,7 @@ def run_all_diagnostics(
     # Save summary
     if all_results:
         summary_path = output_dir / "diagnostics_summary.json"
-        with open(summary_path, "w") as f:
+        with open(summary_path, "w", encoding="utf-8") as f:
             json.dump(all_results, f, indent=2, default=str)
         print(f"  [Diagnostics] Summary saved: {summary_path}", flush=True)
 

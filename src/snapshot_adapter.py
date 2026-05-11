@@ -30,6 +30,8 @@ Normalized output format:
 from __future__ import annotations
 
 import json
+import math
+import re
 from pathlib import Path
 
 HORIZONS = ("1h", "6h", "24h")
@@ -49,13 +51,13 @@ def extract_mase(model_data: dict) -> float:
       - Persistence baseline uses "mase"
       - Other models use "mase_unified" (preferred) or "mase_original"
 
-    Priority: mase_unified → mase_original → mase → 0.0
+    Priority: mase_unified → mase_original → mase → float('inf')
     """
     for key in ("mase_unified", "mase_original", "mase"):
         val = model_data.get(key)
         if val is not None:
             return float(val)
-    return 0.0
+    return float("inf")
 
 
 # ── Results normalization ────────────────────────────────────────────
@@ -66,11 +68,18 @@ def _extract_results(raw: dict) -> dict[str, dict]:
 
     v1–v6: results live under raw["data"]["results"]
     v7:    results live under raw["results"]
+    v9:    results live under raw["metrics"]
     """
     # Try top-level first (v7 format)
     if "results" in raw and isinstance(raw["results"], dict):
         # Verify it's actual results (has horizon keys), not something else
         sample = raw["results"]
+        if any(h in sample for h in HORIZONS):
+            return sample
+
+    # Try top-level metrics (v9 format)
+    if "metrics" in raw and isinstance(raw["metrics"], dict):
+        sample = raw["metrics"]
         if any(h in sample for h in HORIZONS):
             return sample
 
@@ -86,12 +95,34 @@ def _normalize_model_entry(model_name: str, model_data: dict) -> dict:
     """Normalize a single model's metrics to the standard format.
 
     Strips classification, optuna params, and other non-core fields.
-    Keeps only: mae, rmse, mase.
+    Keeps: mae, rmse, mase, r2, da, forecast_bias.
+    Handles None/null values gracefully (assigns infinity or None).
     """
+    raw_mae = model_data.get("mae")
+    mae = float(raw_mae) if raw_mae is not None else float("inf")
+    rmse_raw = model_data.get("rmse")
+    rmse = float(rmse_raw) if rmse_raw is not None else float("inf")
+    
+    mase_val = extract_mase(model_data)
+    mase = mase_val if mase_val > 0.0 else float("inf")
+
+    # Extended metrics (None = not available)
+    r2_raw = model_data.get("r2")
+    r2 = float(r2_raw) if r2_raw is not None else None
+
+    da_raw = model_data.get("da")
+    da = float(da_raw) if da_raw is not None else None
+
+    bias_raw = model_data.get("forecast_bias")
+    forecast_bias = float(bias_raw) if bias_raw is not None else None
+    
     return {
-        "mae": float(model_data.get("mae", 0)),
-        "rmse": float(model_data["rmse"]) if model_data.get("rmse") is not None else None,
-        "mase": extract_mase(model_data),
+        "mae": mae,
+        "rmse": rmse,
+        "mase": mase,
+        "r2": r2,
+        "da": da,
+        "forecast_bias": forecast_bias,
     }
 
 
@@ -115,7 +146,7 @@ def _compute_top_n(
     n: int = TOP_N,
     exclude: tuple[str, ...] = ("Persistence",),
 ) -> dict[str, list[dict]]:
-    """Compute top N models per horizon, sorted by MAE ascending.
+    """Compute top N models per horizon, sorted by MASE ascending.
 
     Args:
         results: Normalized results dict.
@@ -137,7 +168,7 @@ def _compute_top_n(
                 "mae": metrics["mae"],
                 "mase": metrics["mase"],
             })
-        ranked.sort(key=lambda x: x["mae"])
+        ranked.sort(key=lambda x: x["mase"])
         top[h] = ranked[:n]
     return top
 
@@ -190,6 +221,20 @@ def normalize_snapshot(raw: dict) -> dict:
     }
 
 
+def _safe_json_loads(text: str) -> dict:
+    """Parse JSON text with NaN/Infinity tolerance.
+
+    Python's ``json.dump(..., allow_nan=True)`` produces non-standard
+    tokens (``NaN``, ``Infinity``, ``-Infinity``).  Standard ``json.loads``
+    rejects them.  This helper replaces those tokens with ``null`` before
+    parsing so the snapshot is never silently skipped.
+    """
+    # Replace standalone NaN / Infinity tokens (not inside strings)
+    sanitised = re.sub(r'\bNaN\b', 'null', text)
+    sanitised = re.sub(r'\b-?Infinity\b', 'null', sanitised)
+    return json.loads(sanitised)
+
+
 def load_all_normalized() -> dict[str, dict]:
     """Load and normalize all snapshot files from dashboard_runs/.
 
@@ -199,12 +244,22 @@ def load_all_normalized() -> dict[str, dict]:
     snapshots: dict[str, dict] = {}
     if not RUNS_DIR.exists():
         return snapshots
-    for jpath in sorted(RUNS_DIR.glob("*.json")):
+        
+    def _sort_key(path: Path) -> tuple[int, str]:
+        match = re.match(r'^v(\d+)', path.stem)
+        if match:
+            return (int(match.group(1)), path.stem)
+        return (999, path.stem)
+        
+    for jpath in sorted(RUNS_DIR.glob("*.json"), key=_sort_key):
         try:
-            raw = json.loads(jpath.read_text(encoding="utf-8"))
+            raw = _safe_json_loads(jpath.read_text(encoding="utf-8"))
             normalized = normalize_snapshot(raw)
             version = normalized["version"] or jpath.stem
             snapshots[version] = normalized
-        except (json.JSONDecodeError, KeyError):
+        except (json.JSONDecodeError, KeyError) as exc:
+            import logging
+            logging.warning("snapshot_adapter: skipped %s — %s", jpath.name, exc)
             continue
     return snapshots
+

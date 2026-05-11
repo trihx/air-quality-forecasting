@@ -60,7 +60,7 @@ def _save(data: dict, name: str, freq: str) -> None:
     out_dir = PROJECT_ROOT / "research" / "experiments" / "v9_final"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{name}_{freq}_{TIMESTAMP}.json"
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 

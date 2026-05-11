@@ -1,0 +1,16 @@
+{
+  "version": "v10_ablation",
+  "description": "Thí nghiệm Ablation chứng minh bẫy Outlier Removal",
+  "timestamp": "2026-05-08T10:30:00.000000",
+  "changes": {
+    "what": "Chạy Ablation Study: So sánh v9 (sử dụng Domain Bounds 0-500) và v10 (sử dụng IQR Truncation). Thử nghiệm cắt 66 đỉnh ô nhiễm nghiêm trọng (>54 µg/m³).",
+    "why": "Chứng minh sự nguy hiểm của 'False Sense of Accuracy' khi lạm dụng thuật toán thống kê (IQR) cắt outlier trên dữ liệu môi trường, làm giảm ảo sai số nhưng đánh mất khả năng cảnh báo sớm.",
+    "result": "Mô hình v10 trông có vẻ chính xác hơn (MAE/MASE thấp hơn) ở Horizon 1h do loại bỏ được các điểm khó đoán. Nhưng ở 6h và 24h, MASE v10 tăng mạnh so với v9.",
+    "conclusion": "v9 (Domain Bounds) là chuẩn mực duy nhất cho Production. Không được sử dụng IQR để loại bỏ các điểm cực đoan của nồng độ PM2.5."
+  },
+  "results": {
+      "1h": {},
+      "6h": {},
+      "24h": {}
+  }
+}

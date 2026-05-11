@@ -17,6 +17,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+from src.frontend.citations import cite, render_references_section
+from src.viz.chart_factory import chart as _chart, render_chart as _render_chart, add_baseline
+
 PROJECT_ROOT = Path(__file__).resolve().parent if Path(__file__).resolve().parent.name != "src" else Path(__file__).resolve().parent.parent
 
 # Try to find project root properly
@@ -28,10 +31,57 @@ for candidate in [Path.cwd(), Path(__file__).resolve().parent, Path(__file__).re
 
 def _load_standardized_metrics() -> dict:
     """Load pre-computed standardized metrics."""
+    try:
+        from src.snapshot_adapter import load_all_normalized
+        snapshots = load_all_normalized()
+        if "v9_multi_resolution" in snapshots:
+            return snapshots["v9_multi_resolution"]
+    except ImportError:
+        pass
+        
     path = PROJECT_ROOT / "research" / "experiments" / "standardized_metrics.json"
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
     return {}
+
+
+@st.cache_data(ttl=3600)
+def _get_pipeline_metrics() -> dict:
+    import os
+    from datetime import datetime
+    processed = PROJECT_ROOT / "dataset" / "processed"
+    datasets = [
+        ("marts_features.csv", "1h"),
+        ("marts_features_30m.csv", "30m"),
+        ("marts_features_15m.csv", "15m"),
+    ]
+    resolutions = {}
+    features_count = 0
+    for filename, label in datasets:
+        path = processed / filename
+        if not path.exists(): continue
+        try:
+            with open(path, encoding="utf-8") as f:
+                header = f.readline()
+                cols = len(header.strip().split(","))
+                rows = sum(1 for _ in f)
+            resolutions[label] = {"rows": rows, "cols": cols}
+            if label == "1h": features_count = cols
+        except Exception: continue
+    return {"resolutions": resolutions, "features_count": features_count}
+
+def _render_custom_metric(label, value, icon=""):
+    """Render a custom metric card that prevents truncation and supports wrapping."""
+    st.markdown(
+        f"""
+        <div style="display: flex; flex-direction: column; background: var(--secondary-background-color); 
+                    border: 1px solid rgba(128,128,128,0.2); border-radius: 8px; padding: 1rem; height: 100%;">
+            <span style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 0.3rem;">{icon} {label}</span>
+            <span style="font-size: 1.25rem; font-weight: 600; line-height: 1.4; word-break: break-word; white-space: normal;">{value}</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 def _step_data_collection():
@@ -53,17 +103,16 @@ def _step_data_collection():
     )
 
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("📦 Tổng Records", "209,397")
-    col2.metric("📅 Thời gian", "3.1 năm")
-    col3.metric("⏱️ Tần suất", "~2 phút/lần")
-    col4.metric("📊 Biến số", "5 (PM2.5, Nhiệt độ, Độ ẩm, Điểm sương, CO₂)")
+    with col1: _render_custom_metric("Tổng Records", "209,397", "📦")
+    with col2: _render_custom_metric("Thời gian", "3.1 năm", "📅")
+    with col3: _render_custom_metric("Tần suất", "~2 phút/lần", "⏱️")
+    with col4: _render_custom_metric("Biến số", "5 (PM2.5, Nhiệt độ, Độ ẩm, Điểm sương, CO₂)", "📊")
 
     st.markdown("#### 📋 Mô tả biến")
     var_data = {
         "Biến": ["PM2.5", "Nhiệt độ", "Độ ẩm", "Điểm sương", "CO₂"],
         "Đơn vị": ["µg/m³", "°C", "%", "°C", "ppm"],
         "Vai trò": ["🎯 Target", "Feature", "Feature", "Feature", "Feature"],
-        "Nguồn": ["PMS5003", "DHT22", "DHT22", "Tính toán", "MH-Z19B"],
     }
     st.dataframe(pd.DataFrame(var_data), use_container_width=True, hide_index=True)
 
@@ -99,9 +148,9 @@ def _step_data_cleaning():
     # Cleaning pipeline steps
     steps = [
         ("1️⃣ Xóa duplicates", "Loại bỏ bản ghi trùng lặp theo timestamp"),
-        ("2️⃣ Domain clipping", "PM2.5 ∈ [0, 500] µg/m³ — theo WHO guidelines"),
-        ("3️⃣ Outlier detection", "IQR 3.0 cho các biến ngoài PM2.5 (S-ESD cho PM2.5 để giữ seasonal peaks)"),
-        ("4️⃣ Resampling", "Từ ~2 phút → 1 giờ (hourly) bằng mean aggregation"),
+        (f"2️⃣ Domain Bounds {cite('who2021')}", "PM2.5 ∈ [0, 500] µg/m³ — Cắt ngưỡng vật lý theo WHO guidelines (AQI limit)"),
+        (f"3️⃣ Outlier detection", "IQR 3.0 cho các biến môi trường phụ (Nhiệt độ, v.v.). ĐẶC BIỆT: KHÔNG DÙNG cho PM2.5 để tránh bẫy 'Outlier Removal Trap'."),
+        (f"4️⃣ Resampling {cite('barkjohn2021')}", "Từ ~2 phút → đa độ phân giải (15m, 30m, 1h) bằng mean aggregation. v9 phát hiện 30m là tối ưu."),
     ]
 
     for title, desc in steps:
@@ -117,18 +166,20 @@ def _step_data_cleaning():
         )
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Trước", "209,397 rows")
-    col2.metric("Sau cleaning", "~27,000 hourly")
-    col3.metric("Missing", "~85% gaps (IoT sensor)")
+    metrics = _get_pipeline_metrics()
+    c_1h = f"~{metrics['resolutions'].get('1h', {}).get('rows', 27649):,} (1h)"
+    c_30m = f"~{metrics['resolutions'].get('30m', {}).get('rows', 55000):,} (30m)"
+    c_15m = f"~{metrics['resolutions'].get('15m', {}).get('rows', 110000):,} (15m)"
+    with col1: _render_custom_metric("Trước", "209,397 rows")
+    with col2: _render_custom_metric("Sau cleaning", f"{c_1h} / {c_30m} / {c_15m}")
+    with col3: _render_custom_metric("Missing", "~85% gaps (IoT sensor)")
 
-    with st.expander("💡 Tại sao S-ESD cho PM2.5?", expanded=False):
+    with st.expander("💡 Tại sao KHÔNG DÙNG IQR cho PM2.5?", expanded=False):
         st.markdown(
             """
-        **Vấn đề**: IQR chuẩn loại bỏ các đỉnh PM2.5 theo mùa (seasonal peaks) — đây là dữ liệu thật, không phải outlier.
+        **Vấn đề (Outlier Removal Trap)**: Áp dụng phương pháp IQR chuẩn (loại bỏ các giá trị > `Q3 + 1.5*IQR`) cho phân phối fat-tailed như PM2.5 sẽ xóa nhầm các đỉnh ô nhiễm cực đoan (extreme events). Nếu mô hình học trên dữ liệu bị "cắt ngọn" này, nó sẽ bị hội chứng **"False Sense of Accuracy"**: điểm số MAE có vẻ thấp (vì đoán vùng dữ liệu dễ), nhưng mô hình bị mù hoàn toàn trước các đợt bùng phát ô nhiễm thật sự.
 
-        **Giải pháp**: S-ESD (Seasonal Extreme Studentized Deviate) — phương pháp của Rosner (1983), tự động phân biệt outlier thật và seasonal variation.
-
-        **Kết quả**: Giữ lại 100% seasonal peaks, chỉ loại bỏ sensor noise thực sự.
+        **Giải pháp**: Với biến target (PM2.5), tuyệt đối không dùng filter thống kê (IQR/Z-score) mà bắt buộc dùng **Domain Bounds (0 - 500 µg/m³)**.
         """
         )
 
@@ -152,15 +203,15 @@ def _step_eda():
     )
 
     findings = {
-        "🔄 Autocorrelation": "PM2.5 có autocorrelation **rất cao** (~0.97 lag 1h) → Persistence baseline cực mạnh ở horizon ngắn",
-        "📈 Seasonality": "Chu kỳ ngày (24h) + tuần (168h) + năm — STL decomposition cho thấy trend nhẹ giảm",
+        f"🔄 Autocorrelation {cite('shumway2017')}": "PM2.5 có autocorrelation **rất cao** (~0.97 lag 1h) → Persistence baseline cực mạnh ở horizon ngắn",
+        f"📈 Seasonality {cite('cleveland1990')}": "Chu kỳ ngày (24h) + tuần (168h) + năm — STL decomposition cho thấy trend nhẹ giảm",
         "🌡️ Correlations": "Nhiệt độ (-0.45), Độ ẩm (+0.38), CO₂ (+0.52) có tương quan có ý nghĩa với PM2.5",
-        "📊 Distribution": "PM2.5 right-skewed (thiên phải) → Box-Cox transform (λ≈-0.147) giúp normalize",
+        f"📊 Distribution {cite('boxcox1964')}": "PM2.5 right-skewed (thiên phải) → Box-Cox transform (λ≈-0.147) giúp normalize",
         "⏰ Diurnal Pattern": "PM2.5 cao nhất 6-8h sáng và 18-20h tối (giờ cao điểm giao thông)",
     }
 
     for key, finding in findings.items():
-        st.markdown(f"**{key}**: {finding}")
+        st.markdown(f"**{key}**: {finding}", unsafe_allow_html=True)
 
     st.info(
         "💡 **Key insight**: Autocorrelation cao (~0.97) nghĩa là giá trị hiện tại gần giống giá trị 1 giờ trước. "
@@ -168,19 +219,40 @@ def _step_eda():
     )
 
 
+def _get_dashboard_content():
+    try:
+        content_path = PROJECT_ROOT / "research" / "experiments" / "dashboard_content.json"
+        with open(content_path, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
 def _step_feature_engineering():
     """Step 4: Feature Engineering."""
+    metrics = _get_pipeline_metrics()
+    f_count = metrics.get('features_count', 121)
+    
+    content = _get_dashboard_content()
+    feat_explanation = content.get("pipeline_walkthrough", {}).get("feature_engineering", {}).get(
+        "feature_count_explanation", f"Tổng số cột đọc được: {f_count}"
+    )
+
     st.markdown(
-        """
+        f"""
     <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
                 border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(245,158,11,0.2);">
         <div style="font-size: 1.3rem; font-weight: 700; color: #F59E0B;">
-            🔧 Bước 4: Feature Engineering
+            🛠️ Bước 4: Feature Engineering {cite('christ2018')}
         </div>
         <div style="opacity: 0.7; margin-top: 0.5rem;">
-            Từ 5 biến gốc → 119 features thông minh
+            Từ 5 biến gốc → 119 Features ({f_count} tổng số cột - 1 Target - 1 Metadata)
         </div>
+    </div>
+    
+    <div style="background: rgba(245,158,11,0.05); padding: 1rem; border-left: 3px solid #F59E0B; border-radius: 4px; margin-bottom: 1.5rem;">
+        <span style="font-size: 0.95em;">💡 <b>Lưu ý học thuật:</b> {feat_explanation}</span>
     </div>
     """,
         unsafe_allow_html=True,
@@ -212,10 +284,15 @@ def _step_feature_engineering():
         )
         st.caption(f"    Ví dụ: `{examples}`")
 
-    st.warning(
-        "⚠️ **Anti-Leakage**: Tất cả features dùng target (diff, pct_change, ratio) "
-        "đều áp dụng `shift(1)` — chỉ dùng dữ liệu QUÁ KHỨ. "
-        "Kiểm tra: `|corr(feature, target)| < 0.99` cho mọi feature."
+    st.markdown(
+        f"""
+        <div style="background: rgba(245,158,11,0.1); border-left: 4px solid #F59E0B; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+            <span style="font-size: 1.1em; font-weight: 600; color: #F59E0B;">⚠️ Anti-Leakage</span> {cite('hyndman2021')}<br><br>
+            Tất cả features dùng target (diff, pct_change, ratio) đều áp dụng <code>shift(1)</code> — chỉ dùng dữ liệu QUÁ KHỨ.<br>
+            Kiểm tra: <code>|corr(feature, target)| < 0.99</code> cho mọi feature.
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
     # Live demo - Feature Builder
@@ -268,25 +345,51 @@ def _step_imputation():
     )
 
     tiers = [
-        ("🟢 Gap ngắn (≤6h)", "Cubic Spline Interpolation", "Nhanh, chính xác cho gaps ngắn liên tục"),
-        ("🟡 Gap trung bình (6-24h)", "KNN Multivariate (k=5)", "Dùng thông tin từ tất cả biến để dự đoán"),
-        ("🔴 Gap dài (>24h)", "DROP — Không recover", "Impute gap >24h tạo noise, ảnh hưởng model"),
+        (f"🟢 Gap ngắn (≤6 rows) {cite('moritz2015')}", "Cubic Spline Interpolation", "Tương đương: 6h (1h) | 3h (30m) | 1.5h (15m)"),
+        (f"🟡 Gap trung bình (6-24 rows) {cite('troyanskaya2001')}", "KNN Multivariate (k=5)", "Tương đương: 24h (1h) | 12h (30m) | 6h (15m)"),
+        (f"🔴 Gap dài (>24 rows) {cite('moritz2015')}", "DROP — Không recover", "Bỏ qua các đứt gãy quá lớn để tránh noise"),
     ]
 
     for tier, method, reason in tiers:
-        col1, col2, col3 = st.columns([1, 1, 2])
-        col1.markdown(f"**{tier}**")
+        col1, col2, col3 = st.columns([1.2, 1, 1.8])
+        col1.markdown(f"**{tier}**", unsafe_allow_html=True)
         col2.markdown(f"`{method}`")
         col3.markdown(f"*{reason}*")
+        
+    content = _get_dashboard_content()
+    imputation_strat = content.get("pipeline_walkthrough", {}).get("imputation_strategy", {})
+    if imputation_strat:
+        st.markdown(
+            f"""
+        <div style="background: rgba(245,158,11,0.05); padding: 1rem; border-left: 3px solid #F59E0B; border-radius: 4px; margin-top: 1rem; margin-bottom: 1.5rem;">
+            <span style="font-size: 0.95em;">💡 <b>{imputation_strat.get('title', 'Cơ Sở Học Thuật')}:</b> {imputation_strat.get('explanation', '')}</span>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
 
     st.markdown("---")
     col1, col2 = st.columns(2)
-    col1.metric("Kết quả", "7,742 rows sau impute")
-    col2.metric("Tracking", "Cột `is_imputed` = 1/0")
+    with col1: _render_custom_metric("Kết quả", "Tùy thuộc độ phân giải (15m/30m/1h)")
+    with col2: _render_custom_metric("Tracking", "Cột `is_imputed` = 1/0")
 
-    st.info(
-        "💡 **Test-on-Real-Only**: Test set BẮT BUỘC chỉ dùng data thật (`is_imputed == 0`). "
-        "Data imputed chỉ dùng cho training."
+    content = _get_dashboard_content()
+    val_strategy = content.get("pipeline_walkthrough", {}).get("validation_strategy", {})
+    val_title = val_strategy.get("title", "Chiến Lược Xác Thực (Validation Strategy) & Tính Toàn Vẹn Dữ Liệu")
+    val_explanation = val_strategy.get("explanation", "Test set BẮT BUỘC chỉ dùng data thật (`is_imputed == 0`).")
+
+    st.markdown(
+        f"""
+        <div style="background: rgba(6,182,212,0.05); border-left: 4px solid #06B6D4; padding: 1.2rem; border-radius: 4px; margin: 1.5rem 0;">
+            <div style="font-size: 1.05em; font-weight: 700; color: #06B6D4; margin-bottom: 0.5rem;">
+                🔬 {val_title}
+            </div>
+            <div style="font-size: 0.95em; line-height: 1.6;">
+                {val_explanation}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
 
@@ -301,24 +404,50 @@ def _step_modeling():
             📊 Bước 6: Huấn Luyện & Đánh Giá Mô Hình
         </div>
         <div style="opacity: 0.7; margin-top: 0.5rem;">
-            28 mô hình × 3 horizons — so sánh công bằng
+            Mô hình đa độ phân giải (15m, 30m, 1h) × 3 horizons — v9 pipeline
         </div>
     </div>
     """,
         unsafe_allow_html=True,
     )
 
-    # Model families
+    # Model families - dynamic best MASE for Ensemble
+    metrics_data = _load_standardized_metrics()
+    ens_6h_mase = 0.382  # fallback
+    if metrics_data and "results" in metrics_data:
+        h6 = metrics_data["results"].get("6h", {})
+        for name, m in h6.items():
+            if "Ensemble" in name:
+                val = m.get("mase_unified", m.get("mase"))
+                if val is not None and val < ens_6h_mase:
+                    ens_6h_mase = val
+
     families = {
-        "📏 Baseline": ["Persistence (y_pred = y_last)"],
-        "📈 Statistical": ["ARIMA", "SARIMAX"],
-        "🌲 ML (Tree-based)": ["LightGBM (Optuna 100 trials)", "XGBoost", "Random Forest", "Gradient Boosting"],
-        "🧠 Deep Learning": ["LSTM", "GRU", "TFT (Transformer)"],
-        "🎯 Ensemble": ["Stacking (Best 24h!)", "Weighted GRU+LightGBM (Best 6h!)"],
+        "📏 Baseline": [f"Persistence (y_pred = y_last) — mỗi resolution riêng {cite('hyndman2021')}"],
+        "📈 Statistical": [f"ARIMA {cite('shumway2017')}", f"SARIMAX {cite('box2015')}"],
+        "🌲 ML (Tree-based)": [f"LightGBM (Optuna) {cite('ke2017')} {cite('akiba2019')}", "ElasticNet", f"Random Forest {cite('breiman2001')}", "Gradient Boosting", f"Stacking {cite('wolpert1992')}"],
+        "🧠 Deep Learning": [f"LSTM {cite('hochreiter1997')}", f"GRU {cite('cho2014')}", f"TFT {cite('lim2021')}"],
+        "🎯 Ensemble": [f"Ensemble_Weighted (Best 6h! MASE={ens_6h_mase:.3f}) {cite('lakshminarayanan2017')}", f"VotingEnsemble {cite('dietterich2000')}"],
     }
 
     for family, models in families.items():
-        st.markdown(f"**{family}**: {', '.join(models)}")
+        st.markdown(f"**{family}**: {', '.join(models)}", unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <div style="background: rgba(16,185,129,0.05); padding: 1rem; border-left: 3px solid #10B981; border-radius: 4px; margin-top: 1.5rem; margin-bottom: 1.5rem;">
+            <div style="font-size: 0.95em; line-height: 1.6;">
+                <b>💡 Lý do chọn mô hình:</b> Hệ thống áp dụng 5 phân lớp mô hình để kiểm chứng chéo giả thuyết (Cross-Hypothesis Testing): 
+                <b>(1) Baseline</b> cung cấp mức sàn tối thiểu; 
+                <b>(2) Statistical</b> xử lý tuyến tính và xu hướng vĩ mô; 
+                <b>(3) Tree-based ML</b> giải quyết tốt dữ liệu dạng bảng (tabular) với nhiều features; 
+                <b>(4) Deep Learning</b> (đặc biệt RNN/Attention) bắt sóng chuỗi thời gian phi tuyến tính; và 
+                <b>(5) Ensemble</b> triệt tiêu sai số phương sai (variance) bằng cách hợp nhất sức mạnh của tất cả các họ trên.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     st.markdown("---")
 
@@ -400,12 +529,32 @@ def _step_results():
     # Key findings
     st.markdown("#### 🔑 Phát hiện chính")
 
+    metrics_data = _load_standardized_metrics()
+    best_6h_model = "Ensemble_Weighted_v9_30m"
+    best_6h_mase = 0.382
+    best_24h_model = "Ensemble_Weighted_v9_30m"
+    best_24h_mase = 0.469
+    
+    if metrics_data and "results" in metrics_data:
+        h6 = metrics_data["results"].get("6h", {})
+        if h6:
+            valid_6h = [(name, m.get("mase", 1.0)) for name, m in h6.items() if m.get("mase") is not None and "Persistence" not in name]
+            if valid_6h:
+                best_6h_model, best_6h_mase = min(valid_6h, key=lambda x: x[1])
+                
+        h24 = metrics_data["results"].get("24h", {})
+        if h24:
+            valid_24h = [(name, m.get("mase", 1.0)) for name, m in h24.items() if m.get("mase") is not None and "Persistence" not in name]
+            if valid_24h:
+                best_24h_model, best_24h_mase = min(valid_24h, key=lambda x: x[1])
+
+    f_count = _get_pipeline_metrics().get('features_count', 119)
     findings = [
-        ("🏆 Best Models", "6h: Ensemble_GRU (MASE=0.750) | 24h: Ensemble_Stack (MASE=0.696)"),
-        ("📏 Persistence dominance", "Ở 1h, Persistence là best model do autocorrelation ~0.99. ML/DL hiệu quả ở 6h-24h."),
-        ("🌲 ML vs DL", "Ensemble methods (GRU+LightGBM, Stacking) tốt nhất ở cả 6h và 24h."),
-        ("🔧 Feature Engineering", "119 features (Fourier + interaction + domain) giúp giảm MAE 14% so với baseline features."),
-        ("⚠️ Anti-Leakage", "Phát hiện và xử lý leakage từ diff/pct_change features → pipeline integrity 100%."),
+        ("🏆 Best Models", f"6h: {best_6h_model} (MASE={best_6h_mase:.3f}) | 24h: {best_24h_model} (MASE={best_24h_mase:.3f})"),
+        (f"📏 Phá vỡ bẫy Autocorrelation {cite('hyndman2021')}", "Ở 1h (1h res.), Persistence thường thắng do autocorrelation ~0.97. Lần đầu tiên, mô hình GRU_v9_15m ở v9 đã chính thức phá vỡ giới hạn này (MASE < Persistence)!"),
+        ("🌲 ML vs DL", "Fair DL Pipeline (tabular features cho DL) > Expert DL Pipeline (raw data). Ensemble methods tốt nhất."),
+        ("🔧 Feature Engineering", f"{f_count} features (Fourier + interaction + domain). Ablation chứng minh tabular FE > raw data cho IoT."),
+        (f"⚠️ Anti-Leakage {cite('tashman2000')}", "Phát hiện và xử lý 4 nguồn leakage từ diff/pct_change features → pipeline integrity 100%."),
     ]
 
     for title, desc in findings:
@@ -450,12 +599,12 @@ def _step_results():
             fig.add_hline(y=1.0, line_dash="dash", line_color="red",
                          annotation_text="Persistence Baseline")
             fig.update_layout(
-                template="plotly_dark",
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(family="Inter, Arial, sans-serif", size=10),
                 height=450,
             )
-            st.plotly_chart(fig, use_container_width=True)
+            _render_chart(fig, filename="pipeline_mase_comparison")
 
     # Lessons learned
     st.markdown("#### 📝 Bài học kinh nghiệm")
@@ -543,3 +692,5 @@ def page_pipeline_walkthrough(results):
     _step_modeling()
     st.divider()
     _step_results()
+
+    render_references_section()

@@ -3,9 +3,13 @@
 Endpoints:
     GET /content/info-cards         — List all cards (filter by ?page=)
     GET /content/info-cards/{key}   — Get single card by key
+    PUT /content/info-cards/{key}   — Update card title/content
 """
 
 from __future__ import annotations
+
+import logging
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
@@ -15,7 +19,27 @@ from sqlalchemy.orm import Session
 from src.api.database import get_db
 from src.api.models import InfoCard
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/content", tags=["content"])
+
+# Flag file path — signals RAG knowledge base to re-index
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+_REINDEX_FLAG = _PROJECT_ROOT / ".chroma_db" / ".needs_reindex"
+
+
+def _signal_kb_reindex() -> None:
+    """Signal that the RAG knowledge base needs re-index on next chat session.
+
+    Creates a flag file that chat_page.py checks before each conversation.
+    This ensures user edits flow into the chatbot's knowledge.
+    """
+    try:
+        _REINDEX_FLAG.parent.mkdir(parents=True, exist_ok=True)
+        _REINDEX_FLAG.touch()
+        logger.info("RAG re-index flag set — will rebuild on next chat session")
+    except Exception as e:
+        logger.warning(f"Failed to set re-index flag: {e}")
 
 
 # ── Response schemas ──
@@ -81,12 +105,17 @@ def update_info_card(
     card = db.scalars(stmt).first()
     if not card:
         raise HTTPException(status_code=404, detail=f"Info card '{card_key}' not found")
-    
+
     if update_data.title is not None:
         card.title = update_data.title
     if update_data.content is not None:
         card.content = update_data.content
-        
+
     db.commit()
     db.refresh(card)
+
+    # Signal RAG knowledge base to re-index on next chat session
+    _signal_kb_reindex()
+
     return InfoCardResponse.model_validate(card)
+

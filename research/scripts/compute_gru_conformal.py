@@ -95,7 +95,7 @@ def compute_conformal_for_horizon(
     model = torch.jit.load(str(model_path), map_location="cpu")
     model.eval()
 
-    with open(scaler_path) as f:
+    with open(scaler_path, encoding="utf-8") as f:
         sc = json.load(f)
     feat_mean = np.array(sc["feature_scaler_mean"])
     feat_scale = np.array(sc["feature_scaler_scale"])
@@ -228,7 +228,7 @@ def main():
     # Load existing PI file and merge
     existing_file = out_dir / "prediction_intervals_20260405_100353.json"
     if existing_file.exists():
-        with open(existing_file) as f:
+        with open(existing_file, encoding="utf-8") as f:
             existing = json.load(f)
     else:
         existing = []
@@ -243,7 +243,7 @@ def main():
     merged = existing + results
 
     # Save back to same file (keeps things simple)
-    with open(existing_file, "w") as f:
+    with open(existing_file, "w", encoding="utf-8") as f:
         json.dump(merged, f, indent=2)
     logger.success(f"Saved {len(results)} new entries to {existing_file}")
 

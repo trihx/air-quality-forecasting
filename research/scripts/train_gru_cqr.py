@@ -360,7 +360,7 @@ def train_gru_quantile(horizon: int, df: pd.DataFrame) -> dict:
         "alpha": ALPHA,
     }
     config_path = export_dir / f"gru_quantile_{horizon}h_config.json"
-    with open(config_path, "w") as f:
+    with open(config_path, "w", encoding="utf-8") as f:
         json.dump(cqr_config, f, indent=2)
     logger.info(f"Exported config: {config_path}")
 
@@ -426,7 +426,7 @@ def main():
     pi_dir = PROJECT_ROOT / "research" / "experiments" / "prediction_intervals"
     pi_file = pi_dir / "prediction_intervals_20260405_100353.json"
     if pi_file.exists():
-        with open(pi_file) as f:
+        with open(pi_file, encoding="utf-8") as f:
             existing = json.load(f)
     else:
         existing = []
@@ -450,14 +450,14 @@ def main():
         }
         existing.append(pi_entry)
 
-    with open(pi_file, "w") as f:
+    with open(pi_file, "w", encoding="utf-8") as f:
         json.dump(existing, f, indent=2)
     logger.success(f"Updated {pi_file}")
 
     # ── Save detailed CQR results ──
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     detail_path = pi_dir / f"cqr_results_{ts}.json"
-    with open(detail_path, "w") as f:
+    with open(detail_path, "w", encoding="utf-8") as f:
         json.dump(all_results, f, indent=2)
     logger.success(f"Detailed results: {detail_path}")
 

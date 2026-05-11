@@ -23,7 +23,7 @@ def _load_latest(pattern: str) -> dict:
     files = sorted(glob.glob(str(OUTPUT_DIR / pattern)))
     if not files:
         return {}
-    with open(files[-1]) as f:
+    with open(files[-1], encoding="utf-8") as f:
         return json.load(f)
 
 def build_ensemble(freq: str):
@@ -78,7 +78,7 @@ def build_ensemble(freq: str):
     # Save ensemble predictions
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_file = OUTPUT_DIR / f"ensemble_preds_{freq}_{timestamp}.json"
-    with open(out_file, "w") as f:
+    with open(out_file, "w", encoding="utf-8") as f:
         json.dump(ensemble_preds, f)
         
     print(f"  ✅ Saved: {out_file.name}")

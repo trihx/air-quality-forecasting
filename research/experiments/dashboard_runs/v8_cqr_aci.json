@@ -246,5 +246,25 @@
         "source": "v8_final"
       }
     }
+  },
+  "feature_set": {
+    "lag": true,
+    "rolling": true,
+    "ewm": true,
+    "diff": true,
+    "calendar": true,
+    "domain": true,
+    "fourier": true,
+    "interaction": true,
+    "log_transform": true,
+    "rolling_range": true,
+    "cv_features": true,
+    "pca_reduction": true
+  },
+  "changes": {
+    "what": "Final v8 pipeline sau khi sửa lỗi KNN look-ahead và chuẩn hóa MASE",
+    "why": "Sửa lỗi data leakage trong KNN; áp dụng chuẩn MASE thống nhất; tích hợp Adaptive Conformal Inference (ACI)",
+    "result": "Loại bỏ hoàn toàn rò rỉ dữ liệu. ACI giúp duy trì độ phủ ~90% trên tập Test bất chấp data shift.",
+    "conclusion": "Phiên bản chuẩn khoa học (Scientific Audit) hoàn chỉnh nhất, đánh giá trung thực năng lực mô hình."
   }
 }

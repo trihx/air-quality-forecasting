@@ -161,7 +161,7 @@ def main() -> None:
         "gap_distribution": gap_distribution,
     }
     report_path = OUTPUT_DIR / "gap_analysis_report.json"
-    with open(report_path, "w") as f:
+    with open(report_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
     print(f"\n✅ Report saved: {report_path}", flush=True)
     print("=" * 60, flush=True)

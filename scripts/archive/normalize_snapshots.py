@@ -5,7 +5,7 @@ from pathlib import Path
 runs_dir = Path("research/experiments/dashboard_runs")
 
 for p in runs_dir.glob("*.json"):
-    with open(p, "r") as f:
+    with open(p, "r", encoding="utf-8") as f:
         data = json.load(f)
     
     modified = False
@@ -51,7 +51,7 @@ for p in runs_dir.glob("*.json"):
                 modified = True
 
     if modified:
-        with open(p, "w") as f:
+        with open(p, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         print(f"Normalized {p.name}")
 

@@ -26,9 +26,18 @@ COPY pyproject.toml uv.lock ./
 # --no-dev: skip dev dependencies
 RUN uv sync --frozen --no-dev --no-install-project
 
+# Remove massive CUDA/NVIDIA binaries that pip installs by default on Linux
+# This alone saves ~4-5GB of space
+RUN rm -rf /app/.venv/lib/python*/site-packages/nvidia* && \
+    rm -rf /app/.venv/lib/python*/site-packages/triton*
+
 # PyTorch CPU-only overlay (saves ~1.4GB vs full PyTorch)
 RUN uv pip install --no-cache-dir \
-    torch --index-url https://download.pytorch.org/whl/cpu
+    torch \
+    --index-url https://download.pytorch.org/whl/cpu
+
+# Strip .so files to save more space
+RUN find /app/.venv -name "*.so" -exec strip {} \; || true
 
 # --- Stage 2: Runtime ---
 FROM python:3.11-slim

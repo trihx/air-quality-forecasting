@@ -284,7 +284,7 @@ def _create_v2_snapshot(lgbm_results: dict) -> None:
     linear_jsons = sorted(linear_dir.glob("*.json")) if linear_dir.exists() else []
     linear_data = {}
     if linear_jsons:
-        with open(linear_jsons[-1]) as f:
+        with open(linear_jsons[-1], encoding="utf-8") as f:
             linear_data = json.load(f)
         print(f"  Loaded linear results: {linear_jsons[-1].name}", flush=True)
 
@@ -292,7 +292,7 @@ def _create_v2_snapshot(lgbm_results: dict) -> None:
     v1_path = DASHBOARD_RUNS_DIR / "v1_baseline_20260411.json"
     v1_data = {}
     if v1_path.exists():
-        with open(v1_path) as f:
+        with open(v1_path, encoding="utf-8") as f:
             v1_data = json.load(f)
         print(f"  Loaded v1 baseline for DL models", flush=True)
 
@@ -361,7 +361,7 @@ def _create_v2_snapshot(lgbm_results: dict) -> None:
             return obj.tolist()
         return obj
 
-    with open(output_path, "w") as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(snapshot, f, indent=2, default=_convert, ensure_ascii=False)
     print(f"  Saved v2 snapshot: {output_path}", flush=True)
     print(f"  Models: {len(snapshot['models_included'])}", flush=True)
@@ -375,7 +375,7 @@ def _print_comparison(lgbm_results: dict) -> None:
         print("  No v1 baseline to compare", flush=True)
         return
 
-    with open(v1_path) as f:
+    with open(v1_path, encoding="utf-8") as f:
         v1 = json.load(f)
 
     v1_results = v1.get("data", {}).get("results", {})

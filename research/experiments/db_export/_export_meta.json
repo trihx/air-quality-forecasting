@@ -1,0 +1,12 @@
+{
+  "exported_at": "2026-05-04T09:11:58.248576",
+  "database_url": "sqlite:///./research/experiments/forecasting.db",
+  "tables": [
+    "info_cards",
+    "experiments",
+    "runs",
+    "run_models",
+    "metrics",
+    "feature_importances"
+  ]
+}

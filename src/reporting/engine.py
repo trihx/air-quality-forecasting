@@ -35,6 +35,18 @@ MODEL_TYPES: dict[str, str] = {
     "TFT": "Transformer",
 }
 
+def get_model_type(name: str) -> str:
+    """Resolve model type dynamically based on its name."""
+    name_lower = name.lower()
+    if "persistence" in name_lower or "naive" in name_lower: return "Baseline"
+    if "arima" in name_lower: return "Statistical"
+    if "ensemble" in name_lower or "stacking" in name_lower or "voting" in name_lower: return "Ensemble"
+    if "tft" in name_lower: return "Transformer"
+    if "gru" in name_lower or "lstm" in name_lower: return "Deep Learning"
+    if "lightgbm" in name_lower or "randomforest" in name_lower or "gradientboosting" in name_lower or "elasticnet" in name_lower: return "ML"
+    return MODEL_TYPES.get(name, "Unknown")
+
+
 HORIZONS = ("1h", "6h", "24h")
 
 
@@ -73,32 +85,37 @@ class ReportingEngine:
         if not h_data:
             return {"model": "N/A", "mae": 0.0, "mase": 0.0, "type": "?", "improvement_pct": 0.0}
 
-        # Get Persistence MAE for improvement calculation
-        persistence_mae = h_data.get("Persistence", {}).get("mae", 0.0)
+        # Find Persistence model MASE for improvement calculation
+        persist_mase = 1.0
+        for model_name, metrics in h_data.items():
+            if "Persistence" in model_name:
+                persist_mase = metrics.get("mase", 1.0)
+                break
 
-        # Find best non-Persistence model by MAE
+        # Find best non-baseline model by MASE
         best = None
         for model_name, metrics in h_data.items():
-            if model_name == "Persistence":
+            if get_model_type(model_name) == "Baseline":
                 continue
-            mae = metrics.get("mae", float("inf"))
-            if best is None or mae < best["mae"]:
+            mase = metrics.get("mase", float("inf"))
+            if best is None or mase < best["mase"]:
                 best = {
                     "model": model_name,
-                    "mae": mae,
-                    "mase": metrics.get("mase", 0.0),
-                    "type": MODEL_TYPES.get(model_name, "Unknown"),
+                    "mae": metrics.get("mae", float("inf")),
+                    "mase": mase,
+                    "type": get_model_type(model_name),
                 }
 
         if best is None:
-            return {"model": "N/A", "mae": 0.0, "mase": 0.0, "type": "?", "improvement_pct": 0.0}
+            return {"model": "N/A", "mae": 0.0, "mase": 0.0, "type": "?", "improvement_pct": 0.0, "persist_mase": 1.0}
 
-        # Calculate improvement vs Persistence
-        if persistence_mae > 0:
-            best["improvement_pct"] = (1.0 - best["mase"]) * 100
+        # Calculate improvement vs Baseline
+        if best["mase"] != float("inf"):
+            best["improvement_pct"] = ((persist_mase - best["mase"]) / persist_mase) * 100
         else:
             best["improvement_pct"] = 0.0
 
+        best["persist_mase"] = persist_mase
         return best
 
     def get_best_models_all(self) -> dict[str, dict]:
@@ -129,7 +146,7 @@ class ReportingEngine:
         for model in sorted(all_models):
             row = {
                 "Model": model,
-                "Type": MODEL_TYPES.get(model, "Unknown"),
+                "Type": get_model_type(model),
             }
             for h in HORIZONS:
                 mase = self.results.get(h, {}).get(model, {}).get("mase", None)
@@ -156,6 +173,8 @@ class ReportingEngine:
         Returns DataFrame with string-formatted MASE values and star markers.
         """
         df = self.get_ranking_table(top_n=top_n)
+        if df.empty or "Model" not in df.columns:
+            return df
 
         # Find best per horizon (excluding Persistence)
         best_per_h = {}
@@ -221,6 +240,200 @@ class ReportingEngine:
             data[model] = vals
         return data
 
+    # ── Representative Models (Top-5 per family) ────────────────────
+
+    def get_representative_models(self) -> list[str]:
+        """Get best model per family for clean Top-5 charts.
+
+        Selects the model with the lowest average MASE across all horizons
+        for each model type (Baseline, Statistical, ML, Deep Learning,
+        Ensemble, Transformer). Always includes Persistence as baseline.
+
+        Returns:
+            Sorted list of 5-6 representative model names.
+        """
+        # Collect all models with their average MASE
+        family_best: dict[str, tuple[str, float]] = {}
+        all_models = set()
+        for h in HORIZONS:
+            all_models.update(self.results.get(h, {}).keys())
+
+        for model in all_models:
+            mtype = get_model_type(model)
+            vals = []
+            for h in HORIZONS:
+                mase = self.results.get(h, {}).get(model, {}).get("mase")
+                if mase is not None:
+                    vals.append(mase)
+            if not vals:
+                continue
+            avg_mase = sum(vals) / len(vals)
+
+            if mtype not in family_best or avg_mase < family_best[mtype][1]:
+                family_best[mtype] = (model, avg_mase)
+
+        # Build list: always include best Baseline first
+        reps = []
+        for mtype in ("Baseline", "Statistical", "ML", "Deep Learning", "Transformer", "Ensemble"):
+            if mtype in family_best:
+                name = family_best[mtype][0]
+                if name not in reps:
+                    reps.append(name)
+
+        return reps
+
+    # ── MAE Ranking Table ─────────────────────────────────────────
+
+    def get_mae_ranking_table(self, horizon: str, top_n: int = 10) -> pd.DataFrame:
+        """Generate MAE ranking table for a specific horizon.
+
+        Args:
+            horizon: One of '1h', '6h', '24h'.
+            top_n: Number of top models to include.
+
+        Returns:
+            DataFrame with columns: Rank, Model, Type, MAE (µg/m³),
+            MASE, vs Persistence (%).
+        """
+        h_data = self.results.get(horizon, {})
+        if not h_data:
+            return pd.DataFrame()
+
+        # Find Persistence MAE for comparison
+        persist_mae = None
+        for model_name, metrics in h_data.items():
+            if "Persistence" in model_name:
+                persist_mae = metrics.get("mae")
+                break
+
+        rows = []
+        for model_name, metrics in h_data.items():
+            mae = metrics.get("mae")
+            mase = metrics.get("mase")
+            if mae is None:
+                continue
+
+            vs_persist = None
+            if persist_mae and persist_mae > 0:
+                vs_persist = round(((mae - persist_mae) / persist_mae) * 100, 1)
+
+            rmse = metrics.get("rmse")
+            r2 = metrics.get("r2")
+            da = metrics.get("da")
+            bias = metrics.get("forecast_bias")
+
+            rows.append({
+                "Model": model_name,
+                "Type": get_model_type(model_name),
+                "MAE (µg/m³)": round(mae, 3),
+                "RMSE (µg/m³)": round(rmse, 3) if rmse is not None and rmse != float("inf") else None,
+                "MASE": round(mase, 3) if mase is not None else None,
+                "R²": round(r2, 4) if r2 is not None else None,
+                "DA (%)": round(da, 1) if da is not None else None,
+                "vs Persistence (%)": vs_persist,
+            })
+
+        df = pd.DataFrame(rows).sort_values("MAE (µg/m³)").head(top_n)
+        df.insert(0, "Rank", range(1, len(df) + 1))
+        # Add medal emoji for top 3
+        medals = {1: "🥇", 2: "🥈", 3: "🥉"}
+        df["Rank"] = df["Rank"].map(lambda x: f"{medals.get(x, '')} {x}".strip())
+        return df.reset_index(drop=True)
+
+    def get_models_ranked_by_mae(self, horizon: str) -> list[str]:
+        """Get all model names sorted by MAE for a given horizon (best first).
+
+        Useful for populating ranked multiselect dropdowns in the UI.
+
+        Args:
+            horizon: One of '1h', '6h', '24h'.
+
+        Returns:
+            List of model names sorted by MAE ascending.
+        """
+        h_data = self.results.get(horizon, {})
+        if not h_data:
+            return []
+
+        ranked = sorted(
+            h_data.items(),
+            key=lambda item: item[1].get("mae", float("inf")),
+        )
+        return [name for name, _ in ranked]
+
+    # ── MASE Ranking Table ────────────────────────────────────────
+
+    def get_mase_ranking_table(self, horizon: str, top_n: int = 10) -> pd.DataFrame:
+        """Generate MASE ranking table for a specific horizon.
+
+        Args:
+            horizon: One of '1h', '6h', '24h'.
+            top_n: Number of top models to include.
+
+        Returns:
+            DataFrame with columns: Rank, Model, Type, MASE,
+            MAE (µg/m³), vs Persistence (%).
+        """
+        h_data = self.results.get(horizon, {})
+        if not h_data:
+            return pd.DataFrame()
+
+        # Find Persistence MASE for comparison
+        persist_mase = 1.0
+        for model_name, metrics in h_data.items():
+            if "Persistence" in model_name:
+                persist_mase = metrics.get("mase", 1.0)
+                break
+
+        rows = []
+        for model_name, metrics in h_data.items():
+            mase = metrics.get("mase")
+            mae = metrics.get("mae")
+            if mase is None:
+                continue
+
+            vs_persist = round(((mase - persist_mase) / persist_mase) * 100, 1) if persist_mase > 0 else None
+
+            rmse = metrics.get("rmse")
+            r2 = metrics.get("r2")
+            da = metrics.get("da")
+
+            rows.append({
+                "Model": model_name,
+                "Type": get_model_type(model_name),
+                "MASE": round(mase, 3),
+                "MAE (µg/m³)": round(mae, 3) if mae is not None else None,
+                "RMSE (µg/m³)": round(rmse, 3) if rmse is not None and rmse != float("inf") else None,
+                "R²": round(r2, 4) if r2 is not None else None,
+                "DA (%)": round(da, 1) if da is not None else None,
+                "vs Persistence (%)": vs_persist,
+            })
+
+        df = pd.DataFrame(rows).sort_values("MASE").head(top_n)
+        df.insert(0, "Rank", range(1, len(df) + 1))
+        medals = {1: "🥇", 2: "🥈", 3: "🥉"}
+        df["Rank"] = df["Rank"].map(lambda x: f"{medals.get(x, '')} {x}".strip())
+        return df.reset_index(drop=True)
+
+    def get_models_ranked_by_mase(self, horizon: str) -> list[str]:
+        """Get all model names sorted by MASE for a given horizon (best first).
+
+        Args:
+            horizon: One of '1h', '6h', '24h'.
+
+        Returns:
+            List of model names sorted by MASE ascending.
+        """
+        h_data = self.results.get(horizon, {})
+        if not h_data:
+            return []
+
+        ranked = sorted(
+            h_data.items(),
+            key=lambda item: item[1].get("mase", float("inf")),
+        )
+        return [name for name, _ in ranked]
+
     # ── Auto-Generated Insights ──────────────────────────────────────
 
     def generate_insights(self) -> dict[str, str]:
@@ -234,7 +447,7 @@ class ReportingEngine:
         b24 = bests["24h"]
 
         # Check if any model beats Persistence at 1h
-        h1_beats_persistence = b1["mase"] < 1.0
+        h1_beats_persistence = b1["mase"] < b1.get("persist_mase", 1.0)
 
         if h1_beats_persistence:
             h1_text = (

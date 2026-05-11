@@ -97,7 +97,7 @@ if lgbm_path.exists():
     df_feat = build_features(df_hybrid)
     feat_names_path = EXPORT_DIR / f"lgbm_{{horizon}}h_features.json"
     if feat_names_path.exists():
-        with open(feat_names_path) as f:
+        with open(feat_names_path, encoding="utf-8") as f:
             feat_info = json.load(f)
         feat_cols = [c for c in feat_info["features"] if c in df_feat.columns]
     else:
@@ -119,7 +119,7 @@ if lgbm_path.exists():
         print(f"  LightGBM MAE={{lgbm_mae:.2f}}, MASE={{lgbm_mae/persist_mae:.3f}}", flush=True)
 
 out_path = CACHE_DIR / f"avp_{{horizon}}h.json"
-with open(out_path, "w") as f:
+with open(out_path, "w", encoding="utf-8") as f:
     json.dump(result, f)
 print(f"  Saved {{out_path.name}} ({{out_path.stat().st_size/1024:.0f}} KB)", flush=True)
 '''
@@ -157,7 +157,7 @@ val_end = int(n * 0.9)
 
 # Load existing cache
 cache_path = CACHE_DIR / f"avp_{{horizon}}h.json"
-with open(cache_path) as f:
+with open(cache_path, encoding="utf-8") as f:
     result = json.load(f)
 
 persist_mae = float(result["metrics"][0]["MAE"])
@@ -169,7 +169,7 @@ if gru_path.exists() and scaler_path.exists():
     model_gru = torch.jit.load(str(gru_path), map_location="cpu")
     model_gru.eval()
 
-    with open(scaler_path) as f:
+    with open(scaler_path, encoding="utf-8") as f:
         sc = json.load(f)
 
     feat_cols_dl = sc["features"]
@@ -218,7 +218,7 @@ if gru_path.exists() and scaler_path.exists():
         result["metrics"].append({{"Mô hình": "GRU", "MAE": f"{{gru_mae:.2f}}", "MASE": f"{{gru_mae/persist_mae:.2f}}"}})
         print(f"  GRU MAE={{gru_mae:.2f}}, MASE={{gru_mae/persist_mae:.3f}}", flush=True)
 
-with open(cache_path, "w") as f:
+with open(cache_path, "w", encoding="utf-8") as f:
     json.dump(result, f)
 print(f"  Updated {{cache_path.name}}", flush=True)
 '''
@@ -252,7 +252,7 @@ def main():
     for h in [1, 6, 24]:
         p = CACHE_DIR / f"avp_{h}h.json"
         if p.exists():
-            with open(p) as f:
+            with open(p, encoding="utf-8") as f:
                 d = json.load(f)
             models = [m["Mô hình"] for m in d["metrics"]]
             print(f"  h={h}: {', '.join(models)} ({p.stat().st_size/1024:.0f} KB)")

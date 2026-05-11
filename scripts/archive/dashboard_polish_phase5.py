@@ -16,7 +16,7 @@ result = {}
 # 1. Complexity Profile
 eda_json_path = EDA_DIR / "eda_results.json"
 if eda_json_path.exists():
-    with open(eda_json_path, "r") as f:
+    with open(eda_json_path, "r", encoding="utf-8") as f:
         eda_data = json.load(f)
     
     fc = eda_data.get("forecastability", {})
@@ -60,7 +60,7 @@ result['expanding_window'] = {
 }
 
 output_path = EDA_DIR / "phase5_dashboard_data.json"
-with open(output_path, "w") as f:
+with open(output_path, "w", encoding="utf-8") as f:
     json.dump(result, f)
 
 print(f"Phase 5 data saved to {output_path}")

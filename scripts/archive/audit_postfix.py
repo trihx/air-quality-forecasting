@@ -5,7 +5,7 @@ from pathlib import Path
 
 # 1. Validate JSON
 try:
-    with open("research/experiments/dashboard_content.json") as f:
+    with open("research/experiments/dashboard_content.json", encoding="utf-8") as f:
         content = json.load(f)
     print("JSON valid ✅")
 except Exception as e:

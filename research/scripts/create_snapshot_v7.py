@@ -16,14 +16,14 @@ sys.path.insert(0, str(PROJECT_ROOT))
 def main():
     # Load current standardized metrics
     metrics_path = PROJECT_ROOT / "research" / "experiments" / "standardized_metrics.json"
-    with open(metrics_path) as f:
+    with open(metrics_path, encoding="utf-8") as f:
         std_data = json.load(f)
 
     # Load current prediction intervals
     pi_path = PROJECT_ROOT / "research" / "experiments" / "prediction_intervals" / "prediction_intervals_20260405_100353.json"
     pi_data = []
     if pi_path.exists():
-        with open(pi_path) as f:
+        with open(pi_path, encoding="utf-8") as f:
             pi_data = json.load(f)
 
     # Build snapshot
@@ -70,7 +70,7 @@ def main():
     out_dir = PROJECT_ROOT / "research" / "experiments" / "dashboard_runs"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "v7_pre_cqr_20260428.json"
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(snapshot, f, indent=2, ensure_ascii=False)
 
     print(f"✅ Saved v7 snapshot: {out_path}")

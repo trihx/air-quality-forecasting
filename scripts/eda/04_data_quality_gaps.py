@@ -138,7 +138,7 @@ def main():
         print("Run analyze_gaps.py first!")
         sys.exit(1)
 
-    with open(JSON_REPORT) as f:
+    with open(JSON_REPORT, encoding="utf-8") as f:
         report = json.load(f)
 
     print(f"Loading raw data for barcode from {RAW_PATH}...")

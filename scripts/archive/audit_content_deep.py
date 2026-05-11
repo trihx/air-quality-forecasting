@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 content_path = Path("research/experiments/dashboard_content.json")
-with open(content_path) as f:
+with open(content_path, encoding="utf-8") as f:
     content = json.load(f)
 
 print("=" * 80)

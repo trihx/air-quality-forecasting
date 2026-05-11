@@ -206,7 +206,7 @@ def export_arima_horizon(
 
     # Save
     out_path = CACHE_DIR / f"arima_preds_{horizon}h.json"
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump({
             "model": "ARIMA",
             "horizon": horizon,
@@ -319,7 +319,7 @@ def export_sarima_horizon(
     )
 
     out_path = CACHE_DIR / f"sarima_preds_{horizon}h.json"
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump({
             "model": "SARIMA",
             "horizon": horizon,

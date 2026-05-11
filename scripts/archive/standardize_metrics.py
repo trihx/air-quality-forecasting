@@ -48,7 +48,7 @@ def _load_latest(prefix: str, dir_path: Path) -> dict:
     if not exact:
         print(f"  ⚠️ Not found: {prefix}_TIMESTAMP.json in {dir_path}", flush=True)
         return {}
-    with open(exact[-1]) as f:
+    with open(exact[-1], encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -287,7 +287,7 @@ def main() -> None:
             if isinstance(obj, np.generic): return obj.item()
             return obj
 
-        with open(cache_path, "w") as f:
+        with open(cache_path, "w", encoding="utf-8") as f:
             json.dump(avp_cache_data[h], f, indent=2, ensure_ascii=False, default=_convert)
         
         n_models = len(h_model_preds)
@@ -337,7 +337,7 @@ def main() -> None:
     }
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
     print(f"\n💾 Saved Metrics: {out_path}", flush=True)
 

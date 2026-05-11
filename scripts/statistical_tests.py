@@ -11,6 +11,7 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import json
 import time
 import warnings
@@ -40,17 +41,21 @@ HORIZONS = [1, 6, 24]
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Statistical Tests")
+    parser.add_argument("--resolution", type=str, default="1h", help="Data resolution (e.g., 1h, 30m, 15m)")
+    args = parser.parse_args()
+    
     t_start = time.time()
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
     print("=" * 70, flush=True)
-    print("STATISTICAL SIGNIFICANCE & RESIDUAL DIAGNOSTICS", flush=True)
+    print(f"STATISTICAL SIGNIFICANCE & RESIDUAL DIAGNOSTICS ({args.resolution})", flush=True)
     print("=" * 70, flush=True)
 
     # ── 1. Prepare data ──
     print("\n[1/4] Preparing data...", flush=True)
-    df_hybrid = _prepare_hybrid_data()
+    df_hybrid = _prepare_hybrid_data(freq=args.resolution)
     is_imp_col = df_hybrid["is_imputed"].copy()
     df_feat = build_features(df_hybrid.drop(columns=["is_imputed"]))
     df_feat["is_imputed"] = is_imp_col.reindex(df_feat.index).fillna(False)
@@ -90,7 +95,7 @@ def main() -> None:
         "residual_diagnostics": diag_results,
     }
     json_path = OUTPUT_DIR / "statistical_tests_results.json"
-    with open(json_path, "w") as f:
+    with open(json_path, "w", encoding="utf-8") as f:
         json.dump(results_json, f, indent=2, ensure_ascii=False, default=str)
 
     print(f"\n{'═' * 70}", flush=True)
@@ -100,13 +105,13 @@ def main() -> None:
     print(f"{'═' * 70}", flush=True)
 
 
-def _prepare_hybrid_data() -> pd.DataFrame:
+def _prepare_hybrid_data(freq: str = "1h") -> pd.DataFrame:
     df_raw = load_raw_data()
     df = _remove_duplicates(df_raw)
     df = _set_datetime_index(df)
     df, _ = _clip_physical_bounds(df)
     df, _ = _handle_outliers(df, method="iqr", threshold=3.0)
-    df = _resample(df, freq="1h")
+    df = _resample(df, freq=freq)
     return impute_missing_data(
         df,
         strategy="hybrid",

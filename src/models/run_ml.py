@@ -231,7 +231,7 @@ def main() -> None:
     baseline_path = Path("research/experiments/baselines/latest_results.json")
     baseline_mae = None
     if baseline_path.exists():
-        with open(baseline_path) as f:
+        with open(baseline_path, encoding="utf-8") as f:
             baseline_data = json.load(f)
         baseline_mae = baseline_data.get("best_mae")
         logger.info(f"  📏 Baseline target: MAE < {baseline_mae}")
@@ -286,7 +286,7 @@ def main() -> None:
 
     json_path = output_dir / "latest_results.json"
     best = results_df.iloc[0]
-    with open(json_path, "w") as f:
+    with open(json_path, "w", encoding="utf-8") as f:
         json.dump(
             {
                 "timestamp": timestamp,

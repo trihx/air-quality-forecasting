@@ -539,7 +539,7 @@ def main():
         cr = {k: v for k, v in r.items() if k not in ["predictions", "lower", "upper", "y_true"]}
         clean_results.append(cr)
 
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(clean_results, f, indent=2, ensure_ascii=False)
     print(f"\n  Results saved: {out_path}", flush=True)
 

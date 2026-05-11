@@ -639,9 +639,9 @@ def main():
             return obj.tolist()
         return obj
 
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(all_results, f, indent=2, default=_convert, ensure_ascii=False)
-    with open(preds_path, "w") as f:
+    with open(preds_path, "w", encoding="utf-8") as f:
         json.dump(all_preds, f, indent=2, default=_convert, ensure_ascii=False)
     print(f"\n  Results saved: {out_path}", flush=True)
     print(f"  Preds saved: {preds_path}", flush=True)

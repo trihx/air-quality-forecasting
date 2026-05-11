@@ -627,7 +627,7 @@ def main() -> None:
         return obj
 
     output = {"meta": meta, "results": all_results}
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, default=_convert, ensure_ascii=False)
     print(f"\n  Results saved: {out_path}", flush=True)
 

@@ -5,7 +5,7 @@ runs_dir = Path("research/experiments/dashboard_runs")
 snapshots = {}
 for jpath in sorted(runs_dir.glob("*.json")):
     try:
-        with open(jpath) as f:
+        with open(jpath, encoding="utf-8") as f:
             data = json.load(f)
         version = data.get("version", jpath.stem)
         snapshots[version] = data

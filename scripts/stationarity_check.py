@@ -195,7 +195,7 @@ def main() -> None:
 
     # Save results
     json_path = output_dir / "stationarity_results.json"
-    with open(json_path, "w") as f:
+    with open(json_path, "w", encoding="utf-8") as f:
         json.dump(
             {
                 "n_observations": len(pm25),

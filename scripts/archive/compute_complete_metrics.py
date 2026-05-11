@@ -94,7 +94,7 @@ def main():
             import lightgbm as lgb
 
             # Load best params from experiments
-            with open("research/experiments/multi_horizon/multi_horizon_20260404_215251.json") as f:
+            with open("research/experiments/multi_horizon/multi_horizon_20260404_215251.json", encoding="utf-8") as f:
                 mh_data = json.load(f)
 
             hkey = f"{horizon}h"
@@ -231,7 +231,7 @@ def main():
     # Save results
     out_path = Path("research/diagnostics/complete_metrics.json")
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2)
 
     print(f"\n{'=' * 70}")

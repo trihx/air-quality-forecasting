@@ -99,7 +99,7 @@ THEMES = {
         "figure_facecolor": "#0E1117",
         "axes_facecolor": "#1A1D23",
         "text_color": "#EAEAEA",
-        "text_muted": "#8B95A5",
+        "text_muted": "#71717A",
         "grid_color": "#2D3139",
         "spine_color": "#2D3139",
         "annotation_bg": "#1A1D23",
@@ -204,17 +204,69 @@ def annotation_bbox(mode: str = "light") -> dict:
     }
 
 
+def get_plotly_annotation_style(mode: str = "light", overrides: dict | None = None) -> dict:
+    """Get standard Plotly annotation style dict for consistent chart labels.
+    
+    Designed to support high contrast (Grayscale printing) by using strong
+    white backgrounds and dark text to avoid gridline overlap.
+    
+    Args:
+        mode: 'light' or 'dark' (defaults to light for best print contrast).
+        overrides: Optional dict to override default values.
+        
+    Returns:
+        Dict suitable for unpacking into fig.add_annotation(**kwargs).
+    """
+    theme = get_theme(mode)
+    base_style = {
+        "showarrow": False,
+        "font": dict(
+            size=TOKENS["font_size_annotation"] + 1,  # +1 for slightly better readability
+            color="#111111" if mode == "light" else theme["text_color"]
+        ),
+        "bgcolor": "rgba(255, 255, 255, 0.9)" if mode == "light" else "rgba(26, 29, 35, 0.9)",
+        "bordercolor": "rgba(0, 0, 0, 0.2)" if mode == "light" else "rgba(255, 255, 255, 0.2)",
+        "borderwidth": 1,
+        "borderpad": 3,
+    }
+    
+    if overrides:
+        # Deep update for nested dicts like font
+        for k, v in overrides.items():
+            if k == "font" and isinstance(v, dict):
+                base_style["font"].update(v)
+            else:
+                base_style[k] = v
+                
+    return base_style
+
+
+# ══════════════════════════════════════════════════════════════════════
+# DEPRECATED — Legacy helpers kept for backward compatibility.
+# New code MUST use `src.viz.chart_factory` instead.
+# ══════════════════════════════════════════════════════════════════════
+
+def get_plotly_config(filename: str = "chart", scale: int = 3) -> dict:
+    """Get standardized Plotly configuration for the dashboard.
+
+    .. deprecated::
+        Use ``src.viz.chart_factory.render_chart()`` which embeds config automatically.
+    """
+    return {
+        "displayModeBar": True,
+        "toImageButtonOptions": {
+            "format": "png",
+            "filename": filename,
+            "scale": scale
+        }
+    }
+
+
 def get_plotly_template(mode: str = "light") -> dict:
     """Get Plotly layout template for the given mode.
 
-    Uses transparent paper/plot background so Streamlit
-    controls the surrounding theme automatically.
-
-    Args:
-        mode: 'light' or 'dark'.
-
-    Returns:
-        Dict with 'layout' key for Plotly figure.
+    .. deprecated::
+        Use ``src.viz.chart_factory.chart()`` which applies template automatically.
     """
     theme = get_theme(mode)
     return {
@@ -267,13 +319,9 @@ def detect_streamlit_mode() -> str:
 
 def apply_plotly_style(fig, height=450):
     """Apply standard Plotly template to a figure based on current Streamlit mode.
-    
-    Args:
-        fig: Plotly figure object.
-        height: Desired height in pixels.
-        
-    Returns:
-        The updated Plotly figure.
+
+    .. deprecated::
+        Use ``src.viz.chart_factory.chart()`` + ``render_chart()`` instead.
     """
     mode = detect_streamlit_mode()
     _template = get_plotly_template(mode)

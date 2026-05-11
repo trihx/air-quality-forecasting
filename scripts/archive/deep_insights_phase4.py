@@ -93,7 +93,7 @@ def run_error_anatomy(df_feat: pd.DataFrame, results: dict) -> None:
         print("  ⚠️ avp_6h.json not found, skipping", flush=True)
         return
 
-    with open(avp_path) as f:
+    with open(avp_path, encoding="utf-8") as f:
         avp = json.load(f)
 
     actuals = np.array(avp["actuals"])
@@ -313,7 +313,8 @@ def run_granger_causality(df_feat: pd.DataFrame, results: dict) -> None:
         if not p_sel:
             continue
         sel_lags = sorted([int(k) for k in p_sel.keys()])
-        sel_ps = [p_sel[str(l)] for l in sel_lags]
+        # Thêm floor 1e-15 để tránh lỗi log(0) trên trục Y
+        sel_ps = [max(p_sel[str(l)], 1e-15) for l in sel_lags]
         ax.plot(sel_lags, sel_ps, "o-", label=f"{label}", markersize=6, lw=2, alpha=0.85)
 
     ax.axhline(0.05, color="#FF6B6B", ls="--", lw=1.5, label="α = 0.05")
@@ -472,7 +473,7 @@ def main() -> None:
             return bool(obj)
         return obj
 
-    with open(OUTPUT_JSON, "w") as f:
+    with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2, default=_convert, ensure_ascii=False)
     print(f"\n  Results saved: {OUTPUT_JSON}", flush=True)
 

@@ -549,9 +549,9 @@ def _save_results(all_results, all_preds):
             return obj.tolist()
         return obj
 
-    with open(path_metrics, "w") as f:
+    with open(path_metrics, "w", encoding="utf-8") as f:
         json.dump(all_results, f, indent=2, default=conv, ensure_ascii=False)
-    with open(path_preds, "w") as f:
+    with open(path_preds, "w", encoding="utf-8") as f:
         json.dump(all_preds, f, indent=2, default=conv, ensure_ascii=False)
         
     print(f"  Metrics saved: {path_metrics}", flush=True)

@@ -303,7 +303,7 @@ def _save_results(results: dict) -> None:
 
     clean_results = json.loads(json.dumps(results, default=_convert))
 
-    with open(RESULTS_FILE, "w") as f:
+    with open(RESULTS_FILE, "w", encoding="utf-8") as f:
         json.dump(clean_results, f, indent=2, ensure_ascii=False)
     print(f"  Results saved: {RESULTS_FILE}", flush=True)
 

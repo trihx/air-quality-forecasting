@@ -47,6 +47,7 @@ EXPERIMENT_DIRS = [
 
 # ChromaDB path
 CHROMA_DIR = PROJECT_ROOT / ".chroma_db"
+REINDEX_FLAG_PATH = CHROMA_DIR / ".needs_reindex"
 
 
 def _chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list[str]:
@@ -163,6 +164,104 @@ def _load_experiment_results() -> list[dict]:
     return docs
 
 
+def _load_info_cards_from_db() -> list[dict]:
+    """Load user-curated info cards for RAG indexing.
+
+    3-tier fallback:
+        Tier 1: PostgreSQL via API (Docker)
+        Tier 2: JSON export file (local dev)
+        Tier 3: Empty list (graceful degradation)
+    """
+    cards = None
+
+    # Tier 1: API (PostgreSQL)
+    try:
+        from src.frontend.api_client import APIClient
+
+        client = APIClient()
+        result = client.get_info_cards()
+        if isinstance(result, list) and len(result) > 0:
+            cards = result
+    except Exception as e:
+        logger.warning(f"Failed to load info cards from API: {e}")
+
+    # Tier 2: JSON export file
+    if cards is None:
+        json_path = PROJECT_ROOT / "research" / "experiments" / "db_export" / "info_cards.json"
+        if json_path.exists():
+            try:
+                import json as _json
+                data = _json.loads(json_path.read_text(encoding="utf-8"))
+                cards = [
+                    {
+                        "card_key": key,
+                        "title": val.get("title", ""),
+                        "content": val.get("content", ""),
+                        "page": val.get("page", "unknown"),
+                    }
+                    for key, val in data.items()
+                ]
+                logger.info(f"Loaded {len(cards)} info cards from JSON export (fallback)")
+            except Exception as e:
+                logger.warning(f"Failed to load info cards from JSON export: {e}")
+
+    # Tier 3: Empty
+    if not cards:
+        return []
+
+    docs = []
+    for card in cards:
+        title = card.get("title", "")
+        content_text = card.get("content", "")
+        if not content_text.strip():
+            continue
+        full_text = f"# {title}\n\n{content_text}"
+        chunks = _chunk_text(full_text, chunk_size=1200, overlap=200)
+        for i, chunk in enumerate(chunks):
+            docs.append(
+                {
+                    "content": chunk,
+                    "metadata": {
+                        "source": f"info_card:{card.get('card_key', 'unknown')}",
+                        "type": "user_curated",
+                        "page": card.get("page", "unknown"),
+                        "chunk_index": i,
+                    },
+                }
+            )
+    logger.info(f"Loaded {len(docs)} chunks from {len(cards)} info cards")
+    return docs
+
+
+def _load_dashboard_content_json() -> list[dict]:
+    """Load structured dashboard content JSON as knowledge documents."""
+    json_path = PROJECT_ROOT / "research" / "experiments" / "dashboard_content.json"
+    if not json_path.exists():
+        return []
+    try:
+        data = json.loads(json_path.read_text(encoding="utf-8"))
+        content = "# Dashboard Content (Structured)\n\n"
+        content += json.dumps(data, indent=2, ensure_ascii=False)
+        chunks = _chunk_text(content, chunk_size=1500, overlap=300)
+        docs = []
+        for i, chunk in enumerate(chunks):
+            docs.append(
+                {
+                    "content": chunk,
+                    "metadata": {
+                        "source": "research/experiments/dashboard_content.json",
+                        "type": "dashboard_content",
+                        "chunk_index": i,
+                    },
+                }
+            )
+        logger.info(f"Loaded {len(docs)} chunks from dashboard_content.json")
+        return docs
+    except Exception as e:
+        logger.warning(f"Failed to load dashboard_content.json: {e}")
+        return []
+
+
 class KnowledgeBase:
     """Vector-based knowledge base using ChromaDB + sentence-transformers."""
 
@@ -225,7 +324,12 @@ class KnowledgeBase:
             collection = self._get_collection()
 
         # Load all knowledge
-        all_docs = _load_markdown_docs() + _load_experiment_results()
+        all_docs = (
+            _load_markdown_docs()
+            + _load_experiment_results()
+            + _load_info_cards_from_db()
+            + _load_dashboard_content_json()
+        )
 
         if not all_docs:
             logger.warning("No documents found to index!")

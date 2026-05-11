@@ -62,11 +62,32 @@ def _get_knowledge_base():
 
 
 def _ensure_index(kb) -> int:
-    """Ensure knowledge base is indexed, return doc count."""
+    """Ensure knowledge base is indexed, re-index if user content changed.
+
+    Checks for a `.needs_reindex` flag file set by the content API
+    when users edit info cards via the Dashboard UI. This ensures
+    the chatbot always has the latest user-curated knowledge.
+    """
+    from src.chatbot.knowledge_base import REINDEX_FLAG_PATH
+
+    # Check if user content was updated (flag set by content API)
+    needs_reindex = REINDEX_FLAG_PATH.exists()
+
+    if needs_reindex:
+        with st.spinner("🔄 Cập nhật kiến thức mới từ nội dung đã chỉnh sửa..."):
+            count = kb.build_index(force=True)
+        try:
+            REINDEX_FLAG_PATH.unlink()
+        except FileNotFoundError:
+            pass
+        st.toast("✅ Kiến thức chatbot đã được cập nhật!", icon="🧠")
+        return count
+
     if not kb.is_indexed():
         with st.spinner("🔄 Đang index tài liệu dự án lần đầu... (30-60 giây)"):
             count = kb.build_index()
         return count
+
     return kb.index_count()
 
 

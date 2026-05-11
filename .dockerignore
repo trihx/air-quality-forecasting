@@ -16,6 +16,11 @@
 __pycache__/
 *.pyc
 .venv/
+.chroma_db/
+core
+core.*
+.DS_Store
+Thumbs.db
 
 # === TÀI LIỆU BẢN QUYỀN (477MB) ===
 docs/*.pdf
@@ -27,7 +32,6 @@ docs/PLAYBOOK_SETUP_GUIDE.md
 
 # === DEVELOPMENT ONLY ===
 notebooks/
-tests/
 Makefile
 
 # === MÔI TRƯỜNG & SECRETS ===

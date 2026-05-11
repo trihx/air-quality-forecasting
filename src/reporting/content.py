@@ -6,16 +6,22 @@ class ContentManager:
     Manager class to handle loading and providing textual content for the dashboard.
     This enforces the 'Zero-Hardcode' rule by storing all descriptive text, insights,
     and literature data in `dashboard_content.json`.
+
+    Data access follows a 3-tier fallback pattern:
+        1. API (PostgreSQL via FastAPI) — primary source in Docker
+        2. JSON export files (db_export/) — fallback for local dev
+        3. Default string — last resort
     """
     def __init__(self, content_path: str = None):
+        self._project_root = Path(__file__).resolve().parent.parent.parent
         if content_path is None:
             # Default to research/experiments/dashboard_content.json
-            project_root = Path(__file__).resolve().parent.parent.parent
-            self.content_path = project_root / "research" / "experiments" / "dashboard_content.json"
+            self.content_path = self._project_root / "research" / "experiments" / "dashboard_content.json"
         else:
             self.content_path = Path(content_path)
         
         self.data = self._load_content()
+        self._info_cards_cache: dict | None = None
 
     def _load_content(self) -> dict:
         if not self.content_path.exists():
@@ -61,16 +67,50 @@ class ContentManager:
         return self.get_global_content().get("multi_horizon", {}).get("literature_vn", [])
 
     # === Helpers for Info Cards ===
+    def _load_info_cards_json(self) -> dict:
+        """Lazy-load info cards from JSON export file (Tier 2 fallback).
+
+        Caches the result so file is only read once per ContentManager instance.
+        """
+        if self._info_cards_cache is not None:
+            return self._info_cards_cache
+
+        json_path = self._project_root / "research" / "experiments" / "db_export" / "info_cards.json"
+        if json_path.exists():
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    self._info_cards_cache = json.load(f)
+                    return self._info_cards_cache
+            except Exception:
+                pass
+
+        self._info_cards_cache = {}
+        return self._info_cards_cache
+
     def get_info_card_text(self, key: str, default: str = "") -> str:
-        """Get info card content from API (PostgreSQL)."""
+        """Get info card content with 3-tier fallback.
+
+        Tier 1: API (PostgreSQL via FastAPI) — works in Docker
+        Tier 2: JSON export file (db_export/info_cards.json) — works on local dev
+        Tier 3: Default string — last resort
+        """
+        # Tier 1: API (PostgreSQL)
         try:
             from src.frontend.api_client import APIClient
             client = APIClient()
-            result = client.get_info_card(key)
+            result = client.get_info_card(key, quiet=True)
             if isinstance(result, dict) and "content" in result:
                 return result["content"]
-        except Exception as e:
-            from loguru import logger
-            logger.warning(f"Failed to fetch info card '{key}' from API: {e}")
-        
+        except Exception:
+            pass
+
+        # Tier 2: JSON export file
+        cards_json = self._load_info_cards_json()
+        if key in cards_json:
+            content = cards_json[key].get("content", "")
+            if content:
+                return content
+
+        # Tier 3: Default string
         return default
+

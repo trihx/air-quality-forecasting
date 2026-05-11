@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 # Load snapshot
-with open('research/experiments/dashboard_runs/v7_cqr_20260428.json') as f:
+with open('research/experiments/dashboard_runs/v7_cqr_20260428.json', encoding="utf-8") as f:
     snapshot = json.load(f)
 
 snapshot_results = snapshot.get('results', snapshot) # handle potential nesting
@@ -19,7 +19,7 @@ for h in horizons:
     
     # Load cache
     try:
-        with open(f'research/cache/avp_{h}.json') as f:
+        with open(f'research/cache/avp_{h}.json', encoding="utf-8") as f:
             cache = json.load(f)
     except Exception as e:
         print(f"Error loading cache for {h}: {e}")

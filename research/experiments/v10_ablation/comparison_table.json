@@ -1,0 +1,197 @@
+{
+  "1h": {
+    "Persistence_30m": {
+      "v9_mae": 5.6941,
+      "v10_mae": 2.879,
+      "delta_mae": -2.8151,
+      "v9_mase": 1.3875,
+      "v10_mase": 1.0,
+      "delta_mase": -0.3875,
+      "note": "FALSE ACCURACY"
+    },
+    "ElasticNet_v9_30m": {
+      "v9_mae": 4.1556,
+      "v10_mae": 2.9808,
+      "delta_mae": -1.1748,
+      "v9_mase": 1.0126,
+      "v10_mase": 1.0354,
+      "delta_mase": 0.0228,
+      "note": "DOMAIN BETTER"
+    },
+    "LightGBM_v9_30m": {
+      "v9_mae": 3.9592,
+      "v10_mae": 3.0941,
+      "delta_mae": -0.8651,
+      "v9_mase": 0.9647,
+      "v10_mase": 1.0747,
+      "delta_mase": 0.11,
+      "note": "DOMAIN BETTER"
+    },
+    "GRU_v9_30m": {
+      "v9_mae": 3.0073,
+      "v10_mae": 2.8809,
+      "delta_mae": -0.1264,
+      "v9_mase": 0.7328,
+      "v10_mase": 1.0444,
+      "delta_mase": 0.3116,
+      "note": "DOMAIN BETTER"
+    },
+    "LSTM_v9_30m": {
+      "v9_mae": 3.0972,
+      "v10_mae": 3.5331,
+      "delta_mae": 0.4359,
+      "v9_mase": 0.7547,
+      "v10_mase": 1.2808,
+      "delta_mase": 0.5261,
+      "note": "DOMAIN BETTER"
+    },
+    "TFT_v9_30m": {
+      "v9_mae": 4.3159,
+      "v10_mae": 4.3681,
+      "delta_mae": 0.0522,
+      "v9_mase": 1.0516,
+      "v10_mase": 1.5835,
+      "delta_mase": 0.5319,
+      "note": "DOMAIN BETTER"
+    },
+    "Ensemble_Weighted_v9_30m": {
+      "v9_mae": 3.2096,
+      "v10_mae": 3.5284,
+      "delta_mae": 0.3188,
+      "v9_mase": 0.7821,
+      "v10_mase": 1.3151,
+      "delta_mase": 0.533,
+      "note": "DOMAIN BETTER"
+    }
+  },
+  "6h": {
+    "Persistence_30m": {
+      "v9_mae": 5.1993,
+      "v10_mae": 5.4897,
+      "delta_mae": 0.2904,
+      "v9_mase": 0.5683,
+      "v10_mase": 1.0,
+      "delta_mase": 0.4317,
+      "note": "DOMAIN BETTER"
+    },
+    "ElasticNet_v9_30m": {
+      "v9_mae": 3.7583,
+      "v10_mae": 3.9893,
+      "delta_mae": 0.231,
+      "v9_mase": 0.4108,
+      "v10_mase": 0.7267,
+      "delta_mase": 0.3159,
+      "note": "DOMAIN BETTER"
+    },
+    "LightGBM_v9_30m": {
+      "v9_mae": 3.8204,
+      "v10_mae": 4.1722,
+      "delta_mae": 0.3518,
+      "v9_mase": 0.4176,
+      "v10_mase": 0.76,
+      "delta_mase": 0.3424,
+      "note": "DOMAIN BETTER"
+    },
+    "GRU_v9_30m": {
+      "v9_mae": 4.525,
+      "v10_mae": 4.8398,
+      "delta_mae": 0.3148,
+      "v9_mase": 0.4946,
+      "v10_mase": 0.9041,
+      "delta_mase": 0.4095,
+      "note": "DOMAIN BETTER"
+    },
+    "LSTM_v9_30m": {
+      "v9_mae": 3.6206,
+      "v10_mae": 5.2333,
+      "delta_mae": 1.6127,
+      "v9_mase": 0.3958,
+      "v10_mase": 0.9775,
+      "delta_mase": 0.5817,
+      "note": "DOMAIN BETTER"
+    },
+    "TFT_v9_30m": {
+      "v9_mae": 5.3848,
+      "v10_mae": 4.4837,
+      "delta_mae": -0.9011,
+      "v9_mase": 0.5886,
+      "v10_mase": 0.8375,
+      "delta_mase": 0.2489,
+      "note": "DOMAIN BETTER"
+    },
+    "Ensemble_Weighted_v9_30m": {
+      "v9_mae": 3.4932,
+      "v10_mae": 4.3748,
+      "delta_mae": 0.8816,
+      "v9_mase": 0.3818,
+      "v10_mase": 0.821,
+      "delta_mase": 0.4392,
+      "note": "DOMAIN BETTER"
+    }
+  },
+  "24h": {
+    "Persistence_30m": {
+      "v9_mae": 5.232,
+      "v10_mae": 4.2844,
+      "delta_mae": -0.9476,
+      "v9_mase": 0.7173,
+      "v10_mase": 1.0,
+      "delta_mase": 0.2827,
+      "note": "DOMAIN BETTER"
+    },
+    "ElasticNet_v9_30m": {
+      "v9_mae": 4.0452,
+      "v10_mae": 4.0417,
+      "delta_mae": -0.0035,
+      "v9_mase": 0.5546,
+      "v10_mase": 0.9433,
+      "delta_mase": 0.3887,
+      "note": "DOMAIN BETTER"
+    },
+    "LightGBM_v9_30m": {
+      "v9_mae": 3.8861,
+      "v10_mae": 4.5493,
+      "delta_mae": 0.6632,
+      "v9_mase": 0.5328,
+      "v10_mase": 1.0618,
+      "delta_mase": 0.529,
+      "note": "DOMAIN BETTER"
+    },
+    "GRU_v9_30m": {
+      "v9_mae": 3.5903,
+      "v10_mae": 4.3221,
+      "delta_mae": 0.7318,
+      "v9_mase": 0.4922,
+      "v10_mase": 0.9328,
+      "delta_mase": 0.4406,
+      "note": "DOMAIN BETTER"
+    },
+    "LSTM_v9_30m": {
+      "v9_mae": 3.8193,
+      "v10_mae": 4.6515,
+      "delta_mae": 0.8322,
+      "v9_mase": 0.5236,
+      "v10_mase": 1.0038,
+      "delta_mase": 0.4802,
+      "note": "DOMAIN BETTER"
+    },
+    "TFT_v9_30m": {
+      "v9_mae": 3.8867,
+      "v10_mae": 5.7789,
+      "delta_mae": 1.8922,
+      "v9_mase": 0.5329,
+      "v10_mase": 1.2472,
+      "delta_mase": 0.7143,
+      "note": "DOMAIN BETTER"
+    },
+    "Ensemble_Weighted_v9_30m": {
+      "v9_mae": 3.4169,
+      "v10_mae": 4.4212,
+      "delta_mae": 1.0043,
+      "v9_mase": 0.4685,
+      "v10_mase": 0.9518,
+      "delta_mase": 0.4833,
+      "note": "DOMAIN BETTER"
+    }
+  }
+}

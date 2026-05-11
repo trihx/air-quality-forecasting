@@ -132,7 +132,7 @@ def verify_integrity():
             verified_at=datetime.now().isoformat(),
         )
 
-    with open(MANIFEST_PATH) as f:
+    with open(MANIFEST_PATH, encoding="utf-8") as f:
         manifest = json.load(f)
 
     version = manifest.get("version", "unknown")

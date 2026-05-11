@@ -214,7 +214,7 @@ def export_gru(df_hybrid, horizon):
         "lookback": LOOKBACK,
         "horizon": horizon,
     }
-    with open(scaler_path, "w") as f:
+    with open(scaler_path, "w", encoding="utf-8") as f:
         json.dump(scaler_info, f, indent=2, ensure_ascii=False)
     print(f"    ✅ Scalers: {scaler_path.name}", flush=True)
 
@@ -265,7 +265,7 @@ def export_lgbm(df_hybrid, horizon):
 
     # Feature names
     names_path = EXPORT_DIR / f"lgbm_{horizon}h_features.json"
-    with open(names_path, "w") as f:
+    with open(names_path, "w", encoding="utf-8") as f:
         json.dump({"features": feature_cols, "horizon": horizon, "n_features": len(feature_cols)}, f, indent=2)
     print(f"    ✅ Features: {names_path.name}", flush=True)
 
@@ -315,7 +315,7 @@ def main():
 
     # Save manifest
     manifest = EXPORT_DIR / "manifest.json"
-    with open(manifest, "w") as f:
+    with open(manifest, "w", encoding="utf-8") as f:
         json.dump(
             {
                 "exported_at": datetime.now().isoformat(),

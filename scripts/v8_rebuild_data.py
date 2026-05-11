@@ -124,7 +124,7 @@ def main():
 
     report_path = PROJECT_ROOT / "research" / "experiments" / "v8_final" / f"data_rebuild_{TIMESTAMP}.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(report_path, "w") as f:
+    with open(report_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
 
     elapsed = time.time() - t_total

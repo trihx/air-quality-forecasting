@@ -734,7 +734,7 @@ def main():
         "pca_1h": pca_results,
         "tft_v2": tft_results,
     }
-    with open(out, "w") as f:
+    with open(out, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, default=_c, ensure_ascii=False)
     print(f"\n  Results saved: {out}", flush=True)
 

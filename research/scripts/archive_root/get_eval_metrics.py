@@ -11,7 +11,7 @@ def get_metrics():
         return {}
         
     latest_file = max(json_files, key=lambda p: p.stat().st_mtime)
-    with open(latest_file) as f:
+    with open(latest_file, encoding="utf-8") as f:
         data = json.load(f)
         
     metrics = {}

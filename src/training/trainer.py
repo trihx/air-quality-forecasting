@@ -212,13 +212,13 @@ class LightGBMTrainer:
         self.model.booster_.save_model(str(model_path))
 
         # Features
-        with open(save_dir / "features.json", "w") as f:
+        with open(save_dir / "features.json", "w", encoding="utf-8") as f:
             json.dump({"features": self._feature_cols, "horizon": self.horizon}, f, indent=2)
 
         # Params + metrics
-        with open(save_dir / "params.json", "w") as f:
+        with open(save_dir / "params.json", "w", encoding="utf-8") as f:
             json.dump(self.params, f, indent=2)
-        with open(save_dir / "metrics.json", "w") as f:
+        with open(save_dir / "metrics.json", "w", encoding="utf-8") as f:
             json.dump(self.metrics, f, indent=2)
 
         return str(save_dir)
@@ -235,7 +235,7 @@ class LightGBMTrainer:
             "timestamp": datetime.now().isoformat(),
             "source": "dashboard",
         }
-        with open(DASHBOARD_RUNS_DIR / f"run_{ts}.json", "w") as f:
+        with open(DASHBOARD_RUNS_DIR / f"run_{ts}.json", "w", encoding="utf-8") as f:
             json.dump(log, f, indent=2, ensure_ascii=False)
 
 
@@ -476,13 +476,13 @@ class GRUTrainer:
             "lookback": lb,
             "horizon": self.horizon,
         }
-        with open(save_dir / f"scalers_{self.horizon}h.json", "w") as f:
+        with open(save_dir / f"scalers_{self.horizon}h.json", "w", encoding="utf-8") as f:
             json.dump(scaler_info, f, indent=2)
 
         # Params + metrics
-        with open(save_dir / "params.json", "w") as f:
+        with open(save_dir / "params.json", "w", encoding="utf-8") as f:
             json.dump(self.params, f, indent=2)
-        with open(save_dir / "metrics.json", "w") as f:
+        with open(save_dir / "metrics.json", "w", encoding="utf-8") as f:
             json.dump(self.metrics, f, indent=2)
 
         return str(save_dir)
@@ -499,5 +499,5 @@ class GRUTrainer:
             "timestamp": datetime.now().isoformat(),
             "source": "dashboard",
         }
-        with open(DASHBOARD_RUNS_DIR / f"run_{ts}.json", "w") as f:
+        with open(DASHBOARD_RUNS_DIR / f"run_{ts}.json", "w", encoding="utf-8") as f:
             json.dump(log, f, indent=2, ensure_ascii=False)

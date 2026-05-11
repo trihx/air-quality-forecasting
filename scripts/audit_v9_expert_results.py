@@ -36,7 +36,7 @@ def load_latest(pattern):
     files = sorted(V9_DIR.glob(pattern))
     if not files:
         return None
-    with open(files[-1]) as f:
+    with open(files[-1], encoding="utf-8") as f:
         return json.load(f)
 
 

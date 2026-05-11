@@ -210,7 +210,7 @@ def main():
     report_dir.mkdir(parents=True, exist_ok=True)
     report_path = report_dir / f"data_rebuild_{TIMESTAMP}.json"
 
-    with open(report_path, "w") as f:
+    with open(report_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
 
     total_elapsed = time.time() - t_total

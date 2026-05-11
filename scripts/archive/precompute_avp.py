@@ -107,7 +107,7 @@ def precompute_horizon(horizon: int, df_hybrid, device_name: str) -> dict:
         df_feat = build_features(df_hybrid)
         feat_names_path = EXPORT_DIR / f"lgbm_{horizon}h_features.json"
         if feat_names_path.exists():
-            with open(feat_names_path) as f:
+            with open(feat_names_path, encoding="utf-8") as f:
                 feat_info = json.load(f)
             feat_cols = [c for c in feat_info["features"] if c in df_feat.columns]
         else:
@@ -162,7 +162,7 @@ def precompute_horizon(horizon: int, df_hybrid, device_name: str) -> dict:
         model_gru = torch.jit.load(str(gru_path), map_location="cpu")
         model_gru.eval()
 
-        with open(scaler_path) as f:
+        with open(scaler_path, encoding="utf-8") as f:
             sc = json.load(f)
 
         feat_cols_dl = sc["features"]
@@ -265,7 +265,7 @@ def _compute_ensemble_preds(result: dict, horizon: int, persist_mae: float) -> N
         print("  Skipping Ensemble: no ensemble JSON found")
         return
 
-    with open(ens_files[0]) as f:
+    with open(ens_files[0], encoding="utf-8") as f:
         ens_data = json.load(f)
 
     h_key = f"{horizon}h"
@@ -375,7 +375,7 @@ def _load_external_preds(result: dict, horizon: int, persist_mae: float) -> None
             continue
 
         try:
-            with open(pred_path) as f:
+            with open(pred_path, encoding="utf-8") as f:
                 pred_data = json.load(f)
 
             predictions = pred_data.get("predictions", [])
@@ -468,7 +468,7 @@ def main():
         result = precompute_horizon(h, df_hybrid, device)
 
         out_path = CACHE_DIR / f"avp_{h}h.json"
-        with open(out_path, "w") as f:
+        with open(out_path, "w", encoding="utf-8") as f:
             json.dump(result, f)
         print(f"  ✅ Saved: {out_path} ({out_path.stat().st_size / 1024:.0f} KB)")
 

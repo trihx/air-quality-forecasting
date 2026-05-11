@@ -78,7 +78,7 @@ def _load_latest(pattern: str) -> dict:
         else:
             return {}
             
-    with open(files[-1]) as f:
+    with open(files[-1], encoding="utf-8") as f:
         return json.load(f)
 
 def load_predictions() -> dict:
@@ -128,7 +128,7 @@ def load_predictions() -> dict:
             path = v8_dir / fname
             if not path.exists():
                 continue
-            with open(path) as f:
+            with open(path, encoding="utf-8") as f:
                 data = json.load(f)
             if h_key not in data:
                 continue
@@ -289,7 +289,7 @@ def main():
     # Task 5C.1: MASE
     mase_results = compute_unified_mase(all_data, targets)
     mase_path = OUTPUT_DIR / "unified_mase_all.json"
-    with open(mase_path, "w") as f:
+    with open(mase_path, "w", encoding="utf-8") as f:
         json.dump(mase_results, f, indent=2)
     print(f"\n  ✅ Saved: {mase_path}", flush=True)
 

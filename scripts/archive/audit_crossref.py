@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 # Load v6
-with open("research/experiments/dashboard_runs/v6_pca_tft.json") as f:
+with open("research/experiments/dashboard_runs/v6_pca_tft.json", encoding="utf-8") as f:
     v6 = json.load(f)
 r6 = v6.get("results", v6.get("data", {}).get("results", {}))
 print("=== v6 TFT ===")
@@ -12,7 +12,7 @@ for h in ["1h", "6h", "24h"]:
     print(f"  {h}: {tft}")
 
 # Load v7
-with open("research/experiments/dashboard_runs/v7_cqr.json") as f:
+with open("research/experiments/dashboard_runs/v7_cqr.json", encoding="utf-8") as f:
     v7 = json.load(f)
 r7 = v7.get("results", {})
 print("\n=== v7 TFT ===")

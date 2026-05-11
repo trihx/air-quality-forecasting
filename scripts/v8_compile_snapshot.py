@@ -8,11 +8,11 @@ EXP_DIR = PROJECT_ROOT / "research" / "experiments" / "v8_final"
 
 def main():
     # 1. Load unified MASE
-    with open(EXP_DIR / "unified_mase.json") as f:
+    with open(EXP_DIR / "unified_mase.json", encoding="utf-8") as f:
         unified_mase = json.load(f)
 
     # 2. Load R2
-    with open(EXP_DIR / "r2_multi_horizon.json") as f:
+    with open(EXP_DIR / "r2_multi_horizon.json", encoding="utf-8") as f:
         r2 = json.load(f)
 
     # 3. Create standardized metrics format
@@ -63,7 +63,7 @@ def main():
 
     # Save standardized metrics
     std_path = PROJECT_ROOT / "research" / "experiments" / "standardized_metrics.json"
-    with open(std_path, "w") as f:
+    with open(std_path, "w", encoding="utf-8") as f:
         json.dump(std_metrics, f, indent=2)
     print(f"✅ Saved {std_path}")
 
@@ -76,7 +76,7 @@ def main():
     }
 
     snapshot_path = PROJECT_ROOT / "research" / "experiments" / "dashboard_runs" / "v8_cqr_aci.json"
-    with open(snapshot_path, "w") as f:
+    with open(snapshot_path, "w", encoding="utf-8") as f:
         json.dump(snapshot, f, indent=2)
     print(f"✅ Saved {snapshot_path}")
 

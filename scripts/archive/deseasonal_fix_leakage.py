@@ -431,7 +431,7 @@ def main():
         },
     }
     out_path = OUTPUT_DIR / f"stl_leakfree_{ts}.json"
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
     print(f"\n  Saved: {out_path}", flush=True)
 

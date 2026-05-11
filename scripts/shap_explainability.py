@@ -87,7 +87,7 @@ def main() -> None:
 
     # Save SHAP results JSON
     json_path = FIGURES_DIR / "shap_results.json"
-    with open(json_path, "w") as f:
+    with open(json_path, "w", encoding="utf-8") as f:
         json.dump(all_shap_results, f, indent=2, ensure_ascii=False, default=str)
     print(f"  Results JSON: {json_path}", flush=True)
 
@@ -182,11 +182,13 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
 
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
+        plt.rcParams['font.family'] = 'serif'
+        plt.rcParams['font.serif'] = ['Times New Roman']
 
         # Summary bar plot
         fig, ax = plt.subplots(figsize=(10, 8))
         shap.summary_plot(shap_values, X_explain, plot_type="bar", max_display=20, show=False)
-        plt.title(f"SHAP Feature Importance — LightGBM {horizon}h", fontsize=14)
+        # plt.title removed per CTU 1799 standard
         plt.tight_layout()
         bar_path = FIGURES_DIR / f"shap_bar_{horizon}h.png"
         plt.savefig(bar_path, dpi=150, bbox_inches="tight")
@@ -196,7 +198,7 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
         # Beeswarm plot
         fig, ax = plt.subplots(figsize=(10, 8))
         shap.summary_plot(shap_values, X_explain, max_display=20, show=False)
-        plt.title(f"SHAP Beeswarm — LightGBM {horizon}h", fontsize=14)
+        # plt.title removed per CTU 1799 standard
         plt.tight_layout()
         bee_path = FIGURES_DIR / f"shap_beeswarm_{horizon}h.png"
         plt.savefig(bee_path, dpi=150, bbox_inches="tight")
@@ -208,7 +210,7 @@ def _shap_lightgbm(df_feat: pd.DataFrame, horizon: int) -> dict | None:
         for feat in top3:
             fig, ax = plt.subplots(figsize=(8, 5))
             shap.dependence_plot(feat, shap_values, X_explain, show=False, ax=ax)
-            plt.title(f"SHAP Dependence — {feat} ({horizon}h)", fontsize=12)
+            # plt.title removed per CTU 1799 standard
             plt.tight_layout()
             dep_path = FIGURES_DIR / f"shap_dep_{horizon}h_{feat}.png"
             plt.savefig(dep_path, dpi=150, bbox_inches="tight")
@@ -411,6 +413,8 @@ def _permutation_gru(df_hybrid: pd.DataFrame, horizon: int) -> None:
 
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
+        plt.rcParams['font.family'] = 'serif'
+        plt.rcParams['font.serif'] = ['Times New Roman']
 
         feats = [x[0] for x in sorted_imp]
         imps = [x[1] for x in sorted_imp]
@@ -421,7 +425,7 @@ def _permutation_gru(df_hybrid: pd.DataFrame, horizon: int) -> None:
         ax.set_yticks(range(len(feats)))
         ax.set_yticklabels(feats)
         ax.set_xlabel("Δ MAE (higher = more important)")
-        ax.set_title(f"GRU Permutation Importance — {horizon}h", fontsize=14)
+        # ax.set_title removed per CTU 1799 standard
         ax.invert_yaxis()
         plt.tight_layout()
 

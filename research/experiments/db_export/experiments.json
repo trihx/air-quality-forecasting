@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "name": "v8_lightgbm_20260429",
+    "description": "LightGBM tuned — v8 pipeline",
+    "pipeline_version": "v8",
+    "data_hash_md5": null,
+    "config": {
+      "source_file": "lightgbm_20260429_163822.json"
+    },
+    "created_at": "2026-05-01T05:01:43"
+  },
+  {
+    "id": 2,
+    "name": "v8_sklearn_20260429",
+    "description": "Sklearn models (RF, GB, Stacking, Ensemble) — v8 pipeline",
+    "pipeline_version": "v8",
+    "data_hash_md5": null,
+    "config": {
+      "source_file": "sklearn_20260429_163822.json"
+    },
+    "created_at": "2026-05-01T05:01:43"
+  },
+  {
+    "id": 3,
+    "name": "v8_arima_20260429",
+    "description": "ARIMA/SARIMA — v8 pipeline",
+    "pipeline_version": "v8",
+    "data_hash_md5": null,
+    "config": {
+      "source_file": "arima_20260429_163822.json"
+    },
+    "created_at": "2026-05-01T05:01:43"
+  },
+  {
+    "id": 4,
+    "name": "v8_dl_20260501",
+    "description": "Deep Learning (GRU, LSTM v2 log) — v8 pipeline",
+    "pipeline_version": "v8",
+    "data_hash_md5": null,
+    "config": {
+      "source_file": "dl_20260501_071715.json"
+    },
+    "created_at": "2026-05-01T05:01:43"
+  },
+  {
+    "id": 5,
+    "name": "v8_tft_20260429",
+    "description": "Temporal Fusion Transformer — v8 pipeline",
+    "pipeline_version": "v8",
+    "data_hash_md5": null,
+    "config": {
+      "source_file": "tft_multi_horizon_20260429_163633.json"
+    },
+    "created_at": "2026-05-01T05:01:43"
+  }
+]

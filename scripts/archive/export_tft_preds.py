@@ -276,7 +276,7 @@ def export_horizon(df_hybrid, horizon: int, components: dict) -> dict | None:
 
     # Save
     out_path = CACHE_DIR / f"tft_preds_{horizon}h.json"
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump({
             "model": "TFT",
             "horizon": horizon,

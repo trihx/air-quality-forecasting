@@ -50,10 +50,14 @@ def version_selector_sidebar():
         unsafe_allow_html=True,
     )
 
+    default_idx = len(versions) - 1
+    if "v9_multi_resolution" in versions:
+        default_idx = versions.index("v9_multi_resolution")
+
     selected = st.sidebar.selectbox(
         "Chọn phiên bản",
         versions,
-        index=len(versions) - 1,  # default to latest
+        index=default_idx,
         key="selected_version",
         label_visibility="collapsed",
     )
@@ -78,7 +82,7 @@ def render_info_card(
 ):
     """Render a themed info card using st.expander for collapsibility."""
     with st.expander(f"{icon} {title}", expanded=not collapsed):
-        st.markdown(content)
+        st.markdown(content, unsafe_allow_html=True)
 
 
 def render_version_badge(version: str):
@@ -146,7 +150,7 @@ def cards_overview(version: str):
     )
 
     render_info_card(
-        "Cải Tiến Đã Chứng Minh (v1 → v7)",
+        "Cải Tiến Đã Chứng Minh (v1 → v9)",
         content.get_info_card_text("overview_improvements", "Đang cập nhật..."),
         icon="📊",
         collapsed=True,
@@ -362,6 +366,7 @@ def cards_shap(version: str):
 def cards_prediction_intervals(version: str):
     """Info cards for Prediction Intervals page."""
     from src.reporting.content import ContentManager
+    from src.frontend.citations import cite
     content = ContentManager()
     
     render_info_card(
@@ -369,6 +374,15 @@ def cards_prediction_intervals(version: str):
         content.get_info_card_text("pi_guide", "Đang cập nhật..."),
         icon="📖",
         collapsed=True,
+    )
+
+    render_info_card(
+        "Tài Liệu Tham Khảo: Ước Lượng Bất Định (Uncertainty Estimation)",
+        f"- **Adaptive Conformal Inference (ACI):** {cite('gibbs2021')}\n"
+        f"- **Conformalized Quantile Regression (CQR):** {cite('romano2019')}\n"
+        f"- **MC Dropout / Deep Ensembles:** {cite('gal2016')} & {cite('lakshminarayanan2017')} (Từng dùng làm Baseline)",
+        icon="📚",
+        collapsed=False,
     )
 
 

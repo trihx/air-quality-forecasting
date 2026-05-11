@@ -24,7 +24,7 @@ from scipy import signal, stats
 from statsmodels.tsa.seasonal import STL
 
 # ── Config ──
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 EDA_DIR = PROJECT_ROOT / "research" / "eda"
 EDA_DIR.mkdir(parents=True, exist_ok=True)
@@ -437,16 +437,24 @@ def generate_periodogram(df: pd.DataFrame) -> dict:
     axes[1].set_yscale("log")
     axes[1].grid(True, alpha=0.3)
 
-    # Mark key periods
-    for period, label, color in [
-        (24, "24h (daily)", ACCENT_ORANGE),
-        (12, "12h (semi-daily)", ACCENT_GREEN),
-        (168, "168h (weekly)", ACCENT_RED),
-        (8, "8h (tri-daily)", ACCENT_PURPLE),
-    ]:
+    # Mark key periods with staggered labels to avoid overlap
+    period_configs = [
+        (24, "24h (daily)", ACCENT_ORANGE, (10, 60)),
+        (12, "12h (semi-daily)", ACCENT_GREEN, (10, 45)),
+        (168, "168h (weekly)", ACCENT_RED, (10, 30)),
+        (8, "8h (tri-daily)", ACCENT_PURPLE, (10, 15)),
+    ]
+    for period, label, color, offset in period_configs:
         axes[1].axvline(x=period, color=color, linestyle="--", linewidth=1.5, alpha=0.7)
-        axes[1].text(period * 1.03, 1.02, label, color=color, fontsize=8, rotation=90, va="bottom",
-                     transform=axes[1].get_xaxis_transform())
+        # Find PSD value at this period for annotation anchor
+        closest_idx = np.argmin(np.abs(periods[mask] - period))
+        y_val = psd[mask][closest_idx] if closest_idx < len(psd[mask]) else psd[mask].max()
+        axes[1].annotate(
+            label, xy=(period, y_val),
+            xytext=offset, textcoords="offset points",
+            fontsize=8, color=color, fontweight="bold",
+            arrowprops=dict(arrowstyle="-", color=color, alpha=0.5),
+        )
 
     plt.tight_layout()
     out_path = EDA_DIR / "05c_periodogram.png"
@@ -506,20 +514,20 @@ def main():
     }
 
     out_json = EDA_DIR / "audit_phase1_metrics.json"
-    with open(out_json, "w") as f:
+    with open(out_json, "w", encoding="utf-8") as f:
         json.dump(audit_metrics, f, indent=2, default=str)
     print(f"\n[Phase1] Metrics saved: {out_json}", flush=True)
 
     # ── Update existing eda_results.json ──
     existing_json = EDA_DIR / "eda_results.json"
     if existing_json.exists():
-        with open(existing_json) as f:
+        with open(existing_json, encoding="utf-8") as f:
             existing = json.load(f)
         existing["stl"] = stl_results
         existing["forecastability"] = forecast_results
         existing["normality"] = qq_results
         existing["spectral"] = psd_results
-        with open(existing_json, "w") as f:
+        with open(existing_json, "w", encoding="utf-8") as f:
             json.dump(existing, f, indent=2, default=str)
         print(f"[Phase1] Updated: {existing_json}", flush=True)
 

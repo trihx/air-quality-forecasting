@@ -510,7 +510,7 @@ def _save(data, name):
         if isinstance(obj, (np.bool_,)): return bool(obj)
         return obj
 
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, default=_conv, ensure_ascii=False)
     print(f"  → Saved: {path}", flush=True)
     return path

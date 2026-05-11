@@ -1,6 +1,6 @@
 import json
 path = 'research/experiments/dashboard_runs/v2_enhanced_20260411.json'
-with open(path) as f:
+with open(path, encoding="utf-8") as f:
     data = json.load(f)
 
 if 'changes' not in data:
@@ -11,5 +11,5 @@ if 'changes' not in data:
         'conclusion': 'Feature engineering và target transform là cần thiết để xử lý biến động cực đoan của PM2.5. Các mô hình truyền thống hưởng lợi lớn từ bộ tính năng này.'
     }
 
-with open(path, 'w') as f:
+with open(path, 'w', encoding="utf-8") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)

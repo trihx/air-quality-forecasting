@@ -4,7 +4,7 @@ import numpy as np
 for horizon in ['1h', '6h', '24h']:
     print(f"\n--- Horizon: {horizon} ---")
     try:
-        with open(f'research/cache/avp_{horizon}.json') as f:
+        with open(f'research/cache/avp_{horizon}.json', encoding="utf-8") as f:
             data = json.load(f)
             
         actual = np.array(data['actuals'])

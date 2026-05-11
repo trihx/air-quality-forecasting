@@ -75,7 +75,7 @@ def load_predictions_per_source() -> dict:
         if not fpath.exists():
             print(f"  [SKIP] {fname} not found", flush=True)
             continue
-        with open(fpath) as f:
+        with open(fpath, encoding="utf-8") as f:
             data = json.load(f)
         all_data[source] = {}
         for h_key in HORIZONS:
@@ -296,21 +296,21 @@ def main():
     # Task 2.1
     mase_results = compute_unified_mase(all_sources, y_train, y_full)
     mase_path = OUTPUT_DIR / "unified_mase.json"
-    with open(mase_path, "w") as f:
+    with open(mase_path, "w", encoding="utf-8") as f:
         json.dump(mase_results, f, indent=2)
     print(f"\n  ✅ Saved: {mase_path}", flush=True)
 
     # Task 2.2
     dm_results = compute_dm_hln(all_sources, y_full)
     dm_path = OUTPUT_DIR / "dm_test_hln.json"
-    with open(dm_path, "w") as f:
+    with open(dm_path, "w", encoding="utf-8") as f:
         json.dump(dm_results, f, indent=2)
     print(f"  ✅ Saved: {dm_path}", flush=True)
 
     # Task 2.3
     r2_results = compute_r2_multi_horizon(all_sources, y_full)
     r2_path = OUTPUT_DIR / "r2_multi_horizon.json"
-    with open(r2_path, "w") as f:
+    with open(r2_path, "w", encoding="utf-8") as f:
         json.dump(r2_results, f, indent=2)
     print(f"  ✅ Saved: {r2_path}", flush=True)
 

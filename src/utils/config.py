@@ -23,7 +23,7 @@ def load_config(config_path: str | Path) -> dict[str, Any]:
     path = _validate_config_path(config_path)
     logger.debug(f"Loading config from {path}")
 
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         config = yaml.safe_load(f)
 
     if config is None:

@@ -60,7 +60,7 @@ result['purging_gap'] = {
 }
 
 output_path = EDA_DIR / "phase6_dashboard_data.json"
-with open(output_path, "w") as f:
+with open(output_path, "w", encoding="utf-8") as f:
     json.dump(result, f, indent=4)
 
 print(f"Phase 6 data saved to {output_path}")
