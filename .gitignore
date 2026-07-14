@@ -60,21 +60,27 @@ docs/pdf_excerpt.txt
 # ══════════════════════════════════════════════════════════════
 # Dataset — Giữ raw data, loại processed (có thể tái tạo)
 # ══════════════════════════════════════════════════════════════
-dataset/processed/
-dataset/interim/
-dataset/external/
+dataset/processed/*
+!dataset/processed/.gitkeep
+dataset/interim/*
+!dataset/interim/.gitkeep
+dataset/external/*
+!dataset/external/.gitkeep
 
 # ══════════════════════════════════════════════════════════════
 # Research — Giữ kết quả thí nghiệm + hình, loại logs + cache
 # ══════════════════════════════════════════════════════════════
-research/logs/
-research/cache/
+research/logs/*
+!research/logs/.gitkeep
+research/cache/*
+!research/cache/.gitkeep
 research/scripts/
 
 # ══════════════════════════════════════════════════════════════
 # Models — Giữ exported (cho demo), loại user_trained (nặng)
 # ══════════════════════════════════════════════════════════════
-models/user_trained/
+models/user_trained/*
+!models/user_trained/.gitkeep
 
 # ══════════════════════════════════════════════════════════════
 # Scratch / Temp — Tất cả file tạm, debug
@@ -88,33 +94,21 @@ yearly_coverage.txt
 search_results.txt
 error.log
 
-# ── One-off utility scripts (không phải core pipeline) ──
-check_citations.py
-check_json.py
-download_pdf.py
-get_titles.py
-patch.py
-replace_sankey.py
-sankey_replacement.py
-scratch_scihub.py
-scratch_unpaywall.py
-search_crossref.py
-update_refs.py
+# ── Utility scripts (gom nhóm trong scripts/utilities/) ──
+# Các script tiện ích một lần đã được chuyển vào scripts/utilities/ và được Git theo dõi
 
 # ── ChromaDB (vector store, có thể tái tạo) ──
 .chroma_db/
 src/.chroma_db/
 
-# ── Papers (thư mục rỗng hoặc tài liệu tải về) ──
-papers/
-papers_downloaded/
-literature_pdfs/
+# ── Papers (Đã xóa các thư mục trống) ──
 
 # ── UV Cache ──
 .uv_cache/
 
 # ── Agent Memory (cá nhân, không share) ──
-.agent/memory/
+.agents/memory/
 
 # ── Notebooks (hiện tại rỗng) ──
-notebooks/
+notebooks/*
+!notebooks/.gitkeep
