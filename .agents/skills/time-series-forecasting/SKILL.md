@@ -1,6 +1,6 @@
 ---
 name: Time Series Forecasting & Prediction
-description: Kim chỉ nam (L0) cho toàn bộ dự án dự báo PM2.5. Định tuyến đến các file chuyên sâu trong .agent/guides/.
+description: Kim chỉ nam (L0) cho toàn bộ dự án dự báo PM2.5. Định tuyến đến các file chuyên sâu trong .agents/skills/time-series-forecasting/guides/.
 ---
 
 # 🧠 Time Series Forecasting & Prediction Skill (L0 Index)
@@ -19,7 +19,7 @@ description: Kim chỉ nam (L0) cho toàn bộ dự án dự báo PM2.5. Định
 ### 1.1 Gate-keeping & Approval Process
 
 **TRƯỚC KHI thực hiện bất kỳ thay đổi nào**, agent PHẢI:
-1. Đọc file này (`.agent/SKILL.md`)
+1. Đọc file này (`.agents/skills/time-series-forecasting/SKILL.md`)
 2. Đọc `docs/MEMORY_HOT.md` (Trạng thái hiện tại)
 3. Đọc `docs/LESSONS_LEARNED.md` (Các lỗi cần tránh)
 4. Trình bày kế hoạch cho user duyệt. Chỉ implement SAU KHI user approve.
@@ -66,7 +66,7 @@ description: Kim chỉ nam (L0) cho toàn bộ dự án dự báo PM2.5. Định
 
 ```
 time-series-forecasting/
-├── .agent/guides/          # 🤖 Các hướng dẫn chuyên sâu (Router L1/L2)
+├── .agents/skills/time-series-forecasting/guides/          # 🤖 Các hướng dẫn chuyên sâu (Router L1/L2)
 ├── configs/                # ⚙️ Cấu hình tập trung (.yaml)
 ├── dataset/                # 📊 Dữ liệu (raw, interim, processed)
 ├── docs/                   # 📚 Tài liệu tham khảo, MEMORY_HOT.md, THESIS
