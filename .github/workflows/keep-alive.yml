@@ -1,0 +1,43 @@
+# Keep Render App Alive
+#
+# Render.com free tier sleeps after 15 minutes of inactivity.
+# This workflow pings the app every 6 hours to prevent sleep.
+#
+# Setup:
+#   1. Push this file to your GitHub repo
+#   2. Set repository secret RENDER_URL = https://<your-app>.onrender.com
+#   3. GitHub Actions will automatically keep your app awake
+
+name: Keep Render App Alive
+
+on:
+  schedule:
+    # Run every 6 hours (UTC): 00:00, 06:00, 12:00, 18:00
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping Render App
+        run: |
+          RENDER_URL="${{ secrets.RENDER_URL }}"
+          if [ -z "$RENDER_URL" ]; then
+            echo "⚠️ RENDER_URL secret not set. Please set it in repo Settings > Secrets."
+            exit 0
+          fi
+
+          echo "🏓 Pinging $RENDER_URL ..."
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 120 "$RENDER_URL")
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 400 ]; then
+            echo "✅ Render App is alive! HTTP $HTTP_CODE"
+          else
+            echo "⚠️ Render App returned HTTP $HTTP_CODE — it may be starting up (cold start)"
+            # Retry after 60 seconds (cold start takes ~1-2 min)
+            sleep 60
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 120 "$RENDER_URL")
+            echo "🔄 Retry result: HTTP $HTTP_CODE"
+          fi
