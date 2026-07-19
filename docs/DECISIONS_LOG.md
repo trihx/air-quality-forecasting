@@ -160,7 +160,21 @@
 - **Rule**: Khi có plan/task quan trọng → LUÔN lưu vào `docs/` thay vì chỉ ở brain artifacts.
 
 ## [2026-05-05] Phase 1-3 EDA Deep Insights
-- **Conditional Distribution (Violin Plot)**: Quy?t d?nh d�ng Violin thay v� Boxplot khi ph�n t�ch nhi?t d? (<26, 26-30, >30) d? th?y r� hi?n tu?ng ph�n ph?i k�o d�i (long-tail pollution) ? nhi?t d? th?p � bi?u hi?n r� r�ng c?a hi?n tu?ng ngh?ch nhi?t.
-- **Mutual Information vs Correlation**: B? sung MI Heatmap v� h? s? Pearson truy?n th?ng kh�ng b?t du?c tuong quan phi tuy?n. MI x�c nh?n Nhi?t d? v� �i?m suong d?n d?t PM2.5, ph� h?p v?i ki?n th?c domain knowledge (ngh?ch nhi?t).
-- **Weekend vs Weekday**: D�ng Boxplot d? ph�n t�ch ph�t th?i theo ng�y trong tu?n. Kh�ng c� s? gi?m s�t d�ng k? v�o T7/CN, ch?ng t? PM2.5 d?n t? ngu?n h?n h?p (giao th�ng + sinh ho?t + ph�t t�n t? noi kh�c) thay v� ch? giao th�ng c�ng s?.
-- **Imputation Validation**: So s�nh m?t d? PM2.5 sau di?n khuy?t v?i g?c. Phuong ph�p Hybrid (Spline+KNN) b?o to�n g?n nhu ho�n h?o ph�n ph?i g?c, ch?ng minh l?a ch?n phuong ph�p di?n khuy?t l� d�ng d?n.
+- **Conditional Distribution (Violin Plot)**: Quy?t d?nh dng Violin thay v Boxplot khi phn tch nhi?t d? (<26, 26-30, >30) d? th?y r hi?n tu?ng phn ph?i ko di (long-tail pollution) ? nhi?t d? th?p  bi?u hi?n r rng c?a hi?n tu?ng ngh?ch nhi?t.
+- **Mutual Information vs Correlation**: B? sung MI Heatmap v h? s? Pearson truy?n th?ng khng b?t du?c tuong quan phi tuy?n. MI xc nh?n Nhi?t d? v i?m suong d?n d?t PM2.5, ph h?p v?i ki?n th?c domain knowledge (ngh?ch nhi?t).
+- **Weekend vs Weekday**: Dng Boxplot d? phn tch pht th?i theo ngy trong tu?n. Khng c s? gi?m st dng k? vo T7/CN, ch?ng t? PM2.5 d?n t? ngu?n h?n h?p (giao thng + sinh ho?t + pht tn t? noi khc) thay v ch? giao thng cng s?.
+- **Imputation Validation**: So snh m?t d? PM2.5 sau di?n khuy?t v?i g?c. Phuong php Hybrid (Spline+KNN) b?o ton g?n nhu hon h?o phn ph?i g?c, ch?ng minh l?a ch?n phuong php di?n khuy?t l dng d?n.
+
+---
+
+## [2026-07-14] PyTorch Multi-Platform Installation
+- **Vấn đề**: Cài đặt PyTorch trên các máy hệ điều hành khác nhau (macOS dùng MPS, Windows dùng CUDA/CPU, Linux dùng CPU/CUDA) gặp lỗi wheel không tương thích trên một file `pyproject.toml` duy nhất.
+- **Quyết định**: Cấu hình `pyproject.toml` sử dụng cờ `marker` của `uv` (`sys_platform`) để định hướng nguồn cài đặt PyTorch (whl) CPU cho Windows/Linux và cài bản mặc định cho macOS, giúp việc setup môi trường local hoàn toàn tự động bằng lệnh `uv sync`.
+
+## [2026-07-19] Cloud Deployment Transition (Render + Supabase)
+- **Vấn đề**: HuggingFace Spaces thay đổi chính sách bắt buộc thu phí đối với các Space chạy Docker/Gradio. Cần tìm giải pháp thay thế 100% miễn phí cho luận văn.
+- **Quyết định**: 
+  - Sử dụng **Render.com** (Free Tier - 512 MB RAM) để hosting container Docker (chạy Streamlit + FastAPI).
+  - Sử dụng **Supabase PostgreSQL** (Free 500 MB) làm database.
+  - Sử dụng **GitHub Actions** làm bộ ping tự động (Keep-Alive) mỗi 6 giờ để chống container của Render bị ngủ đông (sleep) sau 15 phút idle.
+  - Giao thức remote Git chuyển sang HTTPS kết hợp Personal Access Token (PAT) để tránh lỗi phân quyền SSH.
