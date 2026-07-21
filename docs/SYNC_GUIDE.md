@@ -176,3 +176,60 @@ npx agentic-awesome-skills --force
 ```
 Các liên kết ảo đã thiết lập ở Bước 6.2 sẽ tự động nhận diện phiên bản mới mà không cần bất kỳ cấu hình hay Git commit nào khác. Cấu hình cá nhân của anh vẫn hoàn toàn sạch sẽ và an toàn.
 
+---
+
+## 🚀 7. Quy trình Tạo Dự Án Mới (Automation-First Bootstrap)
+
+Khi anh bắt đầu một dự án mới, chỉ cần nói với Antigravity: **"Khởi tạo dự án mới"** hoặc **"Bootstrap dự án"**. Agent sẽ tự động:
+
+### Bước 7.1: Agent hỏi thông tin cơ bản
+- Tech stack (Python/JS/cả hai?)
+- Mục đích dự án (ML, Web app, API, Dashboard?)
+- Database (PostgreSQL, MongoDB, SQLite?)
+
+### Bước 7.2: Agent tự động tạo scaffolding
+
+```
+<project-name>/
+├── .agents/
+│   ├── AGENTS.md                    ← L0 Pointer (~40 dòng, inject tự động)
+│   ├── workflows/                   ← lint.md, refactor.md (tùy dự án)
+│   └── skills/<project-skill>/
+│       ├── SKILL.md                 ← Router + Golden Rules + Gotchas
+│       └── guides/                  ← Hướng dẫn chuyên sâu (Lazy-Load)
+├── docs/
+│   ├── MEMORY_HOT.md                ← L1 Hot Memory (~20 dòng ban đầu)
+│   ├── LESSONS_LEARNED.md           ← L2 Bug Patterns (bảng rỗng)
+│   └── DECISIONS_LOG.md             ← L3 Archive (rỗng)
+├── scripts/
+│   └── utilities/
+│       └── update_memory.py         ← Script tự động dọn dẹp bộ nhớ
+├── src/                             ← Source code chính
+├── tests/                           ← Unit & Integration Tests
+├── .env                             ← Environment variables (secrets)
+├── .gitignore                       ← Chuẩn cho tech stack
+├── .pre-commit-config.yaml          ← Auto lint/format trước mỗi commit
+├── Makefile                         ← Automation hub (install, dev, test, check, clean)
+└── pyproject.toml                   ← Dependencies (uv)
+```
+
+### Bước 7.3: Agent kích hoạt automation
+```bash
+# Agent tự động chạy:
+pre-commit install         # Kích hoạt lint hooks
+make install               # Cài đặt dependencies
+```
+
+### Bước 7.4: Agent đề xuất automation bổ sung
+Agent sẽ phân tích dự án và đề xuất thêm (anh duyệt rồi mới tạo):
+- CI/CD pipeline (khi sẵn sàng deploy)
+- Dockerfile (khi cần container hóa)
+- Keep-alive workflow (khi dùng Render/Railway free tier)
+- Experiment tracking (khi là dự án ML)
+
+### 💡 Lưu ý quan trọng
+- Anh **KHÔNG cần** tạo thủ công bất kỳ file nào trong cấu trúc trên.
+- Chỉ cần nói với Agent tech stack → Agent tự tạo toàn bộ → Anh review → Done.
+- Cấu trúc này đã được quy định trong Global Rules (`~/.gemini/AGENTS.md` §7 + §8), nên Agent trên **mọi máy tính** của anh đều tuân thủ nhất quán.
+
+
