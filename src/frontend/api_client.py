@@ -122,7 +122,7 @@ class APIClient:
         return self._get(path)
 
     def get_info_card(self, card_key: str, quiet: bool = False) -> dict:
-        \"\"\"Get a single info card by key.\"\"\"
+        """Get a single info card by key."""
         return self._get(f"/api/v1/content/info-cards/{card_key}", quiet=quiet)
 
     def update_info_card(self, card_key: str, title: str | None = None, content: str | None = None) -> dict:
@@ -137,7 +137,7 @@ class APIClient:
     # ── Internal ──
 
     def _get(self, path: str, quiet: bool = False) -> Any:
-        \"\"\"HTTP GET request.\"\"\"
+        """HTTP GET request."""
         url = f"{self.base_url}{path}"
         try:
             resp = self.session.get(url, timeout=30)

@@ -23,12 +23,14 @@ description: Kim chỉ nam (L0) cho toàn bộ dự án dự báo PM2.5. Định
 1. Đọc file này (SKILL.md)
 2. Đọc `docs/MEMORY_HOT.md` khi task liên quan trạng thái dự án
 3. Đọc `docs/LESSONS_LEARNED.md` khi viết code logic phức tạp hoặc fix bug
-4. Trình bày kế hoạch cho user duyệt. Chỉ implement SAU KHI user approve.
+4. Đọc `graphify-out/GRAPH_REPORT.md` để hiểu dependency graph và community hubs bị ảnh hưởng
+5. Trình bày kế hoạch cho user duyệt. Chỉ implement SAU KHI user approve.
 
 **SAU KHI implement**, agent PHẢI:
 1. Chạy `make check` (lint + test)
 2. Ghi kết quả vào `task.md` hoặc báo cáo user.
 3. Nếu có lỗi mới → Cập nhật `docs/LESSONS_LEARNED.md`
+4. Nếu thay đổi ≥1 file `.py` → Chạy `make graphify` để cập nhật knowledge graph
 
 ### 1.2 Nguyên tắc Trung thực Dữ liệu
 - **KHÔNG BAO GIỜ** tưởng tượng hoặc bịa đặt kết quả. Mọi số liệu phải đến từ code chạy thực tế.
@@ -48,6 +50,7 @@ description: Kim chỉ nam (L0) cho toàn bộ dự án dự báo PM2.5. Định
 
 | Bạn đang làm việc về... | Hãy đọc file này |
 |-------------------------|------------------|
+| Hiểu cấu trúc code, dependencies | [GRAPH_REPORT.md](../../graphify-out/GRAPH_REPORT.md) |
 | Lập kế hoạch, tạo task | [concise-planning.md](guides/concise-planning.md) |
 | Cải tiến code, refactor | [kaizen.md](guides/kaizen.md) |
 | Code quality, Unit tests | [lint-and-validate.md](guides/lint-and-validate.md) |

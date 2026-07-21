@@ -2,7 +2,7 @@
 # PM2.5 Forecasting — Project Automation Makefile
 # ═══════════════════════════════════════════
 
-.PHONY: help install dev test check seed update-memory clean
+.PHONY: help install dev test check seed update-memory graphify clean
 
 help:
 	@echo "📌 Các lệnh tự động hóa dự án PM2.5 Forecasting:"
@@ -12,6 +12,7 @@ help:
 	@echo "  make check           - Kiểm tra chất lượng code (Ruff Lint, Format, Mypy, Tests)"
 	@echo "  make seed            - Nạp dữ liệu mẫu (Seed Data) lên PostgreSQL Database"
 	@echo "  make update-memory   - Tự động tối ưu hóa và dọn dẹp bộ nhớ dự án (L1 -> L3)"
+	@echo "  make graphify        - Cập nhật Knowledge Graph (Graphify) từ codebase"
 	@echo "  make clean           - Dọn dẹp các file cache tạm (__pycache__, pytest, ruff...)"
 
 install:
@@ -51,6 +52,11 @@ seed:
 update-memory:
 	@uv run python scripts/utilities/update_memory.py
 
+graphify:
+	@echo "🔗 Đang cập nhật Knowledge Graph (Graphify)..."
+	uvx --from graphifyy graphify extract .
+	@echo "✅ Graphify graph đã được cập nhật tại graphify-out/"
+
 clean:
 	@echo "🧹 Đang dọn dẹp các file cache..."
 	find . -type d -name "__pycache__" -exec rm -r {} + 2>/dev/null || true
@@ -58,3 +64,4 @@ clean:
 	find . -type d -name ".ruff_cache" -exec rm -r {} + 2>/dev/null || true
 	find . -type d -name ".mypy_cache" -exec rm -r {} + 2>/dev/null || true
 	@echo "✨ Đã dọn dẹp xong!"
+

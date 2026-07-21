@@ -12,6 +12,8 @@ from __future__ import annotations
 import streamlit as st
 from pathlib import Path
 
+from src.frontend.citations import cite, render_references_section
+
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -44,6 +46,9 @@ def page_conclusion(results: dict):
     with tab3:
         _render_future_work(section_header, insight_card)
 
+    # ── References section ──
+    render_references_section()
+
 
 # ──────────────────────────────────────────────────────────────
 # Tab 1: Tổng Hợp Kết Quả
@@ -74,42 +79,42 @@ def _render_summary(section_header, insight_card):
         {
             "title": "1. Độ phân giải 30 phút là tối ưu",
             "detail": (
-                "Thí nghiệm Multi-Resolution Ablation (15m vs 30m vs 1h) chứng minh "
-                "30 phút là điểm cân bằng tối ưu giữa nhiễu vi mô (15m) và "
-                "bẫy autocorrelation (1h). Ensemble_Weighted_30m đạt "
-                "<b>MASE = 0.382 (6h)</b> và <b>MASE = 0.469 (24h)</b>."
+                f"Thí nghiệm Multi-Resolution Ablation (15m vs 30m vs 1h) chứng minh "
+                f"30 phút là điểm cân bằng tối ưu giữa nhiễu vi mô (15m) và "
+                f"bẫy autocorrelation (1h) {cite('hyndman2021')}. Ensemble_Weighted_30m đạt "
+                f"<b>MASE = 0.382 (6h)</b> {cite('hyndman2006')} và <b>MASE = 0.469 (24h)</b>."
             ),
         },
         {
             "title": "2. Không có mô hình duy nhất tốt nhất",
             "detail": (
-                "Autocorrelation giảm dần: 0.99 (1h) → 0.85 (6h) → 0.45 (24h). "
-                "Ở 1h, Persistence gần như bất khả chiến bại (chỉ GRU_15m phá vỡ, "
-                "MASE=0.667). Ở 6h-24h, Ensemble và ML vượt trội."
+                f"Autocorrelation giảm dần: 0.99 (1h) → 0.85 (6h) → 0.45 (24h) {cite('joseph2022')}. "
+                f"Ở 1h, Persistence gần như bất khả chiến bại (chỉ GRU_15m phá vỡ, "
+                f"MASE=0.667) {cite('hyndman2006')}. Ở 6h-24h, Ensemble và ML vượt trội {cite('peixeiro2022')}."
             ),
         },
         {
             "title": "3. Fair Pipeline > Expert Pipeline cho IoT data",
             "detail": (
-                "Deep Learning sử dụng 119 tabular features (Fair) cho kết quả "
-                "tốt hơn DL tự trích xuất từ raw data (Expert). "
-                "Feature Engineering có giá trị thực tế cho dữ liệu IoT thưa."
+                f"Deep Learning sử dụng 119 tabular features (Fair) cho kết quả "
+                f"tốt hơn DL tự trích xuất từ raw data (Expert) {cite('hyndman2021')}. "
+                f"Feature Engineering có giá trị thực tế cho dữ liệu IoT thưa."
             ),
         },
         {
             "title": "4. SHAP giải mã thành công cơ chế dự báo",
             "detail": (
-                "<code>pm25_lag_1</code> chi phối ở horizon 1h (autocorrelation). "
-                "Fourier features nổi bật ở 24h (chu kỳ ngày/đêm). "
-                "Các biến khí tượng (nhiệt độ, độ ẩm) đóng vai trò phụ trợ."
+                f"<code>pm25_lag_1</code> chi phối ở horizon 1h (autocorrelation) {cite('lundberg2017')}. "
+                f"Fourier features nổi bật ở 24h (chu kỳ ngày/đêm). "
+                f"Các biến khí tượng (nhiệt độ, độ ẩm) đóng vai trò phụ trợ {cite('zhang2017')}."
             ),
         },
         {
             "title": "5. Anti-Leakage Pipeline đảm bảo tính toàn vẹn",
             "detail": (
-                "Phát hiện và xử lý 4 nguồn rò rỉ dữ liệu (diff, pct_change, "
-                "ratio, domain knowledge features). 188+ automated tests. "
-                "Test-on-Real-Only policy (is_imputed == 0)."
+                f"Phát hiện và xử lý 4 nguồn rò rỉ dữ liệu (diff, pct_change, "
+                f"ratio, domain knowledge features) {cite('hyndman2021')}. 188+ automated tests. "
+                f"Test-on-Real-Only policy (is_imputed == 0) {cite('tashman2000')}."
             ),
         },
     ]

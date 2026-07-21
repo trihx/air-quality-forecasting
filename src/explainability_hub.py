@@ -31,6 +31,7 @@ from src.viz.chart_factory import (
     styled_bar,
     add_simple_bar_labels,
 )
+from src.frontend.citations import render_references_section
 
 COLORS = {
     "primary": PALETTE_SEMANTIC["primary"],
@@ -1473,4 +1474,5 @@ def page_explainability_hub(results: dict):
     with tab5:
         _tab_scientific_foundation()
 
-
+    # ── References ──
+    render_references_section()

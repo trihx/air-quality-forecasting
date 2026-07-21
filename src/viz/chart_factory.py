@@ -224,6 +224,13 @@ def render_chart(
     except Exception:
         pass
 
+    # ── Print Mode: auto-convert to B&W if toggled in sidebar ──
+    try:
+        if st.session_state.get("print_mode", False):
+            fig = to_bw(fig)
+    except Exception:
+        pass  # Graceful fallback if to_bw fails
+
     st.plotly_chart(
         fig,
         use_container_width=True,
@@ -247,6 +254,31 @@ def figure_caption(text: str) -> None:
         f"</div>",
         unsafe_allow_html=True,
     )
+
+
+def figure_caption_numbered(
+    chapter: int,
+    number: int,
+    text: str,
+) -> None:
+    """Render a numbered figure caption per QĐ 1799 format.
+
+    Format: "Hình {chapter}.{number}. {text}"
+    Example: "Hình 4.1. Bootstrap 95% CI cho MASE"
+
+    Args:
+        chapter: Thesis chapter number (e.g. 4 for Results).
+        number: Figure number within the chapter.
+        text: Caption description.
+    """
+    st.markdown(
+        f"<div style='text-align:center; margin-top:-10px; margin-bottom:18px;'>"
+        f"<span style='font-size:13px; color:#374151;'>"
+        f"<b>Hình {chapter}.{number}.</b> {text}"
+        f"</span></div>",
+        unsafe_allow_html=True,
+    )
+
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -535,3 +567,203 @@ def add_rangeslider(fig: go.Figure) -> None:
         rangeslider_visible=True,
         rangeslider_thickness=0.06,
     )
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# B&W Print Export (Dual-mode: Color dashboard + B&W print)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Grayscale palette — high contrast shades for B&W printing
+_BW_GRAYS = [
+    "#1A1A1A",  # Near-black
+    "#666666",  # Dark gray
+    "#999999",  # Medium gray
+    "#CCCCCC",  # Light gray
+    "#4D4D4D",  # Charcoal
+    "#B3B3B3",  # Silver
+    "#333333",  # Dark
+    "#808080",  # Mid
+]
+
+_BW_HATCHES = ["", "/", "\\", "x", "+", ".", "|", "-"]
+_BW_DASHES = ["solid", "dash", "dot", "dashdot", "longdash", "longdashdot"]
+_BW_MARKERS = ["circle", "square", "diamond", "triangle-up", "cross", "star"]
+
+
+def to_bw(fig: go.Figure) -> go.Figure:
+    """Convert a Plotly figure to grayscale-safe version for thesis printing.
+
+    Transforms:
+    - Background → white
+    - Font → Times New Roman (print standard)
+    - Bar traces → grayscale fills + hatch patterns
+    - Line traces → distinct dash patterns + marker symbols
+    - Annotations → black text, placed outside chart elements
+    - Grid → light gray, subtle
+
+    The original figure is NOT modified; a deep copy is returned.
+
+    Args:
+        fig: Source Plotly figure (color version).
+
+    Returns:
+        New ``go.Figure`` optimized for B&W printing.
+    """
+    import copy
+    bw = copy.deepcopy(fig)
+
+    # ── Layout: white background, black text, Times New Roman ──
+    bw.update_layout(
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+        font=dict(
+            family=_FONT_PRINT,
+            color="black",
+            size=TOKENS["font_size_base"],
+        ),
+        xaxis=dict(
+            gridcolor="rgba(0,0,0,0.12)",
+            zerolinecolor="rgba(0,0,0,0.25)",
+            linecolor="black",
+            linewidth=1,
+            tickfont=dict(color="black"),
+            title=dict(font=dict(color="black")),
+            showline=True,
+            mirror=True,
+        ),
+        yaxis=dict(
+            gridcolor="rgba(0,0,0,0.12)",
+            zerolinecolor="rgba(0,0,0,0.25)",
+            linecolor="black",
+            linewidth=1,
+            tickfont=dict(color="black"),
+            title=dict(font=dict(color="black")),
+            showline=True,
+            mirror=True,
+        ),
+        legend=dict(
+            bgcolor="white",
+            bordercolor="black",
+            borderwidth=1,
+            font=dict(color="black"),
+        ),
+    )
+
+    # ── Traces: apply grayscale styling ──
+    bar_idx = 0
+    line_idx = 0
+
+    for trace in bw.data:
+        trace_type = getattr(trace, "type", "")
+
+        if trace_type == "bar":
+            gray = _BW_GRAYS[bar_idx % len(_BW_GRAYS)]
+            hatch = _BW_HATCHES[bar_idx % len(_BW_HATCHES)]
+
+            trace.marker.color = gray
+            trace.marker.line = dict(color="black", width=1)
+
+            if hatch:
+                trace.marker.pattern = dict(
+                    shape=hatch,
+                    bgcolor="white",
+                    fgcolor="black",
+                    size=6,
+                    solidity=0.5,
+                )
+            bar_idx += 1
+
+        elif trace_type in ("scatter", "scattergl"):
+            gray = _BW_GRAYS[line_idx % len(_BW_GRAYS)]
+            dash = _BW_DASHES[line_idx % len(_BW_DASHES)]
+            symbol = _BW_MARKERS[line_idx % len(_BW_MARKERS)]
+
+            if hasattr(trace, "line") and trace.line is not None:
+                trace.line.color = gray
+                trace.line.dash = dash
+                trace.line.width = 2
+
+            if hasattr(trace, "marker") and trace.marker is not None:
+                trace.marker.color = gray
+                trace.marker.symbol = symbol
+                trace.marker.size = 7
+                trace.marker.line = dict(color="black", width=1)
+
+            # Show markers for line charts in B&W
+            if trace.mode in (None, "lines"):
+                trace.mode = "lines+markers"
+
+            line_idx += 1
+
+        elif trace_type == "heatmap":
+            trace.colorscale = "Greys"
+            if hasattr(trace, "colorbar") and trace.colorbar is not None:
+                trace.colorbar.tickfont = dict(color="black")
+
+    # ── Annotations: black text on white background box, outside elements ──
+    if bw.layout.annotations:
+        new_annotations = []
+        for ann in bw.layout.annotations:
+            ann_dict = ann.to_plotly_json()
+            font_size = ann_dict.get("font", {}).get("size", TOKENS["font_size_annotation"])
+            ann_dict["font"] = dict(
+                color="black",
+                family=_FONT_PRINT,
+                size=font_size,
+            )
+            # White background box behind text → readable over any element
+            ann_dict["bgcolor"] = "rgba(255,255,255,0.92)"
+            ann_dict["bordercolor"] = "rgba(0,0,0,0.3)"
+            ann_dict["borderpad"] = 3
+            ann_dict["borderwidth"] = 1
+            # Push text outside bars to avoid overlay
+            if ann_dict.get("yshift", 0) < 14:
+                ann_dict["yshift"] = 16
+            new_annotations.append(ann_dict)
+        bw.layout.annotations = new_annotations
+
+    return bw
+
+
+def render_bw_download(
+    fig: go.Figure,
+    *,
+    filename: str = "thesis_figure",
+    label: str = "🖨️ Tải bản in (B&W)",
+    width: int = 1200,
+    height: int = 500,
+) -> None:
+    """Render a download button for B&W print-optimized PNG.
+
+    Converts the figure to grayscale via ``to_bw()``, exports as
+    high-DPI PNG (300 DPI equivalent), and provides a Streamlit
+    download button.
+
+    Args:
+        fig: Source figure (color version).
+        filename: Download filename (without extension).
+        label: Button label text.
+        width: Export width in pixels.
+        height: Export height in pixels.
+    """
+    try:
+        bw_fig = to_bw(fig)
+
+        img_bytes = bw_fig.to_image(
+            format="png",
+            width=width,
+            height=height,
+            scale=3,  # 300 DPI equivalent
+            engine="kaleido",
+        )
+
+        st.download_button(
+            label=label,
+            data=img_bytes,
+            file_name=f"{filename}_bw.png",
+            mime="image/png",
+            key=f"bw_{filename}",
+        )
+    except Exception as e:
+        st.warning(f"⚠️ Cần cài `kaleido` để export: `uv add kaleido`\n\n{e}")
+

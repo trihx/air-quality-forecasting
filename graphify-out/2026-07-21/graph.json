@@ -7037,7 +7037,7 @@
       "_origin": "ast",
       "community": 112,
       "norm_label": "replace_sankey.py",
-      "community_name": "_tab_pipeline_journey",
+      "community_name": "explainability_hub.py",
       "id": "scripts_utilities_replace_sankey"
     },
     {
@@ -7048,7 +7048,7 @@
       "_origin": "ast",
       "community": 112,
       "norm_label": "_tab_pipeline_journey()",
-      "community_name": "_tab_pipeline_journey",
+      "community_name": "explainability_hub.py",
       "id": "scripts_utilities_replace_sankey_tab_pipeline_journey"
     },
     {
@@ -7059,7 +7059,7 @@
       "_origin": "ast",
       "community": 112,
       "norm_label": "_render_detail_sankey()",
-      "community_name": "_tab_pipeline_journey",
+      "community_name": "explainability_hub.py",
       "id": "scripts_utilities_replace_sankey_render_detail_sankey"
     },
     {
@@ -7070,7 +7070,7 @@
       "_origin": "ast",
       "community": 112,
       "norm_label": "interactive sankey diagram showing data flow through the pipeline.",
-      "community_name": "_tab_pipeline_journey",
+      "community_name": "explainability_hub.py",
       "id": "scripts_utilities_replace_sankey_rationale_2"
     },
     {
@@ -7081,7 +7081,7 @@
       "_origin": "ast",
       "community": 112,
       "norm_label": "render a detailed sankey for a single resolution, showing every pipeline step.",
-      "community_name": "_tab_pipeline_journey",
+      "community_name": "explainability_hub.py",
       "id": "scripts_utilities_replace_sankey_rationale_226"
     },
     {
@@ -16409,7 +16409,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "charts.py",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts"
     },
     {
@@ -16420,7 +16420,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "plot_mase_comparison()",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_plot_mase_comparison"
     },
     {
@@ -16431,7 +16431,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "figure",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_py_figure"
     },
     {
@@ -16442,7 +16442,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "plot_mae_trend()",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_plot_mae_trend"
     },
     {
@@ -16453,7 +16453,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "plot_mae_trend_top5()",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_plot_mae_trend_top5"
     },
     {
@@ -16464,7 +16464,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "plot_mase_comparison_top5()",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_plot_mase_comparison_top5"
     },
     {
@@ -16475,7 +16475,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "plot_dm_test_heatmap()",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_plot_dm_test_heatmap"
     },
     {
@@ -16486,7 +16486,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "reporting charts \u2014 plotly chart factory for reportingengine data.  all charts ar",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_rationale_1"
     },
     {
@@ -16497,7 +16497,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "create mase comparison bar chart across all horizons.      args:         engine:",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_rationale_38"
     },
     {
@@ -16508,7 +16508,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "create mae trend line chart across horizons.      args:         engine: reportin",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_rationale_73"
     },
     {
@@ -16519,7 +16519,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "create mae grouped bar chart with only top representative models.      shows bes",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_rationale_110"
     },
     {
@@ -16530,7 +16530,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "create diebold-mariano test result heatmap.      args:         dm_results: list",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_charts_rationale_242"
     },
     {
@@ -16772,7 +16772,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "get_model_type()",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_engine_get_model_type"
     },
     {
@@ -16805,7 +16805,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": ".get_best_model()",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_reportingengine_get_best_model"
     },
     {
@@ -16816,7 +16816,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": ".get_best_models_all()",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_reportingengine_get_best_models_all"
     },
     {
@@ -16827,7 +16827,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": ".get_ranking_table()",
-      "community_name": "ReportingEngine",
+      "community_name": "DataFrame",
       "id": "src_reporting_engine_reportingengine_get_ranking_table"
     },
     {
@@ -16838,7 +16838,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "dataframe",
-      "community_name": "ReportingEngine",
+      "community_name": "DataFrame",
       "id": "src_reporting_engine_py_dataframe"
     },
     {
@@ -16849,7 +16849,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": ".get_ranking_display()",
-      "community_name": "ReportingEngine",
+      "community_name": "DataFrame",
       "id": "src_reporting_engine_reportingengine_get_ranking_display"
     },
     {
@@ -16893,7 +16893,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": ".get_mae_ranking_table()",
-      "community_name": "ReportingEngine",
+      "community_name": "DataFrame",
       "id": "src_reporting_engine_reportingengine_get_mae_ranking_table"
     },
     {
@@ -16915,7 +16915,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": ".get_mase_ranking_table()",
-      "community_name": "ReportingEngine",
+      "community_name": "DataFrame",
       "id": "src_reporting_engine_reportingengine_get_mase_ranking_table"
     },
     {
@@ -16937,7 +16937,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": ".generate_insights()",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_reportingengine_generate_insights"
     },
     {
@@ -16948,7 +16948,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": ".get_kpi_data()",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_reportingengine_get_kpi_data"
     },
     {
@@ -16959,7 +16959,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": ".compare_versions()",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_reportingengine_compare_versions"
     },
     {
@@ -16981,7 +16981,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "resolve model type dynamically based on its name.",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_reporting_engine_rationale_39"
     },
     {
@@ -17014,7 +17014,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "get the best model for a given horizon (lowest mae, excluding persistence).",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_rationale_79"
     },
     {
@@ -17025,7 +17025,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "get best model for all horizons.          returns:             {\"1h\": {...}, \"6h",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_rationale_122"
     },
     {
@@ -17036,7 +17036,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "generate ranking table sorted by mae, with star markers for best.          args:",
-      "community_name": "ReportingEngine",
+      "community_name": "DataFrame",
       "id": "src_reporting_engine_rationale_132"
     },
     {
@@ -17047,7 +17047,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "get ranking table formatted for display with \u2b50 markers.          returns datafra",
-      "community_name": "ReportingEngine",
+      "community_name": "DataFrame",
       "id": "src_reporting_engine_rationale_171"
     },
     {
@@ -17091,7 +17091,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "generate mae ranking table for a specific horizon.          args:             ho",
-      "community_name": "ReportingEngine",
+      "community_name": "DataFrame",
       "id": "src_reporting_engine_rationale_288"
     },
     {
@@ -17113,7 +17113,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "generate mase ranking table for a specific horizon.          args:             h",
-      "community_name": "ReportingEngine",
+      "community_name": "DataFrame",
       "id": "src_reporting_engine_rationale_367"
     },
     {
@@ -17124,7 +17124,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "generate insight text strings from actual data.          returns dict with keys:",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_rationale_440"
     },
     {
@@ -17135,7 +17135,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "get all kpi card data in a single dict.          returns dict with keys: best_1h",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_rationale_498"
     },
     {
@@ -17146,7 +17146,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "build a cross-version comparison dataframe.          args:             snapshots",
-      "community_name": "ReportingEngine",
+      "community_name": ".get_best_models_all",
       "id": "src_reporting_engine_rationale_515"
     },
     {
@@ -17168,7 +17168,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "extract_mase()",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "_normalize_model_entry",
       "id": "src_snapshot_adapter_extract_mase"
     },
     {
@@ -17179,7 +17179,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "_extract_results()",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_extract_results"
     },
     {
@@ -17190,7 +17190,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "_normalize_model_entry()",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "_normalize_model_entry",
       "id": "src_snapshot_adapter_normalize_model_entry"
     },
     {
@@ -17201,7 +17201,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "_normalize_results()",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "_normalize_model_entry",
       "id": "src_snapshot_adapter_normalize_results"
     },
     {
@@ -17212,7 +17212,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "_compute_top_n()",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_compute_top_n"
     },
     {
@@ -17223,7 +17223,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "_compute_best_models()",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_compute_best_models"
     },
     {
@@ -17234,7 +17234,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "_derive_models()",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_derive_models"
     },
     {
@@ -17245,7 +17245,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "normalize_snapshot()",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_normalize_snapshot"
     },
     {
@@ -17289,7 +17289,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "extract mase value from a model result dict with key fallback.      snapshot for",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "_normalize_model_entry",
       "id": "src_snapshot_adapter_rationale_48"
     },
     {
@@ -17300,7 +17300,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "extract results dict from raw snapshot, handling nesting differences.      v1\u2013v6",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_rationale_67"
     },
     {
@@ -17311,7 +17311,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "normalize a single model's metrics to the standard format.      strips classific",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "_normalize_model_entry",
       "id": "src_snapshot_adapter_rationale_95"
     },
     {
@@ -17322,7 +17322,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "normalize results for all horizons and models.",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "_normalize_model_entry",
       "id": "src_snapshot_adapter_rationale_130"
     },
     {
@@ -17333,7 +17333,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "compute top n models per horizon, sorted by mase ascending.      args:         r",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_rationale_149"
     },
     {
@@ -17344,7 +17344,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "compute the single best model per horizon (lowest mae, excluding persistence).",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_rationale_177"
     },
     {
@@ -17355,7 +17355,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "derive unique model list from results, sorted alphabetically.",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_rationale_192"
     },
     {
@@ -17366,7 +17366,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "convert a raw snapshot json dict into the normalized format.      this is the si",
-      "community_name": "snapshot_adapter.py",
+      "community_name": "normalize_snapshot",
       "id": "src_snapshot_adapter_rationale_203"
     },
     {
@@ -18081,7 +18081,7 @@
       "_origin": "ast",
       "community": 118,
       "norm_label": "palettes.py",
-      "community_name": "palettes.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_palettes"
     },
     {
@@ -18092,7 +18092,7 @@
       "_origin": "ast",
       "community": 118,
       "norm_label": "get_trace_style()",
-      "community_name": "palettes.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_palettes_get_trace_style"
     },
     {
@@ -18103,7 +18103,7 @@
       "_origin": "ast",
       "community": 118,
       "norm_label": "grayscale-safe palette system for scientific publications.  provides marker shap",
-      "community_name": "palettes.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_palettes_rationale_1"
     },
     {
@@ -18114,7 +18114,7 @@
       "_origin": "ast",
       "community": 118,
       "norm_label": "return a ``(color, marker_symbol, dash)`` dict for trace *index*.      cycles th",
-      "community_name": "palettes.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_palettes_rationale_39"
     },
     {
@@ -25425,7 +25425,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "_generate_shapash_html()",
-      "community_name": "explainability_hub.py",
+      "community_name": "add_simple_bar_labels",
       "id": "src_explainability_hub_generate_shapash_html"
     },
     {
@@ -25557,7 +25557,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "generate a standalone html report with plotly charts for lightgbm shap.",
-      "community_name": "explainability_hub.py",
+      "community_name": "add_simple_bar_labels",
       "id": "src_explainability_hub_rationale_147"
     },
     {
@@ -26096,7 +26096,7 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": "path",
-      "community_name": "app.py",
+      "community_name": "pages.py",
       "id": "path"
     },
     {
@@ -26129,7 +26129,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "chart()",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_chart_factory_chart"
     },
     {
@@ -26140,7 +26140,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "figure",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "figure"
     },
     {
@@ -26217,7 +26217,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "add_baseline()",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_chart_factory_add_baseline"
     },
     {
@@ -26228,7 +26228,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "add_value_annotations()",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_chart_factory_add_value_annotations"
     },
     {
@@ -26239,7 +26239,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "add_simple_bar_labels()",
-      "community_name": "explainability_hub.py",
+      "community_name": "add_simple_bar_labels",
       "id": "src_viz_chart_factory_add_simple_bar_labels"
     },
     {
@@ -26294,7 +26294,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "create a pre-styled plotly figure.      this is the **only** sanctioned way to c",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_chart_factory_rationale_88"
     },
     {
@@ -26360,7 +26360,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "add a horizontal reference line with label.      common use: mase = 1.0 baseline",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_chart_factory_rationale_419"
     },
     {
@@ -26371,7 +26371,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "add white-background value labels above grouped bars.      uses numerical x-axis",
-      "community_name": "charts.py",
+      "community_name": "chart_factory.py",
       "id": "src_viz_chart_factory_rationale_454"
     },
     {
@@ -26382,7 +26382,7 @@
       "_origin": "ast",
       "community": 14,
       "norm_label": "add styled white-box annotations to all bar traces in a figure.          this re",
-      "community_name": "explainability_hub.py",
+      "community_name": "add_simple_bar_labels",
       "id": "src_viz_chart_factory_rationale_496"
     },
     {
@@ -27018,10 +27018,9 @@
       "source_file": "pages.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "pages.py",
       "id": "pages",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "pages.py"
     },
     {
       "label": "_get_torch_device()",
@@ -27029,10 +27028,9 @@
       "source_file": "pages.py",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_get_torch_device()",
       "id": "pages_get_torch_device",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_get_torch_device()"
     },
     {
       "label": "_cached_pipeline_data()",
@@ -27040,10 +27038,9 @@
       "source_file": "pages.py",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_cached_pipeline_data()",
       "id": "pages_cached_pipeline_data",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_cached_pipeline_data()"
     },
     {
       "label": "_pm25_color()",
@@ -27051,10 +27048,9 @@
       "source_file": "pages.py",
       "source_location": "L120",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_pm25_color()",
       "id": "pages_pm25_color",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_pm25_color()"
     },
     {
       "label": "_detect_available_models()",
@@ -27062,10 +27058,9 @@
       "source_file": "pages.py",
       "source_location": "L132",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_detect_available_models()",
       "id": "pages_detect_available_models",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_detect_available_models()"
     },
     {
       "label": "_load_model_rankings()",
@@ -27073,10 +27068,9 @@
       "source_file": "pages.py",
       "source_location": "L169",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_load_model_rankings()",
       "id": "pages_load_model_rankings",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_load_model_rankings()"
     },
     {
       "label": "_is_model_inferrable()",
@@ -27084,10 +27078,9 @@
       "source_file": "pages.py",
       "source_location": "L191",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_is_model_inferrable()",
       "id": "pages_is_model_inferrable",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_is_model_inferrable()"
     },
     {
       "label": "_show_horizon_recommendation()",
@@ -27095,10 +27088,9 @@
       "source_file": "pages.py",
       "source_location": "L201",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_show_horizon_recommendation()",
       "id": "pages_show_horizon_recommendation",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_show_horizon_recommendation()"
     },
     {
       "label": "_cached_sensor_preview()",
@@ -27106,10 +27098,9 @@
       "source_file": "pages.py",
       "source_location": "L222",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_cached_sensor_preview()",
       "id": "pages_cached_sensor_preview",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_cached_sensor_preview()"
     },
     {
       "label": "_cached_suggestion_values()",
@@ -27117,10 +27108,9 @@
       "source_file": "pages.py",
       "source_location": "L232",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_cached_suggestion_values()",
       "id": "pages_cached_suggestion_values",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_cached_suggestion_values()"
     },
     {
       "label": "_load_all_rankings()",
@@ -27128,10 +27118,9 @@
       "source_file": "pages.py",
       "source_location": "L287",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_load_all_rankings()",
       "id": "pages_load_all_rankings",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_load_all_rankings()"
     },
     {
       "label": "_get_smart_model_list()",
@@ -27139,10 +27128,9 @@
       "source_file": "pages.py",
       "source_location": "L309",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_get_smart_model_list()",
       "id": "pages_get_smart_model_list",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_get_smart_model_list()"
     },
     {
       "label": "_format_model_label()",
@@ -27150,10 +27138,9 @@
       "source_file": "pages.py",
       "source_location": "L347",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_format_model_label()",
       "id": "pages_format_model_label",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_format_model_label()"
     },
     {
       "label": "_show_smart_ranking_context()",
@@ -27161,10 +27148,9 @@
       "source_file": "pages.py",
       "source_location": "L361",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_show_smart_ranking_context()",
       "id": "pages_show_smart_ranking_context",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_show_smart_ranking_context()"
     },
     {
       "label": "page_forecast()",
@@ -27172,10 +27158,9 @@
       "source_file": "pages.py",
       "source_location": "L380",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "page_forecast()",
       "id": "pages_page_forecast",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "page_forecast()"
     },
     {
       "label": "_forecast_auto()",
@@ -27183,10 +27168,9 @@
       "source_file": "pages.py",
       "source_location": "L446",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_forecast_auto()",
       "id": "pages_forecast_auto",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_forecast_auto()"
     },
     {
       "label": "_forecast_manual()",
@@ -27194,10 +27178,9 @@
       "source_file": "pages.py",
       "source_location": "L506",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_forecast_manual()",
       "id": "pages_forecast_manual",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_forecast_manual()"
     },
     {
       "label": "_get_gru_predictor()",
@@ -27205,10 +27188,9 @@
       "source_file": "pages.py",
       "source_location": "L566",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_get_gru_predictor()",
       "id": "pages_get_gru_predictor",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_get_gru_predictor()"
     },
     {
       "label": "_get_gru_quantile_predictor()",
@@ -27216,10 +27198,9 @@
       "source_file": "pages.py",
       "source_location": "L572",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_get_gru_quantile_predictor()",
       "id": "pages_get_gru_quantile_predictor",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_get_gru_quantile_predictor()"
     },
     {
       "label": "_get_lgbm_predictor()",
@@ -27227,10 +27208,9 @@
       "source_file": "pages.py",
       "source_location": "L581",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_get_lgbm_predictor()",
       "id": "pages_get_lgbm_predictor",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_get_lgbm_predictor()"
     },
     {
       "label": "_get_eval_metrics()",
@@ -27238,10 +27218,9 @@
       "source_file": "pages.py",
       "source_location": "L586",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_get_eval_metrics()",
       "id": "pages_get_eval_metrics",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_get_eval_metrics()"
     },
     {
       "label": "_predict_ensemble()",
@@ -27249,10 +27228,9 @@
       "source_file": "pages.py",
       "source_location": "L642",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_predict_ensemble()",
       "id": "pages_predict_ensemble",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_predict_ensemble()"
     },
     {
       "label": "_run_prediction()",
@@ -27260,10 +27238,9 @@
       "source_file": "pages.py",
       "source_location": "L704",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_run_prediction()",
       "id": "pages_run_prediction",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_run_prediction()"
     },
     {
       "label": "_predict_arima()",
@@ -27271,10 +27248,9 @@
       "source_file": "pages.py",
       "source_location": "L784",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_predict_arima()",
       "id": "pages_predict_arima",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_predict_arima()"
     },
     {
       "label": "_predict_persistence()",
@@ -27282,10 +27258,9 @@
       "source_file": "pages.py",
       "source_location": "L805",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_predict_persistence()",
       "id": "pages_predict_persistence",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_predict_persistence()"
     },
     {
       "label": "_predict_sarima()",
@@ -27293,10 +27268,9 @@
       "source_file": "pages.py",
       "source_location": "L818",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_predict_sarima()",
       "id": "pages_predict_sarima",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_predict_sarima()"
     },
     {
       "label": "_show_forecast_result()",
@@ -27304,10 +27278,9 @@
       "source_file": "pages.py",
       "source_location": "L842",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_show_forecast_result()",
       "id": "pages_show_forecast_result",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_show_forecast_result()"
     },
     {
       "label": "_load_avp_cache()",
@@ -27315,10 +27288,9 @@
       "source_file": "pages.py",
       "source_location": "L982",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_load_avp_cache()",
       "id": "pages_load_avp_cache",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_load_avp_cache()"
     },
     {
       "label": "page_actual_vs_predicted()",
@@ -27326,10 +27298,9 @@
       "source_file": "pages.py",
       "source_location": "L996",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "page_actual_vs_predicted()",
       "id": "pages_page_actual_vs_predicted",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "page_actual_vs_predicted()"
     },
     {
       "label": "_render_avp_chart()",
@@ -27337,10 +27308,9 @@
       "source_file": "pages.py",
       "source_location": "L1047",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_render_avp_chart()",
       "id": "pages_render_avp_chart",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_render_avp_chart()"
     },
     {
       "label": "page_experiment_runs()",
@@ -27348,10 +27318,9 @@
       "source_file": "pages.py",
       "source_location": "L1378",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "page_experiment_runs()",
       "id": "pages_page_experiment_runs",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "page_experiment_runs()"
     },
     {
       "label": "_render_version_comparison()",
@@ -27359,10 +27328,9 @@
       "source_file": "pages.py",
       "source_location": "L1415",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_render_version_comparison()",
       "id": "pages_render_version_comparison",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_render_version_comparison()"
     },
     {
       "label": "_render_all_runs()",
@@ -27370,10 +27338,9 @@
       "source_file": "pages.py",
       "source_location": "L1655",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "_render_all_runs()",
       "id": "pages_render_all_runs",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "_render_all_runs()"
     },
     {
       "label": "page_training()",
@@ -27381,10 +27348,9 @@
       "source_file": "pages.py",
       "source_location": "L1753",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "page_training()",
       "id": "pages_page_training",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "page_training()"
     },
     {
       "label": "Dashboard Pages \u2014 New production features.  Contains:   - page_forecast: \ud83d\udd2e PM",
@@ -27392,10 +27358,9 @@
       "source_file": "pages.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "dashboard pages \u2014 new production features.  contains:   - page_forecast: \ud83d\udd2e pm",
       "id": "pages_rationale_1",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "dashboard pages \u2014 new production features.  contains:   - page_forecast: \ud83d\udd2e pm"
     },
     {
       "label": "Detect best available device: MPS (Apple Silicon) > CUDA > CPU.",
@@ -27403,10 +27368,9 @@
       "source_file": "pages.py",
       "source_location": "L75",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "detect best available device: mps (apple silicon) > cuda > cpu.",
       "id": "pages_rationale_75",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "detect best available device: mps (apple silicon) > cuda > cpu."
     },
     {
       "label": "Cache the heavy data pipeline result (load \u2192 clean \u2192 impute).      This is the",
@@ -27414,10 +27378,9 @@
       "source_file": "pages.py",
       "source_location": "L89",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "cache the heavy data pipeline result (load \u2192 clean \u2192 impute).      this is the",
       "id": "pages_rationale_89",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "cache the heavy data pipeline result (load \u2192 clean \u2192 impute).      this is the"
     },
     {
       "label": "Scan models/exported/ to find which models can be used for inference.",
@@ -27425,10 +27388,9 @@
       "source_file": "pages.py",
       "source_location": "L133",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "scan models/exported/ to find which models can be used for inference.",
       "id": "pages_rationale_133",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "scan models/exported/ to find which models can be used for inference."
     },
     {
       "label": "Load MASE rankings per horizon from standardized_metrics.json.",
@@ -27436,10 +27398,9 @@
       "source_file": "pages.py",
       "source_location": "L170",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "load mase rankings per horizon from standardized_metrics.json.",
       "id": "pages_rationale_170",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "load mase rankings per horizon from standardized_metrics.json."
     },
     {
       "label": "Check if a model from standardized_metrics can be run for inference.      Uses",
@@ -27447,10 +27408,9 @@
       "source_file": "pages.py",
       "source_location": "L192",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "check if a model from standardized_metrics can be run for inference.      uses",
       "id": "pages_rationale_192",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "check if a model from standardized_metrics can be run for inference.      uses"
     },
     {
       "label": "Show top-5 model ranking for selected horizon.",
@@ -27458,10 +27418,9 @@
       "source_file": "pages.py",
       "source_location": "L202",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "show top-5 model ranking for selected horizon.",
       "id": "pages_rationale_202",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "show top-5 model ranking for selected horizon."
     },
     {
       "label": "Load latest sensor data \u2014 uses cached pipeline to avoid re-loading 209K rows.",
@@ -27469,10 +27428,9 @@
       "source_file": "pages.py",
       "source_location": "L223",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "load latest sensor data \u2014 uses cached pipeline to avoid re-loading 209k rows.",
       "id": "pages_rationale_223",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "load latest sensor data \u2014 uses cached pipeline to avoid re-loading 209k rows."
     },
     {
       "label": "Cached suggestion values \u2014 uses cached pipeline data.",
@@ -27480,10 +27438,9 @@
       "source_file": "pages.py",
       "source_location": "L233",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "cached suggestion values \u2014 uses cached pipeline data.",
       "id": "pages_rationale_233",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "cached suggestion values \u2014 uses cached pipeline data."
     },
     {
       "label": "Load ALL model rankings per horizon (not just top 5).",
@@ -27491,10 +27448,9 @@
       "source_file": "pages.py",
       "source_location": "L288",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "load all model rankings per horizon (not just top 5).",
       "id": "pages_rationale_288",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "load all model rankings per horizon (not just top 5)."
     },
     {
       "label": "Get inferrable models sorted by MASE for the given horizon.      Returns list",
@@ -27502,10 +27458,9 @@
       "source_file": "pages.py",
       "source_location": "L310",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "get inferrable models sorted by mase for the given horizon.      returns list",
       "id": "pages_rationale_310",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "get inferrable models sorted by mase for the given horizon.      returns list"
     },
     {
       "label": "Format dropdown label: 'GRU \u2b50 (MASE: 0.812)' or 'ARIMA'.",
@@ -27513,10 +27468,9 @@
       "source_file": "pages.py",
       "source_location": "L348",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "format dropdown label: 'gru \u2b50 (mase: 0.812)' or 'arima'.",
       "id": "pages_rationale_348",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "format dropdown label: 'gru \u2b50 (mase: 0.812)' or 'arima'."
     },
     {
       "label": "Show compact ranking bar below dropdowns.",
@@ -27524,10 +27478,9 @@
       "source_file": "pages.py",
       "source_location": "L362",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "show compact ranking bar below dropdowns.",
       "id": "pages_rationale_362",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "show compact ranking bar below dropdowns."
     },
     {
       "label": "Forecast using latest data from dataset \u2014 show sensor preview first.",
@@ -27535,10 +27488,9 @@
       "source_file": "pages.py",
       "source_location": "L447",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "forecast using latest data from dataset \u2014 show sensor preview first.",
       "id": "pages_rationale_447",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "forecast using latest data from dataset \u2014 show sensor preview first."
     },
     {
       "label": "Forecast with user-entered values \u2014 textboxes pre-filled with latest data.",
@@ -27546,10 +27498,9 @@
       "source_file": "pages.py",
       "source_location": "L507",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "forecast with user-entered values \u2014 textboxes pre-filled with latest data.",
       "id": "pages_rationale_507",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "forecast with user-entered values \u2014 textboxes pre-filled with latest data."
     },
     {
       "label": "Load GRU Quantile (CQR) predictor \u2014 returns None if model not exported yet.",
@@ -27557,10 +27508,9 @@
       "source_file": "pages.py",
       "source_location": "L573",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "load gru quantile (cqr) predictor \u2014 returns none if model not exported yet.",
       "id": "pages_rationale_573",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "load gru quantile (cqr) predictor \u2014 returns none if model not exported yet."
     },
     {
       "label": "Get evaluation metrics for a model+horizon combo.      Priority: prediction_in",
@@ -27568,10 +27518,9 @@
       "source_file": "pages.py",
       "source_location": "L587",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "get evaluation metrics for a model+horizon combo.      priority: prediction_in",
       "id": "pages_rationale_587",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "get evaluation metrics for a model+horizon combo.      priority: prediction_in"
     },
     {
       "label": "Weighted Ensemble: GRU \u00d7 w_gru + LightGBM \u00d7 w_lgbm.      Weights are pre-optim",
@@ -27579,10 +27528,9 @@
       "source_file": "pages.py",
       "source_location": "L643",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "weighted ensemble: gru \u00d7 w_gru + lightgbm \u00d7 w_lgbm.      weights are pre-optim",
       "id": "pages_rationale_643",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "weighted ensemble: gru \u00d7 w_gru + lightgbm \u00d7 w_lgbm.      weights are pre-optim"
     },
     {
       "label": "Run prediction based on model type.      Strategy: API-first with local fallba",
@@ -27590,10 +27538,9 @@
       "source_file": "pages.py",
       "source_location": "L705",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "run prediction based on model type.      strategy: api-first with local fallba",
       "id": "pages_rationale_705",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "run prediction based on model type.      strategy: api-first with local fallba"
     },
     {
       "label": "Fit ARIMA on recent data and forecast.",
@@ -27601,10 +27548,9 @@
       "source_file": "pages.py",
       "source_location": "L785",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "fit arima on recent data and forecast.",
       "id": "pages_rationale_785",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "fit arima on recent data and forecast."
     },
     {
       "label": "Persistence baseline \u2014 predict PM2.5 = last known value.",
@@ -27612,10 +27558,9 @@
       "source_file": "pages.py",
       "source_location": "L806",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "persistence baseline \u2014 predict pm2.5 = last known value.",
       "id": "pages_rationale_806",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "persistence baseline \u2014 predict pm2.5 = last known value."
     },
     {
       "label": "Display forecast result with KPI card and chart.      Supports CQR prediction",
@@ -27623,10 +27568,9 @@
       "source_file": "pages.py",
       "source_location": "L843",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "display forecast result with kpi card and chart.      supports cqr prediction",
       "id": "pages_rationale_843",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "display forecast result with kpi card and chart.      supports cqr prediction"
     },
     {
       "label": "Load pre-computed Actual vs Predicted data from cache file.      CRITICAL: Thi",
@@ -27634,10 +27578,9 @@
       "source_file": "pages.py",
       "source_location": "L983",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "load pre-computed actual vs predicted data from cache file.      critical: thi",
       "id": "pages_rationale_983",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "load pre-computed actual vs predicted data from cache file.      critical: thi"
     },
     {
       "label": "Render the Actual vs Predicted chart from cached data.      Resolution-First D",
@@ -27645,10 +27588,9 @@
       "source_file": "pages.py",
       "source_location": "L1048",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "render the actual vs predicted chart from cached data.      resolution-first d",
       "id": "pages_rationale_1048",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "render the actual vs predicted chart from cached data.      resolution-first d"
     },
     {
       "label": "Render version comparison from dashboard_runs/ snapshots.",
@@ -27656,10 +27598,9 @@
       "source_file": "pages.py",
       "source_location": "L1416",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "render version comparison from dashboard_runs/ snapshots.",
       "id": "pages_rationale_1416",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "render version comparison from dashboard_runs/ snapshots."
     },
     {
       "label": "Render all experiment runs table.",
@@ -27667,10 +27608,9 @@
       "source_file": "pages.py",
       "source_location": "L1656",
       "_origin": "ast",
-      "community": 4,
-      "norm_label": "render all experiment runs table.",
       "id": "pages_rationale_1656",
-      "community_name": "pages.py"
+      "community": 4,
+      "norm_label": "render all experiment runs table."
     }
   ],
   "links": [
@@ -70674,9 +70614,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "src_viz_theme"
+      "target": "src_viz_theme",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -78644,9 +78584,9 @@
       "source_location": "L784",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_predict_arima",
-      "target": "dataframe"
+      "target": "dataframe",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78656,9 +78596,9 @@
       "source_location": "L642",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_predict_ensemble",
-      "target": "dataframe"
+      "target": "dataframe",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78668,9 +78608,9 @@
       "source_location": "L805",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_predict_persistence",
-      "target": "dataframe"
+      "target": "dataframe",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78680,9 +78620,9 @@
       "source_location": "L818",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_predict_sarima",
-      "target": "dataframe"
+      "target": "dataframe",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -78692,9 +78632,9 @@
       "source_location": "L1707",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_render_all_runs",
-      "target": "dataframe"
+      "target": "dataframe",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -78704,9 +78644,9 @@
       "source_location": "L1359",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_render_avp_chart",
-      "target": "dataframe"
+      "target": "dataframe",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -78716,9 +78656,9 @@
       "source_location": "L1479",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_render_version_comparison",
-      "target": "dataframe"
+      "target": "dataframe",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78728,9 +78668,9 @@
       "source_location": "L704",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "dataframe"
+      "target": "dataframe",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78740,9 +78680,9 @@
       "source_location": "L842",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_show_forecast_result",
-      "target": "dataframe"
+      "target": "dataframe",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -78764,9 +78704,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "src_viz_chart_factory"
+      "target": "src_viz_chart_factory",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -80462,9 +80402,9 @@
       "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_cached_pipeline_data"
+      "target": "pages_cached_pipeline_data",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80473,9 +80413,9 @@
       "source_location": "L222",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_cached_sensor_preview"
+      "target": "pages_cached_sensor_preview",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80484,9 +80424,9 @@
       "source_location": "L232",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_cached_suggestion_values"
+      "target": "pages_cached_suggestion_values",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80495,9 +80435,9 @@
       "source_location": "L132",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_detect_available_models"
+      "target": "pages_detect_available_models",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80506,9 +80446,9 @@
       "source_location": "L446",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_forecast_auto"
+      "target": "pages_forecast_auto",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80517,9 +80457,9 @@
       "source_location": "L506",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_forecast_manual"
+      "target": "pages_forecast_manual",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80528,9 +80468,9 @@
       "source_location": "L347",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_format_model_label"
+      "target": "pages_format_model_label",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80539,9 +80479,9 @@
       "source_location": "L586",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_get_eval_metrics"
+      "target": "pages_get_eval_metrics",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80550,9 +80490,9 @@
       "source_location": "L566",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_get_gru_predictor"
+      "target": "pages_get_gru_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80561,9 +80501,9 @@
       "source_location": "L572",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_get_gru_quantile_predictor"
+      "target": "pages_get_gru_quantile_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80572,9 +80512,9 @@
       "source_location": "L581",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_get_lgbm_predictor"
+      "target": "pages_get_lgbm_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80583,9 +80523,9 @@
       "source_location": "L309",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_get_smart_model_list"
+      "target": "pages_get_smart_model_list",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80594,9 +80534,9 @@
       "source_location": "L74",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_get_torch_device"
+      "target": "pages_get_torch_device",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80605,9 +80545,9 @@
       "source_location": "L191",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_is_model_inferrable"
+      "target": "pages_is_model_inferrable",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80616,9 +80556,9 @@
       "source_location": "L287",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_load_all_rankings"
+      "target": "pages_load_all_rankings",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80627,9 +80567,9 @@
       "source_location": "L982",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_load_avp_cache"
+      "target": "pages_load_avp_cache",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80638,9 +80578,9 @@
       "source_location": "L169",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_load_model_rankings"
+      "target": "pages_load_model_rankings",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80649,9 +80589,9 @@
       "source_location": "L996",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_page_actual_vs_predicted"
+      "target": "pages_page_actual_vs_predicted",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80660,9 +80600,9 @@
       "source_location": "L1378",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_page_experiment_runs"
+      "target": "pages_page_experiment_runs",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80671,9 +80611,9 @@
       "source_location": "L380",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_page_forecast"
+      "target": "pages_page_forecast",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80682,9 +80622,9 @@
       "source_location": "L1753",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_page_training"
+      "target": "pages_page_training",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80693,9 +80633,9 @@
       "source_location": "L120",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_pm25_color"
+      "target": "pages_pm25_color",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80704,9 +80644,9 @@
       "source_location": "L784",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_predict_arima"
+      "target": "pages_predict_arima",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80715,9 +80655,9 @@
       "source_location": "L642",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_predict_ensemble"
+      "target": "pages_predict_ensemble",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80726,9 +80666,9 @@
       "source_location": "L805",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_predict_persistence"
+      "target": "pages_predict_persistence",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80737,9 +80677,9 @@
       "source_location": "L818",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_predict_sarima"
+      "target": "pages_predict_sarima",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80748,9 +80688,9 @@
       "source_location": "L1655",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_render_all_runs"
+      "target": "pages_render_all_runs",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80759,9 +80699,9 @@
       "source_location": "L1047",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_render_avp_chart"
+      "target": "pages_render_avp_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80770,9 +80710,9 @@
       "source_location": "L1415",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_render_version_comparison"
+      "target": "pages_render_version_comparison",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80781,9 +80721,9 @@
       "source_location": "L704",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_run_prediction"
+      "target": "pages_run_prediction",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80792,9 +80732,9 @@
       "source_location": "L842",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_show_forecast_result"
+      "target": "pages_show_forecast_result",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80803,9 +80743,9 @@
       "source_location": "L201",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_show_horizon_recommendation"
+      "target": "pages_show_horizon_recommendation",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80814,9 +80754,9 @@
       "source_location": "L361",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages",
-      "target": "pages_show_smart_ranking_context"
+      "target": "pages_show_smart_ranking_context",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -80825,9 +80765,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_1",
-      "target": "pages"
+      "target": "pages",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -80837,9 +80777,9 @@
       "source_location": "L669",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_predict_ensemble",
-      "target": "pages_get_torch_device"
+      "target": "pages_get_torch_device",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -80848,9 +80788,9 @@
       "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_75",
-      "target": "pages_get_torch_device"
+      "target": "pages_get_torch_device",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -80860,9 +80800,9 @@
       "source_location": "L742",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "pages_get_torch_device"
+      "target": "pages_get_torch_device",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -80872,9 +80812,9 @@
       "source_location": "L225",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_cached_sensor_preview",
-      "target": "pages_cached_pipeline_data"
+      "target": "pages_cached_pipeline_data",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -80884,9 +80824,9 @@
       "source_location": "L235",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_cached_suggestion_values",
-      "target": "pages_cached_pipeline_data"
+      "target": "pages_cached_pipeline_data",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -80896,9 +80836,9 @@
       "source_location": "L496",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_auto",
-      "target": "pages_cached_pipeline_data"
+      "target": "pages_cached_pipeline_data",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -80908,9 +80848,9 @@
       "source_location": "L547",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_manual",
-      "target": "pages_cached_pipeline_data"
+      "target": "pages_cached_pipeline_data",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -80919,9 +80859,9 @@
       "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_89",
-      "target": "pages_cached_pipeline_data"
+      "target": "pages_cached_pipeline_data",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -80931,9 +80871,9 @@
       "source_location": "L849",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_show_forecast_result",
-      "target": "pages_pm25_color"
+      "target": "pages_pm25_color",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -80943,9 +80883,9 @@
       "source_location": "L317",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_get_smart_model_list",
-      "target": "pages_detect_available_models"
+      "target": "pages_detect_available_models",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -80954,9 +80894,9 @@
       "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_133",
-      "target": "pages_detect_available_models"
+      "target": "pages_detect_available_models",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -80965,9 +80905,9 @@
       "source_location": "L170",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_170",
-      "target": "pages_load_model_rankings"
+      "target": "pages_load_model_rankings",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -80977,9 +80917,9 @@
       "source_location": "L203",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_show_horizon_recommendation",
-      "target": "pages_load_model_rankings"
+      "target": "pages_load_model_rankings",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -80988,9 +80928,9 @@
       "source_location": "L192",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_192",
-      "target": "pages_is_model_inferrable"
+      "target": "pages_is_model_inferrable",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81000,9 +80940,9 @@
       "source_location": "L210",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_show_horizon_recommendation",
-      "target": "pages_is_model_inferrable"
+      "target": "pages_is_model_inferrable",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81011,9 +80951,9 @@
       "source_location": "L202",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_202",
-      "target": "pages_show_horizon_recommendation"
+      "target": "pages_show_horizon_recommendation",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81023,9 +80963,9 @@
       "source_location": "L494",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_auto",
-      "target": "pages_cached_sensor_preview"
+      "target": "pages_cached_sensor_preview",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81035,9 +80975,9 @@
       "source_location": "L545",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_manual",
-      "target": "pages_cached_sensor_preview"
+      "target": "pages_cached_sensor_preview",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81046,9 +80986,9 @@
       "source_location": "L223",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_223",
-      "target": "pages_cached_sensor_preview"
+      "target": "pages_cached_sensor_preview",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81058,9 +80998,9 @@
       "source_location": "L449",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_auto",
-      "target": "pages_cached_suggestion_values"
+      "target": "pages_cached_suggestion_values",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81070,9 +81010,9 @@
       "source_location": "L508",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_manual",
-      "target": "pages_cached_suggestion_values"
+      "target": "pages_cached_suggestion_values",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81081,9 +81021,9 @@
       "source_location": "L233",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_233",
-      "target": "pages_cached_suggestion_values"
+      "target": "pages_cached_suggestion_values",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81093,9 +81033,9 @@
       "source_location": "L316",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_get_smart_model_list",
-      "target": "pages_load_all_rankings"
+      "target": "pages_load_all_rankings",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81104,9 +81044,9 @@
       "source_location": "L288",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_288",
-      "target": "pages_load_all_rankings"
+      "target": "pages_load_all_rankings",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81116,9 +81056,9 @@
       "source_location": "L413",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_page_forecast",
-      "target": "pages_get_smart_model_list"
+      "target": "pages_get_smart_model_list",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81127,9 +81067,9 @@
       "source_location": "L310",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_310",
-      "target": "pages_get_smart_model_list"
+      "target": "pages_get_smart_model_list",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81139,9 +81079,9 @@
       "source_location": "L421",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_page_forecast",
-      "target": "pages_format_model_label"
+      "target": "pages_format_model_label",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81150,9 +81090,9 @@
       "source_location": "L348",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_348",
-      "target": "pages_format_model_label"
+      "target": "pages_format_model_label",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81162,9 +81102,9 @@
       "source_location": "L425",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_page_forecast",
-      "target": "pages_show_smart_ranking_context"
+      "target": "pages_show_smart_ranking_context",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81173,9 +81113,9 @@
       "source_location": "L362",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_362",
-      "target": "pages_show_smart_ranking_context"
+      "target": "pages_show_smart_ranking_context",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81185,9 +81125,9 @@
       "source_location": "L437",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_page_forecast",
-      "target": "pages_forecast_auto"
+      "target": "pages_forecast_auto",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81197,9 +81137,9 @@
       "source_location": "L439",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_page_forecast",
-      "target": "pages_forecast_manual"
+      "target": "pages_forecast_manual",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81209,9 +81149,9 @@
       "source_location": "L498",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_auto",
-      "target": "pages_run_prediction"
+      "target": "pages_run_prediction",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81221,9 +81161,9 @@
       "source_location": "L499",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_auto",
-      "target": "pages_show_forecast_result"
+      "target": "pages_show_forecast_result",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81232,9 +81172,9 @@
       "source_location": "L447",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_447",
-      "target": "pages_forecast_auto"
+      "target": "pages_forecast_auto",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81244,9 +81184,9 @@
       "source_location": "L557",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_manual",
-      "target": "pages_run_prediction"
+      "target": "pages_run_prediction",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81256,9 +81196,9 @@
       "source_location": "L558",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_forecast_manual",
-      "target": "pages_show_forecast_result"
+      "target": "pages_show_forecast_result",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81267,9 +81207,9 @@
       "source_location": "L507",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_507",
-      "target": "pages_forecast_manual"
+      "target": "pages_forecast_manual",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81279,9 +81219,9 @@
       "source_location": "L670",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_predict_ensemble",
-      "target": "pages_get_gru_predictor"
+      "target": "pages_get_gru_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81291,9 +81231,9 @@
       "source_location": "L743",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "pages_get_gru_predictor"
+      "target": "pages_get_gru_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81303,9 +81243,9 @@
       "source_location": "L665",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_predict_ensemble",
-      "target": "pages_get_gru_quantile_predictor"
+      "target": "pages_get_gru_quantile_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81314,9 +81254,9 @@
       "source_location": "L573",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_573",
-      "target": "pages_get_gru_quantile_predictor"
+      "target": "pages_get_gru_quantile_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81326,9 +81266,9 @@
       "source_location": "L738",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "pages_get_gru_quantile_predictor"
+      "target": "pages_get_gru_quantile_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81338,9 +81278,9 @@
       "source_location": "L657",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_predict_ensemble",
-      "target": "pages_get_lgbm_predictor"
+      "target": "pages_get_lgbm_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81350,9 +81290,9 @@
       "source_location": "L749",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "pages_get_lgbm_predictor"
+      "target": "pages_get_lgbm_predictor",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81361,9 +81301,9 @@
       "source_location": "L587",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_587",
-      "target": "pages_get_eval_metrics"
+      "target": "pages_get_eval_metrics",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81373,9 +81313,9 @@
       "source_location": "L730",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "pages_get_eval_metrics"
+      "target": "pages_get_eval_metrics",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81384,9 +81324,9 @@
       "source_location": "L643",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_643",
-      "target": "pages_predict_ensemble"
+      "target": "pages_predict_ensemble",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81396,9 +81336,9 @@
       "source_location": "L753",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "pages_predict_ensemble"
+      "target": "pages_predict_ensemble",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81407,9 +81347,9 @@
       "source_location": "L705",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_705",
-      "target": "pages_run_prediction"
+      "target": "pages_run_prediction",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81419,9 +81359,9 @@
       "source_location": "L756",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "pages_predict_arima"
+      "target": "pages_predict_arima",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81431,9 +81371,9 @@
       "source_location": "L733",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "pages_predict_persistence"
+      "target": "pages_predict_persistence",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81443,9 +81383,9 @@
       "source_location": "L759",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_run_prediction",
-      "target": "pages_predict_sarima"
+      "target": "pages_predict_sarima",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81454,9 +81394,9 @@
       "source_location": "L785",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_785",
-      "target": "pages_predict_arima"
+      "target": "pages_predict_arima",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81465,9 +81405,9 @@
       "source_location": "L806",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_806",
-      "target": "pages_predict_persistence"
+      "target": "pages_predict_persistence",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81476,9 +81416,9 @@
       "source_location": "L819",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_785",
-      "target": "pages_predict_sarima"
+      "target": "pages_predict_sarima",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81487,9 +81427,9 @@
       "source_location": "L843",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_843",
-      "target": "pages_show_forecast_result"
+      "target": "pages_show_forecast_result",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81499,9 +81439,9 @@
       "source_location": "L1025",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_page_actual_vs_predicted",
-      "target": "pages_load_avp_cache"
+      "target": "pages_load_avp_cache",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81510,9 +81450,9 @@
       "source_location": "L983",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_983",
-      "target": "pages_load_avp_cache"
+      "target": "pages_load_avp_cache",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81522,9 +81462,9 @@
       "source_location": "L1028",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_page_actual_vs_predicted",
-      "target": "pages_render_avp_chart"
+      "target": "pages_render_avp_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81533,9 +81473,9 @@
       "source_location": "L1048",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_1048",
-      "target": "pages_render_avp_chart"
+      "target": "pages_render_avp_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81545,9 +81485,9 @@
       "source_location": "L1409",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_page_experiment_runs",
-      "target": "pages_render_all_runs"
+      "target": "pages_render_all_runs",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81557,9 +81497,9 @@
       "source_location": "L1406",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_page_experiment_runs",
-      "target": "pages_render_version_comparison"
+      "target": "pages_render_version_comparison",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81568,9 +81508,9 @@
       "source_location": "L1416",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_1416",
-      "target": "pages_render_version_comparison"
+      "target": "pages_render_version_comparison",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81579,9 +81519,9 @@
       "source_location": "L1656",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "pages_rationale_1656",
-      "target": "pages_render_all_runs"
+      "target": "pages_render_all_runs",
+      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],

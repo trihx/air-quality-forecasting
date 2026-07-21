@@ -271,8 +271,8 @@ st.markdown("""
     [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(1),
     [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(4),
     [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(7),
-    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(12),
-    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(13) {
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(14),
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(16) {
         margin-top: 2.8rem !important;
         position: relative !important;
     }
@@ -293,8 +293,8 @@ st.markdown("""
     [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(1)::before { content: "PHASE 1: GIỚI THIỆU & KHÁM PHÁ"; }
     [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(4)::before { content: "PHASE 2: HUẤN LUYỆN MÔ HÌNH"; }
     [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(7)::before { content: "PHASE 3: ĐÁNH GIÁ & GIẢI THÍCH"; }
-    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(12)::before { content: "PHASE 4: ỨNG DỤNG"; }
-    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(13)::before { content: "CÔNG CỤ HỖ TRỢ"; }
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(14)::before { content: "PHASE 4: ỨNG DỤNG & KẾT LUẬN"; }
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > *:nth-child(16)::before { content: "CÔNG CỤ HỖ TRỢ"; }
 
     /* ── Pipeline diagram ── */
     .pipeline-box {
@@ -471,11 +471,12 @@ def sidebar():
             "🧠 Giải Thích Trực Quan",
             "📊 Khoảng Tin Cậy Dự Báo",
             "📚 Đối Chiếu Khoa Học",
-            "📝 Kết Luận & Hướng Phát Triển",
-            # ── Phase 4: Ứng dụng ──
-            "🔮 Dự Báo PM2.5",
-            # ── Công cụ hỗ trợ ──
+            "📊 Thesis Figures",
             "🔬 Scientific Audit",
+            # ── Phase 4: Ứng dụng & Kết luận ──
+            "🔮 Dự Báo PM2.5",
+            "📝 Kết Luận & Hướng Phát Triển",
+            # ── Công cụ hỗ trợ ──
             "💬 Trợ Lý AI",
             "✏️ Quản Lý Nội Dung",
         ],
@@ -518,6 +519,15 @@ def sidebar():
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+    # ── Print Mode toggle ──
+    st.sidebar.divider()
+    print_mode = st.sidebar.checkbox(
+        "🖨️ Print Mode (B&W)",
+        value=st.session_state.get("print_mode", False),
+        help="Chuyển toàn bộ charts sang chế độ trắng đen, tối ưu cho in luận văn",
+        key="print_mode",
+    )
 
     return page
 
@@ -806,9 +816,23 @@ def page_multi_horizon(results):
     # ── Version-aware info cards ──
     from src.info_cards import cards_multi_horizon, get_current_version, render_version_badge
     ver = get_current_version()
-    from src.frontend.citations import cite
+    from src.frontend.citations import cite, render_references_section
     render_version_badge(ver)
     cards_multi_horizon(ver)
+
+    # ── Methodology note ──
+    st.markdown(f"""
+    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
+        <div style="font-size: 0.85rem; opacity: 0.65;">
+            📌 Metrics chính: <b>MASE</b> {cite('hyndman2006')} (scale-independent, unified baseline),
+            MAE {cite('willmott2005')}, và Forecast Bias {cite('hyndman2021')}.
+            Đánh giá trên temporal test set (80/10/10) {cite('tashman2000')}, chỉ dùng real data.
+            So sánh thống kê giữa models bằng Diebold-Mariano test {cite('diebold1995')}.
+            Họ mô hình: LightGBM {cite('ke2017')}, GRU {cite('cho2014')}, Ensemble {cite('peixeiro2022')}.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # ── Initialize ReportingEngine & ContentManager ──
     from src.info_cards import get_version_data
@@ -1043,6 +1067,9 @@ def page_multi_horizon(results):
                 f"**Mean Bias**: {avg_bias:.4f} | "
                 f"**Least Biased**: {min_bias_model['Model']} (bias={min_bias_model['Forecast Bias']:.4f})"
             )
+
+    # ── References ──
+    render_references_section()
 
 # ══════════════════════════════════════════════════════════════════════
 # Page: Scientific Benchmark
@@ -1531,6 +1558,10 @@ def page_prediction_intervals(results):
         display_df.columns = ["Phương pháp", "Mô hình", "Horizon (h)", "Coverage", "Width (µg/m³)", "MAE (µg/m³)"]
         st.dataframe(display_df, use_container_width=True, hide_index=True)
 
+    # ── References ──
+    from src.frontend.citations import render_references_section
+    render_references_section()
+
 
 # ══════════════════════════════════════════════════════════════════════
 # Page: EDA
@@ -1570,6 +1601,25 @@ def page_eda(results):
 
     with tab1:
         st.markdown("### 1. Tổng Quan & Cường Độ (Dataset Overview)")
+
+        # ── Data Summary Card ──
+        st.markdown("""
+        <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1.2rem;
+                    margin-bottom: 1.5rem; border: 1px solid rgba(0,212,170,0.2);">
+            <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.8rem; color: var(--text-color);">
+                📋 Tóm Tắt Bộ Dữ Liệu (Data Summary)
+            </div>
+            <table style="width: 100%; font-size: 0.88rem; color: var(--text-color);">
+                <tr><td style="padding: 4px 0; opacity: 0.6;">🏭 Nguồn</td><td>Cảm biến IoT PMS5003 — Trạm Sa Đéc, Đồng Tháp</td></tr>
+                <tr><td style="padding: 4px 0; opacity: 0.6;">📅 Giai đoạn</td><td>11/2021 — 12/2024 (~3.1 năm)</td></tr>
+                <tr><td style="padding: 4px 0; opacity: 0.6;">⏱️ Tần suất gốc</td><td>~2 phút/mẫu (209,397 records)</td></tr>
+                <tr><td style="padding: 4px 0; opacity: 0.6;">📊 Resample</td><td>15 phút (~110K) · 30 phút (~55K) · 1 giờ (~27K)</td></tr>
+                <tr><td style="padding: 4px 0; opacity: 0.6;">🧪 Features</td><td>119 columns (anti-leakage, shift(1) enforced)</td></tr>
+                <tr><td style="padding: 4px 0; opacity: 0.6;">✂️ Split</td><td>80/10/10 temporal — test = real data only</td></tr>
+            </table>
+        </div>
+        """, unsafe_allow_html=True)
+
         st.markdown("Dữ liệu PM2.5 thu thập từ cảm biến IoT với tần suất cao (5 phút/lần). Dưới đây là mảng thông tin tổng quan trước khi đi sâu vào các câu chuyện dữ liệu.")
 
         cols = st.columns(4)
@@ -3069,6 +3119,10 @@ def page_eda(results):
         else:
             st.warning("⚠️ Không thể load multi-resolution data.")
 
+    # ── References ──
+    from src.frontend.citations import render_references_section
+    render_references_section()
+
 
 # ══════════════════════════════════════════════════════════════════════
 # Page: Hyperparameters
@@ -3721,6 +3775,12 @@ def main():
     if page == "💬 Trợ Lý AI":
         from src.chatbot.chat_page import page_ai_assistant
         page_ai_assistant(results)
+        return
+
+    # ── Thesis Figures ──
+    if page == "📊 Thesis Figures":
+        from src.thesis_figures import page_thesis_figures
+        page_thesis_figures(results)
         return
 
     # ── Scientific Audit ──

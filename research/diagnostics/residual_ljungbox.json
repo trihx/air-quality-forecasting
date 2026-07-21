@@ -1,0 +1,310 @@
+{
+  "GRU": {
+    "1h": {
+      "n": 693,
+      "mean": -0.8386,
+      "std": 4.1619,
+      "skewness": 1.4364,
+      "kurtosis": 7.8092,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 145.7622,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 148.8692,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 152.944,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 169.5122,
+          "lb_pvalue": 0.0
+        }
+      }
+    },
+    "6h": {
+      "n": 684,
+      "mean": 0.8377,
+      "std": 6.1637,
+      "skewness": 0.7833,
+      "kurtosis": 2.4093,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 458.0081,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 1309.5711,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 1475.4699,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 1560.7311,
+          "lb_pvalue": 0.0
+        }
+      }
+    },
+    "24h": {
+      "n": 652,
+      "mean": -0.0571,
+      "std": 5.1204,
+      "skewness": 1.2111,
+      "kurtosis": 4.6683,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 367.291,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 1015.8623,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 1162.4807,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 1267.5684,
+          "lb_pvalue": 0.0
+        }
+      }
+    }
+  },
+  "LSTM": {
+    "1h": {
+      "n": 693,
+      "mean": -0.354,
+      "std": 4.2262,
+      "skewness": 2.0108,
+      "kurtosis": 7.5398,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 263.7241,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 392.9479,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 400.7464,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 410.5696,
+          "lb_pvalue": 0.0
+        }
+      }
+    },
+    "6h": {
+      "n": 684,
+      "mean": 2.2535,
+      "std": 4.9056,
+      "skewness": 1.7449,
+      "kurtosis": 4.9081,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 365.0364,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 892.1775,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 958.0823,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 975.2898,
+          "lb_pvalue": 0.0
+        }
+      }
+    },
+    "24h": {
+      "n": 652,
+      "mean": 2.4214,
+      "std": 4.9155,
+      "skewness": 1.5312,
+      "kurtosis": 4.137,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 343.2899,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 832.6654,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 913.7546,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 936.3631,
+          "lb_pvalue": 0.0
+        }
+      }
+    }
+  },
+  "LightGBM": {
+    "1h": {
+      "n": 846,
+      "mean": 0.1141,
+      "std": 4.7242,
+      "skewness": 2.1024,
+      "kurtosis": 8.8394,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 328.0213,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 422.0365,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 434.6133,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 449.9529,
+          "lb_pvalue": 0.0
+        }
+      }
+    },
+    "6h": {
+      "n": 841,
+      "mean": -0.2183,
+      "std": 5.7335,
+      "skewness": 1.8174,
+      "kurtosis": 5.5698,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 536.8461,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 1604.7919,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 1734.9617,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 1790.1939,
+          "lb_pvalue": 0.0
+        }
+      }
+    },
+    "24h": {
+      "n": 797,
+      "mean": -1.5144,
+      "std": 5.2678,
+      "skewness": 1.222,
+      "kurtosis": 3.1903,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 432.5433,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 1179.4152,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 1286.3432,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 1301.3244,
+          "lb_pvalue": 0.0
+        }
+      }
+    }
+  },
+  "Ensemble": {
+    "1h": {
+      "n": 693,
+      "mean": 0.0531,
+      "std": 4.4987,
+      "skewness": 1.3488,
+      "kurtosis": 4.8165,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 294.9461,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 584.6419,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 633.1152,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 674.1293,
+          "lb_pvalue": 0.0
+        }
+      }
+    },
+    "6h": {
+      "n": 684,
+      "mean": 1.302,
+      "std": 4.9089,
+      "skewness": 1.5788,
+      "kurtosis": 4.607,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 369.2468,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 973.0053,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 1061.038,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 1071.4641,
+          "lb_pvalue": 0.0
+        }
+      }
+    },
+    "24h": {
+      "n": 652,
+      "mean": 0.9866,
+      "std": 4.7715,
+      "skewness": 1.6026,
+      "kurtosis": 4.7209,
+      "ljung_box": {
+        "lag_1": {
+          "lb_stat": 324.6124,
+          "lb_pvalue": 0.0
+        },
+        "lag_6": {
+          "lb_stat": 749.1608,
+          "lb_pvalue": 0.0
+        },
+        "lag_12": {
+          "lb_stat": 777.7884,
+          "lb_pvalue": 0.0
+        },
+        "lag_24": {
+          "lb_stat": 791.2307,
+          "lb_pvalue": 0.0
+        }
+      }
+    }
+  }
+}

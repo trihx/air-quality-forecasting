@@ -39,3 +39,15 @@
 * Chạy riêng Unit Tests: `make test`
 * Tối ưu hóa & dọn dẹp bộ nhớ (L1->L3): `make update-memory`
 * Dọn dẹp cache hệ thống: `make clean`
+* Cập nhật Knowledge Graph: `make graphify`
+
+---
+
+## 🔗 5. Graphify Knowledge Graph
+> Graphify tạo knowledge graph từ toàn bộ codebase, giúp Agent hiểu cấu trúc, dependencies, và community hubs trước khi sửa code.
+
+* **Graph Report:** [GRAPH_REPORT.md](file:///Users/trihx/Desktop/time-series-forecasting/graphify-out/GRAPH_REPORT.md) — Tổng quan 2447 nodes, 4791 edges, 293 communities.
+* **CLI:**
+  * `graphify explain "module_name"` — Giải thích node và neighbors
+  * `graphify path "A" "B"` — Tìm đường ngắn nhất giữa 2 nodes
+* **Quy tắc:** TRƯỚC khi sửa code → đọc GRAPH_REPORT. SAU khi sửa code → `make graphify`.

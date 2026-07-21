@@ -58,10 +58,10 @@ Click vào nút **Advanced** → **Add Environment Variable** để thêm các b
 | `OPENAI_API_KEY` | API key OpenAI (nếu dùng RAG chatbot) | ❌ |
 | `GEMINI_API_KEY` | API key Google Gemini (nếu dùng RAG chatbot) | ❌ |
 
-### Bước 4: Deploy
-1. Click **Deploy Web Service**.
-2. Render sẽ tự động build image và deploy. Quá trình này mất khoảng 5-10 phút.
-3. Khi deploy thành công, Render sẽ cấp cho anh một domain mặc định miễn phí có dạng: `https://pm25-forecasting-xxxx.onrender.com`.
+### Bước 4: Deploy & Domain Live
+1. Click **Deploy Web Service** (hoặc push code lên nhánh master/main trên GitHub, Render sẽ tự động trigger build mới).
+2. Render sẽ tự động build Docker image và deploy. Quá trình này mất khoảng 5-10 phút.
+3. Domain Live chính thức của dự án: **`https://time-series-forecasting-c8gz.onrender.com/`**
 
 ---
 
@@ -74,8 +74,8 @@ Mặc định, các app chạy trên gói Free của Render sẽ tự động ng
 ### Kích hoạt Keep-Alive:
 1. Push code lên GitHub repo (bao gồm file `.github/workflows/keep-alive.yml`).
 2. Vào GitHub repo của anh → **Settings** → **Secrets and variables** → **Actions** → Thêm secret mới:
-   - **Name:** `HF_SPACE_URL` (hoặc anh sửa tên trong workflow thành `RENDER_URL` cho đúng nghĩa)
-   - **Value:** `https://pm25-forecasting-xxxx.onrender.com` (Đường dẫn app Render của anh).
+   - **Name:** `RENDER_URL` (hoặc `HF_SPACE_URL`)
+   - **Value:** `https://time-series-forecasting-c8gz.onrender.com`
 3. GitHub Actions sẽ tự động ping app mỗi 6 tiếng để giữ cho Render không bị ngủ đông.
 
 ---
@@ -83,7 +83,7 @@ Mặc định, các app chạy trên gói Free của Render sẽ tự động ng
 ## 4. Kiến trúc Deploy
 
 ```
-        https://pm25-forecasting-xxxx.onrender.com
+       https://time-series-forecasting-c8gz.onrender.com
                           │
                           ▼
 ┌─────────────────────────────────────────────────────┐

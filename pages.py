@@ -271,13 +271,16 @@ _METRICS_TO_INFERENCE = {
     "Ensemble_GRU": "Ensemble",
 }
 
-# Optimized weights from grid-search experiment (ensemble_20260404_204737.json).
-# At 1h, Ensemble is just LightGBM (GRU weight=0), so not useful.
+# Ensemble weights optimized via grid-search on VALIDATION SET only
+# (10% middle temporal slice). Test set was NEVER used for weight selection.
+# Source: ensemble_20260404_204737.json
+# At h=1, Ensemble is just LightGBM (GRU weight=0) — autocorrelation trap.
 _ENSEMBLE_WEIGHTS = {
-    1:  {"gru": 0.00, "lgbm": 1.00},
-    6:  {"gru": 0.45, "lgbm": 0.55},
-    24: {"gru": 0.70, "lgbm": 0.30},
+    1:  {"gru": 0.00, "lgbm": 1.00},   # h=1: Persistence-like, GRU adds noise
+    6:  {"gru": 0.45, "lgbm": 0.55},    # h=6: Balanced — GRU captures trend
+    24: {"gru": 0.70, "lgbm": 0.30},    # h=24: GRU dominates — long-range memory
 }
+
 
 
 @st.cache_data(ttl=600)
@@ -375,6 +378,8 @@ def _show_smart_ranking_context(smart_models: list, selected: str):
 
 
 def page_forecast(results):
+    from src.frontend.citations import cite, render_references_section
+
     st.markdown("""
     <h1 style="font-size: 2rem;">🔮 Dự Báo PM2.5</h1>
     <p style="opacity: 0.7;">Nhập dữ liệu cảm biến → Nhận dự báo nồng độ PM2.5</p>
@@ -385,6 +390,18 @@ def page_forecast(results):
     ver = get_current_version()
     render_version_badge(ver)
     cards_forecast(ver)
+
+    # ── Methodology note ──
+    st.markdown(f"""
+    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
+        <div style="font-size: 0.85rem; opacity: 0.65;">
+            📌 Mô hình được xếp hạng theo MASE {cite('hyndman2006')} — thước đo scale-independent.
+            GRU {cite('cho2014')} và LightGBM {cite('ke2017')} là 2 kiến trúc chính.
+            Dữ liệu dự báo tuân thủ temporal split, chỉ đánh giá trên real data {cite('tashman2000')}.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # ── Horizon FIRST → determines model ranking ──
     col1, col2 = st.columns(2)
@@ -420,6 +437,9 @@ def page_forecast(results):
         _forecast_auto(model_type, horizon)
     else:
         _forecast_manual(model_type, horizon)
+
+    # ── References ──
+    render_references_section()
 
 
 
@@ -974,6 +994,8 @@ def _load_avp_cache(horizon: int) -> dict | None:
 
 
 def page_actual_vs_predicted(results):
+    from src.frontend.citations import cite, render_references_section
+
     st.markdown("""
     <h1 style="font-size: 2rem;">📊 Actual vs Predicted</h1>
     <p style="opacity: 0.7;">So sánh giá trị thực tế và dự đoán từ các mô hình trên tập test</p>
@@ -984,6 +1006,17 @@ def page_actual_vs_predicted(results):
     ver = get_current_version()
     render_version_badge(ver)
     cards_actual_vs_predicted(ver)
+
+    st.markdown(f"""
+    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
+        <div style="font-size: 0.85rem; opacity: 0.65;">
+            📌 Đánh giá trên tập test (temporal split 80/10/10) {cite('tashman2000')},
+            chỉ dùng real data (is_imputed == 0). Metrics chính: MASE {cite('hyndman2006')},
+            MAE {cite('willmott2005')}, cùng Diebold-Mariano test {cite('diebold1995')} cho so sánh thống kê.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     horizon = st.selectbox("⏱️ Chọn horizon", [1, 6, 24], index=1,
                            format_func=lambda x: f"{x} giờ")
@@ -1006,6 +1039,9 @@ def page_actual_vs_predicted(results):
             "có thể gây crash Streamlit server. Pre-compute chạy offline 1 lần và "
             "lưu kết quả (~100KB/horizon) để dashboard load tức thì."
         )
+
+    # ── References ──
+    render_references_section()
 
 
 def _render_avp_chart(data: dict, horizon: int, ver: str):
@@ -1340,6 +1376,8 @@ def _render_avp_chart(data: dict, horizon: int, ver: str):
 
 
 def page_experiment_runs(results):
+    from src.frontend.citations import cite, render_references_section
+
     st.markdown("""
     <h1 style="font-size: 2rem;">📋 Experiment Runs</h1>
     <p style="opacity: 0.7;">Lịch sử thí nghiệm và so sánh giữa các phiên bản pipeline</p>
@@ -1351,6 +1389,17 @@ def page_experiment_runs(results):
     render_version_badge(ver)
     cards_experiment_runs(ver)
 
+    st.markdown(f"""
+    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
+        <div style="font-size: 0.85rem; opacity: 0.65;">
+            📌 Pipeline trải qua 9 phiên bản (v1→v9), tuân thủ quy trình nghiên cứu lặp lại {cite('makridakis2020')}.
+            Mỗi version snapshot ghi nhận feature set, model configs, và metrics chuẩn hóa MASE {cite('hyndman2006')}.
+            So sánh fair giữa các phiên bản sử dụng cùng temporal test set {cite('tashman2000')}.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
     tab1, tab2 = st.tabs(["📊 So Sánh Phiên Bản", "📋 Tất Cả Experiment Runs"])
 
     with tab1:
@@ -1358,6 +1407,9 @@ def page_experiment_runs(results):
 
     with tab2:
         _render_all_runs()
+
+    # ── References ──
+    render_references_section()
 
 
 def _render_version_comparison():
@@ -1848,3 +1900,6 @@ def page_training(results):
         except Exception as e:
             st.error(f"Lỗi khi huấn luyện: {e}")
             st.exception(e)
+
+    # ── References ──
+    render_references_section()
