@@ -73,7 +73,7 @@ stderr_logfile=/dev/fd/2
 stderr_logfile_maxbytes=0
 
 [program:streamlit]
-command=streamlit run app.py --server.port=7860 --server.address=0.0.0.0 --server.headless=true --server.fileWatcherType=none --server.maxUploadSize=50
+command=sh -c 'streamlit run app.py --server.port=${PORT:-7860} --server.address=0.0.0.0 --server.headless=true --server.fileWatcherType=none --server.maxUploadSize=50'
 directory=/app
 autostart=true
 autorestart=true
