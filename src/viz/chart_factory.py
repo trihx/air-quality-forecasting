@@ -749,13 +749,19 @@ def render_bw_download(
     try:
         bw_fig = to_bw(fig)
 
-        img_bytes = bw_fig.to_image(
-            format="png",
-            width=width,
-            height=height,
-            scale=3,  # 300 DPI equivalent
-            engine="kaleido",
-        )
+        try:
+            img_bytes = bw_fig.to_image(
+                format="png",
+                width=width,
+                height=height,
+                scale=3,  # 300 DPI equivalent
+            )
+        except Exception:
+            img_bytes = bw_fig.to_image(
+                format="png",
+                width=width,
+                height=height,
+            )
 
         st.download_button(
             label=label,
@@ -764,6 +770,8 @@ def render_bw_download(
             mime="image/png",
             key=f"bw_{filename}",
         )
-    except Exception as e:
-        st.warning(f"⚠️ Cần cài `kaleido` để export: `uv add kaleido`\n\n{e}")
+    except Exception:
+        # Fallback gracefully — do not pollute dashboard UI with error boxes
+        st.caption("💡 *Tải ảnh B&W: Bấm biểu tượng máy ảnh ở góc trên bên phải biểu đồ Plotly.*")
+
 

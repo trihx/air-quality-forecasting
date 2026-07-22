@@ -609,10 +609,14 @@ def page_thesis_figures(results):
             with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
                 for name, fig in figures_map.items():
                     bw_fig = to_bw(fig)
-                    img_bytes = bw_fig.to_image(
-                        format="png", width=1200, height=500,
-                        scale=3, engine="kaleido",
-                    )
+                    try:
+                        img_bytes = bw_fig.to_image(
+                            format="png", width=1200, height=500, scale=3
+                        )
+                    except Exception:
+                        img_bytes = bw_fig.to_image(
+                            format="png", width=1200, height=500
+                        )
                     zf.writestr(f"{name}.png", img_bytes)
 
             zip_buffer.seek(0)
