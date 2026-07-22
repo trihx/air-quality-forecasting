@@ -173,7 +173,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "arima_multi_horizon.py",
-      "community_name": "load_raw_data",
+      "community_name": "_remove_duplicates",
       "id": "scripts_archive_arima_multi_horizon"
     },
     {
@@ -195,7 +195,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "_prepare_hybrid_data()",
-      "community_name": "load_raw_data",
+      "community_name": "_remove_duplicates",
       "id": "scripts_archive_arima_multi_horizon_prepare_hybrid_data"
     },
     {
@@ -206,7 +206,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "dataframe",
-      "community_name": "load_raw_data",
+      "community_name": "_remove_duplicates",
       "id": "scripts_archive_arima_multi_horizon_py_dataframe"
     },
     {
@@ -261,7 +261,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "arima/sarima multi-horizon evaluation \u2014 level 1 statistical models.  compare a",
-      "community_name": "load_raw_data",
+      "community_name": "_remove_duplicates",
       "id": "scripts_archive_arima_multi_horizon_rationale_1"
     },
     {
@@ -272,7 +272,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "load raw data and apply hybrid imputation strategy.",
-      "community_name": "load_raw_data",
+      "community_name": "_remove_duplicates",
       "id": "scripts_archive_arima_multi_horizon_rationale_146"
     },
     {
@@ -316,7 +316,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "audit_all_results.py",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "scripts_archive_audit_all_results"
     },
     {
@@ -327,7 +327,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "cross-reference audit \u2014 validate all experiment results on same data.  purpose:",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "scripts_archive_audit_all_results_rationale_1"
     },
     {
@@ -514,7 +514,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "compare_data_strategies.py",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_compare_data_strategies"
     },
     {
@@ -525,7 +525,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "main()",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_compare_data_strategies_main"
     },
     {
@@ -558,7 +558,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "_save_results()",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_compare_data_strategies_save_results"
     },
     {
@@ -569,7 +569,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "compare data strategies \u2014 run all 4 imputation strategies and evaluate.  princ",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_compare_data_strategies_rationale_1"
     },
     {
@@ -591,7 +591,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "save results to json.",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_compare_data_strategies_rationale_291"
     },
     {
@@ -602,7 +602,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "compute_complete_metrics.py",
-      "community_name": "load_raw_data",
+      "community_name": "build_features",
       "id": "scripts_archive_compute_complete_metrics"
     },
     {
@@ -613,7 +613,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "main()",
-      "community_name": "load_raw_data",
+      "community_name": "build_features",
       "id": "scripts_archive_compute_complete_metrics_main"
     },
     {
@@ -624,7 +624,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "compute r2, rmse, mape for all models across all horizons. generates a complete",
-      "community_name": "load_raw_data",
+      "community_name": "build_features",
       "id": "scripts_archive_compute_complete_metrics_rationale_1"
     },
     {
@@ -646,7 +646,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "dashboard_polish_phase5.py",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "scripts_archive_dashboard_polish_phase5"
     },
     {
@@ -657,7 +657,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "debug_ensemble.py",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "scripts_archive_debug_ensemble"
     },
     {
@@ -668,7 +668,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "debug script \u2014 find exact crash point in ensemble pipeline.",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "scripts_archive_debug_ensemble_rationale_1"
     },
     {
@@ -811,7 +811,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "deseasonal_experiment.py",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_deseasonal_experiment"
     },
     {
@@ -954,7 +954,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "prepare_data()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_deseasonal_experiment_prepare_data"
     },
     {
@@ -1009,7 +1009,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "main()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_deseasonal_experiment_main"
     },
     {
@@ -1020,7 +1020,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "p0-8 \u2014 deseasonalizing transform experiment.  hypothesis: pm2.5 has strong dai",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_deseasonal_experiment_rationale_1"
     },
     {
@@ -1064,7 +1064,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "load \u2192 clean \u2192 impute \u2192 build_features (v2).",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_deseasonal_experiment_rationale_217"
     },
     {
@@ -1262,7 +1262,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "dl_multi_horizon.py",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "scripts_archive_dl_multi_horizon"
     },
     {
@@ -1504,7 +1504,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "lstm/gru multi-horizon evaluation \u2014 level 4 deep learning models.  compare lst",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "scripts_archive_dl_multi_horizon_rationale_1"
     },
     {
@@ -1592,7 +1592,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "dl_retrain_v2.py",
-      "community_name": "build_features",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_dl_retrain_v2"
     },
     {
@@ -1603,7 +1603,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "add_cv_features()",
-      "community_name": "build_features",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_dl_retrain_v2_add_cv_features"
     },
     {
@@ -1790,7 +1790,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "prepare_data()",
-      "community_name": "build_features",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_dl_retrain_v2_prepare_data"
     },
     {
@@ -1823,7 +1823,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "main()",
-      "community_name": "build_features",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_dl_retrain_v2_main"
     },
     {
@@ -1834,7 +1834,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "dl retrain v2 \u2014 gru/lstm with enhanced features + log transform comparison.  3",
-      "community_name": "build_features",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_dl_retrain_v2_rationale_1"
     },
     {
@@ -1845,7 +1845,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "add coefficient of variation features with safeguard.      cv = std / mean. wh",
-      "community_name": "build_features",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_dl_retrain_v2_rationale_70"
     },
     {
@@ -1900,7 +1900,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "load \u2192 clean \u2192 impute \u2192 build_features (v2 enhanced) \u2192 add cv.",
-      "community_name": "build_features",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_dl_retrain_v2_rationale_273"
     },
     {
@@ -1933,7 +1933,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "dl_v3_pca_tft.py",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "scripts_archive_dl_v3_pca_tft"
     },
     {
@@ -1944,7 +1944,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "add_cv_features()",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "scripts_archive_dl_v3_pca_tft_add_cv_features"
     },
     {
@@ -1966,7 +1966,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "prepare_data()",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "scripts_archive_dl_v3_pca_tft_prepare_data"
     },
     {
@@ -2318,7 +2318,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "dl v3 \u2014 pca feature selection for 1h + tft retrain with v2 features.  tasks:",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "scripts_archive_dl_v3_pca_tft_rationale_1"
     },
     {
@@ -2329,7 +2329,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "add coefficient of variation features with safeguard.",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "scripts_archive_dl_v3_pca_tft_rationale_86"
     },
     {
@@ -2340,7 +2340,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "load \u2192 clean \u2192 impute \u2192 build_features (v2) \u2192 add cv.",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "scripts_archive_dl_v3_pca_tft_rationale_105"
     },
     {
@@ -2626,7 +2626,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "ensemble_multi_horizon.py",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "build_features",
       "id": "scripts_archive_ensemble_multi_horizon"
     },
     {
@@ -2637,7 +2637,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "_init_torch()",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_init_torch"
     },
     {
@@ -2648,7 +2648,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "_make_dataset_class()",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_make_dataset_class"
     },
     {
@@ -2659,7 +2659,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "_make_gru_model()",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_make_gru_model"
     },
     {
@@ -2670,7 +2670,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "train_gru()",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_train_gru"
     },
     {
@@ -2681,7 +2681,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "main()",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "build_features",
       "id": "scripts_archive_ensemble_multi_horizon_main"
     },
     {
@@ -2692,7 +2692,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "_prepare_hybrid_data()",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "build_features",
       "id": "scripts_archive_ensemble_multi_horizon_prepare_hybrid_data"
     },
     {
@@ -2703,7 +2703,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "_evaluate_horizon()",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_evaluate_horizon"
     },
     {
@@ -2714,7 +2714,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "_save_results()",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "build_features",
       "id": "scripts_archive_ensemble_multi_horizon_save_results"
     },
     {
@@ -2725,7 +2725,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "ensemble stacking multi-horizon \u2014 combine lightgbm + gru for best performance.",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "build_features",
       "id": "scripts_archive_ensemble_multi_horizon_rationale_1"
     },
     {
@@ -2736,7 +2736,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "lazy init torch + mps device.",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_rationale_64"
     },
     {
@@ -2747,7 +2747,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "create timeseriesdataset class with lazy torch import.",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_rationale_74"
     },
     {
@@ -2758,7 +2758,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "create gru model class with lazy torch import.",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_rationale_106"
     },
     {
@@ -2769,7 +2769,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "train gru with early stopping.",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_rationale_130"
     },
     {
@@ -2780,7 +2780,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "evaluate lightgbm, gru, and their ensemble at a specific horizon.",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "_evaluate_horizon",
       "id": "scripts_archive_ensemble_multi_horizon_rationale_306"
     },
     {
@@ -2791,7 +2791,7 @@
       "_origin": "ast",
       "community": 55,
       "norm_label": "# note: torch is lazy-imported in gru section to avoid mps/openmp conflict with",
-      "community_name": "ensemble_multi_horizon.py",
+      "community_name": "build_features",
       "id": "scripts_archive_ensemble_multi_horizon_rationale_25"
     },
     {
@@ -2802,7 +2802,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "export_arima_preds.py",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_arima_preds"
     },
     {
@@ -2813,7 +2813,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "prepare_data()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_arima_preds_prepare_data"
     },
     {
@@ -2824,7 +2824,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "dataframe",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_arima_preds_py_dataframe"
     },
     {
@@ -2890,7 +2890,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "export arima and sarima predictions for avp dashboard integration.  runs rolli",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_arima_preds_rationale_1"
     },
     {
@@ -2901,7 +2901,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "load \u2192 clean \u2192 impute (same as arima_multi_horizon.py).",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_arima_preds_rationale_41"
     },
     {
@@ -2945,7 +2945,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "export_tft_preds.py",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_tft_preds"
     },
     {
@@ -2956,7 +2956,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "prepare_data()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_tft_preds_prepare_data"
     },
     {
@@ -2978,7 +2978,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "main()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_tft_preds_main"
     },
     {
@@ -2989,7 +2989,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "export tft predictions for avp dashboard integration.  trains the simplified t",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_tft_preds_rationale_1"
     },
     {
@@ -3000,7 +3000,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "load \u2192 clean \u2192 impute \u2192 add static features (same as tft_multi_horizon.py).",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_export_tft_preds_rationale_55"
     },
     {
@@ -3396,7 +3396,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "phase6_nice_to_have.py",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "scripts_archive_phase6_nice_to_have"
     },
     {
@@ -3407,7 +3407,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "precompute_avp.py",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp"
     },
     {
@@ -3418,7 +3418,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "_detect_device()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_detect_device"
     },
     {
@@ -3429,7 +3429,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "precompute_horizon()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_precompute_horizon"
     },
     {
@@ -3440,7 +3440,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "_compute_ensemble_preds()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_compute_ensemble_preds"
     },
     {
@@ -3451,7 +3451,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "_load_external_preds()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_load_external_preds"
     },
     {
@@ -3462,7 +3462,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "main()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_main"
     },
     {
@@ -3473,7 +3473,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "pre-compute actual vs predicted data for all horizons.  saves results as json",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_rationale_1"
     },
     {
@@ -3484,7 +3484,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "detect best available pytorch device.",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_rationale_34"
     },
     {
@@ -3495,7 +3495,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "pre-compute actual vs predicted for a single horizon.",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_rationale_48"
     },
     {
@@ -3506,7 +3506,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "compute ensemble predictions from gru + lightgbm using weights from ensemble jso",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_rationale_254"
     },
     {
@@ -3517,7 +3517,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "load pre-exported predictions from tft, arima, sarima .json files.",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_precompute_avp_rationale_361"
     },
     {
@@ -3693,7 +3693,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "rebuild_and_rerun.py",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "scripts_archive_rebuild_and_rerun"
     },
     {
@@ -3704,7 +3704,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "rebuild marts data and re-run ml pipeline after leakage fix.  usage:     uv run",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "scripts_archive_rebuild_and_rerun_rationale_1"
     },
     {
@@ -3715,7 +3715,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "sklearn_models_eval.py",
-      "community_name": "build_features",
+      "community_name": "sklearn_models_eval.py",
       "id": "scripts_archive_sklearn_models_eval"
     },
     {
@@ -3726,7 +3726,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "main()",
-      "community_name": "build_features",
+      "community_name": "sklearn_models_eval.py",
       "id": "scripts_archive_sklearn_models_eval_main"
     },
     {
@@ -3737,7 +3737,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "_prepare_hybrid_data()",
-      "community_name": "build_features",
+      "community_name": "sklearn_models_eval.py",
       "id": "scripts_archive_sklearn_models_eval_prepare_hybrid_data"
     },
     {
@@ -3781,7 +3781,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "_print_summary()",
-      "community_name": "build_features",
+      "community_name": "sklearn_models_eval.py",
       "id": "scripts_archive_sklearn_models_eval_print_summary"
     },
     {
@@ -3792,7 +3792,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "_save_results()",
-      "community_name": "build_features",
+      "community_name": "sklearn_models_eval.py",
       "id": "scripts_archive_sklearn_models_eval_save_results"
     },
     {
@@ -3803,7 +3803,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "sklearn models multi-horizon evaluation \u2014 rf, gradientboosting, stacking, ensemb",
-      "community_name": "build_features",
+      "community_name": "sklearn_models_eval.py",
       "id": "scripts_archive_sklearn_models_eval_rationale_1"
     },
     {
@@ -3814,7 +3814,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "load raw data and apply hybrid imputation strategy.",
-      "community_name": "build_features",
+      "community_name": "sklearn_models_eval.py",
       "id": "scripts_archive_sklearn_models_eval_rationale_98"
     },
     {
@@ -3847,7 +3847,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "save results to json.",
-      "community_name": "build_features",
+      "community_name": "sklearn_models_eval.py",
       "id": "scripts_archive_sklearn_models_eval_rationale_336"
     },
     {
@@ -3957,7 +3957,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "tft_multi_horizon.py",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_tft_multi_horizon"
     },
     {
@@ -3968,7 +3968,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "_build_model_components()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_tft_multi_horizon_build_model_components"
     },
     {
@@ -3979,7 +3979,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "prepare_data()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_tft_multi_horizon_prepare_data"
     },
     {
@@ -4001,7 +4001,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "main()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_tft_multi_horizon_main"
     },
     {
@@ -4012,7 +4012,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "temporal fusion transformer (tft) multi-horizon evaluation \u2014 level 5.  simplif",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_tft_multi_horizon_rationale_1"
     },
     {
@@ -4023,7 +4023,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "lazy import torch + define tft components.",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_tft_multi_horizon_rationale_70"
     },
     {
@@ -4034,7 +4034,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "load \u2192 clean \u2192 impute \u2192 add static features.",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "scripts_archive_tft_multi_horizon_rationale_307"
     },
     {
@@ -4463,7 +4463,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "01_autocorrelation_trap.py",
-      "community_name": "apply_mpl_theme",
+      "community_name": "01_autocorrelation_trap.py",
       "id": "scripts_eda_01_autocorrelation_trap"
     },
     {
@@ -4474,7 +4474,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "plot_autocorrelation_story()",
-      "community_name": "apply_mpl_theme",
+      "community_name": "01_autocorrelation_trap.py",
       "id": "scripts_eda_01_autocorrelation_trap_plot_autocorrelation_story"
     },
     {
@@ -4485,7 +4485,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "dataframe",
-      "community_name": "apply_mpl_theme",
+      "community_name": "01_autocorrelation_trap.py",
       "id": "scripts_eda_01_autocorrelation_trap_py_dataframe"
     },
     {
@@ -4496,7 +4496,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "plot_horizon_scatter()",
-      "community_name": "apply_mpl_theme",
+      "community_name": "01_autocorrelation_trap.py",
       "id": "scripts_eda_01_autocorrelation_trap_plot_horizon_scatter"
     },
     {
@@ -4507,7 +4507,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "main()",
-      "community_name": "apply_mpl_theme",
+      "community_name": "01_autocorrelation_trap.py",
       "id": "scripts_eda_01_autocorrelation_trap_main"
     },
     {
@@ -4518,7 +4518,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "bay tu tuong quan (the autocorrelation trap) muc tieu: chung minh tai sao baseli",
-      "community_name": "apply_mpl_theme",
+      "community_name": "01_autocorrelation_trap.py",
       "id": "scripts_eda_01_autocorrelation_trap_rationale_1"
     },
     {
@@ -4529,7 +4529,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "ve acf/pacf \u0111e thay tin hieu giam manh sau 24h.",
-      "community_name": "apply_mpl_theme",
+      "community_name": "01_autocorrelation_trap.py",
       "id": "scripts_eda_01_autocorrelation_trap_rationale_33"
     },
     {
@@ -4540,7 +4540,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "ve scatter matrix giua y_t va y_{t-h} \u0111e thay su xoi mon theo horizon.",
-      "community_name": "apply_mpl_theme",
+      "community_name": "01_autocorrelation_trap.py",
       "id": "scripts_eda_01_autocorrelation_trap_rationale_73"
     },
     {
@@ -6168,7 +6168,7 @@
       "_origin": "ast",
       "community": 91,
       "norm_label": "shap_explainability.py",
-      "community_name": "shap_explainability.py",
+      "community_name": "build_features",
       "id": "scripts_shap_explainability"
     },
     {
@@ -6179,7 +6179,7 @@
       "_origin": "ast",
       "community": 91,
       "norm_label": "main()",
-      "community_name": "shap_explainability.py",
+      "community_name": "build_features",
       "id": "scripts_shap_explainability_main"
     },
     {
@@ -6190,7 +6190,7 @@
       "_origin": "ast",
       "community": 91,
       "norm_label": "_prepare_hybrid_data()",
-      "community_name": "shap_explainability.py",
+      "community_name": "build_features",
       "id": "scripts_shap_explainability_prepare_hybrid_data"
     },
     {
@@ -6201,7 +6201,7 @@
       "_origin": "ast",
       "community": 91,
       "norm_label": "dataframe",
-      "community_name": "shap_explainability.py",
+      "community_name": "build_features",
       "id": "scripts_shap_explainability_py_dataframe"
     },
     {
@@ -6212,7 +6212,7 @@
       "_origin": "ast",
       "community": 91,
       "norm_label": "_shap_lightgbm()",
-      "community_name": "shap_explainability.py",
+      "community_name": "build_features",
       "id": "scripts_shap_explainability_shap_lightgbm"
     },
     {
@@ -6223,7 +6223,7 @@
       "_origin": "ast",
       "community": 91,
       "norm_label": "_permutation_gru()",
-      "community_name": "shap_explainability.py",
+      "community_name": "build_features",
       "id": "scripts_shap_explainability_permutation_gru"
     },
     {
@@ -6234,7 +6234,7 @@
       "_origin": "ast",
       "community": 91,
       "norm_label": "shap explainability \u2014 feature importance analysis for best models.  generates:",
-      "community_name": "shap_explainability.py",
+      "community_name": "build_features",
       "id": "scripts_shap_explainability_rationale_1"
     },
     {
@@ -6245,7 +6245,7 @@
       "_origin": "ast",
       "community": 91,
       "norm_label": "train lightgbm and compute shap values.",
-      "community_name": "shap_explainability.py",
+      "community_name": "build_features",
       "id": "scripts_shap_explainability_rationale_113"
     },
     {
@@ -6256,7 +6256,7 @@
       "_origin": "ast",
       "community": 91,
       "norm_label": "compute permutation importance for gru model.      optimized: mps gpu (apple s",
-      "community_name": "shap_explainability.py",
+      "community_name": "build_features",
       "id": "scripts_shap_explainability_rationale_248"
     },
     {
@@ -7037,7 +7037,7 @@
       "_origin": "ast",
       "community": 40,
       "norm_label": "replace_sankey.py",
-      "community_name": "theme.py",
+      "community_name": "_tab_pipeline_journey",
       "id": "scripts_utilities_replace_sankey"
     },
     {
@@ -7048,7 +7048,7 @@
       "_origin": "ast",
       "community": 40,
       "norm_label": "_tab_pipeline_journey()",
-      "community_name": "theme.py",
+      "community_name": "_tab_pipeline_journey",
       "id": "scripts_utilities_replace_sankey_tab_pipeline_journey"
     },
     {
@@ -7059,7 +7059,7 @@
       "_origin": "ast",
       "community": 40,
       "norm_label": "_render_detail_sankey()",
-      "community_name": "theme.py",
+      "community_name": "_tab_pipeline_journey",
       "id": "scripts_utilities_replace_sankey_render_detail_sankey"
     },
     {
@@ -7070,7 +7070,7 @@
       "_origin": "ast",
       "community": 40,
       "norm_label": "interactive sankey diagram showing data flow through the pipeline.",
-      "community_name": "theme.py",
+      "community_name": "_tab_pipeline_journey",
       "id": "scripts_utilities_replace_sankey_rationale_2"
     },
     {
@@ -7081,7 +7081,7 @@
       "_origin": "ast",
       "community": 40,
       "norm_label": "render a detailed sankey for a single resolution, showing every pipeline step.",
-      "community_name": "theme.py",
+      "community_name": "_tab_pipeline_journey",
       "id": "scripts_utilities_replace_sankey_rationale_226"
     },
     {
@@ -7334,7 +7334,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "v10_ablation_rebuild_data.py",
-      "community_name": "_resample",
+      "community_name": "_remove_duplicates",
       "id": "scripts_v10_ablation_rebuild_data"
     },
     {
@@ -7345,7 +7345,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "_handle_outliers_iqr_all()",
-      "community_name": "_resample",
+      "community_name": "_remove_duplicates",
       "id": "scripts_v10_ablation_rebuild_data_handle_outliers_iqr_all"
     },
     {
@@ -7356,7 +7356,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "dataframe",
-      "community_name": "_resample",
+      "community_name": "_remove_duplicates",
       "id": "scripts_v10_ablation_rebuild_data_py_dataframe"
     },
     {
@@ -7367,7 +7367,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "main()",
-      "community_name": "_resample",
+      "community_name": "_remove_duplicates",
       "id": "scripts_v10_ablation_rebuild_data_main"
     },
     {
@@ -7378,7 +7378,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "v10 ablation study \u2014 phase 1: rebuild data with iqr-truncated pm2.5.  mo phong l",
-      "community_name": "_resample",
+      "community_name": "_remove_duplicates",
       "id": "scripts_v10_ablation_rebuild_data_rationale_1"
     },
     {
@@ -7389,7 +7389,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "handle outliers using iqr for all columns including pm2.5.      this is the old",
-      "community_name": "_resample",
+      "community_name": "_remove_duplicates",
       "id": "scripts_v10_ablation_rebuild_data_rationale_32"
     },
     {
@@ -7796,7 +7796,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "v8_rebuild_data.py",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "scripts_v8_rebuild_data"
     },
     {
@@ -7807,7 +7807,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "main()",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "scripts_v8_rebuild_data_main"
     },
     {
@@ -7818,7 +7818,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "v8 phase 4.1 \u2014 re-impute data with knn past-only fix.  runs: raw \u2192 clean \u2192 imp",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "scripts_v8_rebuild_data_rationale_1"
     },
     {
@@ -8071,7 +8071,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "v9_rebuild_data.py",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "scripts_v9_rebuild_data"
     },
     {
@@ -8082,7 +8082,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "build_pipeline()",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "scripts_v9_rebuild_data_build_pipeline"
     },
     {
@@ -8093,7 +8093,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "main()",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "scripts_v9_rebuild_data_main"
     },
     {
@@ -8104,7 +8104,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "v9 phase 5a \u2014 rebuild data at high resolution with segment-aware features.  bu",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "scripts_v9_rebuild_data_rationale_1"
     },
     {
@@ -8115,7 +8115,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "run the full data pipeline at a given frequency.      args:         freq: res",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "scripts_v9_rebuild_data_rationale_29"
     },
     {
@@ -12031,7 +12031,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "cleaner.py",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner"
     },
     {
@@ -12042,7 +12042,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "clean_data()",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner_clean_data"
     },
     {
@@ -12053,7 +12053,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "dataframe",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner_py_dataframe"
     },
     {
@@ -12075,7 +12075,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "_set_datetime_index()",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_data_cleaner_set_datetime_index"
     },
     {
@@ -12097,7 +12097,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "_handle_outliers()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "src_data_cleaner_handle_outliers"
     },
     {
@@ -12108,7 +12108,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "_resample()",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_data_cleaner_resample"
     },
     {
@@ -12119,7 +12119,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "_interpolate_gaps()",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner_interpolate_gaps"
     },
     {
@@ -12130,7 +12130,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "get_cleaning_stats()",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner_get_cleaning_stats"
     },
     {
@@ -12141,7 +12141,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "any",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner_py_any"
     },
     {
@@ -12152,7 +12152,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "data cleaner \u2014 clean, handle missing values, outliers, and resample.  pipeline:",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner_rationale_1"
     },
     {
@@ -12163,7 +12163,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "full cleaning pipeline: duplicates \u2192 bounds \u2192 outliers \u2192 resample \u2192 interpolate.",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner_rationale_32"
     },
     {
@@ -12185,7 +12185,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "set datetime column as index.",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_data_cleaner_rationale_116"
     },
     {
@@ -12207,7 +12207,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "detect and replace outliers with nan (will be interpolated later).      strategy",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "src_data_cleaner_rationale_150"
     },
     {
@@ -12218,7 +12218,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "resample to regular frequency using mean aggregation.",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_data_cleaner_rationale_217"
     },
     {
@@ -12229,7 +12229,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "interpolate missing values, respecting max gap size.      args:         df: data",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner_rationale_230"
     },
     {
@@ -12240,7 +12240,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "compare raw vs cleaned data for reporting.",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_cleaner_rationale_264"
     },
     {
@@ -12394,7 +12394,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "get_imputation_stats()",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "src_data_imputer_get_imputation_stats"
     },
     {
@@ -12526,7 +12526,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "get statistics about real vs imputed data in a dataframe.",
-      "community_name": "_resample",
+      "community_name": "impute_missing_data",
       "id": "src_data_imputer_rationale_484"
     },
     {
@@ -12548,7 +12548,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "loader.py",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_loader"
     },
     {
@@ -12636,7 +12636,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "data loader \u2014 load, validate, and provide basic info about pm2.5 dataset.",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "src_data_loader_rationale_1"
     },
     {
@@ -14231,7 +14231,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "builder.py",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "src_features_builder"
     },
     {
@@ -14308,7 +14308,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "feature builder \u2014 orchestrates all feature creation and produces marts-ready dat",
-      "community_name": "build_features",
+      "community_name": "loader.py",
       "id": "src_features_builder_rationale_1"
     },
     {
@@ -14440,7 +14440,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "fourier.py",
-      "community_name": "build_features",
+      "community_name": "_remove_duplicates",
       "id": "src_features_fourier"
     },
     {
@@ -14451,7 +14451,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "create_fourier_features()",
-      "community_name": "_resample",
+      "community_name": "_remove_duplicates",
       "id": "src_features_fourier_create_fourier_features"
     },
     {
@@ -14462,7 +14462,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "dataframe",
-      "community_name": "_resample",
+      "community_name": "_remove_duplicates",
       "id": "src_features_fourier_py_dataframe"
     },
     {
@@ -14473,7 +14473,7 @@
       "_origin": "ast",
       "community": 21,
       "norm_label": "fourier feature engineering \u2014 capture daily and weekly seasonality.  fourier fea",
-      "community_name": "build_features",
+      "community_name": "_remove_duplicates",
       "id": "src_features_fourier_rationale_1"
     },
     {
@@ -14484,7 +14484,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "create fourier sin/cos features for daily and weekly seasonality.      for each",
-      "community_name": "_resample",
+      "community_name": "_remove_duplicates",
       "id": "src_features_fourier_rationale_26"
     },
     {
@@ -14869,7 +14869,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "predictor.py",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_inference_predictor"
     },
     {
@@ -15001,7 +15001,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "get_latest_data()",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_inference_predictor_get_latest_data"
     },
     {
@@ -15012,7 +15012,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "get_suggestion_values()",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_inference_predictor_get_suggestion_values"
     },
     {
@@ -15023,7 +15023,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "pm2.5 prediction service \u2014 load exported models and run inference.  supports:",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_inference_predictor_rationale_1"
     },
     {
@@ -15100,7 +15100,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "load the latest n rows from the processed hybrid dataset.      returns a dataf",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_inference_predictor_rationale_276"
     },
     {
@@ -15111,7 +15111,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "get pre-filled suggestion values (last known data point).",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_inference_predictor_rationale_308"
     },
     {
@@ -15122,7 +15122,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info_cards.py",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards"
     },
     {
@@ -15133,7 +15133,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "load_all_snapshots()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_load_all_snapshots"
     },
     {
@@ -15155,7 +15155,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "version_selector_sidebar()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_version_selector_sidebar"
     },
     {
@@ -15166,7 +15166,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "get_version_data()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_get_version_data"
     },
     {
@@ -15177,7 +15177,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "render_info_card()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_render_info_card"
     },
     {
@@ -15199,7 +15199,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_overview()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_overview"
     },
     {
@@ -15210,7 +15210,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_eda()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_eda"
     },
     {
@@ -15221,7 +15221,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_hyperparams()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_hyperparams"
     },
     {
@@ -15232,7 +15232,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_training()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_training"
     },
     {
@@ -15243,7 +15243,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_experiment_runs()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_experiment_runs"
     },
     {
@@ -15254,7 +15254,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_multi_horizon()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_multi_horizon"
     },
     {
@@ -15265,7 +15265,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_actual_vs_predicted()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_actual_vs_predicted"
     },
     {
@@ -15276,7 +15276,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_shap()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_shap"
     },
     {
@@ -15287,7 +15287,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_prediction_intervals()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_prediction_intervals"
     },
     {
@@ -15298,7 +15298,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "cards_forecast()",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_forecast"
     },
     {
@@ -15309,7 +15309,7 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "cards_ai_assistant()",
-      "community_name": "chat_page.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_cards_ai_assistant"
     },
     {
@@ -15320,7 +15320,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "version-aware info card registry for dashboard pages.  each page gets a \"guide\"",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_1"
     },
     {
@@ -15331,7 +15331,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "load all version snapshots from dashboard_runs/, normalized.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_25"
     },
     {
@@ -15353,7 +15353,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "render version selector in sidebar. returns selected version name.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_36"
     },
     {
@@ -15364,7 +15364,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "get snapshot data for a specific version.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_68"
     },
     {
@@ -15375,7 +15375,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "render a themed info card using st.expander for collapsibility.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_83"
     },
     {
@@ -15397,7 +15397,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info cards for overview page.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_119"
     },
     {
@@ -15408,7 +15408,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info cards for eda page.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_161"
     },
     {
@@ -15419,7 +15419,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info cards for hyperparameters page.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_189"
     },
     {
@@ -15430,7 +15430,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info cards for training page.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_232"
     },
     {
@@ -15441,7 +15441,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info cards for experiment runs page.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_267"
     },
     {
@@ -15452,7 +15452,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info cards for multi-horizon page.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_289"
     },
     {
@@ -15463,7 +15463,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info cards for actual vs predicted page.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_327"
     },
     {
@@ -15474,7 +15474,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info cards for prediction intervals page.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_367"
     },
     {
@@ -15485,7 +15485,7 @@
       "_origin": "ast",
       "community": 22,
       "norm_label": "info cards for forecast page.",
-      "community_name": "info_cards.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_390"
     },
     {
@@ -15496,7 +15496,7 @@
       "_origin": "ast",
       "community": 58,
       "norm_label": "info cards for ai assistant page.",
-      "community_name": "chat_page.py",
+      "community_name": "ContentManager",
       "id": "src_info_cards_rationale_403"
     },
     {
@@ -16200,7 +16200,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "_step_feature_engineering()",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_pipeline_walkthrough_step_feature_engineering"
     },
     {
@@ -16321,7 +16321,7 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "step 4: feature engineering.",
-      "community_name": "_resample",
+      "community_name": "load_raw_data",
       "id": "src_pipeline_walkthrough_rationale_232"
     },
     {
@@ -16409,7 +16409,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "charts.py",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts"
     },
     {
@@ -16420,7 +16420,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "plot_mase_comparison()",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_plot_mase_comparison"
     },
     {
@@ -16431,7 +16431,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "figure",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_py_figure"
     },
     {
@@ -16442,7 +16442,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "plot_mae_trend()",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_plot_mae_trend"
     },
     {
@@ -16453,7 +16453,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "plot_mae_trend_top5()",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_plot_mae_trend_top5"
     },
     {
@@ -16464,7 +16464,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "plot_mase_comparison_top5()",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_plot_mase_comparison_top5"
     },
     {
@@ -16475,7 +16475,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "plot_dm_test_heatmap()",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_plot_dm_test_heatmap"
     },
     {
@@ -16486,7 +16486,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "reporting charts \u2014 plotly chart factory for reportingengine data.  all charts ar",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_rationale_1"
     },
     {
@@ -16497,7 +16497,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "create mase comparison bar chart across all horizons.      args:         engine:",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_rationale_38"
     },
     {
@@ -16508,7 +16508,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "create mae trend line chart across horizons.      args:         engine: reportin",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_rationale_73"
     },
     {
@@ -16519,7 +16519,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "create mae grouped bar chart with only top representative models.      shows bes",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_rationale_110"
     },
     {
@@ -16530,7 +16530,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "create diebold-mariano test result heatmap.      args:         dm_results: list",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_charts_rationale_242"
     },
     {
@@ -16684,7 +16684,7 @@
       "_origin": "ast",
       "community": 46,
       "norm_label": "._load_info_cards_json()",
-      "community_name": "ContentManager",
+      "community_name": ".get_info_card_text",
       "id": "src_reporting_content_contentmanager_load_info_cards_json"
     },
     {
@@ -16695,7 +16695,7 @@
       "_origin": "ast",
       "community": 46,
       "norm_label": ".get_info_card_text()",
-      "community_name": "ContentManager",
+      "community_name": ".get_info_card_text",
       "id": "src_reporting_content_contentmanager_get_info_card_text"
     },
     {
@@ -16739,7 +16739,7 @@
       "_origin": "ast",
       "community": 46,
       "norm_label": "lazy-load info cards from json export file (tier 2 fallback).          caches th",
-      "community_name": "ContentManager",
+      "community_name": ".get_info_card_text",
       "id": "src_reporting_content_rationale_71"
     },
     {
@@ -16750,7 +16750,7 @@
       "_origin": "ast",
       "community": 46,
       "norm_label": "get info card content with 3-tier fallback.          tier 1: api (postgresql via",
-      "community_name": "ContentManager",
+      "community_name": ".get_info_card_text",
       "id": "src_reporting_content_rationale_91"
     },
     {
@@ -16772,7 +16772,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "get_model_type()",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_engine_get_model_type"
     },
     {
@@ -16805,7 +16805,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": ".get_best_model()",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_reportingengine_get_best_model"
     },
     {
@@ -16816,7 +16816,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": ".get_best_models_all()",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_reportingengine_get_best_models_all"
     },
     {
@@ -16827,7 +16827,7 @@
       "_origin": "ast",
       "community": 94,
       "norm_label": ".get_ranking_table()",
-      "community_name": "DataFrame",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_reportingengine_get_ranking_table"
     },
     {
@@ -16838,7 +16838,7 @@
       "_origin": "ast",
       "community": 94,
       "norm_label": "dataframe",
-      "community_name": "DataFrame",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_py_dataframe"
     },
     {
@@ -16849,7 +16849,7 @@
       "_origin": "ast",
       "community": 94,
       "norm_label": ".get_ranking_display()",
-      "community_name": "DataFrame",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_reportingengine_get_ranking_display"
     },
     {
@@ -16893,7 +16893,7 @@
       "_origin": "ast",
       "community": 94,
       "norm_label": ".get_mae_ranking_table()",
-      "community_name": "DataFrame",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_reportingengine_get_mae_ranking_table"
     },
     {
@@ -16915,7 +16915,7 @@
       "_origin": "ast",
       "community": 94,
       "norm_label": ".get_mase_ranking_table()",
-      "community_name": "DataFrame",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_reportingengine_get_mase_ranking_table"
     },
     {
@@ -16937,7 +16937,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": ".generate_insights()",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_reportingengine_generate_insights"
     },
     {
@@ -16948,7 +16948,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": ".get_kpi_data()",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_reportingengine_get_kpi_data"
     },
     {
@@ -16959,7 +16959,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": ".compare_versions()",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_reportingengine_compare_versions"
     },
     {
@@ -16981,7 +16981,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "resolve model type dynamically based on its name.",
-      "community_name": "chart",
+      "community_name": "charts.py",
       "id": "src_reporting_engine_rationale_39"
     },
     {
@@ -17014,7 +17014,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": "get the best model for a given horizon (lowest mae, excluding persistence).",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_rationale_79"
     },
     {
@@ -17025,7 +17025,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": "get best model for all horizons.          returns:             {\"1h\": {...}, \"6h",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_rationale_122"
     },
     {
@@ -17036,7 +17036,7 @@
       "_origin": "ast",
       "community": 94,
       "norm_label": "generate ranking table sorted by mae, with star markers for best.          args:",
-      "community_name": "DataFrame",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_rationale_132"
     },
     {
@@ -17047,7 +17047,7 @@
       "_origin": "ast",
       "community": 94,
       "norm_label": "get ranking table formatted for display with \u2b50 markers.          returns datafra",
-      "community_name": "DataFrame",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_rationale_171"
     },
     {
@@ -17091,7 +17091,7 @@
       "_origin": "ast",
       "community": 94,
       "norm_label": "generate mae ranking table for a specific horizon.          args:             ho",
-      "community_name": "DataFrame",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_rationale_288"
     },
     {
@@ -17113,7 +17113,7 @@
       "_origin": "ast",
       "community": 94,
       "norm_label": "generate mase ranking table for a specific horizon.          args:             h",
-      "community_name": "DataFrame",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_rationale_367"
     },
     {
@@ -17124,7 +17124,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": "generate insight text strings from actual data.          returns dict with keys:",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_rationale_440"
     },
     {
@@ -17135,7 +17135,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": "get all kpi card data in a single dict.          returns dict with keys: best_1h",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_rationale_498"
     },
     {
@@ -17146,7 +17146,7 @@
       "_origin": "ast",
       "community": 85,
       "norm_label": "build a cross-version comparison dataframe.          args:             snapshots",
-      "community_name": ".get_best_models_all",
+      "community_name": "ReportingEngine",
       "id": "src_reporting_engine_rationale_515"
     },
     {
@@ -17168,7 +17168,7 @@
       "_origin": "ast",
       "community": 108,
       "norm_label": "extract_mase()",
-      "community_name": "_normalize_model_entry",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_extract_mase"
     },
     {
@@ -17179,7 +17179,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "_extract_results()",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_extract_results"
     },
     {
@@ -17190,7 +17190,7 @@
       "_origin": "ast",
       "community": 108,
       "norm_label": "_normalize_model_entry()",
-      "community_name": "_normalize_model_entry",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_normalize_model_entry"
     },
     {
@@ -17201,7 +17201,7 @@
       "_origin": "ast",
       "community": 108,
       "norm_label": "_normalize_results()",
-      "community_name": "_normalize_model_entry",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_normalize_results"
     },
     {
@@ -17212,7 +17212,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "_compute_top_n()",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_compute_top_n"
     },
     {
@@ -17223,7 +17223,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "_compute_best_models()",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_compute_best_models"
     },
     {
@@ -17234,7 +17234,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "_derive_models()",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_derive_models"
     },
     {
@@ -17245,7 +17245,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "normalize_snapshot()",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_normalize_snapshot"
     },
     {
@@ -17289,7 +17289,7 @@
       "_origin": "ast",
       "community": 108,
       "norm_label": "extract mase value from a model result dict with key fallback.      snapshot for",
-      "community_name": "_normalize_model_entry",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_rationale_48"
     },
     {
@@ -17300,7 +17300,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "extract results dict from raw snapshot, handling nesting differences.      v1\u2013v6",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_rationale_67"
     },
     {
@@ -17311,7 +17311,7 @@
       "_origin": "ast",
       "community": 108,
       "norm_label": "normalize a single model's metrics to the standard format.      strips classific",
-      "community_name": "_normalize_model_entry",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_rationale_95"
     },
     {
@@ -17322,7 +17322,7 @@
       "_origin": "ast",
       "community": 108,
       "norm_label": "normalize results for all horizons and models.",
-      "community_name": "_normalize_model_entry",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_rationale_130"
     },
     {
@@ -17333,7 +17333,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "compute top n models per horizon, sorted by mase ascending.      args:         r",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_rationale_149"
     },
     {
@@ -17344,7 +17344,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "compute the single best model per horizon (lowest mae, excluding persistence).",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_rationale_177"
     },
     {
@@ -17355,7 +17355,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "derive unique model list from results, sorted alphabetically.",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_rationale_192"
     },
     {
@@ -17366,7 +17366,7 @@
       "_origin": "ast",
       "community": 86,
       "norm_label": "convert a raw snapshot json dict into the normalized format.      this is the si",
-      "community_name": "normalize_snapshot",
+      "community_name": "snapshot_adapter.py",
       "id": "src_snapshot_adapter_rationale_203"
     },
     {
@@ -17487,7 +17487,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "trainer.py",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "src_training_trainer"
     },
     {
@@ -17498,7 +17498,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "_prepare_hybrid_data()",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "src_training_trainer_prepare_hybrid_data"
     },
     {
@@ -17630,7 +17630,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "interactive model training service for dashboard.  provides trainers for light",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "src_training_trainer_rationale_1"
     },
     {
@@ -17641,7 +17641,7 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "load and prepare hybrid dataset.",
-      "community_name": "_remove_duplicates",
+      "community_name": "load_raw_data",
       "id": "src_training_trainer_rationale_40"
     },
     {
@@ -18059,7 +18059,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "scatter",
-      "community_name": "chart",
+      "community_name": "chart_factory.py",
       "id": "scatter"
     },
     {
@@ -18070,7 +18070,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "bar",
-      "community_name": "chart",
+      "community_name": "chart_factory.py",
       "id": "bar"
     },
     {
@@ -18147,7 +18147,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "apply_mpl_theme()",
-      "community_name": "apply_mpl_theme",
+      "community_name": "theme.py",
       "id": "src_viz_theme_apply_mpl_theme"
     },
     {
@@ -18246,7 +18246,7 @@
       "_origin": "ast",
       "community": 80,
       "norm_label": "apply matplotlib rcparams for the given mode.      sets figure/axes colors, fo",
-      "community_name": "apply_mpl_theme",
+      "community_name": "theme.py",
       "id": "src_viz_theme_rationale_141"
     },
     {
@@ -18697,7 +18697,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "hourly_data_with_gaps()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_hourly_data_with_gaps"
     },
     {
@@ -18708,7 +18708,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "dataframe",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_py_dataframe"
     },
     {
@@ -18719,7 +18719,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "clean_data()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_clean_data"
     },
     {
@@ -18730,7 +18730,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "testsegmentonly",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testsegmentonly"
     },
     {
@@ -18741,7 +18741,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": ".test_drops_large_gaps()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testsegmentonly_test_drops_large_gaps"
     },
     {
@@ -18752,7 +18752,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "testextendedinterp",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testextendedinterp"
     },
     {
@@ -18763,7 +18763,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": ".test_fills_more_gaps_than_segment()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testextendedinterp_test_fills_more_gaps_than_segment"
     },
     {
@@ -18774,7 +18774,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": ".test_cubic_spline_preserves_known_values()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testextendedinterp_test_cubic_spline_preserves_known_values"
     },
     {
@@ -18785,7 +18785,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": ".test_cubic_spline_respects_max_gap()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testextendedinterp_test_cubic_spline_respects_max_gap"
     },
     {
@@ -18796,7 +18796,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "testmlimpute",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testmlimpute"
     },
     {
@@ -18807,7 +18807,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": ".test_knn_features_no_target()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testmlimpute_test_knn_features_no_target"
     },
     {
@@ -18818,7 +18818,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": ".test_ml_impute_fills_medium_gaps()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testmlimpute_test_ml_impute_fills_medium_gaps"
     },
     {
@@ -18829,7 +18829,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "testhybrid",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testhybrid"
     },
     {
@@ -18840,7 +18840,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": ".test_hybrid_fills_most()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testhybrid_test_hybrid_fills_most"
     },
     {
@@ -18873,7 +18873,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "testimputationstats",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testimputationstats"
     },
     {
@@ -18884,7 +18884,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": ".test_stats_tracking()",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_testimputationstats_test_stats_tracking"
     },
     {
@@ -18939,7 +18939,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "create realistic hourly pm2.5 data with known gaps.",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_24"
     },
     {
@@ -18950,7 +18950,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "create clean data without gaps (for testing stats/splits).",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_63"
     },
     {
@@ -18961,7 +18961,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "segment-only should fill gaps \u22642h and drop the rest.",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_79"
     },
     {
@@ -18972,7 +18972,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "extended interpolation should retain more rows than segment-only.",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_104"
     },
     {
@@ -18983,7 +18983,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "cubic spline should not modify known (non-nan) values.",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_123"
     },
     {
@@ -18994,7 +18994,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "gaps longer than max_gap should not be filled.",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_136"
     },
     {
@@ -19005,7 +19005,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "knn feature matrix must not contain pm25 (anti-leakage).",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_156"
     },
     {
@@ -19016,7 +19016,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "ml imputation should fill gaps up to max_gap.",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_166"
     },
     {
@@ -19027,7 +19027,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "hybrid should be the best or second-best strategy for data retention.",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_189"
     },
     {
@@ -19049,7 +19049,7 @@
       "_origin": "ast",
       "community": 30,
       "norm_label": "stats should correctly report real vs imputed counts.",
-      "community_name": "DataFrame",
+      "community_name": "impute_missing_data",
       "id": "tests_test_imputer_rationale_237"
     },
     {
@@ -19368,7 +19368,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": "testresidualdiagnostics",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_testresidualdiagnostics"
     },
     {
@@ -19379,7 +19379,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": ".test_white_noise_passes()",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_testresidualdiagnostics_test_white_noise_passes"
     },
     {
@@ -19390,7 +19390,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": ".test_autocorrelated_residuals_fail()",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_testresidualdiagnostics_test_autocorrelated_residuals_fail"
     },
     {
@@ -19401,7 +19401,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": ".test_output_structure()",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_testresidualdiagnostics_test_output_structure"
     },
     {
@@ -19412,7 +19412,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": ".test_chart_generation()",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_testresidualdiagnostics_test_chart_generation"
     },
     {
@@ -19555,7 +19555,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": "p0-5: residual diagnostics \u2014 peixeiro ch.6.",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_rationale_98"
     },
     {
@@ -19566,7 +19566,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": "white noise residuals should pass diagnostics.",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_rationale_101"
     },
     {
@@ -19577,7 +19577,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": "autocorrelated residuals should fail ljung-box.",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_rationale_111"
     },
     {
@@ -19588,7 +19588,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": "verify output dictionary structure.",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_rationale_125"
     },
     {
@@ -19599,7 +19599,7 @@
       "_origin": "ast",
       "community": 27,
       "norm_label": "verify chart is generated when output_dir is provided.",
-      "community_name": "run_residual_diagnostics",
+      "community_name": "TestResidualDiagnostics",
       "id": "tests_unit_test_audit_metrics_rationale_145"
     },
     {
@@ -19808,7 +19808,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "test_cleaner.py",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "tests_unit_test_cleaner"
     },
     {
@@ -20050,7 +20050,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "testrealdatacleaning",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "tests_unit_test_cleaner_testrealdatacleaning"
     },
     {
@@ -20061,7 +20061,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": ".test_clean_real_data()",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "tests_unit_test_cleaner_testrealdatacleaning_test_clean_real_data"
     },
     {
@@ -20072,7 +20072,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "tests for data cleaner module.",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "tests_unit_test_cleaner_rationale_1"
     },
     {
@@ -20116,7 +20116,7 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "integration test with real dataset.",
-      "community_name": "load_raw_data",
+      "community_name": "loader.py",
       "id": "tests_unit_test_cleaner_rationale_133"
     },
     {
@@ -26116,9 +26116,9 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 20,
+      "community": 23,
       "norm_label": "figure",
-      "community_name": "thesis_figures.py",
+      "community_name": "charts.py",
       "id": "figure"
     },
     {
@@ -26129,7 +26129,7 @@
       "_origin": "ast",
       "community": 23,
       "norm_label": "any",
-      "community_name": "chart",
+      "community_name": "chart_factory.py",
       "id": "any"
     },
     {
@@ -27194,10 +27194,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "thesis_figures.py",
       "id": "src_thesis_figures",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "thesis_figures.py"
     },
     {
       "label": "_load_bootstrap_ci()",
@@ -27205,10 +27204,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "_load_bootstrap_ci()",
       "id": "src_thesis_figures_load_bootstrap_ci",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "_load_bootstrap_ci()"
     },
     {
       "label": "_load_standardized_metrics()",
@@ -27216,10 +27214,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L48",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "_load_standardized_metrics()",
       "id": "src_thesis_figures_load_standardized_metrics",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "_load_standardized_metrics()"
     },
     {
       "label": "_load_ljungbox()",
@@ -27227,10 +27224,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "_load_ljungbox()",
       "id": "src_thesis_figures_load_ljungbox",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "_load_ljungbox()"
     },
     {
       "label": "_load_shap()",
@@ -27238,10 +27234,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "_load_shap()",
       "id": "src_thesis_figures_load_shap",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "_load_shap()"
     },
     {
       "label": "_chart_bootstrap_ci()",
@@ -27249,10 +27244,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L76",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "_chart_bootstrap_ci()",
       "id": "src_thesis_figures_chart_bootstrap_ci",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "_chart_bootstrap_ci()"
     },
     {
       "label": "_chart_mase_decay()",
@@ -27260,10 +27254,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L147",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "_chart_mase_decay()",
       "id": "src_thesis_figures_chart_mase_decay",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "_chart_mase_decay()"
     },
     {
       "label": "_chart_shap_comparison()",
@@ -27271,10 +27264,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L223",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "_chart_shap_comparison()",
       "id": "src_thesis_figures_chart_shap_comparison",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "_chart_shap_comparison()"
     },
     {
       "label": "_chart_residual_bias()",
@@ -27282,10 +27274,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L276",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "_chart_residual_bias()",
       "id": "src_thesis_figures_chart_residual_bias",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "_chart_residual_bias()"
     },
     {
       "label": "_chart_train_time()",
@@ -27293,10 +27284,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L328",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "_chart_train_time()",
       "id": "src_thesis_figures_chart_train_time",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "_chart_train_time()"
     },
     {
       "label": "page_thesis_figures()",
@@ -27304,10 +27294,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L367",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "page_thesis_figures()",
       "id": "src_thesis_figures_page_thesis_figures",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "page_thesis_figures()"
     },
     {
       "label": "Thesis Figures Dashboard Page \u2014 Interactive visualizations for thesis defense.",
@@ -27315,10 +27304,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "thesis figures dashboard page \u2014 interactive visualizations for thesis defense.",
       "id": "src_thesis_figures_rationale_1",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "thesis figures dashboard page \u2014 interactive visualizations for thesis defense."
     },
     {
       "label": "Bootstrap 95% CI bar chart with error bars.",
@@ -27326,10 +27314,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L77",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "bootstrap 95% ci bar chart with error bars.",
       "id": "src_thesis_figures_rationale_77",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "bootstrap 95% ci bar chart with error bars."
     },
     {
       "label": "MASE decay across horizons \u2014 line chart.",
@@ -27337,10 +27324,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L148",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "mase decay across horizons \u2014 line chart.",
       "id": "src_thesis_figures_rationale_148",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "mase decay across horizons \u2014 line chart."
     },
     {
       "label": "SHAP top features comparison across 3 horizons \u2014 horizontal bar subplots.",
@@ -27348,10 +27334,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L224",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "shap top features comparison across 3 horizons \u2014 horizontal bar subplots.",
       "id": "src_thesis_figures_rationale_224",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "shap top features comparison across 3 horizons \u2014 horizontal bar subplots."
     },
     {
       "label": "Residual bias heatmap \u2014 mean residual per model \u00d7 horizon.",
@@ -27359,10 +27344,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L277",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "residual bias heatmap \u2014 mean residual per model \u00d7 horizon.",
       "id": "src_thesis_figures_rationale_277",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "residual bias heatmap \u2014 mean residual per model \u00d7 horizon."
     },
     {
       "label": "Computational cost bar chart.",
@@ -27370,10 +27354,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L329",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "computational cost bar chart.",
       "id": "src_thesis_figures_rationale_329",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "computational cost bar chart."
     },
     {
       "label": "Thesis-ready interactive figures for copy-to-Word.",
@@ -27381,10 +27364,9 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L368",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "thesis-ready interactive figures for copy-to-word.",
       "id": "src_thesis_figures_rationale_368",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "thesis-ready interactive figures for copy-to-word."
     },
     {
       "label": "chart_factory.py",
@@ -27392,10 +27374,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "chart_factory.py",
       "id": "src_viz_chart_factory",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "chart_factory.py"
     },
     {
       "label": "chart()",
@@ -27403,10 +27384,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L75",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "chart()",
       "id": "src_viz_chart_factory_chart",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "chart()"
     },
     {
       "label": "render_chart()",
@@ -27414,10 +27394,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L181",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "render_chart()",
       "id": "src_viz_chart_factory_render_chart",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "render_chart()"
     },
     {
       "label": "figure_caption()",
@@ -27425,10 +27404,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L242",
       "_origin": "ast",
-      "community": 15,
-      "norm_label": "figure_caption()",
       "id": "src_viz_chart_factory_figure_caption",
-      "community_name": "explainability_hub.py"
+      "community": 15,
+      "norm_label": "figure_caption()"
     },
     {
       "label": "figure_caption_numbered()",
@@ -27436,10 +27414,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L259",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "figure_caption_numbered()",
       "id": "src_viz_chart_factory_figure_caption_numbered",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "figure_caption_numbered()"
     },
     {
       "label": "styled_line()",
@@ -27447,10 +27424,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L289",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "styled_line()",
       "id": "src_viz_chart_factory_styled_line",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "styled_line()"
     },
     {
       "label": "styled_bar()",
@@ -27458,10 +27434,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L344",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "styled_bar()",
       "id": "src_viz_chart_factory_styled_bar",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "styled_bar()"
     },
     {
       "label": "add_baseline()",
@@ -27469,10 +27444,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L410",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "add_baseline()",
       "id": "src_viz_chart_factory_add_baseline",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "add_baseline()"
     },
     {
       "label": "add_value_annotations()",
@@ -27480,10 +27454,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L445",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "add_value_annotations()",
       "id": "src_viz_chart_factory_add_value_annotations",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "add_value_annotations()"
     },
     {
       "label": "add_simple_bar_labels()",
@@ -27491,10 +27464,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L488",
       "_origin": "ast",
-      "community": 15,
-      "norm_label": "add_simple_bar_labels()",
       "id": "src_viz_chart_factory_add_simple_bar_labels",
-      "community_name": "explainability_hub.py"
+      "community": 15,
+      "norm_label": "add_simple_bar_labels()"
     },
     {
       "label": "add_rangeslider()",
@@ -27502,10 +27474,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L561",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "add_rangeslider()",
       "id": "src_viz_chart_factory_add_rangeslider",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "add_rangeslider()"
     },
     {
       "label": "to_bw()",
@@ -27513,10 +27484,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L593",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "to_bw()",
       "id": "src_viz_chart_factory_to_bw",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "to_bw()"
     },
     {
       "label": "render_bw_download()",
@@ -27524,10 +27494,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L728",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "render_bw_download()",
       "id": "src_viz_chart_factory_render_bw_download",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "render_bw_download()"
     },
     {
       "label": "Plotly Chart Factory \u2014 Single Source of Truth for all dashboard charts.  Every P",
@@ -27535,10 +27504,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "plotly chart factory \u2014 single source of truth for all dashboard charts.  every p",
       "id": "src_viz_chart_factory_rationale_1",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "plotly chart factory \u2014 single source of truth for all dashboard charts.  every p"
     },
     {
       "label": "Create a pre-styled Plotly Figure.      This is the **only** sanctioned way to c",
@@ -27546,10 +27514,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "create a pre-styled plotly figure.      this is the **only** sanctioned way to c",
       "id": "src_viz_chart_factory_rationale_88",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "create a pre-styled plotly figure.      this is the **only** sanctioned way to c"
     },
     {
       "label": "Render a Plotly figure into Streamlit with standardized config.      This wraps",
@@ -27557,10 +27524,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L188",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "render a plotly figure into streamlit with standardized config.      this wraps",
       "id": "src_viz_chart_factory_rationale_188",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "render a plotly figure into streamlit with standardized config.      this wraps"
     },
     {
       "label": "Render a figure caption below a chart.      Per Q\u0110 1799 Ph\u1ee5 l\u1ee5c 8: \"\u0111\u00e3 c\u00f3 t\u00ean h\u00ec",
@@ -27568,10 +27534,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L243",
       "_origin": "ast",
-      "community": 15,
-      "norm_label": "render a figure caption below a chart.      per q\u0111 1799 phu luc 8: \"\u0111a co ten hi",
       "id": "src_viz_chart_factory_rationale_243",
-      "community_name": "explainability_hub.py"
+      "community": 15,
+      "norm_label": "render a figure caption below a chart.      per q\u0111 1799 phu luc 8: \"\u0111a co ten hi"
     },
     {
       "label": "Render a numbered figure caption per Q\u0110 1799 format.      Format: \"H\u00ecnh {chapter",
@@ -27579,10 +27544,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L264",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "render a numbered figure caption per q\u0111 1799 format.      format: \"hinh {chapter",
       "id": "src_viz_chart_factory_rationale_264",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "render a numbered figure caption per q\u0111 1799 format.      format: \"hinh {chapter"
     },
     {
       "label": "Create a ``go.Scatter`` trace with grayscale-safe styling.      Automatically as",
@@ -27590,10 +27554,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L302",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "create a ``go.scatter`` trace with grayscale-safe styling.      automatically as",
       "id": "src_viz_chart_factory_rationale_302",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "create a ``go.scatter`` trace with grayscale-safe styling.      automatically as"
     },
     {
       "label": "Create a ``go.Bar`` trace with consistent styling.      Automatically applies a",
@@ -27601,10 +27564,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L358",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "create a ``go.bar`` trace with consistent styling.      automatically applies a",
       "id": "src_viz_chart_factory_rationale_358",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "create a ``go.bar`` trace with consistent styling.      automatically applies a"
     },
     {
       "label": "Add a horizontal reference line with label.      Common use: MASE = 1.0 baseline",
@@ -27612,10 +27574,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L419",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "add a horizontal reference line with label.      common use: mase = 1.0 baseline",
       "id": "src_viz_chart_factory_rationale_419",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "add a horizontal reference line with label.      common use: mase = 1.0 baseline"
     },
     {
       "label": "Add white-background value labels above grouped bars.      Uses numerical x-axis",
@@ -27623,10 +27584,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L454",
       "_origin": "ast",
-      "community": 23,
-      "norm_label": "add white-background value labels above grouped bars.      uses numerical x-axis",
       "id": "src_viz_chart_factory_rationale_454",
-      "community_name": "chart"
+      "community": 23,
+      "norm_label": "add white-background value labels above grouped bars.      uses numerical x-axis"
     },
     {
       "label": "Add styled white-box annotations to all bar traces in a figure.          This re",
@@ -27634,10 +27594,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L496",
       "_origin": "ast",
-      "community": 15,
-      "norm_label": "add styled white-box annotations to all bar traces in a figure.          this re",
       "id": "src_viz_chart_factory_rationale_496",
-      "community_name": "explainability_hub.py"
+      "community": 15,
+      "norm_label": "add styled white-box annotations to all bar traces in a figure.          this re"
     },
     {
       "label": "Add an interactive range slider to the x-axis.      Best for time series charts",
@@ -27645,10 +27604,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L562",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "add an interactive range slider to the x-axis.      best for time series charts",
       "id": "src_viz_chart_factory_rationale_562",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "add an interactive range slider to the x-axis.      best for time series charts"
     },
     {
       "label": "Convert a Plotly figure to grayscale-safe version for thesis printing.      Tran",
@@ -27656,10 +27614,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L594",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "convert a plotly figure to grayscale-safe version for thesis printing.      tran",
       "id": "src_viz_chart_factory_rationale_594",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "convert a plotly figure to grayscale-safe version for thesis printing.      tran"
     },
     {
       "label": "Render a download button for B&W print-optimized PNG.      Converts the figure t",
@@ -27667,10 +27624,9 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L736",
       "_origin": "ast",
-      "community": 20,
-      "norm_label": "render a download button for b&w print-optimized png.      converts the figure t",
       "id": "src_viz_chart_factory_rationale_736",
-      "community_name": "thesis_figures.py"
+      "community": 20,
+      "norm_label": "render a download button for b&w print-optimized png.      converts the figure t"
     }
   ],
   "links": [
@@ -70581,9 +70537,9 @@
       "source_location": "L289",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_styled_line",
-      "target": "scatter"
+      "target": "scatter",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -70593,9 +70549,9 @@
       "source_location": "L344",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_styled_bar",
-      "target": "bar"
+      "target": "bar",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -70605,9 +70561,9 @@
       "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_palettes"
+      "target": "src_viz_palettes",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -70698,9 +70654,9 @@
       "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_theme"
+      "target": "src_viz_theme",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -70710,9 +70666,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_theme"
+      "target": "src_viz_theme",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -78752,9 +78708,9 @@
       "source_location": "L410",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_add_baseline",
-      "target": "figure"
+      "target": "figure",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78764,9 +78720,9 @@
       "source_location": "L561",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_add_rangeslider",
-      "target": "figure"
+      "target": "figure",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78776,9 +78732,9 @@
       "source_location": "L488",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_add_simple_bar_labels",
-      "target": "figure"
+      "target": "figure",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78788,9 +78744,9 @@
       "source_location": "L445",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_add_value_annotations",
-      "target": "figure"
+      "target": "figure",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78800,9 +78756,9 @@
       "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_chart",
-      "target": "figure"
+      "target": "figure",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78812,9 +78768,9 @@
       "source_location": "L728",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_render_bw_download",
-      "target": "figure"
+      "target": "figure",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78824,9 +78780,9 @@
       "source_location": "L181",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_render_chart",
-      "target": "figure"
+      "target": "figure",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78836,9 +78792,9 @@
       "source_location": "L593",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_to_bw",
-      "target": "figure"
+      "target": "figure",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78848,9 +78804,9 @@
       "source_location": "L344",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_styled_bar",
-      "target": "any"
+      "target": "any",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -78860,9 +78816,9 @@
       "source_location": "L289",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_styled_line",
-      "target": "any"
+      "target": "any",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80912,9 +80868,9 @@
       "source_location": "L76",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_chart_bootstrap_ci"
+      "target": "src_thesis_figures_chart_bootstrap_ci",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80923,9 +80879,9 @@
       "source_location": "L147",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_chart_mase_decay"
+      "target": "src_thesis_figures_chart_mase_decay",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80934,9 +80890,9 @@
       "source_location": "L276",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_chart_residual_bias"
+      "target": "src_thesis_figures_chart_residual_bias",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80945,9 +80901,9 @@
       "source_location": "L223",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_chart_shap_comparison"
+      "target": "src_thesis_figures_chart_shap_comparison",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80956,9 +80912,9 @@
       "source_location": "L328",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_chart_train_time"
+      "target": "src_thesis_figures_chart_train_time",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80967,9 +80923,9 @@
       "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_load_bootstrap_ci"
+      "target": "src_thesis_figures_load_bootstrap_ci",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80978,9 +80934,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_load_ljungbox"
+      "target": "src_thesis_figures_load_ljungbox",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -80989,9 +80945,9 @@
       "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_load_shap"
+      "target": "src_thesis_figures_load_shap",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81000,9 +80956,9 @@
       "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_load_standardized_metrics"
+      "target": "src_thesis_figures_load_standardized_metrics",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81011,9 +80967,9 @@
       "source_location": "L367",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_thesis_figures_page_thesis_figures"
+      "target": "src_thesis_figures_page_thesis_figures",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -81023,9 +80979,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_chart_factory"
+      "target": "src_viz_chart_factory",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -81035,9 +80991,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_chart_factory_add_baseline"
+      "target": "src_viz_chart_factory_add_baseline",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -81047,9 +81003,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_chart_factory_chart"
+      "target": "src_viz_chart_factory_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -81059,9 +81015,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_chart_factory_figure_caption"
+      "target": "src_viz_chart_factory_figure_caption",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -81071,9 +81027,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_chart_factory_figure_caption_numbered"
+      "target": "src_viz_chart_factory_figure_caption_numbered",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -81083,9 +81039,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_chart_factory_render_bw_download"
+      "target": "src_viz_chart_factory_render_bw_download",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -81095,9 +81051,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_chart_factory_render_chart"
+      "target": "src_viz_chart_factory_render_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -81107,9 +81063,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_chart_factory_styled_bar"
+      "target": "src_viz_chart_factory_styled_bar",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -81119,9 +81075,9 @@
       "source_location": "L595",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures",
-      "target": "src_viz_chart_factory_to_bw"
+      "target": "src_viz_chart_factory_to_bw",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81130,9 +81086,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_rationale_1",
-      "target": "src_thesis_figures"
+      "target": "src_thesis_figures",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81142,9 +81098,9 @@
       "source_location": "L382",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_thesis_figures_load_bootstrap_ci"
+      "target": "src_thesis_figures_load_bootstrap_ci",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81154,9 +81110,9 @@
       "source_location": "L383",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_thesis_figures_load_standardized_metrics"
+      "target": "src_thesis_figures_load_standardized_metrics",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81166,9 +81122,9 @@
       "source_location": "L384",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_thesis_figures_load_ljungbox"
+      "target": "src_thesis_figures_load_ljungbox",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81178,9 +81134,9 @@
       "source_location": "L385",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_thesis_figures_load_shap"
+      "target": "src_thesis_figures_load_shap",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81190,9 +81146,9 @@
       "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_chart_bootstrap_ci",
-      "target": "src_viz_chart_factory_chart"
+      "target": "src_viz_chart_factory_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81202,9 +81158,9 @@
       "source_location": "L413",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_thesis_figures_chart_bootstrap_ci"
+      "target": "src_thesis_figures_chart_bootstrap_ci",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81213,9 +81169,9 @@
       "source_location": "L77",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_rationale_77",
-      "target": "src_thesis_figures_chart_bootstrap_ci"
+      "target": "src_thesis_figures_chart_bootstrap_ci",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81225,9 +81181,9 @@
       "source_location": "L158",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_chart_mase_decay",
-      "target": "src_viz_chart_factory_chart"
+      "target": "src_viz_chart_factory_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81237,9 +81193,9 @@
       "source_location": "L435",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_thesis_figures_chart_mase_decay"
+      "target": "src_thesis_figures_chart_mase_decay",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81248,9 +81204,9 @@
       "source_location": "L148",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_rationale_148",
-      "target": "src_thesis_figures_chart_mase_decay"
+      "target": "src_thesis_figures_chart_mase_decay",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81260,9 +81216,9 @@
       "source_location": "L456",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_thesis_figures_chart_shap_comparison"
+      "target": "src_thesis_figures_chart_shap_comparison",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81271,9 +81227,9 @@
       "source_location": "L224",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_rationale_224",
-      "target": "src_thesis_figures_chart_shap_comparison"
+      "target": "src_thesis_figures_chart_shap_comparison",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81283,9 +81239,9 @@
       "source_location": "L476",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_thesis_figures_chart_residual_bias"
+      "target": "src_thesis_figures_chart_residual_bias",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81294,9 +81250,9 @@
       "source_location": "L277",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_rationale_277",
-      "target": "src_thesis_figures_chart_residual_bias"
+      "target": "src_thesis_figures_chart_residual_bias",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81306,9 +81262,9 @@
       "source_location": "L333",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_chart_train_time",
-      "target": "src_viz_chart_factory_chart"
+      "target": "src_viz_chart_factory_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81318,9 +81274,9 @@
       "source_location": "L518",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_thesis_figures_chart_train_time"
+      "target": "src_thesis_figures_chart_train_time",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81329,9 +81285,9 @@
       "source_location": "L329",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_rationale_329",
-      "target": "src_thesis_figures_chart_train_time"
+      "target": "src_thesis_figures_chart_train_time",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81341,9 +81297,9 @@
       "source_location": "L415",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_viz_chart_factory_figure_caption_numbered"
+      "target": "src_viz_chart_factory_figure_caption_numbered",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81353,9 +81309,9 @@
       "source_location": "L419",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_viz_chart_factory_render_bw_download"
+      "target": "src_viz_chart_factory_render_bw_download",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81365,9 +81321,9 @@
       "source_location": "L414",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_viz_chart_factory_render_chart"
+      "target": "src_viz_chart_factory_render_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81377,9 +81333,9 @@
       "source_location": "L611",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_page_thesis_figures",
-      "target": "src_viz_chart_factory_to_bw"
+      "target": "src_viz_chart_factory_to_bw",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81388,9 +81344,9 @@
       "source_location": "L368",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_thesis_figures_rationale_368",
-      "target": "src_thesis_figures_page_thesis_figures"
+      "target": "src_thesis_figures_page_thesis_figures",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81399,9 +81355,9 @@
       "source_location": "L410",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_add_baseline"
+      "target": "src_viz_chart_factory_add_baseline",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81410,9 +81366,9 @@
       "source_location": "L561",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_add_rangeslider"
+      "target": "src_viz_chart_factory_add_rangeslider",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81421,9 +81377,9 @@
       "source_location": "L488",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_add_simple_bar_labels"
+      "target": "src_viz_chart_factory_add_simple_bar_labels",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81432,9 +81388,9 @@
       "source_location": "L445",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_add_value_annotations"
+      "target": "src_viz_chart_factory_add_value_annotations",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81443,9 +81399,9 @@
       "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_chart"
+      "target": "src_viz_chart_factory_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81454,9 +81410,9 @@
       "source_location": "L242",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_figure_caption"
+      "target": "src_viz_chart_factory_figure_caption",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81465,9 +81421,9 @@
       "source_location": "L259",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_figure_caption_numbered"
+      "target": "src_viz_chart_factory_figure_caption_numbered",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81476,9 +81432,9 @@
       "source_location": "L728",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_render_bw_download"
+      "target": "src_viz_chart_factory_render_bw_download",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81487,9 +81443,9 @@
       "source_location": "L181",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_render_chart"
+      "target": "src_viz_chart_factory_render_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81498,9 +81454,9 @@
       "source_location": "L344",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_styled_bar"
+      "target": "src_viz_chart_factory_styled_bar",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81509,9 +81465,9 @@
       "source_location": "L289",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_styled_line"
+      "target": "src_viz_chart_factory_styled_line",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -81520,9 +81476,9 @@
       "source_location": "L593",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory",
-      "target": "src_viz_chart_factory_to_bw"
+      "target": "src_viz_chart_factory_to_bw",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81531,9 +81487,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_1",
-      "target": "src_viz_chart_factory"
+      "target": "src_viz_chart_factory",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81542,9 +81498,9 @@
       "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_88",
-      "target": "src_viz_chart_factory_chart"
+      "target": "src_viz_chart_factory_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81553,9 +81509,9 @@
       "source_location": "L188",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_188",
-      "target": "src_viz_chart_factory_render_chart"
+      "target": "src_viz_chart_factory_render_chart",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81565,9 +81521,9 @@
       "source_location": "L230",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_render_chart",
-      "target": "src_viz_chart_factory_to_bw"
+      "target": "src_viz_chart_factory_to_bw",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81576,9 +81532,9 @@
       "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_243",
-      "target": "src_viz_chart_factory_figure_caption"
+      "target": "src_viz_chart_factory_figure_caption",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81587,9 +81543,9 @@
       "source_location": "L264",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_264",
-      "target": "src_viz_chart_factory_figure_caption_numbered"
+      "target": "src_viz_chart_factory_figure_caption_numbered",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81598,9 +81554,9 @@
       "source_location": "L302",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_302",
-      "target": "src_viz_chart_factory_styled_line"
+      "target": "src_viz_chart_factory_styled_line",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81609,9 +81565,9 @@
       "source_location": "L358",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_358",
-      "target": "src_viz_chart_factory_styled_bar"
+      "target": "src_viz_chart_factory_styled_bar",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81620,9 +81576,9 @@
       "source_location": "L419",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_419",
-      "target": "src_viz_chart_factory_add_baseline"
+      "target": "src_viz_chart_factory_add_baseline",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81631,9 +81587,9 @@
       "source_location": "L454",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_454",
-      "target": "src_viz_chart_factory_add_value_annotations"
+      "target": "src_viz_chart_factory_add_value_annotations",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81642,9 +81598,9 @@
       "source_location": "L496",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_496",
-      "target": "src_viz_chart_factory_add_simple_bar_labels"
+      "target": "src_viz_chart_factory_add_simple_bar_labels",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81653,9 +81609,9 @@
       "source_location": "L562",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_562",
-      "target": "src_viz_chart_factory_add_rangeslider"
+      "target": "src_viz_chart_factory_add_rangeslider",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81664,9 +81620,9 @@
       "source_location": "L594",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_594",
-      "target": "src_viz_chart_factory_to_bw"
+      "target": "src_viz_chart_factory_to_bw",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -81676,9 +81632,9 @@
       "source_location": "L750",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_render_bw_download",
-      "target": "src_viz_chart_factory_to_bw"
+      "target": "src_viz_chart_factory_to_bw",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -81687,9 +81643,9 @@
       "source_location": "L736",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_viz_chart_factory_rationale_736",
-      "target": "src_viz_chart_factory_render_bw_download"
+      "target": "src_viz_chart_factory_render_bw_download",
+      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],

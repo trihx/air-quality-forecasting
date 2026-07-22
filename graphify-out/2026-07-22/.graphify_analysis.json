@@ -891,7 +891,6 @@
       "src_api_experiment_logger_sanitize_float"
     ],
     "20": [
-      "figure",
       "src_thesis_figures",
       "src_thesis_figures_chart_bootstrap_ci",
       "src_thesis_figures_chart_mase_decay",
@@ -988,6 +987,7 @@
     "23": [
       "any",
       "bar",
+      "figure",
       "scatter",
       "src_reporting_charts",
       "src_reporting_charts_plot_dm_test_heatmap",
@@ -3095,10 +3095,10 @@
     "17": 0.07954545454545454,
     "18": 0.09475806451612903,
     "19": 0.10967741935483871,
-    "20": 0.11182795698924732,
+    "20": 0.1103448275862069,
     "21": 0.10098522167487685,
     "22": 0.10837438423645321,
-    "23": 0.1282051282051282,
+    "23": 0.12698412698412698,
     "24": 0.13756613756613756,
     "25": 0.10052910052910052,
     "26": 0.1623931623931624,
@@ -3482,41 +3482,8 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
     }
   ],
-  "questions": [
-    {
-      "type": "bridge_node",
-      "question": "Why does `build_features()` connect `build_features` to `load_raw_data`, `_remove_duplicates`, `_resample`, `pipeline_walkthrough.py`, `inference.py`, `retrain_v7_full.py`, `save_marts_data`, `temporal.py`, `LightGBMTrainer`, `ensemble_multi_horizon.py`, `statistical_tests.py`, `prediction_intervals.py`, `create_calendar_features`, `deep_insights_phase4.py`, `run_enhanced_pipeline.py`, `create_lag_features`, `deseasonal_fix_leakage.py`, `multi_horizon_eval.py`, `create_rolling_features`, `export_models.py`, `shap_explainability.py`, `linear_models_eval.py`, `create_diff_features`, `test_features.py`?",
-      "why": "High betweenness centrality (0.154) - this node is a cross-community bridge."
-    },
-    {
-      "type": "bridge_node",
-      "question": "Why does `impute_missing_data()` connect `impute_missing_data` to `load_raw_data`, `_remove_duplicates`, `_resample`, `pipeline_walkthrough.py`, `build_features`, `DataFrame`, `_log`, `retrain_v7_full.py`, `ensemble_multi_horizon.py`, `statistical_tests.py`, `prediction_intervals.py`, `deep_insights_phase4.py`, `run_enhanced_pipeline.py`, `deseasonal_fix_leakage.py`, `multi_horizon_eval.py`, `standardize_metrics.py`, `export_models.py`, `shap_explainability.py`, `linear_models_eval.py`?",
-      "why": "High betweenness centrality (0.087) - this node is a cross-community bridge."
-    },
-    {
-      "type": "bridge_node",
-      "question": "Why does `load_raw_data()` connect `load_raw_data` to `DataValidator`, `test_loader.py`, `_remove_duplicates`, `_resample`, `pipeline_walkthrough.py`, `build_features`, `run_full_eda`, `retrain_v7_full.py`, `ensemble_multi_horizon.py`, `statistical_tests.py`, `prediction_intervals.py`, `deep_insights_phase4.py`, `run_enhanced_pipeline.py`, `v8_audit_knn_temporal.py`, `deseasonal_fix_leakage.py`, `multi_horizon_eval.py`, `standardize_metrics.py`, `export_models.py`, `shap_explainability.py`, `linear_models_eval.py`, `validate_data_path`?",
-      "why": "High betweenness centrality (0.073) - this node is a cross-community bridge."
-    },
-    {
-      "type": "isolated_nodes",
-      "question": "What connects `version`, `generated_at`, `models` to the rest of the system?",
-      "why": "129 weakly-connected nodes found - possible documentation gaps or missing edges."
-    },
-    {
-      "type": "low_cohesion",
-      "question": "Should `DataValidator` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.07552447552447553 - nodes in this community are weakly interconnected."
-    },
-    {
-      "type": "low_cohesion",
-      "question": "Should `pages.py` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.05901639344262295 - nodes in this community are weakly interconnected."
-    },
-    {
-      "type": "low_cohesion",
-      "question": "Should `experiments.py` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.07239819004524888 - nodes in this community are weakly interconnected."
-    }
-  ]
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
 }
