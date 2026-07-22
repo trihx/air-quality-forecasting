@@ -104,6 +104,41 @@ Mặc định, các app chạy trên gói Free của Render sẽ tự động ng
 
 ---
 
+## 5. Cấu hình Custom Domain (Miễn phí)
+
+Render hỗ trợ gắn Tên miền riêng (Custom Domain) hoàn toàn miễn phí và tự động cấp chứng chỉ bảo mật **SSL/TLS (HTTPS)** qua Let's Encrypt.
+
+### Đề xuất lựa chọn Tên miền:
+- **Tên miền phụ (Subdomain - Khuyên dùng ⭐):** `pm25.hoangxuantri.id.vn` hoặc `air.hoangxuantri.id.vn`
+- **Tên miền gốc (Root Domain):** `hoangxuantri.id.vn`
+
+### Bước 1: Thêm Custom Domain trên Render Dashboard
+1. Truy cập [render.com](https://render.com) → Chọn Web Service `pm25-forecasting`.
+2. Vào mục **Settings** → Cuộn xuống phần **Custom Domains**.
+3. Click **Add Custom Domain** → Nhập tên miền của anh (ví dụ: `pm25.hoangxuantri.id.vn`).
+4. Click **Save**. Render sẽ hiển thị thông số CNAME cần trỏ.
+
+### Bước 2: Cấu hình DNS tại Nhà cung cấp Tên miền (iNET / PA VietNam / Cloudflare...)
+Đăng nhập vào trang quản lý DNS tên miền `hoangxuantri.id.vn` và thêm bản ghi sau:
+
+#### Trường hợp 1: Dùng Subdomain (Khuyên dùng - ví dụ `pm25.hoangxuantri.id.vn`)
+| Loại (Type) | Tên bản ghi (Host/Name) | Giá trị (Value/Target) | TTL |
+|---|---|---|---|
+| **CNAME** | `pm25` | `time-series-forecasting-c8gz.onrender.com` | Auto / 300 |
+
+#### Trường hợp 2: Dùng Tên miền chính gốc (`hoangxuantri.id.vn`)
+| Loại (Type) | Tên bản ghi (Host/Name) | Giá trị (Value/Target) | TTL |
+|---|---|---|---|
+| **A** | `@` | `216.24.57.1` | Auto / 300 |
+| **CNAME** | `www` | `time-series-forecasting-c8gz.onrender.com` | Auto / 300 |
+
+### Bước 3: Xác minh & Nhận SSL HTTPS
+- Sau khi lưu bản ghi DNS, mất từ 2–15 phút để DNS lan tỏa (Propagation).
+- Render sẽ tự động xác minh DNS và cấp chứng chỉ HTTPS miễn phí trong vòng 5–10 phút.
+- Trang web live chính thức sẽ đổi thành: **`https://pm25.hoangxuantri.id.vn`** (hoặc `https://hoangxuantri.id.vn`).
+
+---
+
 ## Lưu ý quan trọng
 
 > [!WARNING]
