@@ -575,7 +575,7 @@ def page_thesis_figures(results):
                             "Gamma (γ)": f"{v['gamma']:.3f}",
                             "Coverage": f"{v['empirical_coverage']*100:.1f}%",
                             "Stability": f"{v['stability_score']:.3f}",
-                            "Nhận xét": "Cân bằng lý tưởng ✅" if v['gamma'] == 0.01 else ("Thích ứng chậm" if v['gamma'] < 0.01 else "Dao động mạnh"),
+                            "Nhận xét": "Ổn định cao nhất ✔️" if v['gamma'] == 0.005 else ("Cân bằng tốt" if v['gamma'] == 0.01 else ("Thích ứng chậm" if v['gamma'] < 0.005 else "Dao động mạnh")),
                         })
                     import pandas as pd
                     st.dataframe(pd.DataFrame(rows_aci), use_container_width=True, hide_index=True)
@@ -584,7 +584,7 @@ def page_thesis_figures(results):
                 "💡 Kết luận phân tích độ nhạy",
                 f"Thử nghiệm quét nhạy thực nghiệm trên `scripts/analysis/knn_k_sensitivity.py` xác nhận: "
                 f"(1) **$k=5$ (KNN Imputation)** cho MAE thấp nhất ($32,25\,\mu\\text{{g/m}}^3$) mà không làm mất đỉnh cục bộ như $k=10$. {cite('troyanskaya2001')} "
-                f"(2) **$\\gamma=0,01$ (ACI)** đạt độ phủ $91,0\\%$ tiệm cận mục tiêu $90\\%$ với độ ổn định cao nhất ($0,975$). {cite('gibbs2021')}"
+                f"(2) **$\\gamma=0,005$ (ACI)** đạt độ phủ $91,0\\%$ tiệm cận mục tiêu $90\\%$ với độ ổn định cao nhất ($0,988$). {cite('gibbs2021')}"
             )
         else:
             st.warning("Chưa có file sensitivity_analysis.json")

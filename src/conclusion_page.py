@@ -306,7 +306,7 @@ def _render_limitations(section_header, insight_card):
                 "💡 Kết luận kiểm định độ nhạy",
                 f"Thử nghiệm quét siêu tham số trên `scripts/analysis/knn_k_sensitivity.py` xác nhận: "
                 f"(1) $k=5$ (KNN) cho sai số MAE tối ưu ($32,25\,\\mu\\text{{g/m}}^3$) {cite('troyanskaya2001')}. "
-                f"(2) $\\gamma=0,01$ (ACI) duy trì độ phủ $91,0\\%$ (mục tiêu $90\\%$) với chỉ số ổn định cao nhất ($0,975$) {cite('gibbs2021')}.",
+                f"(2) $\\gamma=0,005$ (ACI) duy trì độ phủ $91,0\\%$ (mục tiêu $90\\%$) với chỉ số ổn định cao nhất ($0,988$) {cite('gibbs2021')}.",
                 card_type="info"
             )
     except Exception:

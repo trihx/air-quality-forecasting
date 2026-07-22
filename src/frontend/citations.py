@@ -84,10 +84,10 @@ IEEE_REFS: dict[str, dict] = {
         "pdf_link": "https://arxiv.org/pdf/1905.03222.pdf",
     },
     "cho2014": {
-        "id": 25,
+        "id": 35,
         "authors": "K. Cho, B. van Merrienboer, C. Gulcehre ... Y. Bengio",
         "title": "Learning phrase representations using RNN encoder-decoder for statistical machine translation",
-        "journal": "arXiv:1406.1078",
+        "journal": "Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
         "year": 2014,
         "vol": "",
         "pages": "",

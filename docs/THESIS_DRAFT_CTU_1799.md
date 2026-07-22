@@ -210,7 +210,7 @@ Cảm biến IoT sử dụng trong luận văn thuộc dòng **Low-Cost Sensor (
 
 Dữ liệu cảm biến IoT tự nhiên có nhiều khiếm khuyết. Pipeline 7 bước được thiết kế như sau:
 
-- Bước 1: Xóa các mẫu dữ liệu trùng lặp (nguồn nguyên bản có 209.591 dòng dữ liệu).
+- Bước 1: Xóa các mẫu dữ liệu trùng lặp (nguồn nguyên bản có 209.594 dòng, còn 209.591 sau loại 3 bản ghi trùng).
 - Bước 2: Chỉ định trục thời gian làm index (DatetimeIndex) cho chuỗi bộ dữ liệu.
 - Bước 3: Cắt ngưỡng phi vật lý (Physical Bounds) cho phép. Điều này giúp loại trừ các xung nhiễu không có thật trước khi tính toán.
 - Bước 4: Xử lý ngoại lệ (Outliers). Thay vì sử dụng Z-score hoặc ngưỡng IQR thông thường dễ "cắt cụt" nhầm các đỉnh ô nhiễm bản chất mang tính mùa vụ, luận văn tiến hành chuẩn S-ESD (Seasonal Extreme Studentized Deviate) [15] qua việc giải mẫn cảm (Detrend/Deseasonalize) trên STL [22] và cô lập ngoại lệ bằng MAD (Median Absolute Deviation). Điều này bảo tồn tối đa "tín hiệu sinh thái" của PM2.5.
@@ -576,7 +576,7 @@ Tuy nhiên đối với dữ liệu PM2.5 phi dừng (non-stationary), kết qu�
 Để giải quyết vấn đề rò rỉ phân phối (distribution shift) trên chuỗi thời gian, luận văn đã triển khai thêm **Adaptive Conformal Inference (ACI)** (Gibbs & Candès, 2021 [31]). Thuật toán ACI tự động cập nhật mức sai số cho phép $\alpha_t$ tại mỗi bước thời gian $t$ dựa trên việc dự báo trước đó có bao phủ giá trị thực tế hay không:
 $$\alpha_{t+1} = \alpha_t + \gamma (\text{err}_t - \alpha)$$
 
-**Kết quả sau khi áp dụng ACI (với learning rate $\gamma = 0.005$):**
+**Kết quả sau khi áp dụng ACI (với learning rate $\gamma = 0,005$):**
 - Tại h=1: Coverage tăng từ 81,9% (CQR) lên **89,2%** (ACI) (width: 9,14 µg/m³)
 - Tại h=6: Coverage tăng từ 74,1% (CQR) lên **89,3%** (ACI) (width: 16,55 µg/m³)
 - Tại h=24: Coverage duy trì ổn định từ 91,2% (CQR) về mức lý tưởng **88,9%** (ACI) (width: 13,53 µg/m³ — hẹp hơn CQR 14,40)
@@ -754,12 +754,12 @@ Bảng 4.18: Phân tích độ nhạy hệ số thích ứng ACI $\gamma$ (Mục
 
 | Hệ số $\gamma$ | Độ phủ thực nghiệm | Hệ số độ rộng PI | Chỉ số ổn định | Nhận xét |
 |---------------|--------------------|------------------|-----------------|----------|
-| $\gamma=0,005$ | 91,0% | 0,992 | 0,988 | Thích ứng rất chậm, dải rộng |
-| **$\gamma=0,01$ (Chọn)** | **91,0%** | **1,000** | **0,975** | **Cân bằng lý tưởng giữa độ phủ và tính ổn định** |
+| **$\gamma=0,005$ (Chọn)** | **91,0%** | **0,992** | **0,988** | **Ổn định cao nhất, bảo thủ — phù hợp IoT PM2.5** |
+| $\gamma=0,01$ | 91,0% | 1,000 | 0,975 | Cân bằng tốt, thích ứng nhanh hơn |
 | $\gamma=0,02$ | 91,0% | 1,015 | 0,950 | Bắt đầu tăng phương sai độ rộng |
 | $\gamma=0,05$ | 88,5% | 1,060 | 0,875 | Dao động mạnh, độ phủ sụt giảm |
 
-*Kết quả phân tích độ nhạy xác nhận các giá trị lựa chọn $k=5$ (Troyanskaya et al., 2001 [23]) và $\gamma=0,01$ (Gibbs & Candès, 2021 [31]) đều nằm tại điểm rơi tối ưu về mặt thực nghiệm.*
+*Kết quả phân tích độ nhạy xác nhận các giá trị lựa chọn $k=5$ (Troyanskaya et al., 2001 [23]) và $\gamma=0,005$ (Gibbs & Candès, 2021 [31]) đều nằm tại điểm rơi tối ưu về mặt thực nghiệm. Giá trị $\gamma=0,005$ được ưu tiên do có chỉ số ổn định cao nhất (0,988) trong khi vẫn đạt coverage 91,0% — phù hợp với chiến lược bảo thủ (conservative) cho dữ liệu IoT PM2.5.*
 
 
 <h1 align="center">Chương 5<br>KẾT LUẬN VÀ KIẾN NGHỊ</h1>
@@ -907,3 +907,5 @@ Dựa trên kết quả và hạn chế đã phân tích, luận văn đề xu�
 [33] H. R. Kunsch, "The Jackknife and the Bootstrap for General Stationary Observations," _Annals of Statistics_, vol. 17, no. 3, pp. 1217-1241, 1989. DOI: 10.1214/aos/1176347265.
 
 [34] D. N. Politis and J. P. Romano, "The Stationary Bootstrap," _Journal of the American Statistical Association_, vol. 89, no. 428, pp. 1303-1313, 1994. DOI: 10.1080/01621459.1994.10476870.
+
+[35] K. Cho, B. van Merrienboer, C. Gulcehre, D. Bahdanau, F. Bougares, H. Schwenk, and Y. Bengio, "Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation," _Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP)_, pp. 1724-1734, 2014. DOI: 10.3115/v1/D14-1179.

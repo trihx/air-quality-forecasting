@@ -236,7 +236,7 @@ Kiểm định Diebold-Mariano tại h=1 cho DM statistic **dương** (VD: GRU v
 - Nhất quán với MASE > 1 tại h=1 (tất cả models đều MASE > 1)
 - **Lý do:** Autocorrelation trap — r(1) ≈ 0.99 tại tần suất 1h
 
-**Tại sao cần báo cáo?** Miễn bch khoa học — việc bỏ sót h=1 khiến người đọc nghĩ luận văn chỉ trình bày kết quả có lợi (cherry-picking). Báo cáo DM dương còn **củng cố** lập luận về autocorrelation trap và làm nổi bật đóng góp của Multi-Resolution (v9: GRU_15m phá được bẫy với MASE=0.667).
+**Tại sao cần báo cáo?** Minh bạch khoa học — việc bỏ sót h=1 khiến người đọc nghĩ luận văn chỉ trình bày kết quả có lợi (cherry-picking). Báo cáo DM dương còn **củng cố** lập luận về autocorrelation trap và làm nổi bật đóng góp của Multi-Resolution (v9: GRU_15m phá được bẫy với MASE=0.667).
 
 ### 9.2. Bảng 4.5: SHAP Values đã được sửa
 
@@ -269,7 +269,7 @@ Kiểm định Diebold-Mariano tại h=1 cho DM statistic **dương** (VD: GRU v
 
 ### 9.5. Bảng 4.2: Giải thích về per-pipeline MASE
 
-Bảng 4.2 sử dụng **per-pipeline MASE** (mỗi họo model chia cho Persistence MAE trên chính tập test tương ứng), KHÔNG phải unified MASE. Lý do:
+Bảng 4.2 sử dụng **per-pipeline MASE** (mỗi họ model chia cho Persistence MAE trên chính tập test tương ứng), KHÔNG phải unified MASE. Lý do:
 - ML pipeline: 669 mẫu, Persistence MAE = 2.49
 - DL pipeline: 604 mẫu (lookback=72h), Persistence MAE = 2.39
 - ARIMA pipeline: test set riêng, Persistence MAE = 2.51
@@ -343,7 +343,7 @@ Raw PM2.5 thuộc trường hợp 2 (dừng có xu hướng) → sau sai phân d
 **Đáp:** MASE (Mean Absolute Scaled Error) — Hyndman & Koehler (2006), tạp chí International Journal of Forecasting. Đây là tiêu chuẩn de facto cho đánh giá dự báo chuỗi thời gian vì:
 - Không phụ thuộc scale dữ liệu
 - So sánh trực tiếp với Naive Baseline → MASE < 1 = "true skill"
-- Hoidman 2006 chỉ ra R² KHÔNG phù hợp cho time series forecasting vì denominator ($\bar{y}$) không phải baseline hợp lý
+- Hyndman 2006 chỉ ra R² KHÔNG phù hợp cho time series forecasting vì denominator ($\bar{y}$) không phải baseline hợp lý
 
 ### 10.4. Câu hỏi phản biện bổ sung và đáp án
 
@@ -496,7 +496,7 @@ A:
 2. PM2.5 autocorrelation cao → gate mechanism đơn giản của GRU đủ capture temporal dependencies.
 3. Dataset nhỏ (~55K samples ở 30m) → advantage cho model ít tham số.
 4. **Thực nghiệm:** GRU_15m MASE = 0,667 (h=1) — phá vỡ Persistence trap. LSTM_15m không đạt.
-5. Cho (2014) [5] chứng minh GRU convergence nhanh hơn LSTM trên medium-size data.
+5. Cho et al. (2014) [35] chứng minh GRU convergence nhanh hơn LSTM trên medium-size data.
 6. **Evidence:** Model export `models/exported/gru_1h.pt` (4,354 params) vs LSTM tương đương (~12K params).
 
 **Q10 ⭐⭐⭐⭐: TFT thất bại ở horizon 1h — giải thích?**
@@ -525,10 +525,10 @@ A:
 A:
 1. $\gamma$ điều khiển tốc độ thích ứng (adaptation rate) trong Adaptive Conformal Inference (Gibbs & Candès, 2021 [31]).
 2. **Kiểm định nhạy thực nghiệm (Empirical Sensitivity Sweep):** Chạy kiểm thử trên `scripts/analysis/knn_k_sensitivity.py` với $\gamma \in \{0.005, 0.01, 0.02, 0.05, 0.10\}$:
-   - $\gamma=0.005$: Coverage = 91.0%, Stability = 0.988 (Rất ổn định, điều chỉnh cực chậm).
-   - **$\gamma=0.01$**: Coverage = 91.0%, Stability = 0.975 (Cân bằng lý tưởng giữa tốc độ thích ứng và độ rộng dải dự báo PI Width).
+   - **$\gamma=0.005$**: Coverage = 91.0%, Stability = 0.988 (Ổn định cao nhất, bảo thủ — phù hợp IoT PM2.5).
+   - $\gamma=0.01$: Coverage = 91.0%, Stability = 0.975 (Cân bằng tốt, thích ứng nhanh hơn).
    - $\gamma=0.05$: Coverage = 88.5%, Stability = 0.875 (Phản ứng nhanh nhưng độ rộng dải dự báo bị dao động mạnh).
-3. **Kết luận:** $\gamma=0.01$ mang tính bảo thủ (conservative) phù hợp với chuỗi PM2.5 Sa Đéc vốn có tính dừng theo mùa ổn định, giúp giữ độ phủ tiệm cận mức mục tiêu 90%.
+3. **Kết luận:** $\gamma=0.005$ được lựa chọn vì có chỉ số ổn định cao nhất (0,988) trong khi vẫn đạt coverage 91,0% — chiến lược bảo thủ (conservative) phù hợp với chuỗi PM2.5 Sa Đéc vốn có tính dừng theo mùa ổn định.
 4. **Evidence:** `research/diagnostics/sensitivity_analysis.json`.
 
 ### 11.4. Câu Hỏi Bổ Sung (Có Thể Gặp)
