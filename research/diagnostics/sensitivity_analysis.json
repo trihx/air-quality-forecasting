@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-07-22T08:59:03.910148",
+  "knn_k_sensitivity": {
+    "k_3": {
+      "mae": 33.3415,
+      "rmse": 100.756
+    },
+    "k_5": {
+      "mae": 32.2474,
+      "rmse": 97.9295
+    },
+    "k_7": {
+      "mae": 32.4044,
+      "rmse": 98.5793
+    },
+    "k_10": {
+      "mae": 31.9395,
+      "rmse": 97.3547
+    }
+  },
+  "aci_gamma_sensitivity": {
+    "gamma_0.005": {
+      "gamma": 0.005,
+      "empirical_coverage": 0.91,
+      "avg_width_multiplier": 0.993,
+      "stability_score": 0.988
+    },
+    "gamma_0.01": {
+      "gamma": 0.01,
+      "empirical_coverage": 0.91,
+      "avg_width_multiplier": 1.0,
+      "stability_score": 0.975
+    },
+    "gamma_0.02": {
+      "gamma": 0.02,
+      "empirical_coverage": 0.91,
+      "avg_width_multiplier": 1.015,
+      "stability_score": 0.95
+    },
+    "gamma_0.05": {
+      "gamma": 0.05,
+      "empirical_coverage": 0.885,
+      "avg_width_multiplier": 1.06,
+      "stability_score": 0.875
+    },
+    "gamma_0.1": {
+      "gamma": 0.1,
+      "empirical_coverage": 0.885,
+      "avg_width_multiplier": 1.135,
+      "stability_score": 0.75
+    }
+  }
+}

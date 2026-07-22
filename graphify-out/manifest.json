@@ -2490,8 +2490,18 @@
     "semantic_hash": "5ca6d34c4a9333ed395b66ae4f6186ff"
   },
   "src/thesis_figures.py": {
-    "mtime": 1784683600.412898,
-    "ast_hash": "cfdac9b4e189af78a27a6c44672866f4",
-    "semantic_hash": "cfdac9b4e189af78a27a6c44672866f4"
+    "mtime": 1784685580.730376,
+    "ast_hash": "d00c12a49b97963630ef57688450cae0",
+    "semantic_hash": "d00c12a49b97963630ef57688450cae0"
+  },
+  "research/diagnostics/sensitivity_analysis.json": {
+    "mtime": 1784685543.9105382,
+    "ast_hash": "c25a85f28e247de7c2acafe190fee9f4",
+    "semantic_hash": "c25a85f28e247de7c2acafe190fee9f4"
+  },
+  "scripts/analysis/knn_k_sensitivity.py": {
+    "mtime": 1784685537.4705522,
+    "ast_hash": "b52566478287fac1367070d27db939b2",
+    "semantic_hash": "b52566478287fac1367070d27db939b2"
   }
 }

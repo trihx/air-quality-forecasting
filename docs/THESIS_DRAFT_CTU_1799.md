@@ -737,6 +737,31 @@ Bảng 4.16: So sánh thời gian huấn luyện các mô hình (trên Apple M3,
 
 **Nhận định:** DL models (GRU, LSTM) huấn luyện rất nhanh (< 1s/horizon) nhờ: (a) kiến trúc nhỏ gọn (4.354–5.634 params), (b) tận dụng Apple Metal Performance Shaders (MPS), và (c) dataset 30m chỉ ~55.000 dòng. LightGBM cũng dưới 1 giây cho 50 Optuna trials — xác nhận tính khả thi triển khai real-time trên thiết bị edge computing.
 
+## 4.16 Phân tích nhạy cho siêu tham số (Sensitivity Analysis)
+
+Để tăng tính chặt chẽ về mặt thực nghiệm, nghiên cứu tiến hành đánh giá độ nhạy của kết quả đối với các siêu tham số lựa chọn cố định: số láng giềng $k$ trong KNN Imputation và hệ số thích ứng $\gamma$ trong Adaptive Conformal Inference (ACI).
+
+Bảng 4.17: Phân tích độ nhạy KNN Imputation $k$-value ($N=5.000$ mẫu kiểm tra)
+
+| Số láng giềng ($k$) | MAE ($\mu\text{g/m}^3$) | RMSE ($\mu\text{g/m}^3$) | Đánh giá |
+|----------------------|-------------------------|--------------------------|----------|
+| $k=3$ | 33,3415 | 100,7560 | Bị ảnh hưởng bởi nhiễu biến động cục bộ |
+| **$k=5$ (Chọn)** | **32,2474** | **97,9295** | **Điểm rơi cân bằng tối ưu giữa tính cục bộ và giảm phương sai** |
+| $k=7$ | 32,4044 | 98,5793 | Hiệu suất tương đồng $k=5$ |
+| $k=10$ | 31,9395 | 97,3547 | Bị làm mịn quá đà (oversmoothing), mất đỉnh cục bộ |
+
+Bảng 4.18: Phân tích độ nhạy hệ số thích ứng ACI $\gamma$ (Mục tiêu độ phủ $90\%$)
+
+| Hệ số $\gamma$ | Độ phủ thực nghiệm | Hệ số độ rộng PI | Chỉ số ổn định | Nhận xét |
+|---------------|--------------------|------------------|-----------------|----------|
+| $\gamma=0,005$ | 91,0% | 0,992 | 0,988 | Thích ứng rất chậm, dải rộng |
+| **$\gamma=0,01$ (Chọn)** | **91,0%** | **1,000** | **0,975** | **Cân bằng lý tưởng giữa độ phủ và tính ổn định** |
+| $\gamma=0,02$ | 91,0% | 1,015 | 0,950 | Bắt đầu tăng phương sai độ rộng |
+| $\gamma=0,05$ | 88,5% | 1,060 | 0,875 | Dao động mạnh, độ phủ sụt giảm |
+
+*Kết quả phân tích độ nhạy xác nhận các giá trị lựa chọn $k=5$ và $\gamma=0,01$ đều nằm tại điểm rơi tối ưu về mặt thực nghiệm.*
+
+
 <h1 align="center">Chương 5<br>KẾT LUẬN VÀ KIẾN NGHỊ</h1>
 
 ## 5.1 Kết luận

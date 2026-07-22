@@ -396,6 +396,12 @@ def page_thesis_figures(results):
     </div>
     """, unsafe_allow_html=True)
 
+    st.info(
+        "💡 **Hướng dẫn dành cho Hội đồng & Trích xuất hình:**\n"
+        "- **Chỉ số MASE < 1,0:** Thể hiện mô hình tốt hơn Persistence Naive Baseline (lấy giá trị giờ trước). Ví dụ: MASE = 0,382 (Ensemble 30m) nghĩa là giảm 61,8% sai số tuyệt đối so với baseline (Hyndman 2006).\n"
+        "- **Chế độ in ấn (B&W):** Tất cả biểu đồ hỗ trợ tải dạng bản in Đen-Trắng (PNG 300 DPI) với nét gạch đan (hatch patterns) và hộp nền chữ bảo vệ, đạt chuẩn trình bày Luận văn QĐ 1799/ĐHCT."
+    )
+
     # ══════════════════════════════════════════════════════
     # Tab 1: Bootstrap CI
     # ══════════════════════════════════════════════════════
