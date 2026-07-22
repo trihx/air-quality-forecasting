@@ -4,19 +4,19 @@
 - cluster-only mode — file stats not available
 
 ## Summary
-- 2487 nodes · 4671 edges · 297 communities (149 shown, 148 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 159 edges (avg confidence: 0.67)
+- 2487 nodes · 4663 edges · 298 communities (150 shown, 148 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 157 edges (avg confidence: 0.67)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5fc4ee2e`
+- Built from commit: `9880e604`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- app.py
 - DataValidator
 - pages.py
+- app.py
 - PersistenceModel
 - experiments.py
 - dl_v3_pca_tft.py
@@ -95,6 +95,7 @@
 - apply_mpl_theme
 - annotation_bbox
 - export_eda_plotly_cache.py
+- conclusion_page.py
 - create_rolling_features
 - ._post
 - TestForecastBias
@@ -307,19 +308,19 @@
 ## Import Cycles
 - None detected.
 
-## Communities (297 total, 148 thin omitted)
+## Communities (298 total, 148 thin omitted)
 
-### Community 0 - "app.py"
-Cohesion: 0.06
-Nodes (63): _count_tests(), _get_pipeline_metrics(), insight_card(), kpi_card(), load_experiment_results(), load_json(), main(), page_content_manager() (+55 more)
-
-### Community 1 - "DataValidator"
+### Community 0 - "DataValidator"
 Cohesion: 0.08
 Nodes (27): Enum, DataValidator, Any, DataFrame, Data validator — domain-specific quality checks for PM2.5 pipeline.  Validates d, Validate feature-engineered data (Marts layer).          Checks per SKILL.md §3., Check if any CRITICAL validation failed., Validation severity levels. (+19 more)
 
-### Community 2 - "pages.py"
+### Community 1 - "pages.py"
 Cohesion: 0.06
 Nodes (59): DataFrame, _cached_pipeline_data(), _cached_sensor_preview(), _cached_suggestion_values(), _detect_available_models(), _forecast_auto(), _forecast_manual(), _format_model_label() (+51 more)
+
+### Community 2 - "app.py"
+Cohesion: 0.07
+Nodes (54): _count_tests(), _get_pipeline_metrics(), insight_card(), kpi_card(), load_experiment_results(), load_json(), main(), page_content_manager() (+46 more)
 
 ### Community 3 - "PersistenceModel"
 Cohesion: 0.07
@@ -633,147 +634,151 @@ Nodes (9): main(), plot_missing_barcode(), plot_recovery_bar(), DataFrame, Kho�
 Cohesion: 0.38
 Nodes (9): export_acf_pacf(), export_correlations(), export_distributions(), export_missing_barcode(), export_psd(), export_qq_plot(), export_stl(), load_data() (+1 more)
 
-### Community 81 - "create_rolling_features"
+### Community 81 - "conclusion_page.py"
+Cohesion: 0.27
+Nodes (9): page_conclusion(), Page: Kết Luận & Hướng Phát Triển — Thesis conclusion dashboard.  Designed for a, Research limitations — honest scientific assessment., Main entry point for the Conclusion & Future Work page., Future research directions with feasibility assessment., Research summary — what was accomplished., _render_future_work(), _render_limitations() (+1 more)
+
+### Community 82 - "create_rolling_features"
 Cohesion: 0.29
 Nodes (5): create_rolling_features(), Create rolling window statistics.      Shift(1) ensures no data leakage — window, Rolling window must use shift(1) to prevent leakage., Rolling should reset at segment boundaries., TestRollingFeatures
 
-### Community 82 - "._post"
+### Community 83 - "._post"
 Cohesion: 0.20
 Nodes (4): Run PM2.5 prediction., Create a new experiment., Log a model within a run., Log metrics for a model.
 
-### Community 83 - "TestForecastBias"
+### Community 84 - "TestForecastBias"
 Cohesion: 0.20
 Nodes (6): P0-3: Forecast Bias metric — Manu Joseph Ch.4 p.80., FB ≈ 0 when predictions match actuals., FB > 0 when model over-predicts., FB < 0 when model under-predicts (dangerous for PM2.5)., Returns NaN when total actual is near zero., TestForecastBias
 
-### Community 84 - "TestResultPlausibility"
+### Community 85 - "TestResultPlausibility"
 Cohesion: 0.20
 Nodes (6): Cross-reference our results with known literature values.      Literature refere, Persistence MAE should be 1-10 µg/m³ for hourly indoor PM2.5., Theoretical expectations for MASE at different horizons.          Theory (autoco, If MASE < 0.1 for any model → almost certainly leakage., Literature expectations for model comparison.          Expected pattern (PM2.5 l, TestResultPlausibility
 
-### Community 85 - "bootstrap_mase_ci.py"
+### Community 86 - "bootstrap_mase_ci.py"
 Cohesion: 0.31
 Nodes (8): block_bootstrap_mase(), compute_mase_unified(), load_predictions(), main(), Bootstrap Confidence Intervals for MASE. Computes 95% CI via block bootstrap (pr, Load actual/predicted pairs from JSON., Compute MASE = MAE_model / Unified_MAE_persistence., Block bootstrap for MASE using unified Persistence denominator.
 
-### Community 86 - "standardize_metrics.py"
+### Community 87 - "standardize_metrics.py"
 Cohesion: 0.28
 Nodes (8): _load_latest(), main(), _prepare_hybrid_data(), DataFrame, Path, Standardize Persistence Baseline & Build AVP Cache (v8_final).  Reads individu, Load the latest JSON file matching prefix_TIMESTAMP.json in dir_path., Run the full data pipeline to get hybrid imputed data with is_imputed column.
 
-### Community 87 - "export_models.py"
+### Community 88 - "export_models.py"
 Cohesion: 0.31
 Nodes (8): export_gru(), export_lgbm(), main(), prepare_data(), Model Export — Convert best models to portable formats.  Exports:   1. GRU →, Train and export LightGBM to native .txt format., Load and prepare hybrid data., Train GRU and export to TorchScript.
 
-### Community 88 - "shap_explainability.py"
+### Community 89 - "shap_explainability.py"
 Cohesion: 0.36
 Nodes (8): main(), _permutation_gru(), _prepare_hybrid_data(), DataFrame, SHAP Explainability — Feature importance analysis for best models.  Generates:, Train LightGBM and compute SHAP values., Compute permutation importance for GRU model.      Optimized: MPS GPU (Apple S, _shap_lightgbm()
 
-### Community 89 - "v10_ablation_compare.py"
+### Community 90 - "v10_ablation_compare.py"
 Cohesion: 0.31
 Nodes (8): extract_v9_model(), load_v10_metrics(), load_v9_metrics(), main(), v10 Ablation Study — Phase 3: Compare v9 (Domain Bounds) vs v10 (IQR).  Reads v9, Load v9 standardized metrics., Load latest v10 ablation metrics., Extract metrics for a model from v9 standardized structure.          Structure:
 
-### Community 90 - "dl_multi_horizon.py"
+### Community 91 - "dl_multi_horizon.py"
 Cohesion: 0.32
 Nodes (7): main(), _prepare_hybrid_data(), DataFrame, LSTM/GRU Multi-Horizon Evaluation — Level 4 Deep Learning Models.  Compare LST, Load raw data and apply Hybrid imputation strategy., Save results to JSON., _save_results()
 
-### Community 91 - "main"
+### Community 92 - "main"
 Cohesion: 0.32
 Nodes (8): export_arima_horizon(), export_sarima_horizon(), find_orders(), main(), Series, Export ARIMA predictions for a single horizon (eval_step=1)., Export SARIMA predictions for a single horizon (eval_step=1, SLOW)., Auto-detect ARIMA and SARIMA orders (same as arima_multi_horizon.py).
 
-### Community 92 - "linear_models_eval.py"
+### Community 93 - "linear_models_eval.py"
 Cohesion: 0.36
 Nodes (7): main(), _prepare_hybrid_data(), _print_summary(), Linear Models Multi-Horizon Evaluation — Lasso, ElasticNet, Ridge.  Integrates, Save results to JSON., Load raw data and apply Hybrid imputation strategy., _save_results()
 
-### Community 93 - "phase1_normalize_snapshots.py"
+### Community 94 - "phase1_normalize_snapshots.py"
 Cohesion: 0.25
 Nodes (7): cleanup_old_v7(), merge_v7(), Phase 1: Normalize snapshot versions — rename files, update version keys, merge, Remove old v7 files after merge., Rename file and update version key inside JSON., Merge v7_retrain (13 models) INTO v7_cqr (6 models).      Strategy:     - Start, rename_and_update()
 
-### Community 94 - "sklearn_models_eval.py"
+### Community 95 - "sklearn_models_eval.py"
 Cohesion: 0.36
 Nodes (7): main(), _prepare_hybrid_data(), _print_summary(), Sklearn Models Multi-Horizon Evaluation — RF, GradientBoosting, Stacking, Ensemb, Save results to JSON., Load raw data and apply Hybrid imputation strategy., _save_results()
 
-### Community 95 - "02_erratic_spikes.py"
+### Community 96 - "02_erratic_spikes.py"
 Cohesion: 0.36
 Nodes (7): main(), plot_distribution(), plot_spikes_timeline(), DataFrame, Khó khăn do Đỉnh cực đoan (Erratic Spikes) Mục tiêu: Cho thấy sự phân bố đuôi dà, Vẽ phân phối Fat-Tailed của PM2.5., Vẽ chuỗi thời gian 1 tháng kèm cảnh báo mức độ.
 
-### Community 96 - "03_multivariate_shift.py"
+### Community 97 - "03_multivariate_shift.py"
 Cohesion: 0.36
 Nodes (7): main(), plot_hexbin_density(), plot_rolling_correlation(), DataFrame, Sự dịch chuyển của Đa Biến (Multivariate Shift) Mục tiêu: Cho thấy mối tương qua, Vẽ tương quan chạy (Rolling Correlation) theo Window = 14 ngày., Vẽ Hexbin 2D thay vì Scatter để xử lý overplotting.
 
-### Community 97 - "audit_knn_temporal_order"
+### Community 98 - "audit_knn_temporal_order"
 Cohesion: 0.32
 Nodes (8): audit_knn_temporal_order(), build_knn_features(), identify_gaps(), DataFrame, Series, Replicate _build_knn_features from imputer.py., Replicate _identify_gaps from imputer.py., Audit KNN imputation for temporal order violations.      Returns:         Dic
 
-### Community 98 - "create_diff_features"
+### Community 99 - "create_diff_features"
 Cohesion: 0.32
 Nodes (5): create_diff_features(), Create rate-of-change / difference features.      Domain-specific: PM2.5 rate of, Diff uses shift(1) → diff_1s[t] = y[t-1] - y[t-2] (anti-leakage).          shift, Diff should not cross segment boundaries., TestDiffFeatures
 
-### Community 99 - "TestRmseMaeRatio"
+### Community 100 - "TestRmseMaeRatio"
 Cohesion: 0.25
 Nodes (5): P0-4: RMSE/MAE Ratio — outlier detection., Ratio = 1.0 when all errors are equal (uniform)., Ratio > √2 when errors have outliers., New metrics present in evaluate_forecast output., TestRmseMaeRatio
 
-### Community 100 - "knn_k_sensitivity.py"
+### Community 101 - "knn_k_sensitivity.py"
 Cohesion: 0.38
 Nodes (6): evaluate_aci_gamma_sensitivity(), evaluate_knn_k_sensitivity(), main(), Sensitivity Analysis for Thesis Defense — KNN k-values and ACI gamma sweep.  Gen, Evaluate KNN imputation error for k in [3, 5, 7, 10]., Evaluate ACI adaptation rate gamma sensitivity.
 
-### Community 101 - "fetch_external_data.py"
+### Community 102 - "fetch_external_data.py"
 Cohesion: 0.33
 Nodes (6): fetch_aq_chunk(), fetch_weather_chunk(), DataFrame, Script: Fetch external data from Open-Meteo APIs for missing periods in the IoT, Fetch air quality data (PM2.5) for a date range using CAMS Global., Fetch historical weather data for a date range.
 
-### Community 102 - "_tab_pipeline_journey"
+### Community 103 - "_tab_pipeline_journey"
 Cohesion: 0.38
 Nodes (6): Interactive Sankey diagram showing data flow through the pipeline., Render a detailed Sankey for a single resolution, showing every pipeline step., _render_detail_sankey(), _tab_pipeline_journey(), get_plotly_config(), Get standardized Plotly configuration for the dashboard.      .. deprecated::
 
-### Community 103 - "validate_data_path"
+### Community 104 - "validate_data_path"
 Cohesion: 0.38
 Nodes (6): Path, Path validation utilities — security rules from SKILL.md §1.7., Validate and resolve a file path within the project.      Args:         path: Fi, Validate a data file path (must be in dataset/ directory).      Args:         pa, validate_data_path(), validate_path()
 
-### Community 104 - "audit_file"
+### Community 105 - "audit_file"
 Cohesion: 0.40
 Nodes (5): audit_file(), main(), Path, Audit Dashboard — Quality Gate for hardcoded metrics detection.  Scans app.py, p, Scan a file for hardcoded metric patterns.      Returns list of violations: [{li
 
-### Community 105 - "update_memory.py"
+### Community 106 - "update_memory.py"
 Cohesion: 0.47
 Nodes (5): clean_and_format_file(), get_git_commits(), Lấy 5 commit gần nhất để phân tích., Đảm bảo file được lưu dưới dạng UTF-8 chuẩn và loại bỏ các ký tự lỗi., update_memory()
 
-### Community 106 - "v9_standardize_evaluation.py"
+### Community 107 - "v9_standardize_evaluation.py"
 Cohesion: 0.47
 Nodes (5): load_latest(), main(), mase_manual(), V9 Standardize Evaluation — Resolve MASE confound.  This script ensures that t, Compute MASE using a pre-calculated naive MAE denominator.
 
-### Community 107 - "validate_snapshot"
+### Community 108 - "validate_snapshot"
 Cohesion: 0.40
 Nodes (5): main(), Path, Snapshot Validator — Validates JSON schema for dashboard snapshots.  Ensures eve, Validate a single snapshot file against the schema contract.      Returns:, validate_snapshot()
 
-### Community 108 - "test_features.py"
+### Community 109 - "test_features.py"
 Cohesion: 0.33
 Nodes (5): Tests for feature engineering modules.  Per SKILL.md test spec: - Lag/rolling cr, Create a sample hourly DataFrame for testing., Create a sample DataFrame with segment IDs for testing segment-aware features., sample_df(), segmented_df()
 
-### Community 109 - "TestDataIntegrity"
+### Community 110 - "TestDataIntegrity"
 Cohesion: 0.33
 Nodes (4): Verify data pipeline produces valid outputs., Train data must be BEFORE test data (no temporal leakage)., Filtering imputed data should reduce test set size., TestDataIntegrity
 
-### Community 110 - "manifest.json"
+### Community 111 - "manifest.json"
 Cohesion: 0.40
 Nodes (4): data_files, generated_at, models, version
 
-### Community 111 - "reproduce.sh"
+### Community 112 - "reproduce.sh"
 Cohesion: 0.70
 Nodes (4): err(), log(), reproduce.sh script, warn()
 
-### Community 114 - "precompute_avp_safe.py"
+### Community 115 - "precompute_avp_safe.py"
 Cohesion: 0.50
 Nodes (4): main(), Pre-compute Actual vs Predicted data — fully isolated version.  Each model typ, Run inline Python script in isolated subprocess., _run_script()
 
-### Community 115 - "get_db"
+### Community 116 - "get_db"
 Cohesion: 0.40
 Nodes (4): get_db(), Session, FastAPI dependency — yields a DB session, auto-closes., FastAPI dependencies — DB session, model cache.
 
-### Community 116 - "leakage_audit.py"
+### Community 117 - "leakage_audit.py"
 Cohesion: 0.50
 Nodes (3): p(), Quick leakage audit — verifies specific leakage hypotheses., Print with immediate flush.
 
-### Community 117 - "v9_retrain_ensemble.py"
+### Community 118 - "v9_retrain_ensemble.py"
 Cohesion: 0.67
 Nodes (3): build_ensemble(), _load_latest(), V9 Ensemble Model Builder.  Combines the best Deep Learning model (LSTM_v9) an
 
-### Community 122 - "_train_and_evaluate"
+### Community 123 - "_train_and_evaluate"
 Cohesion: 0.67
 Nodes (3): DataFrame, Train LightGBM and evaluate on REAL data only.      Split: 80/10/10 temporal s, _train_and_evaluate()
 
@@ -786,16 +791,16 @@ Nodes (3): DataFrame, Train LightGBM and evaluate on REAL data only.      Split:
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `build_features()` connect `build_features` to `dl_v3_pca_tft.py`, `load_raw_data`, `_clip_physical_bounds`, `pipeline_walkthrough.py`, `impute_missing_data`, `_resample`, `inference.py`, `retrain_v7_full.py`, `save_marts_data`, `temporal.py`, `LightGBMTrainer`, `ensemble_multi_horizon.py`, `statistical_tests.py`, `prediction_intervals.py`, `create_calendar_features`, `deep_insights_phase4.py`, `create_lag_features`, `precompute_avp.py`, `deseasonal_fix_leakage.py`, `multi_horizon_eval.py`, `create_rolling_features`, `export_models.py`, `shap_explainability.py`, `linear_models_eval.py`, `sklearn_models_eval.py`, `create_diff_features`, `test_features.py`?**
-  _High betweenness centrality (0.151) - this node is a cross-community bridge._
+  _High betweenness centrality (0.152) - this node is a cross-community bridge._
 - **Why does `impute_missing_data()` connect `impute_missing_data` to `dl_v3_pca_tft.py`, `load_raw_data`, `_clip_physical_bounds`, `pipeline_walkthrough.py`, `build_features`, `test_imputer.py`, `_resample`, `_identify_gaps`, `retrain_v7_full.py`, `_log`, `ensemble_multi_horizon.py`, `statistical_tests.py`, `prediction_intervals.py`, `arima_multi_horizon.py`, `deep_insights_phase4.py`, `_cubic_spline_fill`, `precompute_avp.py`, `deseasonal_fix_leakage.py`, `multi_horizon_eval.py`, `standardize_metrics.py`, `export_models.py`, `shap_explainability.py`, `dl_multi_horizon.py`, `linear_models_eval.py`, `sklearn_models_eval.py`?**
-  _High betweenness centrality (0.085) - this node is a cross-community bridge._
+  _High betweenness centrality (0.086) - this node is a cross-community bridge._
 - **Why does `load_raw_data()` connect `load_raw_data` to `DataValidator`, `dl_v3_pca_tft.py`, `test_loader.py`, `_clip_physical_bounds`, `pipeline_walkthrough.py`, `impute_missing_data`, `build_features`, `_resample`, `retrain_v7_full.py`, `ensemble_multi_horizon.py`, `statistical_tests.py`, `prediction_intervals.py`, `arima_multi_horizon.py`, `deep_insights_phase4.py`, `precompute_avp.py`, `deseasonal_fix_leakage.py`, `multi_horizon_eval.py`, `standardize_metrics.py`, `export_models.py`, `shap_explainability.py`, `dl_multi_horizon.py`, `linear_models_eval.py`, `sklearn_models_eval.py`, `validate_data_path`?**
   _High betweenness centrality (0.071) - this node is a cross-community bridge._
 - **What connects `version`, `generated_at`, `models` to the rest of the system?**
   _129 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `app.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.05920745920745921 - nodes in this community are weakly interconnected._
 - **Should `DataValidator` be split into smaller, more focused modules?**
   _Cohesion score 0.07552447552447553 - nodes in this community are weakly interconnected._
 - **Should `pages.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05901639344262295 - nodes in this community are weakly interconnected._
+- **Should `app.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.06948051948051948 - nodes in this community are weakly interconnected._

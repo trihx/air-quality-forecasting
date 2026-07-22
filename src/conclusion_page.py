@@ -281,6 +281,37 @@ def _render_limitations(section_header, insight_card):
         card_type="warning",
     )
 
+    # Sensitivity Analysis Block
+    section_header("🔍", "Kiểm Định Nhạy Thực Nghiệm (Sensitivity Analysis)")
+    try:
+        sens_path = PROJECT_ROOT / "research" / "diagnostics" / "sensitivity_analysis.json"
+        if sens_path.exists():
+            import json as _json2
+            sens_d = _json2.load(open(sens_path, "r", encoding="utf-8"))
+            knn_k = sens_d.get("knn_k_sensitivity", {})
+            aci_g = sens_d.get("aci_gamma_sensitivity", {})
+            
+            col_k, col_g = st.columns(2)
+            with col_k:
+                st.markdown(f"**KNN Imputation $k$-value {cite('troyanskaya2001')}**")
+                rows1 = [{"k": k.replace("k_", "k="), "MAE": v["mae"], "RMSE": v["rmse"]} for k, v in knn_k.items()]
+                import pandas as _pd
+                st.dataframe(_pd.DataFrame(rows1), use_container_width=True, hide_index=True)
+            with col_g:
+                st.markdown(f"**ACI Adaptation Rate $\\gamma$ {cite('gibbs2021')}**")
+                rows2 = [{"Gamma (γ)": v["gamma"], "Coverage": f"{v['empirical_coverage']*100:.1f}%", "Stability": v["stability_score"]} for k, v in aci_g.items()]
+                st.dataframe(_pd.DataFrame(rows2), use_container_width=True, hide_index=True)
+            
+            insight_card(
+                "💡 Kết luận kiểm định độ nhạy",
+                f"Thử nghiệm quét siêu tham số trên `scripts/analysis/knn_k_sensitivity.py` xác nhận: "
+                f"(1) $k=5$ (KNN) cho sai số MAE tối ưu ($32,25\,\\mu\\text{{g/m}}^3$) {cite('troyanskaya2001')}. "
+                f"(2) $\\gamma=0,01$ (ACI) duy trì độ phủ $91,0\\%$ (mục tiêu $90\\%$) với chỉ số ổn định cao nhất ($0,975$) {cite('gibbs2021')}.",
+                card_type="info"
+            )
+    except Exception:
+        pass
+
 
 # ──────────────────────────────────────────────────────────────
 # Tab 3: Hướng Phát Triển

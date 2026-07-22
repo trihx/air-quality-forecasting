@@ -1490,9 +1490,9 @@
     "semantic_hash": "89659a84cd386fbe4a515da8063fa9fd"
   },
   "src/conclusion_page.py": {
-    "mtime": 1784621447.3587284,
-    "ast_hash": "0fcc47a3a5bf35669f4c550bb335c312",
-    "semantic_hash": "0fcc47a3a5bf35669f4c550bb335c312"
+    "mtime": 1784686261.2778537,
+    "ast_hash": "9cc4f4bc20eda9243206e4cd0e42df0b",
+    "semantic_hash": "9cc4f4bc20eda9243206e4cd0e42df0b"
   },
   "src/data/__init__.py": {
     "mtime": 1777341810.0,

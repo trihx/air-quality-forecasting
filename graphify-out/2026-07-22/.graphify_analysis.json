@@ -1,74 +1,6 @@
 {
   "communities": {
     "0": [
-      "app",
-      "app_count_tests",
-      "app_get_pipeline_metrics",
-      "app_insight_card",
-      "app_kpi_card",
-      "app_load_experiment_results",
-      "app_load_json",
-      "app_main",
-      "app_page_content_manager",
-      "app_page_eda",
-      "app_page_hyperparams",
-      "app_page_multi_horizon",
-      "app_page_overview",
-      "app_page_prediction_intervals",
-      "app_page_scientific_audit",
-      "app_page_scientific_benchmark",
-      "app_page_shap",
-      "app_rationale_1",
-      "app_rationale_3201",
-      "app_rationale_3394",
-      "app_rationale_3418",
-      "app_rationale_3511",
-      "app_rationale_3640",
-      "app_rationale_3666",
-      "app_rationale_579",
-      "app_rationale_67",
-      "app_rationale_703",
-      "app_rationale_84",
-      "app_render_overview_comparison",
-      "app_render_overview_current",
-      "app_save_dashboard_json",
-      "app_section_header",
-      "app_sidebar",
-      "app_tab_dashboard_json",
-      "app_tab_data_overview",
-      "app_tab_info_cards",
-      "path",
-      "src_conclusion_page",
-      "src_conclusion_page_page_conclusion",
-      "src_conclusion_page_rationale_1",
-      "src_conclusion_page_rationale_168",
-      "src_conclusion_page_rationale_22",
-      "src_conclusion_page_rationale_291",
-      "src_conclusion_page_rationale_59",
-      "src_conclusion_page_render_future_work",
-      "src_conclusion_page_render_limitations",
-      "src_conclusion_page_render_summary",
-      "src_thesis_figures",
-      "src_thesis_figures_chart_bootstrap_ci",
-      "src_thesis_figures_chart_mase_decay",
-      "src_thesis_figures_chart_residual_bias",
-      "src_thesis_figures_chart_shap_comparison",
-      "src_thesis_figures_chart_train_time",
-      "src_thesis_figures_load_bootstrap_ci",
-      "src_thesis_figures_load_ljungbox",
-      "src_thesis_figures_load_sensitivity",
-      "src_thesis_figures_load_shap",
-      "src_thesis_figures_load_standardized_metrics",
-      "src_thesis_figures_page_thesis_figures",
-      "src_thesis_figures_rationale_1",
-      "src_thesis_figures_rationale_157",
-      "src_thesis_figures_rationale_233",
-      "src_thesis_figures_rationale_286",
-      "src_thesis_figures_rationale_338",
-      "src_thesis_figures_rationale_377",
-      "src_thesis_figures_rationale_86"
-    ],
-    "1": [
       "enum",
       "src_data_validator",
       "src_data_validator_datavalidator",
@@ -136,7 +68,7 @@
       "tests_unit_test_validator_testvalidatorreport_test_has_critical_failures",
       "tests_unit_test_validator_testvalidatorreport_test_report_structure"
     ],
-    "2": [
+    "1": [
       "dataframe",
       "pages",
       "pages_cached_pipeline_data",
@@ -198,6 +130,64 @@
       "pages_show_forecast_result",
       "pages_show_horizon_recommendation",
       "pages_show_smart_ranking_context"
+    ],
+    "2": [
+      "app",
+      "app_count_tests",
+      "app_get_pipeline_metrics",
+      "app_insight_card",
+      "app_kpi_card",
+      "app_load_experiment_results",
+      "app_load_json",
+      "app_main",
+      "app_page_content_manager",
+      "app_page_eda",
+      "app_page_hyperparams",
+      "app_page_multi_horizon",
+      "app_page_overview",
+      "app_page_prediction_intervals",
+      "app_page_scientific_audit",
+      "app_page_scientific_benchmark",
+      "app_page_shap",
+      "app_rationale_1",
+      "app_rationale_3201",
+      "app_rationale_3394",
+      "app_rationale_3418",
+      "app_rationale_3511",
+      "app_rationale_3640",
+      "app_rationale_3666",
+      "app_rationale_579",
+      "app_rationale_67",
+      "app_rationale_703",
+      "app_rationale_84",
+      "app_render_overview_comparison",
+      "app_render_overview_current",
+      "app_save_dashboard_json",
+      "app_section_header",
+      "app_sidebar",
+      "app_tab_dashboard_json",
+      "app_tab_data_overview",
+      "app_tab_info_cards",
+      "path",
+      "src_thesis_figures",
+      "src_thesis_figures_chart_bootstrap_ci",
+      "src_thesis_figures_chart_mase_decay",
+      "src_thesis_figures_chart_residual_bias",
+      "src_thesis_figures_chart_shap_comparison",
+      "src_thesis_figures_chart_train_time",
+      "src_thesis_figures_load_bootstrap_ci",
+      "src_thesis_figures_load_ljungbox",
+      "src_thesis_figures_load_sensitivity",
+      "src_thesis_figures_load_shap",
+      "src_thesis_figures_load_standardized_metrics",
+      "src_thesis_figures_page_thesis_figures",
+      "src_thesis_figures_rationale_1",
+      "src_thesis_figures_rationale_157",
+      "src_thesis_figures_rationale_233",
+      "src_thesis_figures_rationale_286",
+      "src_thesis_figures_rationale_338",
+      "src_thesis_figures_rationale_377",
+      "src_thesis_figures_rationale_86"
     ],
     "3": [
       "src_models_baselines",
@@ -2173,6 +2163,18 @@
       "scripts_export_eda_plotly_cache_main"
     ],
     "81": [
+      "src_conclusion_page",
+      "src_conclusion_page_page_conclusion",
+      "src_conclusion_page_rationale_1",
+      "src_conclusion_page_rationale_168",
+      "src_conclusion_page_rationale_22",
+      "src_conclusion_page_rationale_322",
+      "src_conclusion_page_rationale_59",
+      "src_conclusion_page_render_future_work",
+      "src_conclusion_page_render_limitations",
+      "src_conclusion_page_render_summary"
+    ],
+    "82": [
       "src_features_temporal_create_rolling_features",
       "src_features_temporal_rationale_161",
       "tests_unit_test_features_rationale_114",
@@ -2184,7 +2186,7 @@
       "tests_unit_test_features_testrollingfeatures_test_rolling_uses_shifted_data",
       "tests_unit_test_features_testrollingfeatures_test_segment_aware_rolling"
     ],
-    "82": [
+    "83": [
       "src_frontend_api_client_apiclient_create_experiment",
       "src_frontend_api_client_apiclient_create_metric",
       "src_frontend_api_client_apiclient_create_run",
@@ -2196,7 +2198,7 @@
       "src_frontend_api_client_rationale_77",
       "src_frontend_api_client_rationale_87"
     ],
-    "83": [
+    "84": [
       "tests_unit_test_audit_metrics_rationale_12",
       "tests_unit_test_audit_metrics_rationale_15",
       "tests_unit_test_audit_metrics_rationale_21",
@@ -2208,7 +2210,7 @@
       "tests_unit_test_audit_metrics_testforecastbias_test_unbiased",
       "tests_unit_test_audit_metrics_testforecastbias_test_under_forecast"
     ],
-    "84": [
+    "85": [
       "tests_validation_test_result_validation_rationale_201",
       "tests_validation_test_result_validation_rationale_215",
       "tests_validation_test_result_validation_rationale_234",
@@ -2220,7 +2222,7 @@
       "tests_validation_test_result_validation_testresultplausibility_test_no_leakage_signal_in_mase",
       "tests_validation_test_result_validation_testresultplausibility_test_persistence_mae_in_literature_range"
     ],
-    "85": [
+    "86": [
       "scripts_analysis_bootstrap_mase_ci",
       "scripts_analysis_bootstrap_mase_ci_block_bootstrap_mase",
       "scripts_analysis_bootstrap_mase_ci_compute_mase_unified",
@@ -2231,7 +2233,7 @@
       "scripts_analysis_bootstrap_mase_ci_rationale_65",
       "scripts_analysis_bootstrap_mase_ci_rationale_76"
     ],
-    "86": [
+    "87": [
       "scripts_archive_standardize_metrics",
       "scripts_archive_standardize_metrics_load_latest",
       "scripts_archive_standardize_metrics_main",
@@ -2242,7 +2244,7 @@
       "scripts_archive_standardize_metrics_rationale_36",
       "scripts_archive_standardize_metrics_rationale_56"
     ],
-    "87": [
+    "88": [
       "scripts_export_models",
       "scripts_export_models_export_gru",
       "scripts_export_models_export_lgbm",
@@ -2253,7 +2255,7 @@
       "scripts_export_models_rationale_53",
       "scripts_export_models_rationale_77"
     ],
-    "88": [
+    "89": [
       "scripts_shap_explainability",
       "scripts_shap_explainability_main",
       "scripts_shap_explainability_permutation_gru",
@@ -2264,7 +2266,7 @@
       "scripts_shap_explainability_rationale_248",
       "scripts_shap_explainability_shap_lightgbm"
     ],
-    "89": [
+    "90": [
       "scripts_v10_ablation_compare",
       "scripts_v10_ablation_compare_extract_v9_model",
       "scripts_v10_ablation_compare_load_v10_metrics",
@@ -2275,7 +2277,7 @@
       "scripts_v10_ablation_compare_rationale_55",
       "scripts_v10_ablation_compare_rationale_66"
     ],
-    "90": [
+    "91": [
       "scripts_archive_dl_multi_horizon",
       "scripts_archive_dl_multi_horizon_main",
       "scripts_archive_dl_multi_horizon_prepare_hybrid_data",
@@ -2285,7 +2287,7 @@
       "scripts_archive_dl_multi_horizon_rationale_532",
       "scripts_archive_dl_multi_horizon_save_results"
     ],
-    "91": [
+    "92": [
       "scripts_archive_export_arima_preds_export_arima_horizon",
       "scripts_archive_export_arima_preds_export_sarima_horizon",
       "scripts_archive_export_arima_preds_find_orders",
@@ -2295,7 +2297,7 @@
       "scripts_archive_export_arima_preds_rationale_233",
       "scripts_archive_export_arima_preds_rationale_71"
     ],
-    "92": [
+    "93": [
       "scripts_archive_linear_models_eval",
       "scripts_archive_linear_models_eval_main",
       "scripts_archive_linear_models_eval_prepare_hybrid_data",
@@ -2305,7 +2307,7 @@
       "scripts_archive_linear_models_eval_rationale_99",
       "scripts_archive_linear_models_eval_save_results"
     ],
-    "93": [
+    "94": [
       "scripts_archive_phase1_normalize_snapshots",
       "scripts_archive_phase1_normalize_snapshots_cleanup_old_v7",
       "scripts_archive_phase1_normalize_snapshots_merge_v7",
@@ -2315,7 +2317,7 @@
       "scripts_archive_phase1_normalize_snapshots_rationale_58",
       "scripts_archive_phase1_normalize_snapshots_rename_and_update"
     ],
-    "94": [
+    "95": [
       "scripts_archive_sklearn_models_eval",
       "scripts_archive_sklearn_models_eval_main",
       "scripts_archive_sklearn_models_eval_prepare_hybrid_data",
@@ -2325,7 +2327,7 @@
       "scripts_archive_sklearn_models_eval_rationale_98",
       "scripts_archive_sklearn_models_eval_save_results"
     ],
-    "95": [
+    "96": [
       "scripts_eda_02_erratic_spikes",
       "scripts_eda_02_erratic_spikes_main",
       "scripts_eda_02_erratic_spikes_plot_distribution",
@@ -2335,7 +2337,7 @@
       "scripts_eda_02_erratic_spikes_rationale_35",
       "scripts_eda_02_erratic_spikes_rationale_72"
     ],
-    "96": [
+    "97": [
       "scripts_eda_03_multivariate_shift",
       "scripts_eda_03_multivariate_shift_main",
       "scripts_eda_03_multivariate_shift_plot_hexbin_density",
@@ -2345,7 +2347,7 @@
       "scripts_eda_03_multivariate_shift_rationale_33",
       "scripts_eda_03_multivariate_shift_rationale_72"
     ],
-    "97": [
+    "98": [
       "scripts_v8_audit_knn_temporal_audit_knn_temporal_order",
       "scripts_v8_audit_knn_temporal_build_knn_features",
       "scripts_v8_audit_knn_temporal_identify_gaps",
@@ -2355,7 +2357,7 @@
       "scripts_v8_audit_knn_temporal_rationale_54",
       "scripts_v8_audit_knn_temporal_rationale_79"
     ],
-    "98": [
+    "99": [
       "src_features_temporal_create_diff_features",
       "src_features_temporal_rationale_246",
       "tests_unit_test_features_rationale_235",
@@ -2365,7 +2367,7 @@
       "tests_unit_test_features_testdifffeatures_test_diff_value_correct",
       "tests_unit_test_features_testdifffeatures_test_segment_aware_diff"
     ],
-    "99": [
+    "100": [
       "tests_unit_test_audit_metrics_rationale_65",
       "tests_unit_test_audit_metrics_rationale_68",
       "tests_unit_test_audit_metrics_rationale_77",
@@ -2375,7 +2377,7 @@
       "tests_unit_test_audit_metrics_testrmsemaeratio_test_outlier_errors",
       "tests_unit_test_audit_metrics_testrmsemaeratio_test_uniform_errors"
     ],
-    "100": [
+    "101": [
       "scripts_analysis_knn_k_sensitivity",
       "scripts_analysis_knn_k_sensitivity_evaluate_aci_gamma_sensitivity",
       "scripts_analysis_knn_k_sensitivity_evaluate_knn_k_sensitivity",
@@ -2384,7 +2386,7 @@
       "scripts_analysis_knn_k_sensitivity_rationale_21",
       "scripts_analysis_knn_k_sensitivity_rationale_53"
     ],
-    "101": [
+    "102": [
       "scripts_fetch_external_data",
       "scripts_fetch_external_data_fetch_aq_chunk",
       "scripts_fetch_external_data_fetch_weather_chunk",
@@ -2393,7 +2395,7 @@
       "scripts_fetch_external_data_rationale_101",
       "scripts_fetch_external_data_rationale_74"
     ],
-    "102": [
+    "103": [
       "scripts_utilities_replace_sankey",
       "scripts_utilities_replace_sankey_rationale_2",
       "scripts_utilities_replace_sankey_rationale_226",
@@ -2402,7 +2404,7 @@
       "src_viz_theme_get_plotly_config",
       "src_viz_theme_rationale_250"
     ],
-    "103": [
+    "104": [
       "src_utils_path_validator",
       "src_utils_path_validator_py_path",
       "src_utils_path_validator_rationale_1",
@@ -2411,7 +2413,7 @@
       "src_utils_path_validator_validate_data_path",
       "src_utils_path_validator_validate_path"
     ],
-    "104": [
+    "105": [
       "scripts_archive_audit_dashboard",
       "scripts_archive_audit_dashboard_audit_file",
       "scripts_archive_audit_dashboard_main",
@@ -2419,7 +2421,7 @@
       "scripts_archive_audit_dashboard_rationale_1",
       "scripts_archive_audit_dashboard_rationale_87"
     ],
-    "105": [
+    "106": [
       "scripts_utilities_update_memory",
       "scripts_utilities_update_memory_clean_and_format_file",
       "scripts_utilities_update_memory_get_git_commits",
@@ -2427,7 +2429,7 @@
       "scripts_utilities_update_memory_rationale_24",
       "scripts_utilities_update_memory_update_memory"
     ],
-    "106": [
+    "107": [
       "scripts_v9_standardize_evaluation",
       "scripts_v9_standardize_evaluation_load_latest",
       "scripts_v9_standardize_evaluation_main",
@@ -2435,7 +2437,7 @@
       "scripts_v9_standardize_evaluation_rationale_1",
       "scripts_v9_standardize_evaluation_rationale_16"
     ],
-    "107": [
+    "108": [
       "src_snapshot_validator",
       "src_snapshot_validator_main",
       "src_snapshot_validator_py_path",
@@ -2443,7 +2445,7 @@
       "src_snapshot_validator_rationale_22",
       "src_snapshot_validator_validate_snapshot"
     ],
-    "108": [
+    "109": [
       "tests_unit_test_features",
       "tests_unit_test_features_rationale_1",
       "tests_unit_test_features_rationale_28",
@@ -2451,7 +2453,7 @@
       "tests_unit_test_features_sample_df",
       "tests_unit_test_features_segmented_df"
     ],
-    "109": [
+    "110": [
       "tests_validation_test_result_validation_rationale_341",
       "tests_validation_test_result_validation_rationale_344",
       "tests_validation_test_result_validation_rationale_362",
@@ -2459,633 +2461,633 @@
       "tests_validation_test_result_validation_testdataintegrity_test_temporal_split_no_future_leak",
       "tests_validation_test_result_validation_testdataintegrity_test_test_real_only_reduces_size"
     ],
-    "110": [
+    "111": [
       "models_exported_manifest",
       "models_exported_manifest_data_files",
       "models_exported_manifest_generated_at",
       "models_exported_manifest_models",
       "models_exported_manifest_version"
     ],
-    "111": [
+    "112": [
       "reproduce",
       "reproduce_err",
       "reproduce_log",
       "reproduce_sh__entry",
       "reproduce_warn"
     ],
-    "112": [
+    "113": [
       "scripts_archive_deseasonal_fix_leakage_py_dataset",
       "scripts_archive_deseasonal_fix_leakage_timeseriesdataset",
       "scripts_archive_deseasonal_fix_leakage_timeseriesdataset_getitem",
       "scripts_archive_deseasonal_fix_leakage_timeseriesdataset_init",
       "scripts_archive_deseasonal_fix_leakage_timeseriesdataset_len"
     ],
-    "113": [
+    "114": [
       "scripts_generate_thesis_outline",
       "scripts_generate_thesis_outline_add_heading_ctu",
       "scripts_generate_thesis_outline_add_note",
       "scripts_generate_thesis_outline_add_status",
       "scripts_generate_thesis_outline_rationale_1"
     ],
-    "114": [
+    "115": [
       "scripts_precompute_avp_safe",
       "scripts_precompute_avp_safe_main",
       "scripts_precompute_avp_safe_rationale_1",
       "scripts_precompute_avp_safe_rationale_27",
       "scripts_precompute_avp_safe_run_script"
     ],
-    "115": [
+    "116": [
       "src_api_database_get_db",
       "src_api_database_py_session",
       "src_api_database_rationale_59",
       "src_api_deps",
       "src_api_deps_rationale_1"
     ],
-    "116": [
+    "117": [
       "scripts_archive_leakage_audit",
       "scripts_archive_leakage_audit_p",
       "scripts_archive_leakage_audit_rationale_1",
       "scripts_archive_leakage_audit_rationale_8"
     ],
-    "117": [
+    "118": [
       "scripts_v9_retrain_ensemble",
       "scripts_v9_retrain_ensemble_build_ensemble",
       "scripts_v9_retrain_ensemble_load_latest",
       "scripts_v9_retrain_ensemble_rationale_1"
     ],
-    "118": [
+    "119": [
       "src_frontend_api_client_apiclient_put",
       "src_frontend_api_client_apiclient_update_info_card",
       "src_frontend_api_client_py_any",
       "src_frontend_api_client_rationale_129"
     ],
-    "119": [
+    "120": [
       "src_reporting_content_contentmanager_get_info_card_text",
       "src_reporting_content_contentmanager_load_info_cards_json",
       "src_reporting_content_rationale_71",
       "src_reporting_content_rationale_91"
     ],
-    "120": [
+    "121": [
       "scripts_archive_analyze_gaps",
       "scripts_archive_analyze_gaps_main",
       "scripts_archive_analyze_gaps_rationale_1"
     ],
-    "121": [
+    "122": [
       "scripts_archive_audit_leakage",
       "scripts_archive_audit_leakage_main",
       "scripts_archive_audit_leakage_rationale_1"
     ],
-    "122": [
+    "123": [
       "scripts_archive_compare_data_strategies_py_dataframe",
       "scripts_archive_compare_data_strategies_rationale_193",
       "scripts_archive_compare_data_strategies_train_and_evaluate"
     ],
-    "123": [
+    "124": [
       "tests_test_imputer_rationale_213",
       "tests_test_imputer_testgapidentification",
       "tests_test_imputer_testgapidentification_test_identify_gaps_correct"
     ],
-    "124": [
+    "125": [
       "run_dashboard",
       "run_dashboard_sh__entry"
     ],
-    "125": [
+    "126": [
       "scripts_analyze_sequences",
       "scripts_analyze_sequences_rationale_1"
     ],
-    "126": [
+    "127": [
       "scripts_archive_audit_content_deep",
       "scripts_archive_audit_content_deep_rationale_1"
     ],
-    "127": [
+    "128": [
       "scripts_archive_audit_crossref",
       "scripts_archive_audit_crossref_rationale_1"
     ],
-    "128": [
+    "129": [
       "scripts_archive_audit_postfix",
       "scripts_archive_audit_postfix_rationale_1"
     ],
-    "129": [
+    "130": [
       "scripts_scratch_append_thesis",
       "scripts_scratch_append_thesis_rationale_1"
     ],
-    "130": [
+    "131": [
       "scripts_scratch_audit_metrics",
       "scripts_scratch_audit_metrics_rationale_1"
     ],
-    "131": [
+    "132": [
       "scripts_sync_snapshot",
       "scripts_sync_snapshot_rationale_1"
     ],
-    "132": [
+    "133": [
       "scripts_utilities_download_pdf",
       "scripts_utilities_download_pdf_download_paper"
     ],
-    "133": [
+    "134": [
       "scripts_utilities_patch",
       "scripts_utilities_patch_update_file"
     ],
-    "134": [
+    "135": [
       "scripts_utilities_sankey_replacement",
       "scripts_utilities_sankey_replacement_tab_pipeline_journey"
     ],
-    "135": [
+    "136": [
       "scripts_utilities_search_crossref",
       "scripts_utilities_search_crossref_search"
     ],
-    "136": [
+    "137": [
       "src_api_init",
       "src_api_init_rationale_1"
     ],
-    "137": [
+    "138": [
       "src_chatbot_init",
       "src_chatbot_init_rationale_1"
     ],
-    "138": [
+    "139": [
       "src_frontend_init",
       "src_frontend_init_rationale_1"
     ],
-    "139": [
+    "140": [
       "src_inference_init",
       "src_inference_init_rationale_1"
     ],
-    "140": [
+    "141": [
       "src_training_init",
       "src_training_init_rationale_1"
     ],
-    "141": [
+    "142": [
       "_agents_agents"
     ],
-    "142": [
+    "143": [
       "_agents_skills_time_series_forecasting_guides_academic_writing"
     ],
-    "143": [
+    "144": [
       "_agents_skills_time_series_forecasting_guides_analytics_experiment_design"
     ],
-    "144": [
+    "145": [
       "_agents_skills_time_series_forecasting_guides_concise_planning"
     ],
-    "145": [
+    "146": [
       "_agents_skills_time_series_forecasting_guides_data_engineering"
     ],
-    "146": [
+    "147": [
       "_agents_skills_time_series_forecasting_guides_design"
     ],
-    "147": [
+    "148": [
       "_agents_skills_time_series_forecasting_guides_embedding_strategies"
     ],
-    "148": [
+    "149": [
       "_agents_skills_time_series_forecasting_guides_evaluation_metrics"
     ],
-    "149": [
+    "150": [
       "_agents_skills_time_series_forecasting_guides_kaizen"
     ],
-    "150": [
+    "151": [
       "_agents_skills_time_series_forecasting_guides_lint_and_validate"
     ],
-    "151": [
+    "152": [
       "_agents_skills_time_series_forecasting_guides_logging"
     ],
-    "152": [
+    "153": [
       "_agents_skills_time_series_forecasting_guides_model_training"
     ],
-    "153": [
+    "154": [
       "_agents_skills_time_series_forecasting_guides_systematic_debugging"
     ],
-    "154": [
+    "155": [
       "_agents_skills_time_series_forecasting_guides_visualization_storytelling"
     ],
-    "155": [
+    "156": [
       "_agents_skills_time_series_forecasting_skill"
     ],
-    "156": [
+    "157": [
       "_agents_workflows_lint"
     ],
-    "157": [
+    "158": [
       "_agents_workflows_refactor"
     ],
-    "158": [
+    "159": [
       "_agents_workflows_run_experiment"
     ],
-    "159": [
+    "160": [
       "_github_workflows_docker_publish"
     ],
-    "160": [
+    "161": [
       "_github_workflows_keep_alive"
     ],
-    "161": [
+    "162": [
       "app_py_path"
     ],
-    "162": [
+    "163": [
       "assets_ctu_logo"
     ],
-    "163": [
+    "164": [
       "configs_base_config"
     ],
-    "164": [
+    "165": [
       "configs_model_configs_lstm"
     ],
-    "165": [
+    "166": [
       "configs_model_configs_random_forest"
     ],
-    "166": [
+    "167": [
       "configs_model_configs_transformer"
     ],
-    "167": [
+    "168": [
       "configs_model_configs_xgboost"
     ],
-    "168": [
+    "169": [
       "docker_compose"
     ],
-    "169": [
+    "170": [
       "docker_compose_gpu"
     ],
-    "170": [
+    "171": [
       "docs_1799_context"
     ],
-    "171": [
+    "172": [
       "docs_1799_full_text"
     ],
-    "172": [
+    "173": [
       "docs_1799_huongdanviettrinhbaylvths_latsa5_ctu_qd1799"
     ],
-    "173": [
+    "174": [
       "docs_1799_rules"
     ],
-    "174": [
+    "175": [
       "docs_1799_search_results"
     ],
-    "175": [
+    "176": [
       "docs_changelog"
     ],
-    "176": [
+    "177": [
       "docs_comparative_analysis_report"
     ],
-    "177": [
+    "178": [
       "docs_decisions_log"
     ],
-    "178": [
+    "179": [
       "docs_deploy"
     ],
-    "179": [
+    "180": [
       "docs_deployment_guide"
     ],
-    "180": [
+    "181": [
       "docs_knowledge_base"
     ],
-    "181": [
+    "182": [
       "docs_lessons_learned"
     ],
-    "182": [
+    "183": [
       "docs_memory_hot"
     ],
-    "183": [
+    "184": [
       "docs_pending_plan"
     ],
-    "184": [
+    "185": [
       "docs_pipeline_references"
     ],
-    "185": [
+    "186": [
       "docs_playbook_setup_guide"
     ],
-    "186": [
+    "187": [
       "docs_project_walkthrough"
     ],
-    "187": [
+    "188": [
       "docs_sync_guide"
     ],
-    "188": [
+    "189": [
       "docs_thesis_draft_ctu_1799"
     ],
-    "189": [
+    "190": [
       "docs_thesis_explanations"
     ],
-    "190": [
+    "191": [
       "docs_vtf_chart_guide"
     ],
-    "191": [
+    "192": [
       "models_exported_lgbm_1h"
     ],
-    "192": [
+    "193": [
       "models_exported_lgbm_24h"
     ],
-    "193": [
+    "194": [
       "models_exported_lgbm_6h"
     ],
-    "194": [
+    "195": [
       "pages_py_dataframe"
     ],
-    "195": [
+    "196": [
       "pkg_time_series_forecasting"
     ],
-    "196": [
+    "197": [
       "readme"
     ],
-    "197": [
+    "198": [
       "research_diagnostics_diagnostics_gru_deseas_raw_h6"
     ],
-    "198": [
+    "199": [
       "research_diagnostics_diagnostics_gru_deseas_seasonal_diff_h6"
     ],
-    "199": [
+    "200": [
       "research_diagnostics_diagnostics_gru_deseas_stl_residual_h6"
     ],
-    "200": [
+    "201": [
       "research_diagnostics_diagnostics_gru_stl_leakfree_h6"
     ],
-    "201": [
+    "202": [
       "research_diagnostics_stationarity_stationarity_1st_diff_(d=1)"
     ],
-    "202": [
+    "203": [
       "research_diagnostics_stationarity_stationarity_log_1st_diff"
     ],
-    "203": [
+    "204": [
       "research_diagnostics_stationarity_stationarity_log_pm2_5"
     ],
-    "204": [
+    "205": [
       "research_diagnostics_stationarity_stationarity_raw_pm2_5"
     ],
-    "205": [
+    "206": [
       "research_diagnostics_stationarity_stationarity_seasonal_diff_(d=24h)"
     ],
-    "206": [
+    "207": [
       "research_diagnostics_statistical_tests_figures_diagnostics_1h_gru"
     ],
-    "207": [
+    "208": [
       "research_diagnostics_statistical_tests_figures_diagnostics_1h_lightgbm"
     ],
-    "208": [
+    "209": [
       "research_diagnostics_statistical_tests_figures_diagnostics_1h_persistence"
     ],
-    "209": [
+    "210": [
       "research_diagnostics_statistical_tests_figures_diagnostics_24h_gru"
     ],
-    "210": [
+    "211": [
       "research_diagnostics_statistical_tests_figures_diagnostics_24h_lightgbm"
     ],
-    "211": [
+    "212": [
       "research_diagnostics_statistical_tests_figures_diagnostics_24h_persistence"
     ],
-    "212": [
+    "213": [
       "research_diagnostics_statistical_tests_figures_diagnostics_6h_gru"
     ],
-    "213": [
+    "214": [
       "research_diagnostics_statistical_tests_figures_diagnostics_6h_lightgbm"
     ],
-    "214": [
+    "215": [
       "research_diagnostics_statistical_tests_figures_diagnostics_6h_persistence"
     ],
-    "215": [
+    "216": [
       "research_eda_01_descriptive_stats"
     ],
-    "216": [
+    "217": [
       "research_eda_02_all_timeseries"
     ],
-    "217": [
+    "218": [
       "research_eda_02_pm25_timeseries"
     ],
-    "218": [
+    "219": [
       "research_eda_03_boxplots"
     ],
-    "219": [
+    "220": [
       "research_eda_03_distributions"
     ],
-    "220": [
+    "221": [
       "research_eda_03c_qq_plot"
     ],
-    "221": [
+    "222": [
       "research_eda_04_correlations"
     ],
-    "222": [
+    "223": [
       "research_eda_05_stl_decomposition"
     ],
-    "223": [
+    "224": [
       "research_eda_05a_stl_seasonal_zoom"
     ],
-    "224": [
+    "225": [
       "research_eda_05b_boxplot_hourly"
     ],
-    "225": [
+    "226": [
       "research_eda_05c_periodogram"
     ],
-    "226": [
+    "227": [
       "research_eda_06_acf_pacf"
     ],
-    "227": [
+    "228": [
       "research_eda_06_error_anatomy"
     ],
-    "228": [
+    "229": [
       "research_eda_07_granger_causality"
     ],
-    "229": [
+    "230": [
       "research_eda_07_rolling_stats"
     ],
-    "230": [
+    "231": [
       "research_eda_07_temporal_patterns"
     ],
-    "231": [
+    "232": [
       "research_eda_08_cross_correlation"
     ],
-    "232": [
+    "233": [
       "research_eda_08_missing_values"
     ],
-    "233": [
+    "234": [
       "research_eda_visualizations_01a_autocorrelation_memory"
     ],
-    "234": [
+    "235": [
       "research_eda_visualizations_01b_horizon_scatter_dispersion"
     ],
-    "235": [
+    "236": [
       "research_eda_visualizations_02a_pm25_fat_tailed_distribution"
     ],
-    "236": [
+    "237": [
       "research_eda_visualizations_02b_pm25_erratic_spikes"
     ],
-    "237": [
+    "238": [
       "research_eda_visualizations_03a_rolling_correlation"
     ],
-    "238": [
+    "239": [
       "research_eda_visualizations_03b_hexbin_multivariate"
     ],
-    "239": [
+    "240": [
       "research_eda_visualizations_04a_missing_barcode"
     ],
-    "240": [
+    "241": [
       "research_eda_visualizations_04b_recovery_limits"
     ],
-    "241": [
+    "242": [
       "research_figures_ablation_outlier_impact"
     ],
-    "242": [
+    "243": [
       "research_figures_prediction_intervals_pi_conformal_prediction_lightgbm_1h"
     ],
-    "243": [
+    "244": [
       "research_figures_prediction_intervals_pi_conformal_prediction_lightgbm_24h"
     ],
-    "244": [
+    "245": [
       "research_figures_prediction_intervals_pi_conformal_prediction_lightgbm_6h"
     ],
-    "245": [
+    "246": [
       "research_figures_shap_gru_permutation_1h"
     ],
-    "246": [
+    "247": [
       "research_figures_shap_gru_permutation_24h"
     ],
-    "247": [
+    "248": [
       "research_figures_shap_gru_permutation_6h"
     ],
-    "248": [
+    "249": [
       "research_figures_shap_project_info"
     ],
-    "249": [
+    "250": [
       "research_figures_shap_shap_bar_1h"
     ],
-    "250": [
+    "251": [
       "research_figures_shap_shap_bar_24h"
     ],
-    "251": [
+    "252": [
       "research_figures_shap_shap_bar_6h"
     ],
-    "252": [
+    "253": [
       "research_figures_shap_shap_beeswarm_1h"
     ],
-    "253": [
+    "254": [
       "research_figures_shap_shap_beeswarm_24h"
     ],
-    "254": [
+    "255": [
       "research_figures_shap_shap_beeswarm_6h"
     ],
-    "255": [
+    "256": [
       "research_figures_shap_shap_dep_1h_co2"
     ],
-    "256": [
+    "257": [
       "research_figures_shap_shap_dep_1h_fourier_daily_sin_2"
     ],
-    "257": [
+    "258": [
       "research_figures_shap_shap_dep_1h_pm25_lag_1h"
     ],
-    "258": [
+    "259": [
       "research_figures_shap_shap_dep_1h_pm25_roll_24h_mean"
     ],
-    "259": [
+    "260": [
       "research_figures_shap_shap_dep_24h_fourier_daily_cos_2"
     ],
-    "260": [
+    "261": [
       "research_figures_shap_shap_dep_24h_hour_cos"
     ],
-    "261": [
+    "262": [
       "research_figures_shap_shap_dep_24h_pm25_lag_1h"
     ],
-    "262": [
+    "263": [
       "research_figures_shap_shap_dep_24h_pm25_lag_24h"
     ],
-    "263": [
+    "264": [
       "research_figures_shap_shap_dep_6h_hour_sin"
     ],
-    "264": [
+    "265": [
       "research_figures_shap_shap_dep_6h_pm25_roll_24h_min"
     ],
-    "265": [
+    "266": [
       "research_figures_shap_shap_dep_6h_pm25_roll_24s_min"
     ],
-    "266": [
+    "267": [
       "research_figures_shap_shapash_report_lgbm_1h"
     ],
-    "267": [
+    "268": [
       "scripts_archive_audit_cache"
     ],
-    "268": [
+    "269": [
       "scripts_archive_create_content_json"
     ],
-    "269": [
+    "270": [
       "scripts_archive_normalize_snapshots"
     ],
-    "270": [
+    "271": [
       "scripts_archive_update_content_json"
     ],
-    "271": [
+    "272": [
       "scripts_archive_update_content_json_2"
     ],
-    "272": [
+    "273": [
       "scripts_archive_update_content_json_3"
     ],
-    "273": [
+    "274": [
       "scripts_check_dashboard_json"
     ],
-    "274": [
+    "275": [
       "scripts_clean_dashboard_content"
     ],
-    "275": [
+    "276": [
       "scripts_count_models"
     ],
-    "276": [
+    "277": [
       "scripts_utilities_check_json"
     ],
-    "277": [
+    "278": [
       "scripts_utilities_check_rows"
     ],
-    "278": [
+    "279": [
       "scripts_utilities_get_titles"
     ],
-    "279": [
+    "280": [
       "scripts_utilities_scratch_scihub"
     ],
-    "280": [
+    "281": [
       "scripts_utilities_scratch_unpaywall"
     ],
-    "281": [
+    "282": [
       "scripts_utilities_update_refs"
     ],
-    "282": [
+    "283": [
       "src_api_routers_init"
     ],
-    "283": [
+    "284": [
       "src_data_init"
     ],
-    "284": [
+    "285": [
       "src_eda_init"
     ],
-    "285": [
+    "286": [
       "src_evaluation_init"
     ],
-    "286": [
+    "287": [
       "src_features_init"
     ],
-    "287": [
+    "288": [
       "src_init"
     ],
-    "288": [
+    "289": [
       "src_models_dl_init"
     ],
-    "289": [
+    "290": [
       "src_models_ensemble_init"
     ],
-    "290": [
+    "291": [
       "src_models_init"
     ],
-    "291": [
+    "292": [
       "src_models_ml_init"
     ],
-    "292": [
+    "293": [
       "src_models_statistical_init"
     ],
-    "293": [
+    "294": [
       "src_pipelines_init"
     ],
-    "294": [
+    "295": [
       "src_utils_init"
     ],
-    "295": [
+    "296": [
       "src_viz_chart_factory_py_any"
     ],
-    "296": [
+    "297": [
       "src_viz_chart_factory_py_figure"
     ]
   },
   "cohesion": {
-    "0": 0.05920745920745921,
-    "1": 0.07552447552447553,
-    "2": 0.05901639344262295,
+    "0": 0.07552447552447553,
+    "1": 0.05901639344262295,
+    "2": 0.06948051948051948,
     "3": 0.07467532467532467,
     "4": 0.07239819004524888,
     "5": 0.06547619047619048,
@@ -3164,50 +3166,50 @@
     "78": 0.26666666666666666,
     "79": 0.28888888888888886,
     "80": 0.37777777777777777,
-    "81": 0.28888888888888886,
-    "82": 0.2,
+    "81": 0.26666666666666666,
+    "82": 0.28888888888888886,
     "83": 0.2,
     "84": 0.2,
-    "85": 0.3055555555555556,
-    "86": 0.2777777777777778,
-    "87": 0.3055555555555556,
-    "88": 0.3611111111111111,
-    "89": 0.3055555555555556,
-    "90": 0.32142857142857145,
+    "85": 0.2,
+    "86": 0.3055555555555556,
+    "87": 0.2777777777777778,
+    "88": 0.3055555555555556,
+    "89": 0.3611111111111111,
+    "90": 0.3055555555555556,
     "91": 0.32142857142857145,
-    "92": 0.35714285714285715,
-    "93": 0.25,
-    "94": 0.35714285714285715,
+    "92": 0.32142857142857145,
+    "93": 0.35714285714285715,
+    "94": 0.25,
     "95": 0.35714285714285715,
     "96": 0.35714285714285715,
-    "97": 0.32142857142857145,
+    "97": 0.35714285714285715,
     "98": 0.32142857142857145,
-    "99": 0.25,
-    "100": 0.38095238095238093,
-    "101": 0.3333333333333333,
-    "102": 0.38095238095238093,
+    "99": 0.32142857142857145,
+    "100": 0.25,
+    "101": 0.38095238095238093,
+    "102": 0.3333333333333333,
     "103": 0.38095238095238093,
-    "104": 0.4,
-    "105": 0.4666666666666667,
+    "104": 0.38095238095238093,
+    "105": 0.4,
     "106": 0.4666666666666667,
-    "107": 0.4,
-    "108": 0.3333333333333333,
+    "107": 0.4666666666666667,
+    "108": 0.4,
     "109": 0.3333333333333333,
-    "110": 0.4,
-    "111": 0.7,
-    "112": 0.4,
+    "110": 0.3333333333333333,
+    "111": 0.4,
+    "112": 0.7,
     "113": 0.4,
-    "114": 0.5,
-    "115": 0.4,
-    "116": 0.5,
-    "117": 0.6666666666666666,
-    "118": 0.5,
+    "114": 0.4,
+    "115": 0.5,
+    "116": 0.4,
+    "117": 0.5,
+    "118": 0.6666666666666666,
     "119": 0.5,
-    "120": 0.6666666666666666,
+    "120": 0.5,
     "121": 0.6666666666666666,
     "122": 0.6666666666666666,
     "123": 0.6666666666666666,
-    "124": 1.0,
+    "124": 0.6666666666666666,
     "125": 1.0,
     "126": 1.0,
     "127": 1.0,
@@ -3379,7 +3381,8 @@
     "293": 1.0,
     "294": 1.0,
     "295": 1.0,
-    "296": 1.0
+    "296": 1.0,
+    "297": 1.0
   },
   "gods": [
     {
