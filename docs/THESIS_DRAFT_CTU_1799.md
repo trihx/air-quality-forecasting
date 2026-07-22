@@ -739,9 +739,9 @@ Bảng 4.16: So sánh thời gian huấn luyện các mô hình (trên Apple M3,
 
 ## 4.16 Phân tích nhạy cho siêu tham số (Sensitivity Analysis)
 
-Để tăng tính chặt chẽ về mặt thực nghiệm, nghiên cứu tiến hành đánh giá độ nhạy của kết quả đối với các siêu tham số lựa chọn cố định: số láng giềng $k$ trong KNN Imputation và hệ số thích ứng $\gamma$ trong Adaptive Conformal Inference (ACI).
+Để tăng tính chặt chẽ về mặt thực nghiệm, nghiên cứu tiến hành đánh giá độ nhạy của kết quả đối với các siêu tham số lựa chọn cố định: số láng giềng $k$ trong KNN Imputation (Troyanskaya et al., 2001 [23]) và hệ số thích ứng $\gamma$ trong Adaptive Conformal Inference (Gibbs & Candès, 2021 [31]).
 
-Bảng 4.17: Phân tích độ nhạy KNN Imputation $k$-value ($N=5.000$ mẫu kiểm tra)
+Bảng 4.17: Phân tích độ nhạy KNN Imputation $k$-value ($N=5.000$ mẫu kiểm tra, Troyanskaya et al., 2001 [23])
 
 | Số láng giềng ($k$) | MAE ($\mu\text{g/m}^3$) | RMSE ($\mu\text{g/m}^3$) | Đánh giá |
 |----------------------|-------------------------|--------------------------|----------|
@@ -750,7 +750,7 @@ Bảng 4.17: Phân tích độ nhạy KNN Imputation $k$-value ($N=5.000$ mẫu 
 | $k=7$ | 32,4044 | 98,5793 | Hiệu suất tương đồng $k=5$ |
 | $k=10$ | 31,9395 | 97,3547 | Bị làm mịn quá đà (oversmoothing), mất đỉnh cục bộ |
 
-Bảng 4.18: Phân tích độ nhạy hệ số thích ứng ACI $\gamma$ (Mục tiêu độ phủ $90\%$)
+Bảng 4.18: Phân tích độ nhạy hệ số thích ứng ACI $\gamma$ (Mục tiêu độ phủ $90\%$, Gibbs & Candès, 2021 [31])
 
 | Hệ số $\gamma$ | Độ phủ thực nghiệm | Hệ số độ rộng PI | Chỉ số ổn định | Nhận xét |
 |---------------|--------------------|------------------|-----------------|----------|
@@ -759,7 +759,7 @@ Bảng 4.18: Phân tích độ nhạy hệ số thích ứng ACI $\gamma$ (Mục
 | $\gamma=0,02$ | 91,0% | 1,015 | 0,950 | Bắt đầu tăng phương sai độ rộng |
 | $\gamma=0,05$ | 88,5% | 1,060 | 0,875 | Dao động mạnh, độ phủ sụt giảm |
 
-*Kết quả phân tích độ nhạy xác nhận các giá trị lựa chọn $k=5$ và $\gamma=0,01$ đều nằm tại điểm rơi tối ưu về mặt thực nghiệm.*
+*Kết quả phân tích độ nhạy xác nhận các giá trị lựa chọn $k=5$ (Troyanskaya et al., 2001 [23]) và $\gamma=0,01$ (Gibbs & Candès, 2021 [31]) đều nằm tại điểm rơi tối ưu về mặt thực nghiệm.*
 
 
 <h1 align="center">Chương 5<br>KẾT LUẬN VÀ KIẾN NGHỊ</h1>
