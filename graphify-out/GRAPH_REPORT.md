@@ -9,7 +9,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8179a150`
+- Built from commit: `963533b3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -33,13 +33,13 @@
 - test_smoke.py
 - DataFrame
 - temporal_train_val_test_split
-- ExperimentLogger
 - thesis_figures.py
+- ExperimentLogger
 - build_features
 - info_cards.py
-- chart
 - llm_client.py
 - APIClient
+- chart
 - run_full_eda
 - run_residual_diagnostics
 - main.py
@@ -385,13 +385,13 @@ Nodes (23): feature_cols(), marts_df(), DataFrame, Data leakage detection tests 
 Cohesion: 0.09
 Nodes (24): DataFrame, Data splitter for time series — temporal split, NO shuffle.  Per SKILL.md §6.3:, Split data temporally: oldest → train → val → test → newest.      NEVER shuffles, temporal_train_val_test_split(), main(), Run Baseline Experiment — Level 0 Models.  Usage:     uv run python -m src.mo, Run all Level 0 baselines and compare results., _get_lightgbm() (+16 more)
 
-### Community 19 - "ExperimentLogger"
-Cohesion: 0.11
-Nodes (13): ExperimentLogger, Any, Log a model within a run, return run_model_id., Log metrics for a model, return metric_id., Check if experiment with given name already exists., Parse a full JSON result dict → Experiment + Runs + Models + Metrics.          E, Convert NaN/Infinity to None for DB storage., Centralized experiment tracking — write to DB or API. (+5 more)
-
-### Community 20 - "thesis_figures.py"
+### Community 19 - "thesis_figures.py"
 Cohesion: 0.11
 Nodes (29): Figure, _chart_bootstrap_ci(), _chart_mase_decay(), _chart_residual_bias(), _chart_shap_comparison(), _chart_train_time(), _load_bootstrap_ci(), _load_ljungbox() (+21 more)
+
+### Community 20 - "ExperimentLogger"
+Cohesion: 0.11
+Nodes (13): ExperimentLogger, Any, Log a model within a run, return run_model_id., Log metrics for a model, return metric_id., Check if experiment with given name already exists., Parse a full JSON result dict → Experiment + Runs + Models + Metrics.          E, Convert NaN/Infinity to None for DB storage., Centralized experiment tracking — write to DB or API. (+5 more)
 
 ### Community 21 - "build_features"
 Cohesion: 0.10
@@ -401,17 +401,17 @@ Nodes (23): add_cv_features(), main(), prepare_data(), DL Retrain v2 — GRU/LST
 Cohesion: 0.11
 Nodes (28): cards_actual_vs_predicted(), cards_eda(), cards_experiment_runs(), cards_forecast(), cards_hyperparams(), cards_multi_horizon(), cards_overview(), cards_prediction_intervals() (+20 more)
 
-### Community 23 - "chart"
-Cohesion: 0.13
-Nodes (26): Any, Bar, Scatter, plot_dm_test_heatmap(), plot_mae_trend(), plot_mae_trend_top5(), plot_mase_comparison(), plot_mase_comparison_top5() (+18 more)
-
-### Community 24 - "llm_client.py"
+### Community 23 - "llm_client.py"
 Cohesion: 0.14
 Nodes (25): OpenAI, Render AI provider configuration in sidebar., _render_provider_config(), _build_client(), chat_stream(), check_connection(), get_available_models(), Multi-LLM Client for PM2.5 AI Assistant.  Supports tiered fallback across multip (+17 more)
 
-### Community 25 - "APIClient"
+### Community 24 - "APIClient"
 Cohesion: 0.10
 Nodes (13): APIClient, API Client — Thin HTTP client for Streamlit frontend.  Abstracts all API calls s, Get data file hashes for audit., Get model weight hashes for audit., Get full audit report., Verify file integrity against manifest.json expected MD5 hashes., List all info cards, optionally filtered by page., Get a single info card by key. (+5 more)
+
+### Community 25 - "chart"
+Cohesion: 0.13
+Nodes (26): Any, Bar, Scatter, plot_dm_test_heatmap(), plot_mae_trend(), plot_mae_trend_top5(), plot_mase_comparison(), plot_mase_comparison_top5() (+18 more)
 
 ### Community 26 - "run_full_eda"
 Cohesion: 0.16

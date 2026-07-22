@@ -9543,7 +9543,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "_sanitize_float()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_sanitize_float"
@@ -9554,7 +9554,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "any",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_py_any"
@@ -9565,7 +9565,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L41",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "experimentlogger",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger"
@@ -9576,7 +9576,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L44",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": ".__init__()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_init"
@@ -9587,7 +9587,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L55",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._init_db()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_init_db"
@@ -9598,7 +9598,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L71",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._init_api()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_init_api"
@@ -9609,7 +9609,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L80",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": ".log_experiment()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_log_experiment"
@@ -9620,7 +9620,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L93",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": ".log_run()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_log_run"
@@ -9631,7 +9631,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L104",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": ".log_model()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_log_model"
@@ -9642,7 +9642,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L127",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": ".log_metrics()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_log_metrics"
@@ -9653,7 +9653,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L151",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": ".experiment_exists()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_experiment_exists"
@@ -9664,7 +9664,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L165",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": ".log_full_result()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_log_full_result"
@@ -9675,7 +9675,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L265",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._db_create_experiment()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_db_create_experiment"
@@ -9686,7 +9686,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L284",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._db_create_run()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_db_create_run"
@@ -9697,7 +9697,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L303",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._db_create_model()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_db_create_model"
@@ -9708,7 +9708,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L327",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._db_create_metrics()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_db_create_metrics"
@@ -9719,7 +9719,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L359",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._api_post()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_api_post"
@@ -9730,7 +9730,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L367",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._api_create_experiment()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_api_create_experiment"
@@ -9741,7 +9741,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L377",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._api_create_run()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_api_create_run"
@@ -9752,7 +9752,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L384",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._api_create_model()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_api_create_model"
@@ -9763,7 +9763,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L399",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "._api_create_metrics()",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_experimentlogger_api_create_metrics"
@@ -9785,7 +9785,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "convert nan/infinity to none for db storage.",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_29"
@@ -9796,7 +9796,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "centralized experiment tracking \u2014 write to db or api.",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_42"
@@ -9807,7 +9807,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L56",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "initialize direct db connection via sqlalchemy.",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_56"
@@ -9818,7 +9818,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L72",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "initialize http api client.",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_72"
@@ -9829,7 +9829,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "create experiment, return experiment_id.",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_88"
@@ -9840,7 +9840,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L99",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "create run within experiment, return run_id.",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_99"
@@ -9851,7 +9851,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L114",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "log a model within a run, return run_model_id.",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_114"
@@ -9862,7 +9862,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L140",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "log metrics for a model, return metric_id.",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_140"
@@ -9873,7 +9873,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L152",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "check if experiment with given name already exists.",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_152"
@@ -9884,7 +9884,7 @@
       "source_file": "src/api/experiment_logger.py",
       "source_location": "L174",
       "_origin": "ast",
-      "community": 19,
+      "community": 20,
       "norm_label": "parse a full json result dict \u2192 experiment + runs + models + metrics.          e",
       "community_name": "ExperimentLogger",
       "id": "src_api_experiment_logger_rationale_174"
@@ -11226,7 +11226,7 @@
       "source_file": "src/chatbot/chat_page.py",
       "source_location": "L94",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "_render_provider_config()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_chat_page_render_provider_config"
@@ -11281,7 +11281,7 @@
       "source_file": "src/chatbot/chat_page.py",
       "source_location": "L95",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "render ai provider configuration in sidebar.",
       "community_name": "llm_client.py",
       "id": "src_chatbot_chat_page_rationale_95"
@@ -11600,7 +11600,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "llm_client.py",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client"
@@ -11611,7 +11611,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "_build_client()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_build_client"
@@ -11622,7 +11622,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "openai",
       "community_name": "llm_client.py",
       "id": "openai"
@@ -11633,7 +11633,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "check_connection()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_check_connection"
@@ -11644,7 +11644,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L105",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "get_available_models()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_get_available_models"
@@ -11655,7 +11655,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L124",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "_try_stream_provider()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_try_stream_provider"
@@ -11666,7 +11666,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L173",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "chat_stream()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_chat_stream"
@@ -11677,7 +11677,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "multi-llm client for pm2.5 ai assistant.  supports tiered fallback across multip",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_rationale_1"
@@ -11688,7 +11688,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L67",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "create openai-compatible client for any provider.",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_rationale_67"
@@ -11699,7 +11699,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L83",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "check if a provider is reachable.      if no provider given, checks lm studio (l",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_rationale_83"
@@ -11710,7 +11710,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L106",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "list models available on a provider.",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_rationale_106"
@@ -11721,7 +11721,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L130",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "attempt to stream from a single provider. returns none on failure.",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_rationale_130"
@@ -11732,7 +11732,7 @@
       "source_file": "src/chatbot/llm_client.py",
       "source_location": "L182",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "stream chat completion with tiered fallback.      priority: cloud api (by priori",
       "community_name": "llm_client.py",
       "id": "src_chatbot_llm_client_rationale_182"
@@ -11743,7 +11743,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "provider_config.py",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config"
@@ -11754,7 +11754,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "llmprovider",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_llmprovider"
@@ -11765,7 +11765,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": ".__post_init__()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_llmprovider_post_init"
@@ -11776,7 +11776,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L112",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "mask_api_key()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_mask_api_key"
@@ -11787,7 +11787,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L124",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "get_provider_from_registry()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_get_provider_from_registry"
@@ -11798,7 +11798,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L152",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "detect_available_providers()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_detect_available_providers"
@@ -11809,7 +11809,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L201",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "validate_provider_connection()",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_validate_provider_connection"
@@ -11820,7 +11820,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "multi-llm provider configuration for pm2.5 ai assistant.  supports openai, gemin",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_rationale_1"
@@ -11831,7 +11831,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "configuration for a single llm provider.",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_rationale_19"
@@ -11842,7 +11842,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L113",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "mask api key for safe display in logs/ui.      examples:         sk-abc123def456",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_rationale_113"
@@ -11853,7 +11853,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L130",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "create llmprovider from registry with optional overrides.",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_rationale_130"
@@ -11864,7 +11864,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L155",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "detect all available providers from env vars and session state.      args:",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_rationale_155"
@@ -11875,7 +11875,7 @@
       "source_file": "src/chatbot/provider_config.py",
       "source_location": "L202",
       "_origin": "ast",
-      "community": 24,
+      "community": 23,
       "norm_label": "test if a provider is reachable with a lightweight api call.      returns:",
       "community_name": "llm_client.py",
       "id": "src_chatbot_provider_config_rationale_202"
@@ -16407,7 +16407,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "charts.py",
       "community_name": "chart",
       "id": "src_reporting_charts"
@@ -16418,7 +16418,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "plot_mase_comparison()",
       "community_name": "chart",
       "id": "src_reporting_charts_plot_mase_comparison"
@@ -16429,7 +16429,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "figure",
       "community_name": "chart",
       "id": "src_reporting_charts_py_figure"
@@ -16440,7 +16440,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L68",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "plot_mae_trend()",
       "community_name": "chart",
       "id": "src_reporting_charts_plot_mae_trend"
@@ -16451,7 +16451,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L106",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "plot_mae_trend_top5()",
       "community_name": "chart",
       "id": "src_reporting_charts_plot_mae_trend_top5"
@@ -16462,7 +16462,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L171",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "plot_mase_comparison_top5()",
       "community_name": "chart",
       "id": "src_reporting_charts_plot_mase_comparison_top5"
@@ -16473,7 +16473,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L241",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "plot_dm_test_heatmap()",
       "community_name": "chart",
       "id": "src_reporting_charts_plot_dm_test_heatmap"
@@ -16484,7 +16484,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "reporting charts \u2014 plotly chart factory for reportingengine data.  all charts ar",
       "community_name": "chart",
       "id": "src_reporting_charts_rationale_1"
@@ -16495,7 +16495,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L38",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "create mase comparison bar chart across all horizons.      args:         engine:",
       "community_name": "chart",
       "id": "src_reporting_charts_rationale_38"
@@ -16506,7 +16506,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L73",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "create mae trend line chart across horizons.      args:         engine: reportin",
       "community_name": "chart",
       "id": "src_reporting_charts_rationale_73"
@@ -16517,7 +16517,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L110",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "create mae grouped bar chart with only top representative models.      shows bes",
       "community_name": "chart",
       "id": "src_reporting_charts_rationale_110"
@@ -16528,7 +16528,7 @@
       "source_file": "src/reporting/charts.py",
       "source_location": "L242",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "create diebold-mariano test result heatmap.      args:         dm_results: list",
       "community_name": "chart",
       "id": "src_reporting_charts_rationale_242"
@@ -16539,7 +16539,7 @@
       "source_file": "src/reporting/content.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "reporting/content.py",
       "community_name": "APIClient",
       "id": "src_reporting_content"
@@ -16770,7 +16770,7 @@
       "source_file": "src/reporting/engine.py",
       "source_location": "L38",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "get_model_type()",
       "community_name": "chart",
       "id": "src_reporting_engine_get_model_type"
@@ -16979,7 +16979,7 @@
       "source_file": "src/reporting/engine.py",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "resolve model type dynamically based on its name.",
       "community_name": "chart",
       "id": "src_reporting_engine_rationale_39"
@@ -18057,7 +18057,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "scatter",
       "community_name": "chart",
       "id": "scatter"
@@ -18068,7 +18068,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "bar",
       "community_name": "chart",
       "id": "bar"
@@ -25654,7 +25654,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "api_client.py",
       "community_name": "APIClient",
       "id": "src_frontend_api_client"
@@ -25665,7 +25665,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "apiclient",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient"
@@ -25676,7 +25676,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".__init__()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_init"
@@ -25687,7 +25687,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L34",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".health()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_health"
@@ -25709,7 +25709,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L49",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".get_experiments()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get_experiments"
@@ -25720,7 +25720,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".get_experiment()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get_experiment"
@@ -25742,7 +25742,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".get_runs()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get_runs"
@@ -25786,7 +25786,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L93",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".get_metrics()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get_metrics"
@@ -25797,7 +25797,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L99",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".get_data_hashes()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get_data_hashes"
@@ -25808,7 +25808,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L103",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".get_model_weights()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get_model_weights"
@@ -25819,7 +25819,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L107",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".get_audit_report()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get_audit_report"
@@ -25830,7 +25830,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L111",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".verify_integrity()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_verify_integrity"
@@ -25841,7 +25841,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L117",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".get_info_cards()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get_info_cards"
@@ -25852,7 +25852,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L124",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": ".get_info_card()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get_info_card"
@@ -25874,7 +25874,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L139",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "._get()",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_apiclient_get"
@@ -25907,7 +25907,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "api client \u2014 thin http client for streamlit frontend.  abstracts all api calls s",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_1"
@@ -25918,7 +25918,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L25",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "thin http client for the pm2.5 forecasting api.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_25"
@@ -25940,7 +25940,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "list all experiments.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_50"
@@ -25951,7 +25951,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L54",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "get a single experiment.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_54"
@@ -25973,7 +25973,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "list runs for an experiment.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_64"
@@ -26006,7 +26006,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L94",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "get metrics for a model.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_94"
@@ -26017,7 +26017,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L100",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "get data file hashes for audit.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_100"
@@ -26028,7 +26028,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L104",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "get model weight hashes for audit.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_104"
@@ -26039,7 +26039,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L108",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "get full audit report.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_108"
@@ -26050,7 +26050,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L112",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "verify file integrity against manifest.json expected md5 hashes.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_112"
@@ -26061,7 +26061,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L118",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "list all info cards, optionally filtered by page.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_118"
@@ -26072,7 +26072,7 @@
       "source_file": "src/frontend/api_client.py",
       "source_location": "L125",
       "_origin": "ast",
-      "community": 25,
+      "community": 24,
       "norm_label": "get a single info card by key.",
       "community_name": "APIClient",
       "id": "src_frontend_api_client_rationale_125"
@@ -26116,7 +26116,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "figure",
       "community_name": "thesis_figures.py",
       "id": "figure"
@@ -26127,7 +26127,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "any",
       "community_name": "chart",
       "id": "any"
@@ -27194,10 +27194,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "thesis_figures.py",
-      "id": "src_thesis_figures",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures"
     },
     {
       "label": "_load_bootstrap_ci()",
@@ -27205,10 +27205,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "_load_bootstrap_ci()",
-      "id": "src_thesis_figures_load_bootstrap_ci",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_load_bootstrap_ci"
     },
     {
       "label": "_load_standardized_metrics()",
@@ -27216,10 +27216,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L48",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "_load_standardized_metrics()",
-      "id": "src_thesis_figures_load_standardized_metrics",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_load_standardized_metrics"
     },
     {
       "label": "_load_ljungbox()",
@@ -27227,10 +27227,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "_load_ljungbox()",
-      "id": "src_thesis_figures_load_ljungbox",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_load_ljungbox"
     },
     {
       "label": "_load_shap()",
@@ -27238,10 +27238,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "_load_shap()",
-      "id": "src_thesis_figures_load_shap",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_load_shap"
     },
     {
       "label": "_chart_bootstrap_ci()",
@@ -27249,10 +27249,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L76",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "_chart_bootstrap_ci()",
-      "id": "src_thesis_figures_chart_bootstrap_ci",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_chart_bootstrap_ci"
     },
     {
       "label": "_chart_mase_decay()",
@@ -27260,10 +27260,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L147",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "_chart_mase_decay()",
-      "id": "src_thesis_figures_chart_mase_decay",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_chart_mase_decay"
     },
     {
       "label": "_chart_shap_comparison()",
@@ -27271,10 +27271,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L223",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "_chart_shap_comparison()",
-      "id": "src_thesis_figures_chart_shap_comparison",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_chart_shap_comparison"
     },
     {
       "label": "_chart_residual_bias()",
@@ -27282,10 +27282,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L276",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "_chart_residual_bias()",
-      "id": "src_thesis_figures_chart_residual_bias",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_chart_residual_bias"
     },
     {
       "label": "_chart_train_time()",
@@ -27293,10 +27293,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L328",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "_chart_train_time()",
-      "id": "src_thesis_figures_chart_train_time",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_chart_train_time"
     },
     {
       "label": "page_thesis_figures()",
@@ -27304,10 +27304,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L367",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "page_thesis_figures()",
-      "id": "src_thesis_figures_page_thesis_figures",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_page_thesis_figures"
     },
     {
       "label": "Thesis Figures Dashboard Page \u2014 Interactive visualizations for thesis defense.",
@@ -27315,10 +27315,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "thesis figures dashboard page \u2014 interactive visualizations for thesis defense.",
-      "id": "src_thesis_figures_rationale_1",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_rationale_1"
     },
     {
       "label": "Bootstrap 95% CI bar chart with error bars.",
@@ -27326,10 +27326,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L77",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "bootstrap 95% ci bar chart with error bars.",
-      "id": "src_thesis_figures_rationale_77",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_rationale_77"
     },
     {
       "label": "MASE decay across horizons \u2014 line chart.",
@@ -27337,10 +27337,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L148",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "mase decay across horizons \u2014 line chart.",
-      "id": "src_thesis_figures_rationale_148",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_rationale_148"
     },
     {
       "label": "SHAP top features comparison across 3 horizons \u2014 horizontal bar subplots.",
@@ -27348,10 +27348,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L224",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "shap top features comparison across 3 horizons \u2014 horizontal bar subplots.",
-      "id": "src_thesis_figures_rationale_224",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_rationale_224"
     },
     {
       "label": "Residual bias heatmap \u2014 mean residual per model \u00d7 horizon.",
@@ -27359,10 +27359,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L277",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "residual bias heatmap \u2014 mean residual per model \u00d7 horizon.",
-      "id": "src_thesis_figures_rationale_277",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_rationale_277"
     },
     {
       "label": "Computational cost bar chart.",
@@ -27370,10 +27370,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L329",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "computational cost bar chart.",
-      "id": "src_thesis_figures_rationale_329",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_rationale_329"
     },
     {
       "label": "Thesis-ready interactive figures for copy-to-Word.",
@@ -27381,10 +27381,10 @@
       "source_file": "src/thesis_figures.py",
       "source_location": "L368",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "thesis-ready interactive figures for copy-to-word.",
-      "id": "src_thesis_figures_rationale_368",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_thesis_figures_rationale_368"
     },
     {
       "label": "chart_factory.py",
@@ -27392,10 +27392,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "chart_factory.py",
-      "id": "src_viz_chart_factory",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory"
     },
     {
       "label": "chart()",
@@ -27403,10 +27403,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L75",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "chart()",
-      "id": "src_viz_chart_factory_chart",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_chart"
     },
     {
       "label": "render_chart()",
@@ -27414,10 +27414,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L181",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "render_chart()",
-      "id": "src_viz_chart_factory_render_chart",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_render_chart"
     },
     {
       "label": "figure_caption()",
@@ -27427,8 +27427,8 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "figure_caption()",
-      "id": "src_viz_chart_factory_figure_caption",
-      "community_name": "explainability_hub.py"
+      "community_name": "explainability_hub.py",
+      "id": "src_viz_chart_factory_figure_caption"
     },
     {
       "label": "figure_caption_numbered()",
@@ -27436,10 +27436,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L259",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "figure_caption_numbered()",
-      "id": "src_viz_chart_factory_figure_caption_numbered",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_figure_caption_numbered"
     },
     {
       "label": "styled_line()",
@@ -27447,10 +27447,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L289",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "styled_line()",
-      "id": "src_viz_chart_factory_styled_line",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_styled_line"
     },
     {
       "label": "styled_bar()",
@@ -27458,10 +27458,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L344",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "styled_bar()",
-      "id": "src_viz_chart_factory_styled_bar",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_styled_bar"
     },
     {
       "label": "add_baseline()",
@@ -27469,10 +27469,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L410",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "add_baseline()",
-      "id": "src_viz_chart_factory_add_baseline",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_add_baseline"
     },
     {
       "label": "add_value_annotations()",
@@ -27480,10 +27480,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L445",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "add_value_annotations()",
-      "id": "src_viz_chart_factory_add_value_annotations",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_add_value_annotations"
     },
     {
       "label": "add_simple_bar_labels()",
@@ -27493,8 +27493,8 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "add_simple_bar_labels()",
-      "id": "src_viz_chart_factory_add_simple_bar_labels",
-      "community_name": "explainability_hub.py"
+      "community_name": "explainability_hub.py",
+      "id": "src_viz_chart_factory_add_simple_bar_labels"
     },
     {
       "label": "add_rangeslider()",
@@ -27502,10 +27502,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L561",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "add_rangeslider()",
-      "id": "src_viz_chart_factory_add_rangeslider",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_add_rangeslider"
     },
     {
       "label": "to_bw()",
@@ -27513,10 +27513,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L593",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "to_bw()",
-      "id": "src_viz_chart_factory_to_bw",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_to_bw"
     },
     {
       "label": "render_bw_download()",
@@ -27524,10 +27524,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L728",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "render_bw_download()",
-      "id": "src_viz_chart_factory_render_bw_download",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_render_bw_download"
     },
     {
       "label": "Plotly Chart Factory \u2014 Single Source of Truth for all dashboard charts.  Every P",
@@ -27535,10 +27535,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "plotly chart factory \u2014 single source of truth for all dashboard charts.  every p",
-      "id": "src_viz_chart_factory_rationale_1",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_rationale_1"
     },
     {
       "label": "Create a pre-styled Plotly Figure.      This is the **only** sanctioned way to c",
@@ -27546,10 +27546,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "create a pre-styled plotly figure.      this is the **only** sanctioned way to c",
-      "id": "src_viz_chart_factory_rationale_88",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_rationale_88"
     },
     {
       "label": "Render a Plotly figure into Streamlit with standardized config.      This wraps",
@@ -27557,10 +27557,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L188",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "render a plotly figure into streamlit with standardized config.      this wraps",
-      "id": "src_viz_chart_factory_rationale_188",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_rationale_188"
     },
     {
       "label": "Render a figure caption below a chart.      Per Q\u0110 1799 Ph\u1ee5 l\u1ee5c 8: \"\u0111\u00e3 c\u00f3 t\u00ean h\u00ec",
@@ -27570,8 +27570,8 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "render a figure caption below a chart.      per q\u0111 1799 phu luc 8: \"\u0111a co ten hi",
-      "id": "src_viz_chart_factory_rationale_243",
-      "community_name": "explainability_hub.py"
+      "community_name": "explainability_hub.py",
+      "id": "src_viz_chart_factory_rationale_243"
     },
     {
       "label": "Render a numbered figure caption per Q\u0110 1799 format.      Format: \"H\u00ecnh {chapter",
@@ -27579,10 +27579,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L264",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "render a numbered figure caption per q\u0111 1799 format.      format: \"hinh {chapter",
-      "id": "src_viz_chart_factory_rationale_264",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_rationale_264"
     },
     {
       "label": "Create a ``go.Scatter`` trace with grayscale-safe styling.      Automatically as",
@@ -27590,10 +27590,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L302",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "create a ``go.scatter`` trace with grayscale-safe styling.      automatically as",
-      "id": "src_viz_chart_factory_rationale_302",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_rationale_302"
     },
     {
       "label": "Create a ``go.Bar`` trace with consistent styling.      Automatically applies a",
@@ -27601,10 +27601,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L358",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "create a ``go.bar`` trace with consistent styling.      automatically applies a",
-      "id": "src_viz_chart_factory_rationale_358",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_rationale_358"
     },
     {
       "label": "Add a horizontal reference line with label.      Common use: MASE = 1.0 baseline",
@@ -27612,10 +27612,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L419",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "add a horizontal reference line with label.      common use: mase = 1.0 baseline",
-      "id": "src_viz_chart_factory_rationale_419",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_rationale_419"
     },
     {
       "label": "Add white-background value labels above grouped bars.      Uses numerical x-axis",
@@ -27623,10 +27623,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L454",
       "_origin": "ast",
-      "community": 23,
+      "community": 25,
       "norm_label": "add white-background value labels above grouped bars.      uses numerical x-axis",
-      "id": "src_viz_chart_factory_rationale_454",
-      "community_name": "chart"
+      "community_name": "chart",
+      "id": "src_viz_chart_factory_rationale_454"
     },
     {
       "label": "Add styled white-box annotations to all bar traces in a figure.          This re",
@@ -27636,8 +27636,8 @@
       "_origin": "ast",
       "community": 15,
       "norm_label": "add styled white-box annotations to all bar traces in a figure.          this re",
-      "id": "src_viz_chart_factory_rationale_496",
-      "community_name": "explainability_hub.py"
+      "community_name": "explainability_hub.py",
+      "id": "src_viz_chart_factory_rationale_496"
     },
     {
       "label": "Add an interactive range slider to the x-axis.      Best for time series charts",
@@ -27645,10 +27645,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L562",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "add an interactive range slider to the x-axis.      best for time series charts",
-      "id": "src_viz_chart_factory_rationale_562",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_rationale_562"
     },
     {
       "label": "Convert a Plotly figure to grayscale-safe version for thesis printing.      Tran",
@@ -27656,10 +27656,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L594",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "convert a plotly figure to grayscale-safe version for thesis printing.      tran",
-      "id": "src_viz_chart_factory_rationale_594",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_rationale_594"
     },
     {
       "label": "Render a download button for B&W print-optimized PNG.      Converts the figure t",
@@ -27667,10 +27667,10 @@
       "source_file": "src/viz/chart_factory.py",
       "source_location": "L736",
       "_origin": "ast",
-      "community": 20,
+      "community": 19,
       "norm_label": "render a download button for b&w print-optimized png.      converts the figure t",
-      "id": "src_viz_chart_factory_rationale_736",
-      "community_name": "thesis_figures.py"
+      "community_name": "thesis_figures.py",
+      "id": "src_viz_chart_factory_rationale_736"
     }
   ],
   "links": [
@@ -81693,5 +81693,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "8179a1506738abb8d9602b6a20985c4a0a28a7a4"
+  "built_at_commit": "963533b3c9b2118b071e921f6d0377a7c5ac5e89"
 }
