@@ -367,3 +367,91 @@ def evaluate_forecast_full(
 
     results["classification"] = clf_results
     return results
+
+
+def winkler_score(
+    y_true: np.ndarray,
+    lower: np.ndarray,
+    upper: np.ndarray,
+    alpha: float = 0.05,
+) -> float:
+    """Winkler Score for interval prediction evaluation (Winkler 1972).
+
+    Penalizes both interval width and coverage breaches (under/over estimation).
+    Lower is better.
+
+    Reference: R.L. Winkler (1972), "A Decision-Theoretic Approach to Interval Estimation",
+    Journal of the American Statistical Association, 67(337), pp. 187-191.
+
+    Args:
+        y_true: Actual values.
+        lower: Lower prediction interval bound.
+        upper: Upper prediction interval bound.
+        alpha: Coverage significance level (e.g. 0.05 for 95% interval).
+
+    Returns:
+        Average Winkler score (lower = tighter intervals with good coverage).
+    """
+    y_true = np.asarray(y_true, dtype=float)
+    lower = np.asarray(lower, dtype=float)
+    upper = np.asarray(upper, dtype=float)
+
+    width = upper - lower
+    penalty_below = (2.0 / alpha) * (lower - y_true) * (y_true < lower)
+    penalty_above = (2.0 / alpha) * (y_true - upper) * (y_true > upper)
+
+    scores = width + penalty_below + penalty_above
+    return float(np.mean(scores))
+
+
+def nmpiw(
+    y_true: np.ndarray,
+    lower: np.ndarray,
+    upper: np.ndarray,
+) -> float:
+    """Normalized Mean Prediction Interval Width (NMPIW).
+
+    Measures average interval tightness relative to target range.
+
+    Args:
+        y_true: Actual values.
+        lower: Lower bound.
+        upper: Upper bound.
+
+    Returns:
+        Normalized interval width (fraction).
+    """
+    y_true = np.asarray(y_true, dtype=float)
+    lower = np.asarray(lower, dtype=float)
+    upper = np.asarray(upper, dtype=float)
+
+    mean_width = np.mean(upper - lower)
+    target_range = np.ptp(y_true)  # max - min
+
+    if target_range < 1e-10:
+        return float("nan")
+
+    return float(mean_width / target_range)
+
+
+def pollution_event_f1(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    threshold: float = 45.0,
+) -> float:
+    """F1-Score for WHO PM2.5 Severe Pollution Threshold Exceedance.
+
+    Measures capability to correctly alert severe pollution events.
+
+    Args:
+        y_true: Actual PM2.5 values (µg/m³).
+        y_pred: Predicted PM2.5 values (µg/m³).
+        threshold: Pollution alert threshold (default: 45.0 µg/m³ per WHO 1h guideline).
+
+    Returns:
+        F1-score (0.0 to 1.0).
+    """
+    res = classification_metrics(y_true, y_pred, threshold=threshold)
+    return res.get("f1", float("nan"))
+
+

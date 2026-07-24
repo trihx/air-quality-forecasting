@@ -51,13 +51,17 @@ Tầm quan trọng của các biến thay đổi theo khung thời gian dự bá
 
 ### 3.1. Ý nghĩa hệ thống Metric đa chiều
 Nghiên cứu sử dụng kết hợp nhiều chỉ số để tránh góc nhìn phiến diện:
-- **MASE (Mean Absolute Scaled Error):** Tiêu chuẩn vàng để đo lường "Kỹ năng thực sự" (Skill Score) của AI. Nếu MASE < 1.0, mô hình thực sự học được quy luật; nếu MASE >= 1.0, mô hình chỉ đơn giản là đang copy dữ liệu ngày hôm trước (Naive approach).
+- **MASE (Mean Absolute Scaled Error):** Tiêu chuẩn vàng để đo lường "Kỹ năng thực sự" (Skill Score) của AI. Sử dụng mẫu số chuẩn hóa đồng nhất ($MAE_{Persistence\_1h}$) cho toàn bộ các độ phân giải (1h, 30m, 15m) để tránh hiện tượng lệch mẫu số (Confounding). Nếu MASE < 1.0, mô hình thực sự học được quy luật; nếu MASE >= 1.0, mô hình không tốt hơn phương pháp quán tính.
+- **Giải trình Bẫy Tự Tương Quan (Autocorrelation Trap) ở 1h:** Tại $h=1h$, hệ số tự tương quan $ACF \approx 0.97$ khiến mô hình Persistence ($y_{t+1}=y_t$) là tối ưu về mặt lý thuyết ($MASE = 1.000$). Giá trị nghiên cứu khoa học và ứng dụng thực tiễn nằm ở tầm xa $h=6h \to 24h$, nơi các mô hình ML/DL đánh bại Persistence từ 15% đến 25.5% ($MASE < 0.85$).
+- **Winkler Score & NMPIW (Đánh giá Khoảng tin cậy Prediction Intervals):** Winkler Score (Winkler 1972) phạt đồng thời cả độ rộng khoảng tin cậy lẫn sai số vượt ranh giới. NMPIW đo lường độ rộng trung bình chuẩn hóa. Hai chỉ số này chứng minh khoảng tin cậy do Conformal Prediction và Quantile Regression đưa ra đạt độ che phủ tối ưu nhưng không bị phình to vô ích.
+- **Pollution Event Evaluation (Precision, Recall, F1 tại ngưỡng WHO):** Đánh giá khả năng nhận diện đúng các sự kiện ô nhiễm nguy hại vượt ngưỡng khuyến cáo của Tổ chức Y tế Thế giới (WHO: $15 \mu g/m^3$ cho 24h và $45 \mu g/m^3$ cho 1h).
 - **RMSE (Root Mean Square Error):** So với MAE, RMSE nhạy cảm và trừng phạt các sai số lớn. Điều này tối quan trọng trong dự báo chất lượng không khí, vì việc dự báo sai một đợt đỉnh điểm ô nhiễm nguy hiểm cho sức khỏe sẽ bị phạt rất nặng.
 - **R² (Hệ số xác định):** Đo lường tỷ lệ phương sai mà mô hình giải thích được.
 - **DA (Directional Accuracy):** Đo lường "Tỷ lệ đoán đúng xu hướng (Tăng/Giảm)". Đây là chỉ số then chốt giúp các cơ quan quản lý đưa ra quyết định thực tiễn (Ví dụ: "Ngày mai chất lượng không khí diễn biến xấu đi hay tốt lên?").
 
 ### 3.2. Lưu trữ Mô hình Lịch sử (Legacy Models)
 Một số mô hình ở phiên bản cũ (v1-v5) thiếu các chỉ số R² và DA do khác biệt về pipeline thời kỳ đầu. Để giữ tính toàn vẹn và trung thực của tiến trình nghiên cứu khoa học, các số liệu thiếu được hiển thị là ký hiệu (`—`) thay vì cố tình huấn luyện lại hoặc mô phỏng số liệu. Điều này phản ánh rõ nét sự tiến hóa (evolution) của bộ tiêu chuẩn đánh giá qua từng giai đoạn dự án.
+
 
 ---
 

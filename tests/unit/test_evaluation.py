@@ -3,7 +3,18 @@
 import numpy as np
 import pandas as pd
 import pytest
-from src.evaluation.metrics import evaluate_forecast, mae, mape, mase, r2_score, rmse, smape
+from src.evaluation.metrics import (
+    evaluate_forecast,
+    mae,
+    mape,
+    mase,
+    nmpiw,
+    pollution_event_f1,
+    r2_score,
+    rmse,
+    smape,
+    winkler_score,
+)
 from src.evaluation.splitter import create_naive_predictions, temporal_train_val_test_split
 
 # ============================================================
@@ -11,8 +22,47 @@ from src.evaluation.splitter import create_naive_predictions, temporal_train_val
 # ============================================================
 
 
+class TestWinklerScore:
+    def test_perfect_coverage_tight(self):
+        y_true = np.array([10.0, 20.0, 30.0])
+        lower = np.array([9.0, 19.0, 29.0])
+        upper = np.array([11.0, 21.0, 31.0])
+        # Width is 2.0 everywhere, all within bounds -> score should be 2.0
+        score = winkler_score(y_true, lower, upper, alpha=0.05)
+        assert abs(score - 2.0) < 1e-6
+
+    def test_penalty_for_breach(self):
+        y_true = np.array([10.0, 25.0])  # 25 is above upper [19, 21]
+        lower = np.array([9.0, 19.0])
+        upper = np.array([11.0, 21.0])
+        score = winkler_score(y_true, lower, upper, alpha=0.05)
+        # Breach penalty for second item: (2 / 0.05) * (25 - 21) = 40 * 4 = 160
+        # Score for 1st: 2, 2nd: 2 + 160 = 162. Mean = 82.0
+        assert abs(score - 82.0) < 1e-6
+
+
+class TestNMPIW:
+    def test_normal_width(self):
+        y_true = np.array([10.0, 20.0, 30.0])  # range = 20
+        lower = np.array([8.0, 18.0, 28.0])
+        upper = np.array([12.0, 22.0, 32.0])  # mean width = 4
+        # NMPIW = 4 / 20 = 0.2
+        score = nmpiw(y_true, lower, upper)
+        assert abs(score - 0.2) < 1e-6
+
+
+class TestPollutionEventF1:
+    def test_perfect_alert(self):
+        y_true = np.array([10.0, 50.0, 12.0, 60.0])
+        y_pred = np.array([11.0, 48.0, 10.0, 58.0])
+        f1 = pollution_event_f1(y_true, y_pred, threshold=45.0)
+        assert f1 == 1.0
+
+
+
 class TestMAE:
     def test_perfect_predictions(self):
+
         y = np.array([1.0, 2.0, 3.0])
         assert mae(y, y) == 0.0
 

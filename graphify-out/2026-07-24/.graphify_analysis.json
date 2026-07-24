@@ -639,7 +639,9 @@
       "src_chatbot_provider_config_rationale_155",
       "src_chatbot_provider_config_rationale_19",
       "src_chatbot_provider_config_rationale_202",
-      "src_chatbot_provider_config_validate_provider_connection"
+      "src_chatbot_provider_config_validate_provider_connection",
+      "src_info_cards_rationale_89",
+      "src_info_cards_render_version_badge"
     ],
     "12": [
       "any",
@@ -1068,8 +1070,6 @@
       "src_frontend_citations_rationale_994",
       "src_info_cards_get_current_version",
       "src_info_cards_rationale_31",
-      "src_info_cards_rationale_89",
-      "src_info_cards_render_version_badge",
       "src_pipeline_walkthrough",
       "src_pipeline_walkthrough_get_dashboard_content",
       "src_pipeline_walkthrough_get_pipeline_metrics",
@@ -3114,7 +3114,7 @@
     "8": 0.08562367864693446,
     "9": 0.06090808416389812,
     "10": 0.06968641114982578,
-    "11": 0.10526315789473684,
+    "11": 0.09871794871794871,
     "12": 0.09388335704125178,
     "13": 0.07539118065433854,
     "14": 0.08708708708708708,
@@ -3127,7 +3127,7 @@
     "21": 0.1111111111111111,
     "22": 0.1164021164021164,
     "23": 0.10052910052910052,
-    "24": 0.11724137931034483,
+    "24": 0.12698412698412698,
     "25": 0.1076923076923077,
     "26": 0.08615384615384615,
     "27": 0.13846153846153847,
@@ -3513,41 +3513,8 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
     }
   ],
-  "questions": [
-    {
-      "type": "bridge_node",
-      "question": "Why does `build_features()` connect `build_features` to `evaluate_forecast`, `_set_datetime_index`, `pipeline_walkthrough.py`, `inference.py`, `impute_missing_data`, `retrain_v7_full.py`, `load_raw_data`, `save_marts_data`, `temporal.py`, `ensemble_multi_horizon.py`, `statistical_tests.py`, `prediction_intervals.py`, `_remove_duplicates`, `create_calendar_features`, `deep_insights_phase4.py`, `create_lag_features`, `precompute_avp.py`, `multi_horizon_eval.py`, `create_rolling_features`, `run_enhanced_pipeline.py`, `shap_explainability.py`, `linear_models_eval.py`, `sklearn_models_eval.py`, `create_diff_features`, `test_features.py`?",
-      "why": "High betweenness centrality (0.181) - this node is a cross-community bridge."
-    },
-    {
-      "type": "bridge_node",
-      "question": "Why does `load_raw_data()` connect `load_raw_data` to `run_full_eda`, `DataValidator`, `test_loader.py`, `build_features`, `evaluate_forecast`, `_set_datetime_index`, `_resample`, `pipeline_walkthrough.py`, `impute_missing_data`, `retrain_v7_full.py`, `_clip_physical_bounds`, `ensemble_multi_horizon.py`, `statistical_tests.py`, `prediction_intervals.py`, `_remove_duplicates`, `arima_multi_horizon.py`, `deep_insights_phase4.py`, `v8_audit_knn_temporal.py`, `precompute_avp.py`, `multi_horizon_eval.py`, `standardize_metrics.py`, `run_enhanced_pipeline.py`, `shap_explainability.py`, `dl_multi_horizon.py`, `linear_models_eval.py`, `sklearn_models_eval.py`, `validate_data_path`?",
-      "why": "High betweenness centrality (0.073) - this node is a cross-community bridge."
-    },
-    {
-      "type": "bridge_node",
-      "question": "Why does `impute_missing_data()` connect `impute_missing_data` to `build_features`, `evaluate_forecast`, `_set_datetime_index`, `_resample`, `pipeline_walkthrough.py`, `_identify_gaps`, `test_imputer.py`, `_log`, `retrain_v7_full.py`, `_clip_physical_bounds`, `load_raw_data`, `ensemble_multi_horizon.py`, `statistical_tests.py`, `prediction_intervals.py`, `_remove_duplicates`, `arima_multi_horizon.py`, `deep_insights_phase4.py`, `_cubic_spline_fill`, `precompute_avp.py`, `multi_horizon_eval.py`, `standardize_metrics.py`, `run_enhanced_pipeline.py`, `shap_explainability.py`, `dl_multi_horizon.py`, `linear_models_eval.py`, `sklearn_models_eval.py`, `split_real_imputed`?",
-      "why": "High betweenness centrality (0.071) - this node is a cross-community bridge."
-    },
-    {
-      "type": "isolated_nodes",
-      "question": "What connects `version`, `generated_at`, `models` to the rest of the system?",
-      "why": "129 weakly-connected nodes found - possible documentation gaps or missing edges."
-    },
-    {
-      "type": "low_cohesion",
-      "question": "Should `run_full_eda` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.05563093622795115 - nodes in this community are weakly interconnected."
-    },
-    {
-      "type": "low_cohesion",
-      "question": "Should `DataValidator` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.07552447552447553 - nodes in this community are weakly interconnected."
-    },
-    {
-      "type": "low_cohesion",
-      "question": "Should `pages.py` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.05901639344262295 - nodes in this community are weakly interconnected."
-    }
-  ]
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
 }

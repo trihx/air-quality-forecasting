@@ -22,7 +22,9 @@ Luận văn hướng đến các mục tiêu chính như sau:
 Việc đánh giá độ chính xác đóng vai trò quyết định trong sự thành công của một nghiên cứu dự báo chuỗi thời gian. Dựa trên các nghiên cứu khoa học:
 - Theo Willmott & Matsuura (2005) [2], **MAE** được chứng minh là một thước đo tự nhiên, trực quan và ít bị mơ hồ nhất về sai số trung bình, tốt hơn so với RMSE do RMSE bị phụ thuộc vào số lượng mẫu định giá và phương sai của sai số. Trong ngữ cảnh đo PM2.5 (µg/m³), MAE cho biết "trung bình mô hình dự báo sai lệch bao nhiêu µg/m³".
 - Do đó, **MAE là thước đo ưu tiên hàng đầu** (Primary metric).
-- Chỉ số **MASE** (Hyndman & Koehler, 2006) [1] là **bắt buộc** dùng để đánh giá mô hình so với mô hình dự báo ngây ngô (Naive baseline). Nếu MASE < 1,0, mô hình dự báo có hiệu quả hơn mức ngẫu nhiên quán tính. Nếu MASE ≥ 1,0, mô hình ML đó hoàn toàn vô giá trị.
+- Chỉ số **MASE** (Hyndman & Koehler, 2006) [1] là **bắt buộc** dùng để đánh giá mô hình so với mô hình dự báo ngây ngô (Naive baseline). Nếu MASE < 1,0, mô hình dự báo có hiệu quả hơn mức ngẫu nhiên quán tính. Để triệt tiêu hiện tượng lệch mẫu số (Confounding) giữa các độ phân giải (1h, 30m, 15m), nghiên cứu áp dụng **Unified Persistence MAE Denominator** ($MAE_{Persistence\_1h}$) làm tiêu chuẩn đo lường đồng nhất.
+- **Đánh giá Khoảng tin cậy Dự báo (Prediction Intervals):** Sử dụng chỉ số **Winkler Score** (Winkler 1972) và **NMPIW** (Normalized Mean Prediction Interval Width). Winkler Score trừng phạt đồng thời cả độ rộng của khoảng tin cậy lẫn sai số vượt ranh giới (coverage breach), giúp khẳng định khoảng tin cậy của mô hình vừa che phủ chuẩn xác vừa đủ nhỏ gọn.
+- **Đánh giá Cảnh báo Đỉnh ô nhiễm (Pollution Event Evaluation):** Sử dụng các chỉ số **Precision, Recall, F1-Score** tại các ngưỡng cảnh báo sức khỏe của WHO ($15 \mu g/m^3$ cho 24h và $45 \mu g/m^3$ cho 1h), đo lường khả năng cảnh báo sớm các sự kiện phát tán bụi mịn nguy hại.
 
 ## 2.2 Tình hình nghiên cứu trên Thế giới
 
@@ -45,8 +47,10 @@ Thông qua điểm xét tình hình tổng quan tư duy, luận văn xác lập 
 1. Thiếu một quy trình khép kín đánh giá tính rò rỉ dữ liệu (Data Leakage) nghiêm ngặt trong kỹ nghệ đặc trưng trước khi huấn luyện mô hình.
 2. Thiếu quy mô so sánh đa điểm rơi (Multi-horizon Forecast: 1h, 6h, 24h) thay vì chỉ dự báo lặp nội sinh ngắn hạn.
 3. Kịch bản giải quyết xử lý các lỗ thủng tín hiệu vật lý của IoT từ nội suy Hybrid. Mức độ trôi dạt dữ liệu chưa được trực quan cặn kẽ trên tính chất đo đạc cơ bản.
+4. **Quy luật Autocorrelation Trap & Giá trị Thực tiễn theo Horizon (Hyndman 2021):** Tại $h=1h$, tính tự tương quan cực cao ($ACF \approx 0.97$) khiến Persistence Baseline ($y_{t+1}=y_t$) là tối ưu lý thuyết ($MASE=1.000$). Tuy nhiên, giá trị ứng dụng thực tiễn của công tác quản lý chất lượng không khí nằm ở các tầm xa $h=6h \to 24h$. Tại đây, các mô hình ML/DL (LightGBM, GRU, Ensemble) đã vượt trội hoàn toàn so với Persistence (giảm sai số từ 15% đến 25.5%, MASE < 0.85).
 
 Baseline của dự án này khá sát: MAE = 1,821 (trên tập cleaned_hourly, h=1; trên tập Hybrid: MAE = 2,390) do khu vực thu thập dữ liệu có lượng bụi mịn tập trung ít (trung bình là 10,3 µg/m³). Để mô hình phân tích của luận văn đóng góp mạnh mẽ, việc phải đánh bại mốc Baseline này ở các khung lớn (24h) được xem là bắt buộc, qua đó hoàn chỉnh khe hở thời gian của các đề tài truyền thống.
+
 
 ## 2.5 So sánh chi tiết với các công trình gần đây (2022 - 2025)
 
