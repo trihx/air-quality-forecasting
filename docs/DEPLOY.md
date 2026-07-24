@@ -65,18 +65,37 @@ Click vào nút **Advanced** → **Add Environment Variable** để thêm các b
 
 ---
 
-## 3. Keep-Alive (Chống ngủ đông cho Render)
+## 3. Keep-Alive (Chống ngủ đông cho Render & Supabase)
 
-Mặc định, các app chạy trên gói Free của Render sẽ tự động ngủ đông (sleep) sau 15 phút không có traffic. Khi có người truy cập lại, app sẽ mất khoảng 1 phút để khởi động lại (cold start).
+### A. Cơ chế ngủ đông của từng nền tảng:
+1. **Render.com Web Service (Free Tier):**
+   - **Quy tắc:** Tự động ngủ đông (Spin down / Sleep) sau **15 phút liên tục** không có HTTP Request.
+   - **Hậu quả:** Người truy cập sau đó chịu Cold Start mất khoảng 30–50 giây.
+   - **Giải pháp:** GitHub Actions ping tự động **12 phút / 1 lần** (`*/12 * * * *`).
 
-Để app luôn sẵn sàng phục vụ demo trước hội đồng bảo vệ, dự án đã tích hợp sẵn GitHub Actions workflow để tự động ping app mỗi 6 tiếng.
+2. **Supabase PostgreSQL (Free Tier):**
+   - **Quy tắc:** Tự động tạm dừng (Auto-Pause) dự án sau **7 ngày liên tục** không có lượt truy vấn SQL / HTTP API tác động vào Database.
+   - **Hậu quả:** Database ngắt kết nối, app báo lỗi HTTP 500 DB connection failure.
+   - **Giải pháp:** Mỗi lần GitHub Actions ping app Render, Streamlit / FastAPI sẽ chạy query kết nối DB (FastAPI có route `/health` chứa query `SELECT 1` hoặc Streamlit load info_cards), giúp Supabase ghi nhận activity liên tục và **không bao giờ bị Auto-Pause**.
 
-### Kích hoạt Keep-Alive:
-1. Push code lên GitHub repo (bao gồm file `.github/workflows/keep-alive.yml`).
-2. Vào GitHub repo của anh → **Settings** → **Secrets and variables** → **Actions** → Thêm secret mới:
-   - **Name:** `RENDER_URL` (hoặc `HF_SPACE_URL`)
-   - **Value:** `https://time-series-forecasting-c8gz.onrender.com`
-3. GitHub Actions sẽ tự động ping app mỗi 6 tiếng để giữ cho Render không bị ngủ đông.
+---
+
+### B. Kích hoạt Keep-Alive Đa tầng (Defense-in-Depth):
+
+#### 1. GitHub Actions (Tự động 12 phút/lần - Đã tích hợp):
+1. Push file `.github/workflows/keep-alive.yml` lên GitHub repo.
+2. (Tùy chọn) Vào GitHub repo → **Settings** → **Secrets and variables** → **Actions** → Thêm secret:
+   - **Name:** `RENDER_URL`
+   - **Value:** `https://time-series-forecasting-c8gz.onrender.com` (hoặc custom domain `https://pm25.hoangxuantri.id.vn`)
+3. GitHub Actions sẽ tự động ping mỗi 12 phút để giữ cho cả Render và Supabase luôn thức.
+
+#### 2. UptimeRobot / Cron-Job.org (Khuyên dùng kết hợp 🌟):
+Để chống trường hợp GitHub Runner bị xếp hàng (queue delay), anh nên thiết lập thêm 1 Monitor miễn phí 100%:
+1. Đăng ký tài khoản tại [UptimeRobot.com](https://uptimerobot.com) hoặc [Cron-Job.org](https://cron-job.org).
+2. Tạo HTTP Monitor:
+   - **URL:** `https://time-series-forecasting-c8gz.onrender.com`
+   - **Monitoring Interval:** `5 minutes` (hoặc 10 minutes)
+3. Hệ thống này sẽ ping 24/7 hoàn toàn tự động và gửi thông báo cho anh nếu app gặp rủi ro gián đoạn.
 
 ---
 

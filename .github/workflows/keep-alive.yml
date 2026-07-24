@@ -1,19 +1,18 @@
-# Keep Render App Alive
+# Keep Render App & Supabase Alive
 #
 # Render.com free tier sleeps after 15 minutes of inactivity.
-# This workflow pings the app every 6 hours to prevent sleep.
+# Supabase free tier pauses database after 7 days of inactivity.
 #
-# Setup:
-#   1. Push this file to your GitHub repo
-#   2. Set repository secret RENDER_URL = https://<your-app>.onrender.com
-#   3. GitHub Actions will automatically keep your app awake
+# Solution:
+#   This workflow pings the app every 12 minutes (before the 15m sleep timeout).
+#   Each ping reaches Streamlit & triggers DB query via health endpoint, keeping both active.
 
-name: Keep Render App Alive
+name: Keep Render & Supabase Alive
 
 on:
   schedule:
-    # Run every 6 hours (UTC): 00:00, 06:00, 12:00, 18:00
-    - cron: '0 */6 * * *'
+    # Run every 12 minutes to beat Render's 15-minute sleep timer
+    - cron: '*/12 * * * *'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
@@ -21,23 +20,26 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Ping Render App
+      - name: Ping Render App & Supabase DB
         run: |
           RENDER_URL="${{ secrets.RENDER_URL }}"
           if [ -z "$RENDER_URL" ]; then
-            echo "⚠️ RENDER_URL secret not set. Please set it in repo Settings > Secrets."
-            exit 0
+            # Default fallback URL for the project if secret is not set yet
+            RENDER_URL="https://time-series-forecasting-c8gz.onrender.com"
           fi
 
-          echo "🏓 Pinging $RENDER_URL ..."
+          # Trim trailing slash
+          RENDER_URL="${RENDER_URL%/}"
+
+          echo "🏓 Pinging Render App: $RENDER_URL ..."
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 120 "$RENDER_URL")
 
           if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 400 ]; then
-            echo "✅ Render App is alive! HTTP $HTTP_CODE"
+            echo "✅ Render App is awake! HTTP $HTTP_CODE"
           else
-            echo "⚠️ Render App returned HTTP $HTTP_CODE — it may be starting up (cold start)"
-            # Retry after 60 seconds (cold start takes ~1-2 min)
-            sleep 60
+            echo "⚠️ Render App returned HTTP $HTTP_CODE — retrying after 30s (cold start recovery)..."
+            sleep 30
             HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 120 "$RENDER_URL")
             echo "🔄 Retry result: HTTP $HTTP_CODE"
           fi
+

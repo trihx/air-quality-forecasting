@@ -21,7 +21,9 @@
 ---
 
 ## 3. Lưu ý nóng (Active Gotchas)
+* **Render & Supabase Keep-Alive:** Render ngủ sau 15m (GitHub Actions ping `*/12 * * * *`). Supabase pause sau 7 ngày không có SQL activity (mỗi ping chạm DB qua `/health` hoặc Streamlit query).
 * **Giới hạn RAM 512MB (Render):** OOM nếu chạy SHAP/Inference lớn. Render chỉ dùng cho demo web, không train lại.
 * **B&W Plotly Export:** Luôn dùng `to_bw()` từ `src.viz.chart_factory` để đảm bảo hatch pattern, marker, và background box cho text annotations.
 * **Kaleido PNG Rendering:** Cần `uv add kaleido` để `to_image()` hoạt động trơn tru.
 * **Graphify Re-build:** Sau mỗi phiên sửa code `.py`, PHẢI chạy `make graphify` để cập nhật knowledge graph. Agent đọc `graphify-out/GRAPH_REPORT.md` TRƯỚC khi sửa code.
+
