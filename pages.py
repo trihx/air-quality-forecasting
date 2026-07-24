@@ -644,24 +644,12 @@ def _predict_ensemble(recent: pd.DataFrame, horizon: int) -> dict:
 
     Weights are pre-optimized via grid-search (step=0.05).
     Source: research/experiments/ensemble/ensemble_20260404_204737.json
-
-    IMPORTANT: gc.collect() between GRU and LightGBM to avoid OMP segfault
-    on Apple Silicon when both runtimes are active simultaneously.
     """
     from src.features.builder import build_features
 
     w = _ENSEMBLE_WEIGHTS.get(horizon, {"gru": 0.50, "lgbm": 0.50})
 
-    # ── LightGBM prediction FIRST (lighter, less OMP conflict) ──
-    df_feat = build_features(recent)
-    lgbm_predictor = _get_lgbm_predictor(horizon)
-    lgbm_result = lgbm_predictor.predict(df_feat)
-    lgbm_val = lgbm_result["predicted_pm25"]
-
-    # Cleanup LightGBM memory before loading PyTorch
-    gc.collect()
-
-    # ── GRU prediction SECOND ──
+    # ── GRU prediction ──
     q_predictor = _get_gru_quantile_predictor(horizon)
     if q_predictor is not None:
         gru_result = q_predictor.predict(recent)
@@ -671,7 +659,18 @@ def _predict_ensemble(recent: pd.DataFrame, horizon: int) -> dict:
         gru_result = predictor.predict(recent, device=device)
     gru_val = gru_result["predicted_pm25"]
 
-    # Cleanup after both predictions
+    # ── LightGBM prediction (with graceful fallback if libgomp missing) ──
+    lgbm_val = None
+    try:
+        df_feat = build_features(recent)
+        lgbm_predictor = _get_lgbm_predictor(horizon)
+        lgbm_result = lgbm_predictor.predict(df_feat)
+        lgbm_val = lgbm_result["predicted_pm25"]
+    except Exception as e:
+        logger.warning(f"LightGBM prediction failed ({e}), falling back to GRU prediction for Ensemble.")
+        lgbm_val = gru_val
+
+    # Cleanup memory
     gc.collect()
 
     # ── Weighted average ──
@@ -710,10 +709,6 @@ def _run_prediction(model_type: str, horizon: int, recent: pd.DataFrame) -> dict
 
     Uses MPS (Apple Silicon GPU) for GRU inference when available.
     Supports GRU, LightGBM, Ensemble, ARIMA, SARIMA, Persistence.
-
-    IMPORTANT: torch is imported ONLY inside GRU branches to avoid
-    OMP segfault when mixing PyTorch + LightGBM on Apple Silicon.
-    See LESSONS_LEARNED.md [2026-04-12].
     """
     # ── API-first attempt ──
     try:
@@ -744,10 +739,17 @@ def _run_prediction(model_type: str, horizon: int, recent: pd.DataFrame) -> dict
             result = predictor.predict(recent, device=device)
 
     elif model_type == "LightGBM":
-        from src.features.builder import build_features
-        df_feat = build_features(recent)
-        predictor = _get_lgbm_predictor(horizon)
-        result = predictor.predict(df_feat)
+        try:
+            from src.features.builder import build_features
+            df_feat = build_features(recent)
+            predictor = _get_lgbm_predictor(horizon)
+            result = predictor.predict(df_feat)
+        except Exception as e:
+            st.warning(f"⚠️ Thư viện C++ OpenMP (libgomp) chưa nạp sẵn: {e}. Hệ thống tự động chuyển sang mô hình GRU.")
+            device = _get_torch_device()
+            predictor = _get_gru_predictor(horizon)
+            result = predictor.predict(recent, device=device)
+            result["model"] = "GRU (Fallback từ LightGBM)"
 
     elif model_type == "Ensemble":
         result = _predict_ensemble(recent, horizon)

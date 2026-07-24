@@ -36,9 +36,9 @@ RUN find /app/.venv -name "*.so" -exec strip {} \; || true
 FROM python:3.11-slim
 WORKDIR /app
 
-# Install supervisord for multi-process management
+# Install supervisord and libgomp1 (OpenMP for LightGBM)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    supervisor && rm -rf /var/lib/apt/lists/*
+    supervisor libgomp1 && rm -rf /var/lib/apt/lists/*
 
 # Copy venv from builder
 COPY --from=builder /app/.venv /app/.venv
