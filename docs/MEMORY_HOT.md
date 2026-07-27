@@ -21,7 +21,7 @@
 ---
 
 ## 3. Lưu ý nóng (Active Gotchas)
-* **Render & Supabase Keep-Alive:** Render ngủ sau 15m (GitHub Actions ping `*/12 * * * *`). Supabase pause sau 7 ngày không có SQL activity (mỗi ping chạm DB qua `/health` hoặc Streamlit query).
+* **Render & Supabase Keep-Alive (Defense-in-Depth v2):** 3 tầng ping song song: UptimeRobot (5m, primary) + Cron-Job.org (5m, backup) + GitHub Actions (14m, safety net). GitHub Actions cron **KHÔNG đáng tin** (delay 5–30m) → KHÔNG dùng làm tầng chính. Supabase pause sau 7 ngày — mỗi ping Render chạm DB qua `/health` hoặc Streamlit query.
 * **Giới hạn RAM 512MB (Render):** OOM nếu chạy SHAP/Inference lớn. Render chỉ dùng cho demo web, không train lại.
 * **B&W Plotly Export:** Luôn dùng `to_bw()` từ `src.viz.chart_factory` để đảm bảo hatch pattern, marker, và background box cho text annotations.
 * **Kaleido PNG Rendering:** Cần `uv add kaleido` để `to_image()` hoạt động trơn tru.

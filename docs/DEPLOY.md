@@ -65,37 +65,67 @@ Click vào nút **Advanced** → **Add Environment Variable** để thêm các b
 
 ---
 
-## 3. Keep-Alive (Chống ngủ đông cho Render & Supabase)
+## 3. Keep-Alive — Defense-in-Depth v2 (Chống ngủ đông cho Render & Supabase)
 
 ### A. Cơ chế ngủ đông của từng nền tảng:
 1. **Render.com Web Service (Free Tier):**
    - **Quy tắc:** Tự động ngủ đông (Spin down / Sleep) sau **15 phút liên tục** không có HTTP Request.
    - **Hậu quả:** Người truy cập sau đó chịu Cold Start mất khoảng 30–50 giây.
-   - **Giải pháp:** GitHub Actions ping tự động **12 phút / 1 lần** (`*/12 * * * *`).
 
 2. **Supabase PostgreSQL (Free Tier):**
    - **Quy tắc:** Tự động tạm dừng (Auto-Pause) dự án sau **7 ngày liên tục** không có lượt truy vấn SQL / HTTP API tác động vào Database.
    - **Hậu quả:** Database ngắt kết nối, app báo lỗi HTTP 500 DB connection failure.
-   - **Giải pháp:** Mỗi lần GitHub Actions ping app Render, Streamlit / FastAPI sẽ chạy query kết nối DB (FastAPI có route `/health` chứa query `SELECT 1` hoặc Streamlit load info_cards), giúp Supabase ghi nhận activity liên tục và **không bao giờ bị Auto-Pause**.
+   - **Giải pháp gián tiếp:** Mỗi lần ping app Render, Streamlit / FastAPI sẽ chạy query kết nối DB (FastAPI route `/health` chứa `SELECT 1` hoặc Streamlit load info_cards), giúp Supabase ghi nhận activity liên tục → **không bao giờ bị Auto-Pause**.
 
 ---
 
-### B. Kích hoạt Keep-Alive Đa tầng (Defense-in-Depth):
+### B. Chiến lược Keep-Alive 3 Tầng (Defense-in-Depth v2):
 
-#### 1. GitHub Actions (Tự động 12 phút/lần - Đã tích hợp):
-1. Push file `.github/workflows/keep-alive.yml` lên GitHub repo.
-2. (Tùy chọn) Vào GitHub repo → **Settings** → **Secrets and variables** → **Actions** → Thêm secret:
-   - **Name:** `RENDER_URL`
-   - **Value:** `https://time-series-forecasting-c8gz.onrender.com` (hoặc custom domain `https://pm25.hoangxuantri.id.vn`)
-3. GitHub Actions sẽ tự động ping mỗi 12 phút để giữ cho cả Render và Supabase luôn thức.
+> **Triết lý:** KHÔNG phụ thuộc vào bất kỳ 1 dịch vụ nào. Chạy 3 nguồn ping song song, lệch pha nhau, đảm bảo **luôn có ít nhất 1 ping đến mỗi 5 phút**.
+>
+> **Tại sao cần 3 tầng?** GitHub Actions cron KHÔNG đáng tin cậy — khi runner tải cao, workflow có thể bị delay 5–30 phút, dễ dàng vượt ngưỡng 15 phút ngủ đông của Render. Ngoài ra, GitHub tự động disable scheduled workflow nếu repo không có commit trong 60 ngày.
 
-#### 2. UptimeRobot / Cron-Job.org (Khuyên dùng kết hợp 🌟):
-Để chống trường hợp GitHub Runner bị xếp hàng (queue delay), anh nên thiết lập thêm 1 Monitor miễn phí 100%:
-1. Đăng ký tài khoản tại [UptimeRobot.com](https://uptimerobot.com) hoặc [Cron-Job.org](https://cron-job.org).
-2. Tạo HTTP Monitor:
+| Tầng | Dịch vụ | Tần suất | Vai trò | Độ tin cậy |
+|------|---------|----------|---------|------------|
+| 🥇 Tier 1 | **UptimeRobot** | 5 phút | Primary — nguồn ping chính | ⭐⭐⭐⭐⭐ |
+| 🥈 Tier 2 | **Cron-Job.org** | 5 phút | Backup — phòng UptimeRobot gặp sự cố | ⭐⭐⭐⭐ |
+| 🥉 Tier 3 | **GitHub Actions** | 14 phút | Safety net — lưới an toàn cuối cùng | ⭐⭐⭐ |
+
+---
+
+#### Tier 1: UptimeRobot — Ping mỗi 5 phút (Primary ⭐)
+**Miễn phí 100% — 50 monitors — Ping từ server riêng, không phụ thuộc GitHub**
+
+1. Đăng ký tài khoản tại [UptimeRobot.com](https://uptimerobot.com) (dùng email hoặc đăng nhập Google).
+2. Click **+ Add New Monitor** → Cấu hình:
+   - **Monitor Type:** `HTTP(s)`
+   - **Friendly Name:** `PM2.5 Forecasting Dashboard`
    - **URL:** `https://time-series-forecasting-c8gz.onrender.com`
-   - **Monitoring Interval:** `5 minutes` (hoặc 10 minutes)
-3. Hệ thống này sẽ ping 24/7 hoàn toàn tự động và gửi thông báo cho anh nếu app gặp rủi ro gián đoạn.
+   - **Monitoring Interval:** `5 minutes`
+3. Click **Create Monitor** → ✅ Done!
+4. **Bonus:** UptimeRobot sẽ tự động gửi email thông báo nếu app bị down.
+
+#### Tier 2: Cron-Job.org — Ping mỗi 5 phút (Backup)
+**Miễn phí 100% — Hệ thống ping hoàn toàn độc lập với UptimeRobot**
+
+1. Đăng ký tài khoản tại [Cron-Job.org](https://cron-job.org) (dùng email hoặc GitHub).
+2. Click **CREATE CRONJOB** → Cấu hình:
+   - **Title:** `PM2.5 Keep-Alive`
+   - **URL:** `https://time-series-forecasting-c8gz.onrender.com`
+   - **Schedule:** Chọn **Every 5 minutes**
+   - **Request Method:** `GET`
+   - **Request Timeout:** `120 seconds` (cho phép cold start nếu xảy ra)
+3. Click **CREATE** → ✅ Done!
+
+#### Tier 3: GitHub Actions — Safety Net mỗi 14 phút (Đã tích hợp)
+**Tự động — đã cấu hình sẵn trong repo**
+
+1. File `.github/workflows/keep-alive.yml` đã được push lên GitHub repo.
+2. Workflow chạy tự động mỗi 14 phút (`*/14 * * * *`).
+3. Tích hợp `keepalive-workflow` action để chống GitHub tự disable workflow sau 60 ngày không commit.
+4. (Tùy chọn) Cấu hình secret `RENDER_URL` tại GitHub repo → **Settings** → **Secrets** → **Actions**:
+   - **Name:** `RENDER_URL`
+   - **Value:** `https://time-series-forecasting-c8gz.onrender.com`
 
 ---
 

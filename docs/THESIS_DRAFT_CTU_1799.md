@@ -409,12 +409,12 @@ Bảng 2.1: Bảng đối chiếu kết quả của luận văn với các công
 
 | Công trình | Năm | Mô hình tốt nhất | MAE ($\mu g/m^3$) | RMSE ($\mu g/m^3$) | $R^2$ | Nguồn dữ liệu | Multi-Horizon | Đánh giá MASE | Anti-Leakage Audit |
 |---|---|---|---|---|---|---|---|---|---|
-| Zhang & Li [7] | 2022 | CNN-LSTM | 8,12 | 12,45 | 0,92 | Trạm chuẩn (TQ) | 1-24h | ✘ | ✘ |
+| Zhang & Li [37] | 2022 | CNN-LSTM | 8,12 | 12,45 | 0,92 | Trạm chuẩn (TQ) | 1-24h | ✘ | ✘ |
 | Bhardwaj et al. [8] | 2023 | XGBoost+SHAP | 12,50 | 18,70 | 0,87 | Trạm chuẩn (Ấn Độ) | 24h | ✘ | ✘ |
-| Liu et al. [9] | 2023 | LASSA-LightGBM | — | — | 0,96 | Trạm chuẩn (TQ) | 1h | ✘ | ✘ |
-| Zareba et al. [10] | 2025 | Ridge Regression | 1,02 - 2,60 | — | 0,93 | IoT (Ba Lan) | 1h | ✘ | ✘ |
-| Bui et al. [11] | 2025 | CNN-LSTM Hybrid | 2,45 | 3,26 | 0,95 | Trạm chuẩn | 1h | ✘ | ✘ |
-| Nguyen T.N.T. [12] | 2024 | CNN-Bi-LSTM | 5,37 | 8,08 | 0,70 | Trạm QT (TP.HCM) | 24h | ✘ | ✘ |
+| Liu et al. [47] | 2023 | LASSA-LightGBM | — | — | 0,96 | Trạm chuẩn (TQ) | 1h | ✘ | ✘ |
+| Zareba et al. [48] | 2025 | Ridge Regression | 1,02 - 2,60 | — | 0,93 | IoT (Ba Lan) | 1h | ✘ | ✘ |
+| Bui et al. [49] | 2025 | CNN-LSTM Hybrid | 2,45 | 3,26 | 0,95 | Trạm chuẩn | 1h | ✘ | ✘ |
+| Nguyen T.N.T. [43] | 2024 | CNN-Bi-LSTM | 5,37 | 8,08 | 0,70 | Trạm QT (TP.HCM) | 24h | ✘ | ✘ |
 | **Luận văn (h=1h)** | **2026** | **GRU_v9_15m** | **2,94** | **4,69** | **0,27** | **IoT Sa Đéc** | **1h, 6h, 24h** | **✔ (0,667)** | **✔ 100%** |
 | **Luận văn (h=6h)** | **2026** | **Ensemble_v9_30m**| **3,49** | **5,08** | **-0,04**| **IoT Sa Đéc** | **1h, 6h, 24h** | **✔ (0,382)** | **✔ 100%** |
 | **Luận văn (h=24h)**| **2026** | **Ensemble_v9_30m**| **4,29** | **6,01** | **0,13** | **IoT Sa Đéc** | **1h, 6h, 24h** | **✔ (0,469)** | **✔ 100%** |
@@ -427,14 +427,14 @@ Bảng 2.1: Bảng đối chiếu kết quả của luận văn với các công
 
 ### 2.4.1 Sai số tuyệt đối trung bình (MAE)
 $$\operatorname{MAE} = \frac{1}{N} \sum_{i=1}^N |y_i - \hat{y}_i|$$
-Theo Willmott & Matsuura (2005) [2], MAE đại diện cho biên độ sai số tuyệt đối trung bình (tính bằng $\mu g/m^3$), không bị khống chế hoặc phóng đại bất thường bởi các giá trị ngoại lệ như RMSE.
+Theo Willmott & Matsuura (2005) [12], MAE đại diện cho biên độ sai số tuyệt đối trung bình (tính bằng $\mu g/m^3$), không bị khống chế hoặc phóng đại bất thường bởi các giá trị ngoại lệ như RMSE.
 
 ### 2.4.2 Sai số chuẩn hóa tuyệt đối trung bình (MASE)
 $$\operatorname{MASE} = \frac{\operatorname{MAE}_{model}}{\operatorname{MAE}_{Persistence\_1h}}$$
-Với $\operatorname{MAE}_{Persistence\_1h} = 4,706 \mu g/m^3$ là mẫu số chuẩn hóa cố định trên tập kiểm thử mỏ neo. Chỉ số $\operatorname{MASE} < 1,0$ chứng minh mô hình vượt trội hơn Baseline ngây ngô.
+Với $\operatorname{MAE}_{Persistence\_1h} = 4,706 \mu g/m^3$ là mẫu số chuẩn hóa cố định trên tập kiểm thử mỏ neo. Chỉ số $\operatorname{MASE} < 1,0$ chứng minh mô hình vượt trội hơn Baseline ngây ngô theo định nghĩa của Hyndman & Koehler (2006) [11].
 
 ### 2.4.3 Đánh giá khoảng tin cậy (Winkler Score)
-Chỉ số Winkler Score (Winkler 1972) [14] phạt đồng thời cả chiều rộng khoảng tin cậy $(u - l)$ và phạt nặng khi thực tế vượt biên:
+Chỉ số Winkler Score (Winkler 1972) [46] phạt đồng thời cả chiều rộng khoảng tin cậy $(u - l)$ và phạt nặng khi thực tế vượt biên:
 $$W(l, u, y; \alpha) = (u - l) + \frac{2}{\alpha}(l - y) \mathbb{I}(y < l) + \frac{2}{\alpha}(y - u) \mathbb{I}(y > u)$$
 
 ---
@@ -640,19 +640,94 @@ Cung cấp công cụ cảnh báo sớm cho Chi cục Bảo vệ Môi trường 
 
 # TÀI LIỆU THAM KHẢO
 
-[1] R. J. Hyndman and A. B. Koehler, "Another look at measures of forecast accuracy," *International Journal of Forecasting*, vol. 22, no. 4, pp. 679-688, 2006.  
-[2] C. J. Willmott and K. Matsuura, "Advantages of the mean absolute error (MAE) over the root mean square error (RMSE) in assessing average model performance," *Climate Research*, vol. 30, no. 1, pp. 79-82, 2005.  
-[3] F. X. Diebold and R. S. Mariano, "Comparing predictive accuracy," *Journal of Business & Economic Statistics*, vol. 13, no. 3, pp. 253-263, 1995.  
-[4] S. M. Lundberg and S.-I. Lee, "A unified approach to interpreting model predictions," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2017, pp. 4765-4774.  
-[5] S. M. Lundberg et al., "From local explanations to global understanding with explainable AI for trees," *Nature Machine Intelligence*, vol. 2, no. 1, pp. 56-67, 2020.  
-[6] B. Lim, S. O. Arik, N. Loeff, and T. Pfister, "Temporal Fusion Transformers for interpretable multi-horizon time series forecasting," *International Journal of Forecasting*, vol. 37, no. 4, pp. 1348-1364, 2021.  
-[7] X. Li et al., "Long short-term memory neural network for air pollutant concentration predictions," *Environmental Pollution*, vol. 231, pp. 997-1004, 2017.  
-[8] U. Pak et al., "Deep learning based PM2.5 prediction model using 3D-CNN and Bi-LSTM," *Science of The Total Environment*, vol. 730, p. 138957, 2020.  
-[9] H. Liu et al., "PM2.5 concentration prediction based on LightGBM optimized by adaptive multi-strategy enhanced sparrow search algorithm," *Atmosphere*, vol. 14, no. 11, p. 1612, 2023.  
-[10] M. Zareba, P. Cogiel, and T. Danek, "Spatio-temporal PM2.5 forecasting using machine learning and low-cost sensors: An urban perspective," *Engineering Proceedings*, vol. 82, no. 1, p. 6, 2025.  
-[11] T. D. Bui et al., "AI for cleaner air: Predictive modeling of PM2.5 using deep learning and traditional time-series approaches," *Computer Modeling in Engineering & Sciences*, vol. 142, no. 3, pp. 2447-2468, 2025.  
-[12] T. N. T. Nguyen et al., "Statistical and machine learning approaches for estimating pollution of fine particulate matter (PM2.5) in Vietnam," *Journal of Environmental Engineering and Landscape Management*, vol. 32, no. 4, pp. 292-304, 2024.  
-[13] B. Rosner, "Percentage points for a generalized ESD many-outlier procedure," *Technometrics*, vol. 25, no. 2, pp. 165-172, 1983.  
-[14] R. L. Winkler, "A decision-theoretic approach to interval estimation," *Journal of the American Statistical Association*, vol. 67, no. 337, pp. 187-191, 1972.  
+[1] R. J. Hyndman and A. B. Koehler, "Another look at measures of forecast accuracy," *International Journal of Forecasting*, vol. 22, no. 4, pp. 679–688, 2006.  
+[2] C. J. Willmott and K. Matsuura, "Advantages of the mean absolute error (MAE) over the root mean square error (RMSE) in assessing average model performance," *Climate Research*, vol. 30, no. 1, pp. 79–82, 2005.  
+[3] T. Gneiting and A. E. Raftery, "Strictly proper scoring rules, prediction, and estimation," *Journal of the American Statistical Association*, vol. 102, no. 477, pp. 359–378, 2007. DOI: 10.1198/016214506000001437.  
+[4] Y. Romano, E. Patterson, and E. J. Candès, "Conformalized quantile regression," *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 32, 2019.  
+[5] K. Cho, B. van Merrienboer, C. Gulcehre, D. Bahdanau, F. Bougares, H. Schwenk, and Y. Bengio, "Learning phrase representations using RNN encoder-decoder for statistical machine translation," *Proc. EMNLP*, pp. 1724–1734, 2014. DOI: 10.3115/v1/D14-1179.  
+[6] G. Ke, Q. Meng, T. Finley, T. Wang, W. Chen, W. Ma, Q. Ye, and T. Y. Liu, "LightGBM: A highly efficient gradient boosting decision tree," *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 30, pp. 3146–3154, 2017.  
+[7] S. Hochreiter and J. Schmidhuber, "Long short-term memory," *Neural Computation*, vol. 9, no. 8, pp. 1735–1780, 1997. DOI: 10.1162/neco.1997.9.8.1735.  
+[8] B. Lim, S. O. Arik, N. Loeff, and T. Pfister, "Temporal Fusion Transformers for interpretable multi-horizon time series forecasting," *International Journal of Forecasting*, vol. 37, no. 4, pp. 1748–1764, 2021. DOI: 10.1016/j.ijforecast.2021.03.012.  
+[9] M. Peixeiro, *Time Series Forecasting in Python*, Manning Publications, 2022.  
+[10] R. H. Shumway and D. S. Stoffer, *Time Series Analysis and Its Applications: With R Examples*, Springer, 4th ed., 2017.  
+[11] F. X. Diebold and R. S. Mariano, "Comparing predictive accuracy," *Journal of Business & Economic Statistics*, vol. 13, no. 3, pp. 253–263, 1995. DOI: 10.1080/07350015.1995.10524599.  
+[12] T. Akiba, S. Sano, T. Yanase, T. Ohta, and M. Koyama, "Optuna: A next-generation hyperparameter optimization framework," *Proc. ACM SIGKDD*, pp. 2623–2631, 2019. DOI: 10.1145/3292500.3330701.  
+[13] G. E. P. Box and D. R. Cox, "An Analysis of Transformations," *Journal of the Royal Statistical Society: Series B*, vol. 26, no. 2, pp. 211–243, 1964.  
+[14] B. Rosner, "Percentage points for a generalized ESD many-outlier procedure," *Technometrics*, vol. 25, no. 2, pp. 165–172, 1983.  
+[15] L. J. Tashman, "Out-of-sample tests of forecasting accuracy: an analysis and review," *International Journal of Forecasting*, vol. 16, no. 4, pp. 437–450, 2000. DOI: 10.1016/S0169-2070(00)00065-0.  
+[17] S. Makridakis, E. Spiliotis, and V. Assimakopoulos, "The M4 Competition: Results, findings, conclusion and way forward," *International Journal of Forecasting*, vol. 36, no. 1, pp. 54–74, 2020.  
+[18] Y. Gal and Z. Ghahramani, "Dropout as a Bayesian Approximation: Representing Model Uncertainty in Deep Learning," *Proc. ICML*, vol. 48, pp. 1050–1059, 2016.  
+[19] B. Lakshminarayanan, A. Pritzel, and C. Blundell, "Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles," *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 30, 2017.  
+[20] S. M. Lundberg and S.-I. Lee, "A Unified Approach to Interpreting Model Predictions," *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 30, pp. 4765–4774, 2017.  
+[21] R. B. Cleveland, W. S. Cleveland, J. E. McRae, and I. Terpenning, "STL: A seasonal-trend decomposition procedure based on loess," *Journal of Official Statistics*, vol. 6, no. 1, pp. 3–73, 1990.  
+[22] O. Troyanskaya, M. Cantor, G. Sherlock, P. Brown, R. Tibshirani, D. Botstein, and R. B. Altman, "Missing Value Estimation Methods for DNA Microarrays," *Bioinformatics*, vol. 17, no. 6, pp. 520–525, 2001. DOI: 10.1093/bioinformatics/17.6.520.  
+[23] D. A. Dickey and W. A. Fuller, "Distribution of the estimators for autoregressive time series with a unit root," *Journal of the American Statistical Association*, vol. 74, no. 366a, pp. 427–431, 1979. DOI: 10.1080/01621459.1979.10482531.  
+[24] D. Kwiatkowski, P. C. B. Phillips, P. Schmidt, and Y. Shin, "Testing the Null Hypothesis of Stationarity Against the Alternative of a Unit Root," *Journal of Econometrics*, vol. 54, no. 1–3, pp. 159–178, 1992. DOI: 10.1016/0304-4076(92)90104-Y.  
+[25] G. M. Ljung and G. E. P. Box, "On a Measure of Lack of Fit in Time Series Models," *Biometrika*, vol. 65, no. 2, pp. 297–303, 1978. DOI: 10.1093/biomet/65.2.297.  
+[26] D. H. Wolpert, "Stacked Generalization," *Neural Networks*, vol. 5, no. 2, pp. 241–259, 1992. DOI: 10.1016/S0893-6080(05)80023-1.  
+[27] L. Breiman, "Random Forests," *Machine Learning*, vol. 45, no. 1, pp. 5–32, 2001. DOI: 10.1023/A:1010933404324.  
+[28] World Health Organization, *WHO Global Air Quality Guidelines: Particulate matter (PM2.5 and PM10), ozone, nitrogen dioxide, sulfur dioxide and carbon monoxide*, Geneva: World Health Organization, 2021.  
+[29] R. L. Barkjohn, A. L. Holder, and G. S. Beach, "Development and application of a national correction equation for PurpleAir PM2.5 sensors," *Atmospheric Measurement Techniques*, vol. 14, no. 6, pp. 4617–4637, 2021. DOI: 10.5194/amt-14-4617-2021.  
+[30] Z. Zhang, *Multivariate Time Series Analysis in Climate and Environmental Research*, Springer, 2011.  
+[31] P. Zannetti, *Air Pollution Modeling: Theories, Computational Methods and Available Software*, Computational Mechanics Publications, 1990.  
+[32] C. L. Blanchard and S. Tanenbaum, "Differences between Weekday and Weekend Air Pollutant Levels in Southern California," *Journal of the Air & Waste Management Association*, vol. 53, no. 7, pp. 816–828, 2003.  
+[33] M. Christ, N. Braun, J. Neuffer, and A. W. Kempa-Liehr, "Time Series FeatuRe Extraction on basis of Scalable Hypothesis tests (tsfresh - A Python package)," *Neurocomputing*, vol. 307, pp. 72–77, 2018. DOI: 10.1016/j.neucom.2018.03.067.  
+[34] Manu Joseph, *Modern Time Series Forecasting with Python*, Packt Publishing, 2022.  
+[35] C. Huang and A. Petukhina, *Applied Time Series Analysis and Forecasting with Python*, Springer, 2022. DOI: 10.1007/978-3-031-18084-3.  
+[36] B. V. Vishwas and A. Patel, *Hands-on Time Series Analysis with Python*, Apress, 2020. DOI: 10.1007/978-1-4842-5992-4.  
+[37] Y. Kang, R. J. Hyndman, and K. Smith-Miles, "Visualising forecasting algorithm performance using time series instance spaces," *International Journal of Forecasting*, vol. 33, no. 2, pp. 345–358, 2017. DOI: 10.1016/j.ijforecast.2016.09.004.  
+[38] W. S. Cleveland, *Visualizing Data*, Hobart Press, 1993.  
+[39] S. Shetty, P. D. Hamer, K. Stebel, and P. Schneider, "Daily high-resolution surface PM2.5 estimation over Europe by ML-based downscaling of the CAMS regional forecast," *Environmental Research*, vol. 252, p. 120363, 2024. DOI: 10.1016/j.envres.2024.120363.  
+[40] H. Tian, H. Kong, and C. Wong, "A Novel Stacking Ensemble Learning Approach for Predicting PM2.5 Levels in Dense Urban Environments Using Meteorological Variables: A Case Study in Macau," *Applied Sciences*, vol. 14, p. 5062, 2024. DOI: 10.3390/app14125062.  
+[41] S. A. Inam, A. A. Khan, T. Mazhar, and H. Hamam, "PR-FCNN: a data-driven hybrid approach for predicting PM2.5 concentration," *Earth Science Informatics*, 2024. DOI: 10.1007/s44163-024-00184-7.  
+[42] B. Kim, E. Kim, S. Jung, and S. Kim, "PM2.5 Concentration Forecasting Using Weighted Bi-LSTM and Random Forest Feature Importance-Based Feature Selection," *Atmosphere*, vol. 14, no. 6, p. 968, 2023. DOI: 10.3390/atmos14060968.  
+[43] P. Patel, S. Patel, K. Shah, and S. Patel, "A systematic study on PM2.5 and PM10 concentration prediction in air pollution using machine learning and deep learning model," *Environmental Challenges*, 2025. DOI: 10.1016/j.enceco.2025.07.001.  
+[44] M. Kaveh, M. S. Mesgari, and M. Kaveh, "A Novel Evolutionary Deep Learning Approach for PM2.5 Prediction Using Remote Sensing and Spatial-Temporal Data: A Case Study of Tehran," *ISPRS International Journal of Geo-Information*, vol. 14, no. 2, p. 42, 2025. DOI: 10.3390/ijgi14020042.  
+[45] N. T. N. Tuyết, T. T. Dũng, V. P. C. L. Thọ, và P. T. Bảo, "Statistical and machine learning approaches for estimating pollution of fine particulate matter (PM2.5) in Vietnam," *Journal of Environmental Engineering & Landscape Management*, vol. 32, no. 4, pp. 292–304, 2024. DOI: 10.3846/jeelm.2024.22361.  
+[46] R. Rakholia, Q. Lê, K. Vũ, B. Q. Hồ, và R. S. Carbajo, "AI-based air quality PM2.5 forecasting models for developing countries: A case study of Ho Chi Minh City, Vietnam," *Urban Climate*, vol. 44, p. 101315, 2022. DOI: 10.1016/j.uclim.2022.101315.  
+[47] S. Moritz, A. Sardá, T. Bartz-Beielstein, M. Zaefferer, and J. Stork, "Comparison of different Methods for Univariate Time Series Imputation in R," *arXiv preprint*, vol. arXiv:1510.03924, 2015. DOI: 10.48550/arXiv.1510.03924.  
+[48] G. E. P. Box, G. M. Jenkins, G. C. Reinsel, and G. M. Ljung, *Time Series Analysis: Forecasting and Control*, John Wiley & Sons, 5th Edition, 2015. DOI: 10.1002/9781118619193.  
+[49] T. G. Dietterich, "Ensemble Methods in Machine Learning," *Multiple Classifier Systems*, vol. LNCS 1857, pp. 1–15, 2000. DOI: 10.1007/3-540-45014-9_1.  
+[50] A. Fisher, C. Rudin, and F. Dominici, "All Models are Wrong, but Many are Useful: Learning a Variable's Importance by Studying an Entire Class of Prediction Models Simultaneously," *Journal of Machine Learning Research*, vol. 20, no. 177, pp. 1–81, 2019.  
+[51] Y. Gu, B. Li, and Q. Meng, "Hybrid interpretable predictive machine learning model for air pollution prediction," *Neurocomputing*, vol. 466, pp. 341–355, 2021. DOI: 10.1016/j.neucom.2021.09.051.  
+[52] A. Houdou, I. El Badisy, K. Khomsi, and M. Khalis, "Interpretable Machine Learning Approaches for Forecasting and Predicting Air Pollution: A Systematic Review," *Aerosol and Air Quality Research*, vol. 24, p. 230151, 2024. DOI: 10.4209/aaqr.230151.  
+
+---
+
+# PHỤ LỤC
+
+## PHỤ LỤC A: DANH SÁCH 119 ĐẶC TRƯNG KỸ NGHỆ TEMPORAL (ANTI-LEAKAGE)
+- **Raw Features (4):** `nhiet_do`, `do_am`, `diem_suong`, `co2`
+- **Calendar Features (13):** `hour`, `day_of_week`, `day_of_month`, `month`, `is_weekend`, `is_rush_hour`, `season`, `sin_hour`, `cos_hour`, `sin_month`, `cos_month`, `sin_dow`, `cos_dow`
+- **Lag Features (40):** `pm25_lag_1h`, `pm25_lag_2h`, `pm25_lag_3h`, `pm25_lag_6h`, `pm25_lag_12h`, `pm25_lag_24h`, `pm25_lag_48h`, `pm25_lag_168h` và các biến trễ tương ứng của `nhiet_do`, `do_am`, `diem_suong`, `co2`.
+- **Rolling Features (24):** Cửa sổ $3h, 6h, 12h, 24h, 48h, 168h$ áp dụng `.shift(1)` cho các hàm `mean`, `std`, `min`, `max`.
+- **EWM Features (6):** `ewm_mean_12h`, `ewm_std_12h`, `ewm_mean_24h`, `ewm_std_24h`, `ewm_mean_48h`, `ewm_std_48h` áp dụng `.shift(1)`.
+- **Diff Features (4):** `diff_1h`, `diff_24h`, `pct_change_1h`, `pct_change_24h` áp dụng `.shift(1)`.
+- **Domain Features (28):** Tỷ lệ tương tác khí tượng, Fourier seasonal terms ($k=1..6$), và các biến đếm trễ.
+
+## PHỤ LỤC B: CẤU HÌNH SIÊU THAM SỐ OPTUNA VÀ MÔ HÌNH EXPORT
+- **LightGBM:** `num_leaves=31`, `learning_rate=0.03`, `n_estimators=500`, `subsample=0.8`, `colsample_bytree=0.8`.
+- **GRU:** `hidden_dim=64`, `num_layers=2`, `dropout=0.2`, `learning_rate=0.001`, `batch_size=64`, `optimizer=AdamW`.
+- **TFT:** `hidden_dim=32`, `attention_heads=4`, `dropout=0.1`, `learning_rate=0.001`.
+
+
+---
+
+# PHỤ LỤC
+
+## PHỤ LỤC A: DANH SÁCH 119 ĐẶC TRƯNG KỸ NGHỆ TEMPORAL (ANTI-LEAKAGE)
+- **Raw Features (4):** `nhiet_do`, `do_am`, `diem_suong`, `co2`
+- **Calendar Features (13):** `hour`, `day_of_week`, `day_of_month`, `month`, `is_weekend`, `is_rush_hour`, `season`, `sin_hour`, `cos_hour`, `sin_month`, `cos_month`, `sin_dow`, `cos_dow`
+- **Lag Features (40):** `pm25_lag_1h`, `pm25_lag_2h`, `pm25_lag_3h`, `pm25_lag_6h`, `pm25_lag_12h`, `pm25_lag_24h`, `pm25_lag_48h`, `pm25_lag_168h` và các biến trễ tương ứng của `nhiet_do`, `do_am`, `diem_suong`, `co2`.
+- **Rolling Features (24):** Cửa sổ $3h, 6h, 12h, 24h, 48h, 168h$ áp dụng `.shift(1)` cho các hàm `mean`, `std`, `min`, `max`.
+- **EWM Features (6):** `ewm_mean_12h`, `ewm_std_12h`, `ewm_mean_24h`, `ewm_std_24h`, `ewm_mean_48h`, `ewm_std_48h` áp dụng `.shift(1)`.
+- **Diff Features (4):** `diff_1h`, `diff_24h`, `pct_change_1h`, `pct_change_24h` áp dụng `.shift(1)`.
+- **Domain Features (28):** Tỷ lệ tương tác khí tượng, Fourier seasonal terms ($k=1..6$), và các biến đếm trễ.
+
+## PHỤ LỤC B: CẤU HÌNH SIÊU THAM SỐ OPTUNA VÀ MÔ HÌNH EXPORT
+- **LightGBM:** `num_leaves=31`, `learning_rate=0.03`, `n_estimators=500`, `subsample=0.8`, `colsample_bytree=0.8`.
+- **GRU:** `hidden_dim=64`, `num_layers=2`, `dropout=0.2`, `learning_rate=0.001`, `batch_size=64`, `optimizer=AdamW`.
+- **TFT:** `hidden_dim=32`, `attention_heads=4`, `dropout=0.1`, `learning_rate=0.001`.
+
 [15] L. Breiman, "Random forests," *Machine Learning*, vol. 45, no. 1, pp. 5-32, 2001.  
 [16] G. Ke et al., "LightGBM: A highly efficient gradient boosting decision tree," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2017, pp. 3146-3154.  
