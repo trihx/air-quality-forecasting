@@ -56,6 +56,7 @@ jobs:
     timeout-minutes: 2
     permissions:
       actions: write
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: gautamkrishnar/keepalive-workflow@v2
