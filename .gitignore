@@ -47,15 +47,11 @@ desktop.ini
 *.pem
 
 # ══════════════════════════════════════════════════════════════
-# Docs — Giữ markdown, loại bỏ sách PDF/EPUB (bản quyền + nặng)
+# Docs — Chỉ push các file PDF (loại bỏ md, docx, txt, epub...)
 # ══════════════════════════════════════════════════════════════
-docs/*.pdf
-docs/*.epub
-docs/*.pptx
-docs/litteratures/
-docs/references/
-docs/templates/
-docs/pdf_excerpt.txt
+docs/**
+!docs/**/
+!docs/**/*.pdf
 
 # ══════════════════════════════════════════════════════════════
 # Dataset — Giữ raw data, loại processed (có thể tái tạo)
@@ -101,13 +97,12 @@ error.log
 .chroma_db/
 src/.chroma_db/
 
-# ── Papers (Đã xóa các thư mục trống) ──
-
 # ── UV Cache ──
 .uv_cache/
 
-# ── Agent Memory (cá nhân, không share) ──
-.agents/memory/
+# ── Agents (không push lên github) ──
+.agents/
+/.agents
 
 # ── Notebooks (hiện tại rỗng) ──
 notebooks/*
