@@ -3,12 +3,14 @@
 Implements techniques to artificially augment time series sequences
 to prevent deep learning models from overfitting to sensor noise.
 """
+
 import numpy as np
 import torch
 
+
 class TimeSeriesAugmenter:
     """Applies data augmentation to time series sequences."""
-    
+
     def __init__(self, technique="jitter", sigma=0.05):
         """
         Args:
@@ -17,14 +19,14 @@ class TimeSeriesAugmenter:
         """
         self.technique = technique
         self.sigma = sigma
-        
+
     def __call__(self, X):
         """
         Apply augmentation to a batch of sequences.
-        
+
         Args:
             X (np.ndarray or torch.Tensor): Input sequences of shape (batch, seq_len, features)
-            
+
         Returns:
             Augmented sequences.
         """
@@ -33,7 +35,7 @@ class TimeSeriesAugmenter:
         elif self.technique == "scale":
             return self.scale(X)
         return X
-        
+
     def jitter(self, X):
         """
         Add Gaussian noise to the sequences.
@@ -45,7 +47,7 @@ class TimeSeriesAugmenter:
         else:
             noise = np.random.normal(loc=0, scale=self.sigma, size=X.shape)
             return X + noise
-            
+
     def scale(self, X):
         """
         Scale the sequences by a random factor.

@@ -39,10 +39,13 @@ class APIClient:
 
     def predict(self, horizon: int, model_name: str = "gru") -> dict:
         """Run PM2.5 prediction."""
-        return self._post("/api/v1/predict", json={
-            "horizon": horizon,
-            "model_name": model_name,
-        })
+        return self._post(
+            "/api/v1/predict",
+            json={
+                "horizon": horizon,
+                "model_name": model_name,
+            },
+        )
 
     # ── Experiments ──
 
@@ -66,29 +69,38 @@ class APIClient:
 
     def create_run(self, experiment_id: int, horizon: int) -> dict:
         """Create a new run."""
-        return self._post("/api/v1/runs", json={
-            "experiment_id": experiment_id,
-            "horizon": horizon,
-        })
+        return self._post(
+            "/api/v1/runs",
+            json={
+                "experiment_id": experiment_id,
+                "horizon": horizon,
+            },
+        )
 
     # ── Run Models ──
 
     def create_run_model(self, run_id: int, model_name: str, **kwargs) -> dict:
         """Log a model within a run."""
-        return self._post("/api/v1/run-models", json={
-            "run_id": run_id,
-            "model_name": model_name,
-            **kwargs,
-        })
+        return self._post(
+            "/api/v1/run-models",
+            json={
+                "run_id": run_id,
+                "model_name": model_name,
+                **kwargs,
+            },
+        )
 
     # ── Metrics ──
 
     def create_metric(self, run_model_id: int, **kwargs) -> dict:
         """Log metrics for a model."""
-        return self._post("/api/v1/metrics", json={
-            "run_model_id": run_model_id,
-            **kwargs,
-        })
+        return self._post(
+            "/api/v1/metrics",
+            json={
+                "run_model_id": run_model_id,
+                **kwargs,
+            },
+        )
 
     def get_metrics(self, run_model_id: int) -> list[dict]:
         """Get metrics for a model."""

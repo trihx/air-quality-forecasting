@@ -30,7 +30,6 @@ Normalized output format:
 from __future__ import annotations
 
 import json
-import math
 import re
 from pathlib import Path
 
@@ -102,7 +101,7 @@ def _normalize_model_entry(model_name: str, model_data: dict) -> dict:
     mae = float(raw_mae) if raw_mae is not None else float("inf")
     rmse_raw = model_data.get("rmse")
     rmse = float(rmse_raw) if rmse_raw is not None else float("inf")
-    
+
     mase_val = extract_mase(model_data)
     mase = mase_val if mase_val > 0.0 else float("inf")
 
@@ -115,7 +114,7 @@ def _normalize_model_entry(model_name: str, model_data: dict) -> dict:
 
     bias_raw = model_data.get("forecast_bias")
     forecast_bias = float(bias_raw) if bias_raw is not None else None
-    
+
     return {
         "mae": mae,
         "rmse": rmse,
@@ -163,11 +162,13 @@ def _compute_top_n(
         for model_name, metrics in h_models.items():
             if model_name in exclude:
                 continue
-            ranked.append({
-                "model": model_name,
-                "mae": metrics["mae"],
-                "mase": metrics["mase"],
-            })
+            ranked.append(
+                {
+                    "model": model_name,
+                    "mae": metrics["mae"],
+                    "mase": metrics["mase"],
+                }
+            )
         ranked.sort(key=lambda x: x["mase"])
         top[h] = ranked[:n]
     return top
@@ -230,8 +231,8 @@ def _safe_json_loads(text: str) -> dict:
     parsing so the snapshot is never silently skipped.
     """
     # Replace standalone NaN / Infinity tokens (not inside strings)
-    sanitised = re.sub(r'\bNaN\b', 'null', text)
-    sanitised = re.sub(r'\b-?Infinity\b', 'null', sanitised)
+    sanitised = re.sub(r"\bNaN\b", "null", text)
+    sanitised = re.sub(r"\b-?Infinity\b", "null", sanitised)
     return json.loads(sanitised)
 
 
@@ -244,13 +245,13 @@ def load_all_normalized() -> dict[str, dict]:
     snapshots: dict[str, dict] = {}
     if not RUNS_DIR.exists():
         return snapshots
-        
+
     def _sort_key(path: Path) -> tuple[int, str]:
-        match = re.match(r'^v(\d+)', path.stem)
+        match = re.match(r"^v(\d+)", path.stem)
         if match:
             return (int(match.group(1)), path.stem)
         return (999, path.stem)
-        
+
     for jpath in sorted(RUNS_DIR.glob("*.json"), key=_sort_key):
         try:
             raw = _safe_json_loads(jpath.read_text(encoding="utf-8"))
@@ -259,7 +260,7 @@ def load_all_normalized() -> dict[str, dict]:
             snapshots[version] = normalized
         except (json.JSONDecodeError, KeyError) as exc:
             import logging
+
             logging.warning("snapshot_adapter: skipped %s — %s", jpath.name, exc)
             continue
     return snapshots
-

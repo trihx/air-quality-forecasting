@@ -145,23 +145,27 @@ def verify_integrity():
         fpath = PROJECT_ROOT / "models" / "exported" / filename
 
         if not fpath.exists():
-            results.append(VerifyItemResponse(
-                file_path=f"models/exported/{filename}",
-                file_type="model",
-                expected_md5=expected,
-                current_md5="",
-                status="MISSING",
-            ))
+            results.append(
+                VerifyItemResponse(
+                    file_path=f"models/exported/{filename}",
+                    file_type="model",
+                    expected_md5=expected,
+                    current_md5="",
+                    status="MISSING",
+                )
+            )
         else:
             current = _md5_file(fpath)
-            results.append(VerifyItemResponse(
-                file_path=f"models/exported/{filename}",
-                file_type="model",
-                expected_md5=expected,
-                current_md5=current,
-                status="MATCH" if current == expected else "MISMATCH",
-                file_size_bytes=fpath.stat().st_size,
-            ))
+            results.append(
+                VerifyItemResponse(
+                    file_path=f"models/exported/{filename}",
+                    file_type="model",
+                    expected_md5=expected,
+                    current_md5=current,
+                    status="MATCH" if current == expected else "MISMATCH",
+                    file_size_bytes=fpath.stat().st_size,
+                )
+            )
 
     # Verify data files
     for data_file in manifest.get("data_files", []):
@@ -170,23 +174,27 @@ def verify_integrity():
         fpath = PROJECT_ROOT / rel_path
 
         if not fpath.exists():
-            results.append(VerifyItemResponse(
-                file_path=rel_path,
-                file_type="data",
-                expected_md5=expected,
-                current_md5="",
-                status="MISSING",
-            ))
+            results.append(
+                VerifyItemResponse(
+                    file_path=rel_path,
+                    file_type="data",
+                    expected_md5=expected,
+                    current_md5="",
+                    status="MISSING",
+                )
+            )
         else:
             current = _md5_file(fpath)
-            results.append(VerifyItemResponse(
-                file_path=rel_path,
-                file_type="data",
-                expected_md5=expected,
-                current_md5=current,
-                status="MATCH" if current == expected else "MISMATCH",
-                file_size_bytes=fpath.stat().st_size,
-            ))
+            results.append(
+                VerifyItemResponse(
+                    file_path=rel_path,
+                    file_type="data",
+                    expected_md5=expected,
+                    current_md5=current,
+                    status="MATCH" if current == expected else "MISMATCH",
+                    file_size_bytes=fpath.stat().st_size,
+                )
+            )
 
     # Summary
     passed = sum(1 for r in results if r.status == "MATCH")

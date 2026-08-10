@@ -68,13 +68,7 @@ def list_experiments(
     db: Session = Depends(get_db),
 ):
     """List all experiments, newest first."""
-    experiments = (
-        db.query(Experiment)
-        .order_by(Experiment.created_at.desc())
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+    experiments = db.query(Experiment).order_by(Experiment.created_at.desc()).offset(skip).limit(limit).all()
     results = []
     for exp in experiments:
         run_count = db.query(func.count(Run.id)).filter(Run.experiment_id == exp.id).scalar()
@@ -239,7 +233,6 @@ def list_metrics(run_model_id: int, db: Session = Depends(get_db)):
     return [MetricResponse.model_validate(m) for m in metrics]
 
 
-
 @router.get("/experiments/{experiment_id}/summary")
 def get_experiment_summary(experiment_id: int, db: Session = Depends(get_db)):
     """Get full experiment summary: experiment → runs → models → metrics."""
@@ -274,19 +267,23 @@ def _build_experiment_summary(exp: Experiment, db: Session) -> dict:
                 }
                 for m in metrics
             ]
-            models_data.append({
-                "id": rm.id,
-                "model_name": rm.model_name,
-                "training_time_s": rm.training_time_s,
-                "hyperparameters": rm.hyperparameters,
-                "metrics": metrics_data,
-            })
-        runs_data.append({
-            "id": run.id,
-            "horizon": run.horizon,
-            "status": run.status,
-            "models": models_data,
-        })
+            models_data.append(
+                {
+                    "id": rm.id,
+                    "model_name": rm.model_name,
+                    "training_time_s": rm.training_time_s,
+                    "hyperparameters": rm.hyperparameters,
+                    "metrics": metrics_data,
+                }
+            )
+        runs_data.append(
+            {
+                "id": run.id,
+                "horizon": run.horizon,
+                "status": run.status,
+                "models": models_data,
+            }
+        )
 
     return {
         "id": exp.id,
@@ -297,4 +294,3 @@ def _build_experiment_summary(exp: Experiment, db: Session) -> dict:
         "created_at": exp.created_at.isoformat() if exp.created_at else None,
         "runs": runs_data,
     }
-

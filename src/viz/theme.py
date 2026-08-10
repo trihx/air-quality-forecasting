@@ -125,6 +125,7 @@ _STYLES_DIR = Path(__file__).parent / "styles"
 # Helper Functions
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+
 def get_theme(mode: str = "light") -> dict:
     """Get theme dict by mode name.
 
@@ -149,38 +150,40 @@ def apply_mpl_theme(mode: str = "light") -> None:
     import matplotlib.pyplot as plt
 
     theme = get_theme(mode)
-    plt.rcParams.update({
-        # Colors
-        "figure.facecolor": theme["figure_facecolor"],
-        "axes.facecolor": theme["axes_facecolor"],
-        "axes.edgecolor": theme["spine_color"],
-        "axes.labelcolor": theme["text_color"],
-        "text.color": theme["text_color"],
-        "xtick.color": theme["text_muted"],
-        "ytick.color": theme["text_muted"],
-        "grid.color": theme["grid_color"],
-        "grid.alpha": TOKENS["grid_alpha"],
-        # Font
-        "font.family": "sans-serif",
-        "font.sans-serif": ["Inter", "Arial", "DejaVu Sans"],
-        "font.size": TOKENS["font_size_base"],
-        "axes.titlesize": TOKENS["font_size_title"],
-        "axes.labelsize": TOKENS["font_size_label"],
-        "xtick.labelsize": TOKENS["font_size_tick"],
-        "ytick.labelsize": TOKENS["font_size_tick"],
-        "legend.fontsize": TOKENS["font_size_legend"],
-        # Lines
-        "lines.linewidth": TOKENS["line_width_primary"],
-        "lines.markersize": 5,
-        # Grid & Spines
-        "axes.grid": True,
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-        # DPI & Layout
-        "figure.dpi": TOKENS["dpi_screen"],
-        # Color cycle
-        "axes.prop_cycle": plt.cycler(color=PALETTE_CATEGORICAL),
-    })
+    plt.rcParams.update(
+        {
+            # Colors
+            "figure.facecolor": theme["figure_facecolor"],
+            "axes.facecolor": theme["axes_facecolor"],
+            "axes.edgecolor": theme["spine_color"],
+            "axes.labelcolor": theme["text_color"],
+            "text.color": theme["text_color"],
+            "xtick.color": theme["text_muted"],
+            "ytick.color": theme["text_muted"],
+            "grid.color": theme["grid_color"],
+            "grid.alpha": TOKENS["grid_alpha"],
+            # Font
+            "font.family": "sans-serif",
+            "font.sans-serif": ["Inter", "Arial", "DejaVu Sans"],
+            "font.size": TOKENS["font_size_base"],
+            "axes.titlesize": TOKENS["font_size_title"],
+            "axes.labelsize": TOKENS["font_size_label"],
+            "xtick.labelsize": TOKENS["font_size_tick"],
+            "ytick.labelsize": TOKENS["font_size_tick"],
+            "legend.fontsize": TOKENS["font_size_legend"],
+            # Lines
+            "lines.linewidth": TOKENS["line_width_primary"],
+            "lines.markersize": 5,
+            # Grid & Spines
+            "axes.grid": True,
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            # DPI & Layout
+            "figure.dpi": TOKENS["dpi_screen"],
+            # Color cycle
+            "axes.prop_cycle": plt.cycler(color=PALETTE_CATEGORICAL),
+        }
+    )
 
 
 def annotation_bbox(mode: str = "light") -> dict:
@@ -206,14 +209,14 @@ def annotation_bbox(mode: str = "light") -> dict:
 
 def get_plotly_annotation_style(mode: str = "light", overrides: dict | None = None) -> dict:
     """Get standard Plotly annotation style dict for consistent chart labels.
-    
+
     Designed to support high contrast (Grayscale printing) by using strong
     white backgrounds and dark text to avoid gridline overlap.
-    
+
     Args:
         mode: 'light' or 'dark' (defaults to light for best print contrast).
         overrides: Optional dict to override default values.
-        
+
     Returns:
         Dict suitable for unpacking into fig.add_annotation(**kwargs).
     """
@@ -222,14 +225,14 @@ def get_plotly_annotation_style(mode: str = "light", overrides: dict | None = No
         "showarrow": False,
         "font": dict(
             size=TOKENS["font_size_annotation"] + 1,  # +1 for slightly better readability
-            color="#111111" if mode == "light" else theme["text_color"]
+            color="#111111" if mode == "light" else theme["text_color"],
         ),
         "bgcolor": "rgba(255, 255, 255, 0.9)" if mode == "light" else "rgba(26, 29, 35, 0.9)",
         "bordercolor": "rgba(0, 0, 0, 0.2)" if mode == "light" else "rgba(255, 255, 255, 0.2)",
         "borderwidth": 1,
         "borderpad": 3,
     }
-    
+
     if overrides:
         # Deep update for nested dicts like font
         for k, v in overrides.items():
@@ -237,7 +240,7 @@ def get_plotly_annotation_style(mode: str = "light", overrides: dict | None = No
                 base_style["font"].update(v)
             else:
                 base_style[k] = v
-                
+
     return base_style
 
 
@@ -246,20 +249,14 @@ def get_plotly_annotation_style(mode: str = "light", overrides: dict | None = No
 # New code MUST use `src.viz.chart_factory` instead.
 # ══════════════════════════════════════════════════════════════════════
 
+
 def get_plotly_config(filename: str = "chart", scale: int = 3) -> dict:
     """Get standardized Plotly configuration for the dashboard.
 
     .. deprecated::
         Use ``src.viz.chart_factory.render_chart()`` which embeds config automatically.
     """
-    return {
-        "displayModeBar": True,
-        "toImageButtonOptions": {
-            "format": "png",
-            "filename": filename,
-            "scale": scale
-        }
-    }
+    return {"displayModeBar": True, "toImageButtonOptions": {"format": "png", "filename": filename, "scale": scale}}
 
 
 def get_plotly_template(mode: str = "light") -> dict:
@@ -292,7 +289,7 @@ def get_plotly_template(mode: str = "light") -> dict:
                 "yanchor": "top",
                 "y": -0.2,
                 "xanchor": "center",
-                "x": 0.5
+                "x": 0.5,
             },
             "hovermode": "x unified",
         }
@@ -310,12 +307,14 @@ def detect_streamlit_mode() -> str:
     """
     try:
         import streamlit as st
+
         base = st.get_option("theme.base")
         if base == "light":
             return "light"
     except Exception:
         pass
     return "dark"
+
 
 def apply_plotly_style(fig, height=450):
     """Apply standard Plotly template to a figure based on current Streamlit mode.

@@ -77,8 +77,7 @@ def identify_contiguous_segments(
         df[segment_col] = df[segment_col].map(seg_map).astype(int)
 
         logger.info(
-            f"[Segmenter] Dropped {n_dropped_segs} short segments "
-            f"({n_dropped_rows} rows, min_length={min_length})"
+            f"[Segmenter] Dropped {n_dropped_segs} short segments ({n_dropped_rows} rows, min_length={min_length})"
         )
 
     # Final stats
@@ -157,17 +156,18 @@ def validate_segment_boundaries(
         max_diff = time_diffs.max()
 
         if max_diff > max_gap_td:
-            violations.append({
-                "segment_id": seg_id,
-                "max_gap": str(max_diff),
-                "location": str(time_diffs.idxmax()),
-            })
+            violations.append(
+                {
+                    "segment_id": seg_id,
+                    "max_gap": str(max_diff),
+                    "location": str(time_diffs.idxmax()),
+                }
+            )
 
     if violations:
         for v in violations:
             logger.error(
-                f"[Segmenter] FALSE CONTINUITY in segment {v['segment_id']}: "
-                f"gap={v['max_gap']} at {v['location']}"
+                f"[Segmenter] FALSE CONTINUITY in segment {v['segment_id']}: gap={v['max_gap']} at {v['location']}"
             )
         raise ValueError(
             f"Found {len(violations)} segments with internal gaps > {max_allowed_gap_hours}h. "
@@ -175,7 +175,6 @@ def validate_segment_boundaries(
         )
 
     logger.info(
-        f"[Segmenter] ✅ All {df[segment_col].nunique()} segments validated "
-        f"(no gap > {max_allowed_gap_hours}h)"
+        f"[Segmenter] ✅ All {df[segment_col].nunique()} segments validated (no gap > {max_allowed_gap_hours}h)"
     )
     return True

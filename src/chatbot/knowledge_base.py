@@ -191,6 +191,7 @@ def _load_info_cards_from_db() -> list[dict]:
         if json_path.exists():
             try:
                 import json as _json
+
                 data = _json.loads(json_path.read_text(encoding="utf-8"))
                 cards = [
                     {

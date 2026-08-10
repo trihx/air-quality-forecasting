@@ -60,8 +60,5 @@ def create_fourier_features(
             df[f"fourier_weekly_cos_{k}"] = np.cos(2 * np.pi * k * t_week / 168)
             n_created += 2
 
-    logger.info(
-        f"Created {n_created} Fourier features "
-        f"(order={order}, daily={include_daily}, weekly={include_weekly})"
-    )
+    logger.info(f"Created {n_created} Fourier features (order={order}, daily={include_daily}, weekly={include_weekly})")
     return df

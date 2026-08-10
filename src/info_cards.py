@@ -8,7 +8,6 @@ the selected snapshot version to display version-specific information.
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import streamlit as st
@@ -24,6 +23,7 @@ RUNS_DIR = PROJECT_ROOT / "research" / "experiments" / "dashboard_runs"
 def load_all_snapshots() -> dict[str, dict]:
     """Load all version snapshots from dashboard_runs/, normalized."""
     from src.snapshot_adapter import load_all_normalized
+
     return load_all_normalized()
 
 
@@ -121,8 +121,9 @@ def cards_overview(version: str):
     changes = v.get("changes", {})
 
     from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Hướng dẫn: Tổng Quan",
         content.get_info_card_text("overview_guide", "Trang này trình bày bức tranh toàn cảnh..."),
@@ -160,8 +161,9 @@ def cards_overview(version: str):
 def cards_eda(version: str):
     """Info cards for EDA page."""
     from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Hướng dẫn: Phân Tích Khám Phá (EDA)",
         content.get_info_card_text("eda_guide", "Đang cập nhật..."),
@@ -189,6 +191,7 @@ def cards_hyperparams(version: str):
     """Info cards for Hyperparameters page."""
     v = get_version_data(version)
     from src.reporting.content import ContentManager
+
     content = ContentManager()
 
     render_info_card(
@@ -203,8 +206,7 @@ def cards_hyperparams(version: str):
         enabled = [k for k, v in feature_set.items() if v]
         render_info_card(
             f"Feature Set ({version})",
-            f"**{len(enabled)} feature groups enabled:**\n\n"
-            + "\n".join(f"- ✅ `{f}`" for f in sorted(enabled)),
+            f"**{len(enabled)} feature groups enabled:**\n\n" + "\n".join(f"- ✅ `{f}`" for f in sorted(enabled)),
             icon="🧬",
             collapsed=True,
         )
@@ -246,8 +248,9 @@ def cards_training(version: str):
     )
 
     from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Phương pháp & Tài liệu tham khảo",
         content.get_info_card_text("methodology_references", "Đang cập nhật..."),
@@ -268,8 +271,9 @@ def cards_experiment_runs(version: str):
     snapshots = load_all_snapshots()
 
     from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Hướng dẫn: Lịch Sử Thí Nghiệm",
         content.get_info_card_text("experiment_runs_guide", "Đang cập nhật...").format(len=len(snapshots)),
@@ -288,8 +292,9 @@ def cards_experiment_runs(version: str):
 def cards_multi_horizon(version: str):
     """Info cards for Multi-Horizon page."""
     from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Hướng dẫn: Kết Quả Multi-Horizon",
         content.get_info_card_text("multi_horizon_guide", "Đang cập nhật..."),
@@ -326,8 +331,9 @@ def cards_multi_horizon(version: str):
 def cards_actual_vs_predicted(version: str):
     """Info cards for Actual vs Predicted page."""
     from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Hướng dẫn: Actual vs Predicted",
         content.get_info_card_text("actual_vs_predicted_guide", "Đang cập nhật..."),
@@ -346,8 +352,9 @@ def cards_actual_vs_predicted(version: str):
 def cards_shap(version: str):
     """Info cards for SHAP page."""
     from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Hướng dẫn: Giải Thích Mô Hình (SHAP)",
         content.get_info_card_text("shap_guide", "Đang cập nhật..."),
@@ -365,10 +372,11 @@ def cards_shap(version: str):
 
 def cards_prediction_intervals(version: str):
     """Info cards for Prediction Intervals page."""
-    from src.reporting.content import ContentManager
     from src.frontend.citations import cite
+    from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Hướng dẫn: Khoảng Tin Cậy Dự Báo",
         content.get_info_card_text("pi_guide", "Đang cập nhật..."),
@@ -389,8 +397,9 @@ def cards_prediction_intervals(version: str):
 def cards_forecast(version: str):
     """Info cards for Forecast page."""
     from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Hướng dẫn: Dự Báo PM2.5",
         content.get_info_card_text("forecast_guide", "Đang cập nhật..."),
@@ -402,8 +411,9 @@ def cards_forecast(version: str):
 def cards_ai_assistant(version: str):
     """Info cards for AI Assistant page."""
     from src.reporting.content import ContentManager
+
     content = ContentManager()
-    
+
     render_info_card(
         "Hướng dẫn: Trợ Lý AI",
         content.get_info_card_text("ai_assistant_guide", "Đang cập nhật..."),

@@ -24,14 +24,14 @@ from src.viz.theme import PALETTE_CATEGORICAL
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 GRAYSCALE_MARKERS: list[dict[str, str]] = [
-    {"symbol": "circle",       "dash": "solid",       "hatch": ""},
-    {"symbol": "square",       "dash": "dash",        "hatch": "/"},
-    {"symbol": "diamond",      "dash": "dot",         "hatch": "\\"},
-    {"symbol": "triangle-up",  "dash": "dashdot",     "hatch": "x"},
-    {"symbol": "cross",        "dash": "longdash",    "hatch": "+"},
-    {"symbol": "star",         "dash": "longdashdot", "hatch": "."},
-    {"symbol": "hexagon",      "dash": "solid",       "hatch": "|"},
-    {"symbol": "pentagon",     "dash": "dash",        "hatch": "-"},
+    {"symbol": "circle", "dash": "solid", "hatch": ""},
+    {"symbol": "square", "dash": "dash", "hatch": "/"},
+    {"symbol": "diamond", "dash": "dot", "hatch": "\\"},
+    {"symbol": "triangle-up", "dash": "dashdot", "hatch": "x"},
+    {"symbol": "cross", "dash": "longdash", "hatch": "+"},
+    {"symbol": "star", "dash": "longdashdot", "hatch": "."},
+    {"symbol": "hexagon", "dash": "solid", "hatch": "|"},
+    {"symbol": "pentagon", "dash": "dash", "hatch": "-"},
 ]
 
 
@@ -68,11 +68,11 @@ COLORSCALES: dict[str, str | list] = {
     "sequential": "Viridis",
     "diverging": "RdBu_r",
     "pm25_aqi": [
-        [0.00, "#2E7D32"],   # Good         (0-12 µg/m³)  — dark green
-        [0.24, "#66BB6A"],   # Moderate low  (12-25)       — lighter green
-        [0.50, "#FDD835"],   # Moderate high (25-35)       — yellow
-        [0.75, "#FB8C00"],   # Unhealthy     (35-55)       — orange
-        [1.00, "#C62828"],   # Hazardous     (>55)         — dark red
+        [0.00, "#2E7D32"],  # Good         (0-12 µg/m³)  — dark green
+        [0.24, "#66BB6A"],  # Moderate low  (12-25)       — lighter green
+        [0.50, "#FDD835"],  # Moderate high (25-35)       — yellow
+        [0.75, "#FB8C00"],  # Unhealthy     (35-55)       — orange
+        [1.00, "#C62828"],  # Hazardous     (>55)         — dark red
     ],
     "correlation": "RdBu_r",
 }
@@ -82,10 +82,10 @@ COLORSCALES: dict[str, str | list] = {
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 MODEL_FAMILY_COLORS: dict[str, str] = {
-    "Baseline":       "#FF6B6B",   # Coral red
-    "Statistical":    "#60A5FA",   # Blue
-    "ML":             "#00D4AA",   # Teal
-    "Deep Learning":  "#A78BFA",   # Purple
-    "Transformer":    "#F472B6",   # Pink
-    "Ensemble":       "#FFE66D",   # Yellow/Gold
+    "Baseline": "#FF6B6B",  # Coral red
+    "Statistical": "#60A5FA",  # Blue
+    "ML": "#00D4AA",  # Teal
+    "Deep Learning": "#A78BFA",  # Purple
+    "Transformer": "#F472B6",  # Pink
+    "Ensemble": "#FFE66D",  # Yellow/Gold
 }

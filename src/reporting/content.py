@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+
 class ContentManager:
     """
     Manager class to handle loading and providing textual content for the dashboard.
@@ -12,6 +13,7 @@ class ContentManager:
         2. JSON export files (db_export/) — fallback for local dev
         3. Default string — last resort
     """
+
     def __init__(self, content_path: str = None):
         self._project_root = Path(__file__).resolve().parent.parent.parent
         if content_path is None:
@@ -19,7 +21,7 @@ class ContentManager:
             self.content_path = self._project_root / "research" / "experiments" / "dashboard_content.json"
         else:
             self.content_path = Path(content_path)
-        
+
         self.data = self._load_content()
         self._info_cards_cache: dict | None = None
 
@@ -27,7 +29,7 @@ class ContentManager:
         if not self.content_path.exists():
             return {"versions": {}, "global": {}}
         try:
-            with open(self.content_path, "r", encoding="utf-8") as f:
+            with open(self.content_path, encoding="utf-8") as f:
                 return json.load(f)
         except Exception:
             return {"versions": {}, "global": {}}
@@ -39,7 +41,7 @@ class ContentManager:
     def get_global_content(self) -> dict:
         """Get global content that is shared across versions (e.g. literature, general info cards)."""
         return self.data.get("global", {})
-    
+
     # === Helpers for Overview Page ===
     def get_overview_achievements(self, version: str) -> list:
         v_data = self.get_version_content(version)
@@ -48,7 +50,7 @@ class ContentManager:
     def get_overview_limitations(self, version: str) -> list:
         v_data = self.get_version_content(version)
         return v_data.get("overview", {}).get("limitations", ["Đang cập nhật..."])
-    
+
     def get_overview_experiments(self, version: str) -> list:
         v_data = self.get_version_content(version)
         return v_data.get("overview", {}).get("experiments", [])
@@ -56,7 +58,7 @@ class ContentManager:
     # === Helpers for Multi-Horizon Page ===
     def get_multi_horizon_insight(self) -> dict:
         return self.get_global_content().get("multi_horizon", {}).get("insight_no_single_best", {})
-    
+
     def get_dm_test_data(self) -> list:
         return self.get_global_content().get("multi_horizon", {}).get("dm_test", [])
 
@@ -78,7 +80,7 @@ class ContentManager:
         json_path = self._project_root / "research" / "experiments" / "db_export" / "info_cards.json"
         if json_path.exists():
             try:
-                with open(json_path, "r", encoding="utf-8") as f:
+                with open(json_path, encoding="utf-8") as f:
                     self._info_cards_cache = json.load(f)
                     return self._info_cards_cache
             except Exception:
@@ -97,6 +99,7 @@ class ContentManager:
         # Tier 1: API (PostgreSQL)
         try:
             from src.frontend.api_client import APIClient
+
             client = APIClient()
             result = client.get_info_card(key, quiet=True)
             if isinstance(result, dict) and "content" in result:
@@ -113,4 +116,3 @@ class ContentManager:
 
         # Tier 3: Default string
         return default
-

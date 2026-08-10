@@ -13,10 +13,10 @@ import streamlit as st
 from src.chatbot.provider_config import (
     LOCAL_MODEL_RECOMMENDATIONS,
     PROVIDER_REGISTRY,
+    detect_available_providers,
+    get_provider_from_registry,
     mask_api_key,
     validate_provider_connection,
-    get_provider_from_registry,
-    detect_available_providers,
 )
 
 # ── Preset questions for thesis defense preparation ──
@@ -199,9 +199,7 @@ def _render_provider_config():
             for m in LOCAL_MODEL_RECOMMENDATIONS:
                 star = " ⭐" if m["recommended"] else ""
                 st.markdown(
-                    f"**{m['name']}{star}**\n"
-                    f"- VRAM: {m['vram']} | {m['vietnamese']}\n"
-                    f"- {m['best_for']}",
+                    f"**{m['name']}{star}**\n- VRAM: {m['vram']} | {m['vietnamese']}\n- {m['best_for']}",
                 )
 
     # ── Status summary ──
@@ -242,14 +240,13 @@ def page_ai_assistant(results):
 
     # ── Version-aware info cards ──
     from src.info_cards import cards_ai_assistant, get_current_version, render_version_badge
+
     ver = get_current_version()
     render_version_badge(ver)
     cards_ai_assistant(ver)
 
     # ── Active provider status ──
-    providers = detect_available_providers(
-        st.session_state.get("llm_provider_keys", {})
-    )
+    providers = detect_available_providers(st.session_state.get("llm_provider_keys", {}))
     cloud_providers = [p for p in providers if not p.is_local]
     local_providers = [p for p in providers if p.is_local]
 
@@ -265,9 +262,7 @@ def page_ai_assistant(results):
         elif local_providers:
             st.info("🖥️ AI: **LM Studio** (local)")
         else:
-            st.warning(
-                "⚠️ Chưa cấu hình AI — vào **⚙️ Cấu Hình AI Provider** ở sidebar"
-            )
+            st.warning("⚠️ Chưa cấu hình AI — vào **⚙️ Cấu Hình AI Provider** ở sidebar")
 
     with col_info:
         # Show fallback chain
@@ -368,9 +363,7 @@ def page_ai_assistant(results):
                 history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.chat_messages[-6:]]
 
                 # Get providers
-                current_providers = detect_available_providers(
-                    st.session_state.get("llm_provider_keys", {})
-                )
+                current_providers = detect_available_providers(st.session_state.get("llm_provider_keys", {}))
 
                 response = st.write_stream(
                     chat_stream(

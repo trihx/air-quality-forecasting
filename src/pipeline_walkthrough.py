@@ -11,16 +11,18 @@ Uses pre-computed results for instant display + selective live demos.
 import json
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
 
 from src.frontend.citations import cite, render_references_section
-from src.viz.chart_factory import chart as _chart, render_chart as _render_chart, add_baseline
+from src.viz.chart_factory import render_chart as _render_chart
 
-PROJECT_ROOT = Path(__file__).resolve().parent if Path(__file__).resolve().parent.name != "src" else Path(__file__).resolve().parent.parent
+PROJECT_ROOT = (
+    Path(__file__).resolve().parent
+    if Path(__file__).resolve().parent.name != "src"
+    else Path(__file__).resolve().parent.parent
+)
 
 # Try to find project root properly
 for candidate in [Path.cwd(), Path(__file__).resolve().parent, Path(__file__).resolve().parent.parent]:
@@ -33,12 +35,13 @@ def _load_standardized_metrics() -> dict:
     """Load pre-computed standardized metrics."""
     try:
         from src.snapshot_adapter import load_all_normalized
+
         snapshots = load_all_normalized()
         if "v9_multi_resolution" in snapshots:
             return snapshots["v9_multi_resolution"]
     except ImportError:
         pass
-        
+
     path = PROJECT_ROOT / "research" / "experiments" / "standardized_metrics.json"
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
@@ -47,8 +50,7 @@ def _load_standardized_metrics() -> dict:
 
 @st.cache_data(ttl=3600)
 def _get_pipeline_metrics() -> dict:
-    import os
-    from datetime import datetime
+
     processed = PROJECT_ROOT / "dataset" / "processed"
     datasets = [
         ("marts_features.csv", "1h"),
@@ -59,16 +61,20 @@ def _get_pipeline_metrics() -> dict:
     features_count = 0
     for filename, label in datasets:
         path = processed / filename
-        if not path.exists(): continue
+        if not path.exists():
+            continue
         try:
             with open(path, encoding="utf-8") as f:
                 header = f.readline()
                 cols = len(header.strip().split(","))
                 rows = sum(1 for _ in f)
             resolutions[label] = {"rows": rows, "cols": cols}
-            if label == "1h": features_count = cols
-        except Exception: continue
+            if label == "1h":
+                features_count = cols
+        except Exception:
+            continue
     return {"resolutions": resolutions, "features_count": features_count}
+
 
 def _render_custom_metric(label, value, icon=""):
     """Render a custom metric card that prevents truncation and supports wrapping."""
@@ -80,7 +86,7 @@ def _render_custom_metric(label, value, icon=""):
             <span style="font-size: 1.25rem; font-weight: 600; line-height: 1.4; word-break: break-word; white-space: normal;">{value}</span>
         </div>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
 
@@ -103,10 +109,14 @@ def _step_data_collection():
     )
 
     col1, col2, col3, col4 = st.columns(4)
-    with col1: _render_custom_metric("Tổng Records", "209,397", "📦")
-    with col2: _render_custom_metric("Thời gian", "3.1 năm", "📅")
-    with col3: _render_custom_metric("Tần suất", "~2 phút/lần", "⏱️")
-    with col4: _render_custom_metric("Biến số", "5 (PM2.5, Nhiệt độ, Độ ẩm, Điểm sương, CO₂)", "📊")
+    with col1:
+        _render_custom_metric("Tổng Records", "209,397", "📦")
+    with col2:
+        _render_custom_metric("Thời gian", "3.1 năm", "📅")
+    with col3:
+        _render_custom_metric("Tần suất", "~2 phút/lần", "⏱️")
+    with col4:
+        _render_custom_metric("Biến số", "5 (PM2.5, Nhiệt độ, Độ ẩm, Điểm sương, CO₂)", "📊")
 
     st.markdown("#### 📋 Mô tả biến")
     var_data = {
@@ -119,6 +129,7 @@ def _step_data_collection():
     # Try to show sample raw data
     try:
         from src.data.loader import load_raw_data
+
         with st.expander("👀 Xem dữ liệu thô (100 dòng đầu)", expanded=False):
             df_raw = load_raw_data()
             st.dataframe(df_raw.head(100), use_container_width=True)
@@ -148,9 +159,18 @@ def _step_data_cleaning():
     # Cleaning pipeline steps
     steps = [
         ("1️⃣ Xóa duplicates", "Loại bỏ bản ghi trùng lặp theo timestamp"),
-        (f"2️⃣ Domain Bounds {cite('who2021')}", "PM2.5 ∈ [0, 500] µg/m³ — Cắt ngưỡng vật lý theo WHO guidelines (AQI limit)"),
-        (f"3️⃣ Outlier detection", "IQR 3.0 cho các biến môi trường phụ (Nhiệt độ, v.v.). ĐẶC BIỆT: KHÔNG DÙNG cho PM2.5 để tránh bẫy 'Outlier Removal Trap'."),
-        (f"4️⃣ Resampling {cite('barkjohn2021')}", "Từ ~2 phút → đa độ phân giải (15m, 30m, 1h) bằng mean aggregation. v9 phát hiện 30m là tối ưu."),
+        (
+            f"2️⃣ Domain Bounds {cite('who2021')}",
+            "PM2.5 ∈ [0, 500] µg/m³ — Cắt ngưỡng vật lý theo WHO guidelines (AQI limit)",
+        ),
+        (
+            "3️⃣ Outlier detection",
+            "IQR 3.0 cho các biến môi trường phụ (Nhiệt độ, v.v.). ĐẶC BIỆT: KHÔNG DÙNG cho PM2.5 để tránh bẫy 'Outlier Removal Trap'.",
+        ),
+        (
+            f"4️⃣ Resampling {cite('barkjohn2021')}",
+            "Từ ~2 phút → đa độ phân giải (15m, 30m, 1h) bằng mean aggregation. v9 phát hiện 30m là tối ưu.",
+        ),
     ]
 
     for title, desc in steps:
@@ -170,9 +190,12 @@ def _step_data_cleaning():
     c_1h = f"~{metrics['resolutions'].get('1h', {}).get('rows', 27649):,} (1h)"
     c_30m = f"~{metrics['resolutions'].get('30m', {}).get('rows', 55000):,} (30m)"
     c_15m = f"~{metrics['resolutions'].get('15m', {}).get('rows', 110000):,} (15m)"
-    with col1: _render_custom_metric("Trước", "209,397 rows")
-    with col2: _render_custom_metric("Sau cleaning", f"{c_1h} / {c_30m} / {c_15m}")
-    with col3: _render_custom_metric("Missing", "~85% gaps (IoT sensor)")
+    with col1:
+        _render_custom_metric("Trước", "209,397 rows")
+    with col2:
+        _render_custom_metric("Sau cleaning", f"{c_1h} / {c_30m} / {c_15m}")
+    with col3:
+        _render_custom_metric("Missing", "~85% gaps (IoT sensor)")
 
     with st.expander("💡 Tại sao KHÔNG DÙNG IQR cho PM2.5?", expanded=False):
         st.markdown(
@@ -231,11 +254,13 @@ def _get_dashboard_content():
 def _step_feature_engineering():
     """Step 4: Feature Engineering."""
     metrics = _get_pipeline_metrics()
-    f_count = metrics.get('features_count', 121)
-    
+    f_count = metrics.get("features_count", 121)
+
     content = _get_dashboard_content()
-    feat_explanation = content.get("pipeline_walkthrough", {}).get("feature_engineering", {}).get(
-        "feature_count_explanation", f"Tổng số cột đọc được: {f_count}"
+    feat_explanation = (
+        content.get("pipeline_walkthrough", {})
+        .get("feature_engineering", {})
+        .get("feature_count_explanation", f"Tổng số cột đọc được: {f_count}")
     )
 
     st.markdown(
@@ -244,7 +269,7 @@ def _step_feature_engineering():
                 border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(245,158,11,0.2);">
         <div style="font-size: 1.3rem; font-weight: 700; color: #F59E0B;">
-            🛠️ Bước 4: Feature Engineering {cite('christ2018')}
+            🛠️ Bước 4: Feature Engineering {cite("christ2018")}
         </div>
         <div style="opacity: 0.7; margin-top: 0.5rem;">
             Từ 5 biến gốc → 119 Features ({f_count} tổng số cột - 1 Target - 1 Metadata)
@@ -287,12 +312,12 @@ def _step_feature_engineering():
     st.markdown(
         f"""
         <div style="background: rgba(245,158,11,0.1); border-left: 4px solid #F59E0B; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
-            <span style="font-size: 1.1em; font-weight: 600; color: #F59E0B;">⚠️ Anti-Leakage</span> {cite('hyndman2021')}<br><br>
+            <span style="font-size: 1.1em; font-weight: 600; color: #F59E0B;">⚠️ Anti-Leakage</span> {cite("hyndman2021")}<br><br>
             Tất cả features dùng target (diff, pct_change, ratio) đều áp dụng <code>shift(1)</code> — chỉ dùng dữ liệu QUÁ KHỨ.<br>
             Kiểm tra: <code>|corr(feature, target)| < 0.99</code> cho mọi feature.
         </div>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
     # Live demo - Feature Builder
@@ -345,9 +370,21 @@ def _step_imputation():
     )
 
     tiers = [
-        (f"🟢 Gap ngắn (≤6 rows) {cite('moritz2015')}", "Cubic Spline Interpolation", "Tương đương: 6h (1h) | 3h (30m) | 1.5h (15m)"),
-        (f"🟡 Gap trung bình (6-24 rows) {cite('troyanskaya2001')}", "KNN Multivariate (k=5)", "Tương đương: 24h (1h) | 12h (30m) | 6h (15m)"),
-        (f"🔴 Gap dài (>24 rows) {cite('moritz2015')}", "DROP — Không recover", "Bỏ qua các đứt gãy quá lớn để tránh noise"),
+        (
+            f"🟢 Gap ngắn (≤6 rows) {cite('moritz2015')}",
+            "Cubic Spline Interpolation",
+            "Tương đương: 6h (1h) | 3h (30m) | 1.5h (15m)",
+        ),
+        (
+            f"🟡 Gap trung bình (6-24 rows) {cite('troyanskaya2001')}",
+            "KNN Multivariate (k=5)",
+            "Tương đương: 24h (1h) | 12h (30m) | 6h (15m)",
+        ),
+        (
+            f"🔴 Gap dài (>24 rows) {cite('moritz2015')}",
+            "DROP — Không recover",
+            "Bỏ qua các đứt gãy quá lớn để tránh noise",
+        ),
     ]
 
     for tier, method, reason in tiers:
@@ -355,14 +392,14 @@ def _step_imputation():
         col1.markdown(f"**{tier}**", unsafe_allow_html=True)
         col2.markdown(f"`{method}`")
         col3.markdown(f"*{reason}*")
-        
+
     content = _get_dashboard_content()
     imputation_strat = content.get("pipeline_walkthrough", {}).get("imputation_strategy", {})
     if imputation_strat:
         st.markdown(
             f"""
         <div style="background: rgba(245,158,11,0.05); padding: 1rem; border-left: 3px solid #F59E0B; border-radius: 4px; margin-top: 1rem; margin-bottom: 1.5rem;">
-            <span style="font-size: 0.95em;">💡 <b>{imputation_strat.get('title', 'Cơ Sở Học Thuật')}:</b> {imputation_strat.get('explanation', '')}</span>
+            <span style="font-size: 0.95em;">💡 <b>{imputation_strat.get("title", "Cơ Sở Học Thuật")}:</b> {imputation_strat.get("explanation", "")}</span>
         </div>
         """,
             unsafe_allow_html=True,
@@ -370,8 +407,10 @@ def _step_imputation():
 
     st.markdown("---")
     col1, col2 = st.columns(2)
-    with col1: _render_custom_metric("Kết quả", "Tùy thuộc độ phân giải (15m/30m/1h)")
-    with col2: _render_custom_metric("Tracking", "Cột `is_imputed` = 1/0")
+    with col1:
+        _render_custom_metric("Kết quả", "Tùy thuộc độ phân giải (15m/30m/1h)")
+    with col2:
+        _render_custom_metric("Tracking", "Cột `is_imputed` = 1/0")
 
     content = _get_dashboard_content()
     val_strategy = content.get("pipeline_walkthrough", {}).get("validation_strategy", {})
@@ -389,7 +428,7 @@ def _step_imputation():
             </div>
         </div>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
 
@@ -425,9 +464,18 @@ def _step_modeling():
     families = {
         "📏 Baseline": [f"Persistence (y_pred = y_last) — mỗi resolution riêng {cite('hyndman2021')}"],
         "📈 Statistical": [f"ARIMA {cite('shumway2017')}", f"SARIMAX {cite('box2015')}"],
-        "🌲 ML (Tree-based)": [f"LightGBM (Optuna) {cite('ke2017')} {cite('akiba2019')}", "ElasticNet", f"Random Forest {cite('breiman2001')}", "Gradient Boosting", f"Stacking {cite('wolpert1992')}"],
+        "🌲 ML (Tree-based)": [
+            f"LightGBM (Optuna) {cite('ke2017')} {cite('akiba2019')}",
+            "ElasticNet",
+            f"Random Forest {cite('breiman2001')}",
+            "Gradient Boosting",
+            f"Stacking {cite('wolpert1992')}",
+        ],
         "🧠 Deep Learning": [f"LSTM {cite('hochreiter1997')}", f"GRU {cite('cho2014')}", f"TFT {cite('lim2021')}"],
-        "🎯 Ensemble": [f"Ensemble_Weighted (Best 6h! MASE={ens_6h_mase:.3f}) {cite('lakshminarayanan2017')}", f"VotingEnsemble {cite('dietterich2000')}"],
+        "🎯 Ensemble": [
+            f"Ensemble_Weighted (Best 6h! MASE={ens_6h_mase:.3f}) {cite('lakshminarayanan2017')}",
+            f"VotingEnsemble {cite('dietterich2000')}",
+        ],
     }
 
     for family, models in families.items():
@@ -446,7 +494,7 @@ def _step_modeling():
             </div>
         </div>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
     st.markdown("---")
@@ -466,12 +514,14 @@ def _step_modeling():
                 mase = m.get("mase_unified", m.get("mase", m.get("mase_original", None)))
                 mae = m.get("mae")
                 if mase is not None:
-                    rows.append({
-                        "Model": model_name,
-                        "MAE (µg/m³)": round(mae, 2) if mae else "—",
-                        "MASE": round(mase, 3),
-                        "vs Persistence": f"{(1 - mase) * 100:+.1f}%" if mase != 1.0 else "baseline",
-                    })
+                    rows.append(
+                        {
+                            "Model": model_name,
+                            "MAE (µg/m³)": round(mae, 2) if mae else "—",
+                            "MASE": round(mase, 3),
+                            "vs Persistence": f"{(1 - mase) * 100:+.1f}%" if mase != 1.0 else "baseline",
+                        }
+                    )
 
             df_table = pd.DataFrame(rows).sort_values("MASE")
             st.markdown(f"**Horizon {horizon}**")
@@ -534,27 +584,50 @@ def _step_results():
     best_6h_mase = 0.382
     best_24h_model = "Ensemble_Weighted_v9_30m"
     best_24h_mase = 0.469
-    
+
     if metrics_data and "results" in metrics_data:
         h6 = metrics_data["results"].get("6h", {})
         if h6:
-            valid_6h = [(name, m.get("mase", 1.0)) for name, m in h6.items() if m.get("mase") is not None and "Persistence" not in name]
+            valid_6h = [
+                (name, m.get("mase", 1.0))
+                for name, m in h6.items()
+                if m.get("mase") is not None and "Persistence" not in name
+            ]
             if valid_6h:
                 best_6h_model, best_6h_mase = min(valid_6h, key=lambda x: x[1])
-                
+
         h24 = metrics_data["results"].get("24h", {})
         if h24:
-            valid_24h = [(name, m.get("mase", 1.0)) for name, m in h24.items() if m.get("mase") is not None and "Persistence" not in name]
+            valid_24h = [
+                (name, m.get("mase", 1.0))
+                for name, m in h24.items()
+                if m.get("mase") is not None and "Persistence" not in name
+            ]
             if valid_24h:
                 best_24h_model, best_24h_mase = min(valid_24h, key=lambda x: x[1])
 
-    f_count = _get_pipeline_metrics().get('features_count', 119)
+    f_count = _get_pipeline_metrics().get("features_count", 119)
     findings = [
-        ("🏆 Best Models", f"6h: {best_6h_model} (MASE={best_6h_mase:.3f}) | 24h: {best_24h_model} (MASE={best_24h_mase:.3f})"),
-        (f"📏 Phá vỡ bẫy Autocorrelation {cite('hyndman2021')}", "Ở 1h (1h res.), Persistence thường thắng do autocorrelation ~0.97. Lần đầu tiên, mô hình GRU_v9_15m ở v9 đã chính thức phá vỡ giới hạn này (MASE < Persistence)!"),
-        ("🌲 ML vs DL", "Fair DL Pipeline (tabular features cho DL) > Expert DL Pipeline (raw data). Ensemble methods tốt nhất."),
-        ("🔧 Feature Engineering", f"{f_count} features (Fourier + interaction + domain). Ablation chứng minh tabular FE > raw data cho IoT."),
-        (f"⚠️ Anti-Leakage {cite('tashman2000')}", "Phát hiện và xử lý 4 nguồn leakage từ diff/pct_change features → pipeline integrity 100%."),
+        (
+            "🏆 Best Models",
+            f"6h: {best_6h_model} (MASE={best_6h_mase:.3f}) | 24h: {best_24h_model} (MASE={best_24h_mase:.3f})",
+        ),
+        (
+            f"📏 Phá vỡ bẫy Autocorrelation {cite('hyndman2021')}",
+            "Ở 1h (1h res.), Persistence thường thắng do autocorrelation ~0.97. Lần đầu tiên, mô hình GRU_v9_15m ở v9 đã chính thức phá vỡ giới hạn này (MASE < Persistence)!",
+        ),
+        (
+            "🌲 ML vs DL",
+            "Fair DL Pipeline (tabular features cho DL) > Expert DL Pipeline (raw data). Ensemble methods tốt nhất.",
+        ),
+        (
+            "🔧 Feature Engineering",
+            f"{f_count} features (Fourier + interaction + domain). Ablation chứng minh tabular FE > raw data cho IoT.",
+        ),
+        (
+            f"⚠️ Anti-Leakage {cite('tashman2000')}",
+            "Phát hiện và xử lý 4 nguồn leakage từ diff/pct_change features → pipeline integrity 100%.",
+        ),
     ]
 
     for title, desc in findings:
@@ -579,11 +652,13 @@ def _step_results():
             for model, m in h_data.items():
                 mase = m.get("mase_unified", m.get("mase", None))
                 if mase and model != "Persistence":
-                    chart_data.append({
-                        "Model": model,
-                        "Horizon": horizon,
-                        "MASE": round(mase, 3),
-                    })
+                    chart_data.append(
+                        {
+                            "Model": model,
+                            "Horizon": horizon,
+                            "MASE": round(mase, 3),
+                        }
+                    )
 
         if chart_data:
             df_chart = pd.DataFrame(chart_data)
@@ -596,8 +671,7 @@ def _step_results():
                 title="MASE theo Model × Horizon (thấp hơn = tốt hơn)",
                 color_discrete_sequence=["#06B6D4", "#8B5CF6", "#F59E0B"],
             )
-            fig.add_hline(y=1.0, line_dash="dash", line_color="red",
-                         annotation_text="Persistence Baseline")
+            fig.add_hline(y=1.0, line_dash="dash", line_color="red", annotation_text="Persistence Baseline")
             fig.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
@@ -635,7 +709,8 @@ def page_pipeline_walkthrough(results):
     )
 
     # ── Version-aware info cards ──
-    from src.info_cards import get_current_version, render_version_badge, render_info_card
+    from src.info_cards import get_current_version, render_info_card, render_version_badge
+
     ver = get_current_version()
     render_version_badge(ver)
     render_info_card(

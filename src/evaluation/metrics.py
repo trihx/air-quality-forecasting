@@ -234,11 +234,15 @@ def classification_metrics(
 
     if n_exceed == 0:
         logger.warning(f"No samples exceed threshold {threshold} µg/m³")
-        results.update({
-            "precision": float("nan"), "recall": float("nan"),
-            "f1": float("nan"), "brier_score": float("nan"),
-            "roc_auc": float("nan"),
-        })
+        results.update(
+            {
+                "precision": float("nan"),
+                "recall": float("nan"),
+                "f1": float("nan"),
+                "brier_score": float("nan"),
+                "roc_auc": float("nan"),
+            }
+        )
         return results
 
     # Precision, Recall, F1 — manual calc to avoid sklearn import
@@ -257,13 +261,15 @@ def classification_metrics(
     # Convert regression outputs to probabilities via sigmoid of distance from threshold
     roc_auc = _compute_roc_auc(y_true_class, y_pred, threshold)
 
-    results.update({
-        "precision": round(precision, 4),
-        "recall": round(recall, 4),
-        "f1": round(f1, 4),
-        "brier_score": round(brier, 4),
-        "roc_auc": round(roc_auc, 4),
-    })
+    results.update(
+        {
+            "precision": round(precision, 4),
+            "recall": round(recall, 4),
+            "f1": round(f1, 4),
+            "brier_score": round(brier, 4),
+            "roc_auc": round(roc_auc, 4),
+        }
+    )
     return results
 
 
@@ -453,5 +459,3 @@ def pollution_event_f1(
     """
     res = classification_metrics(y_true, y_pred, threshold=threshold)
     return res.get("f1", float("nan"))
-
-

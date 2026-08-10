@@ -54,7 +54,8 @@ update-memory:
 
 graphify:
 	@echo "🔗 Đang cập nhật Knowledge Graph (Graphify)..."
-	uvx --from graphifyy graphify extract .
+	uvx --from graphifyy graphify extract . --code-only
+	uvx --from graphifyy graphify cluster-only .
 	@echo "✅ Graphify graph đã được cập nhật tại graphify-out/"
 
 clean:

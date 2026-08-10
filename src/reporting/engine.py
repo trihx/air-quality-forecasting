@@ -35,15 +35,27 @@ MODEL_TYPES: dict[str, str] = {
     "TFT": "Transformer",
 }
 
+
 def get_model_type(name: str) -> str:
     """Resolve model type dynamically based on its name."""
     name_lower = name.lower()
-    if "persistence" in name_lower or "naive" in name_lower: return "Baseline"
-    if "arima" in name_lower: return "Statistical"
-    if "ensemble" in name_lower or "stacking" in name_lower or "voting" in name_lower: return "Ensemble"
-    if "tft" in name_lower: return "Transformer"
-    if "gru" in name_lower or "lstm" in name_lower: return "Deep Learning"
-    if "lightgbm" in name_lower or "randomforest" in name_lower or "gradientboosting" in name_lower or "elasticnet" in name_lower: return "ML"
+    if "persistence" in name_lower or "naive" in name_lower:
+        return "Baseline"
+    if "arima" in name_lower:
+        return "Statistical"
+    if "ensemble" in name_lower or "stacking" in name_lower or "voting" in name_lower:
+        return "Ensemble"
+    if "tft" in name_lower:
+        return "Transformer"
+    if "gru" in name_lower or "lstm" in name_lower:
+        return "Deep Learning"
+    if (
+        "lightgbm" in name_lower
+        or "randomforest" in name_lower
+        or "gradientboosting" in name_lower
+        or "elasticnet" in name_lower
+    ):
+        return "ML"
     return MODEL_TYPES.get(name, "Unknown")
 
 
@@ -190,7 +202,8 @@ class ReportingEngine:
             col = f"{h}_MASE"
             df[col] = df.apply(
                 lambda row: (
-                    f"⭐ {row[col]:.3f}" if row["Model"] == best_per_h.get(h) and row[col] is not None
+                    f"⭐ {row[col]:.3f}"
+                    if row["Model"] == best_per_h.get(h) and row[col] is not None
                     else (f"{row[col]:.3f}" if row[col] is not None else "—")
                 ),
                 axis=1,
@@ -322,16 +335,18 @@ class ReportingEngine:
             da = metrics.get("da")
             bias = metrics.get("forecast_bias")
 
-            rows.append({
-                "Model": model_name,
-                "Type": get_model_type(model_name),
-                "MAE (µg/m³)": round(mae, 3),
-                "RMSE (µg/m³)": round(rmse, 3) if rmse is not None and rmse != float("inf") else None,
-                "MASE": round(mase, 3) if mase is not None else None,
-                "R²": round(r2, 4) if r2 is not None else None,
-                "DA (%)": round(da, 1) if da is not None else None,
-                "vs Persistence (%)": vs_persist,
-            })
+            rows.append(
+                {
+                    "Model": model_name,
+                    "Type": get_model_type(model_name),
+                    "MAE (µg/m³)": round(mae, 3),
+                    "RMSE (µg/m³)": round(rmse, 3) if rmse is not None and rmse != float("inf") else None,
+                    "MASE": round(mase, 3) if mase is not None else None,
+                    "R²": round(r2, 4) if r2 is not None else None,
+                    "DA (%)": round(da, 1) if da is not None else None,
+                    "vs Persistence (%)": vs_persist,
+                }
+            )
 
         df = pd.DataFrame(rows).sort_values("MAE (µg/m³)").head(top_n)
         df.insert(0, "Rank", range(1, len(df) + 1))
@@ -398,16 +413,18 @@ class ReportingEngine:
             r2 = metrics.get("r2")
             da = metrics.get("da")
 
-            rows.append({
-                "Model": model_name,
-                "Type": get_model_type(model_name),
-                "MASE": round(mase, 3),
-                "MAE (µg/m³)": round(mae, 3) if mae is not None else None,
-                "RMSE (µg/m³)": round(rmse, 3) if rmse is not None and rmse != float("inf") else None,
-                "R²": round(r2, 4) if r2 is not None else None,
-                "DA (%)": round(da, 1) if da is not None else None,
-                "vs Persistence (%)": vs_persist,
-            })
+            rows.append(
+                {
+                    "Model": model_name,
+                    "Type": get_model_type(model_name),
+                    "MASE": round(mase, 3),
+                    "MAE (µg/m³)": round(mae, 3) if mae is not None else None,
+                    "RMSE (µg/m³)": round(rmse, 3) if rmse is not None and rmse != float("inf") else None,
+                    "R²": round(r2, 4) if r2 is not None else None,
+                    "DA (%)": round(da, 1) if da is not None else None,
+                    "vs Persistence (%)": vs_persist,
+                }
+            )
 
         df = pd.DataFrame(rows).sort_values("MASE").head(top_n)
         df.insert(0, "Rank", range(1, len(df) + 1))
@@ -455,10 +472,7 @@ class ReportingEngine:
                 f"<b>MASE={b1['mase']:.3f}</b> — model duy nhất thắng Persistence! ⭐"
             )
         else:
-            h1_text = (
-                f"Persistence vẫn thắng ở 1h (ACF≈0.97). "
-                f"<b>{b1['model']}</b> gần nhất với MASE={b1['mase']:.3f}"
-            )
+            h1_text = f"Persistence vẫn thắng ở 1h (ACF≈0.97). <b>{b1['model']}</b> gần nhất với MASE={b1['mase']:.3f}"
 
         h6_text = (
             f"<b>{b6['model']}</b> giảm <b>{abs(b6['improvement_pct']):.1f}%</b> lỗi "

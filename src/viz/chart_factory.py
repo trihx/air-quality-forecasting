@@ -33,9 +33,8 @@ from typing import Any
 import plotly.graph_objects as go
 import streamlit as st
 
-from src.viz.palettes import COLORSCALES, GRAYSCALE_MARKERS, get_trace_style
+from src.viz.palettes import get_trace_style
 from src.viz.theme import (
-    PALETTE_CATEGORICAL,
     PALETTE_SEMANTIC,
     TOKENS,
     detect_streamlit_mode,
@@ -216,7 +215,7 @@ def render_chart(
     # Reduce top margin since title is no longer rendered inside
     try:
         current_margin = fig.layout.margin
-        t_margin = getattr(current_margin, 't', 60)
+        t_margin = getattr(current_margin, "t", 60)
         if isinstance(t_margin, tuple) and len(t_margin) > 0:
             t_margin = t_margin[0]
         if isinstance(t_margin, (int, float)) and t_margin >= 50:
@@ -278,7 +277,6 @@ def figure_caption_numbered(
         f"</span></div>",
         unsafe_allow_html=True,
     )
-
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -494,12 +492,12 @@ def add_simple_bar_labels(
     xshift: int = 5,
 ) -> None:
     """Add styled white-box annotations to all bar traces in a figure.
-    
+
     This replaces native Plotly text labels with high-contrast boxes.
-    It reads the existing `x` and `y` from the bar traces. If `text` is 
-    present on the trace, it uses that. Otherwise, it formats the value 
+    It reads the existing `x` and `y` from the bar traces. If `text` is
+    present on the trace, it uses that. Otherwise, it formats the value
     (y for vertical, x for horizontal) using `fmt`.
-    
+
     Args:
         fig: Target figure.
         orientation: ``'v'`` or ``'h'``.
@@ -508,29 +506,29 @@ def add_simple_bar_labels(
         xshift: Pixels to shift right (for 'h').
     """
     mode = detect_streamlit_mode()
-    
+
     if orientation == "v":
         annot_style = get_plotly_annotation_style(mode, overrides={"yanchor": "bottom", "yshift": yshift})
     else:
         annot_style = get_plotly_annotation_style(mode, overrides={"xanchor": "left", "xshift": xshift})
-        
+
     is_grouped = fig.layout.barmode == "group"
     bar_traces = [t for t in fig.data if getattr(t, "type", "") == "bar" or isinstance(t, go.Bar)]
     n_traces = len(bar_traces)
-    
+
     for trace_idx, trace in enumerate(bar_traces):
         x_vals = trace.x
         y_vals = trace.y
         texts = trace.text
-        
+
         if x_vals is None or y_vals is None:
             continue
-            
+
         offset = 0
         if is_grouped and n_traces > 1:
             bar_width = 0.8 / n_traces
             offset = (trace_idx - (n_traces - 1) / 2) * bar_width
-            
+
         for i, (x_raw, y_raw) in enumerate(zip(x_vals, y_vals)):
             # Determine text to display
             if hasattr(texts, "__iter__") and not isinstance(texts, str) and i < len(texts):
@@ -540,19 +538,15 @@ def add_simple_bar_labels(
             else:
                 val = y_raw if orientation == "v" else x_raw
                 label = f"{val:{fmt}}" if fmt else str(val)
-            
+
             if label is None or str(label).strip() in ("nan", "", "None"):
                 continue
-                
+
             x_annot = (i + offset) if (orientation == "v" and is_grouped) else x_raw
             y_annot = (i + offset) if (orientation == "h" and is_grouped) else y_raw
-            
-            fig.add_annotation(
-                x=x_annot, y=y_annot,
-                text=f"<b>{label}</b>",
-                **annot_style
-            )
-        
+
+            fig.add_annotation(x=x_annot, y=y_annot, text=f"<b>{label}</b>", **annot_style)
+
         # Clear native text to prevent double rendering
         trace.text = None
         trace.texttemplate = None
@@ -610,6 +604,7 @@ def to_bw(fig: go.Figure) -> go.Figure:
         New ``go.Figure`` optimized for B&W printing.
     """
     import copy
+
     bw = copy.deepcopy(fig)
 
     # ── Layout: white background, black text, Times New Roman ──
@@ -773,5 +768,3 @@ def render_bw_download(
     except Exception:
         # Fallback gracefully — do not pollute dashboard UI with error boxes
         st.caption("💡 *Tải ảnh B&W: Bấm biểu tượng máy ảnh ở góc trên bên phải biểu đồ Plotly.*")
-
-

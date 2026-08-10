@@ -114,14 +114,22 @@ class ExperimentLogger:
         """Log a model within a run, return run_model_id."""
         if self.mode == "db":
             return self._db_create_model(
-                run_id, model_name, training_time_s,
-                hyperparameters, feature_set,
-                weight_hash_md5, weight_path,
+                run_id,
+                model_name,
+                training_time_s,
+                hyperparameters,
+                feature_set,
+                weight_hash_md5,
+                weight_path,
             )
         return self._api_create_model(
-            run_id, model_name, training_time_s,
-            hyperparameters, feature_set,
-            weight_hash_md5, weight_path,
+            run_id,
+            model_name,
+            training_time_s,
+            hyperparameters,
+            feature_set,
+            weight_hash_md5,
+            weight_path,
         )
 
     def log_metrics(
@@ -140,12 +148,28 @@ class ExperimentLogger:
         """Log metrics for a model, return metric_id."""
         if self.mode == "db":
             return self._db_create_metrics(
-                run_model_id, mae, rmse, mase, r2,
-                mape, smape, forecast_bias, medae, extra_metrics,
+                run_model_id,
+                mae,
+                rmse,
+                mase,
+                r2,
+                mape,
+                smape,
+                forecast_bias,
+                medae,
+                extra_metrics,
             )
         return self._api_create_metrics(
-            run_model_id, mae, rmse, mase, r2,
-            mape, smape, forecast_bias, medae, extra_metrics,
+            run_model_id,
+            mae,
+            rmse,
+            mase,
+            r2,
+            mape,
+            smape,
+            forecast_bias,
+            medae,
+            extra_metrics,
         )
 
     def experiment_exists(self, name: str) -> bool:
@@ -301,8 +325,14 @@ class ExperimentLogger:
             db.close()
 
     def _db_create_model(
-        self, run_id, model_name, training_time_s,
-        hyperparameters, feature_set, weight_hash_md5, weight_path,
+        self,
+        run_id,
+        model_name,
+        training_time_s,
+        hyperparameters,
+        feature_set,
+        weight_hash_md5,
+        weight_path,
     ) -> int:
         from src.api.models import RunModel
 
@@ -325,8 +355,17 @@ class ExperimentLogger:
             db.close()
 
     def _db_create_metrics(
-        self, run_model_id, mae, rmse, mase, r2,
-        mape, smape, forecast_bias, medae, extra_metrics,
+        self,
+        run_model_id,
+        mae,
+        rmse,
+        mase,
+        r2,
+        mape,
+        smape,
+        forecast_bias,
+        medae,
+        extra_metrics,
     ) -> int:
         from src.api.models import Metric
 
@@ -365,51 +404,78 @@ class ExperimentLogger:
         return resp.json()
 
     def _api_create_experiment(self, name, description, version, data_hash_md5, config) -> int:
-        result = self._api_post("experiments", {
-            "name": name,
-            "description": description,
-            "pipeline_version": version,
-            "data_hash_md5": data_hash_md5,
-            "config": config,
-        })
+        result = self._api_post(
+            "experiments",
+            {
+                "name": name,
+                "description": description,
+                "pipeline_version": version,
+                "data_hash_md5": data_hash_md5,
+                "config": config,
+            },
+        )
         return result["id"]
 
     def _api_create_run(self, experiment_id, horizon, status) -> int:
-        result = self._api_post("runs", {
-            "experiment_id": experiment_id,
-            "horizon": horizon,
-        })
+        result = self._api_post(
+            "runs",
+            {
+                "experiment_id": experiment_id,
+                "horizon": horizon,
+            },
+        )
         return result["id"]
 
     def _api_create_model(
-        self, run_id, model_name, training_time_s,
-        hyperparameters, feature_set, weight_hash_md5, weight_path,
+        self,
+        run_id,
+        model_name,
+        training_time_s,
+        hyperparameters,
+        feature_set,
+        weight_hash_md5,
+        weight_path,
     ) -> int:
-        result = self._api_post("run-models", {
-            "run_id": run_id,
-            "model_name": model_name,
-            "training_time_s": training_time_s,
-            "hyperparameters": hyperparameters,
-            "feature_set": feature_set,
-            "weight_hash_md5": weight_hash_md5,
-            "weight_path": weight_path,
-        })
+        result = self._api_post(
+            "run-models",
+            {
+                "run_id": run_id,
+                "model_name": model_name,
+                "training_time_s": training_time_s,
+                "hyperparameters": hyperparameters,
+                "feature_set": feature_set,
+                "weight_hash_md5": weight_hash_md5,
+                "weight_path": weight_path,
+            },
+        )
         return result["id"]
 
     def _api_create_metrics(
-        self, run_model_id, mae, rmse, mase, r2,
-        mape, smape, forecast_bias, medae, extra_metrics,
+        self,
+        run_model_id,
+        mae,
+        rmse,
+        mase,
+        r2,
+        mape,
+        smape,
+        forecast_bias,
+        medae,
+        extra_metrics,
     ) -> int:
-        result = self._api_post("metrics", {
-            "run_model_id": run_model_id,
-            "mae": _sanitize_float(mae),
-            "rmse": _sanitize_float(rmse),
-            "mase": _sanitize_float(mase),
-            "r2": _sanitize_float(r2),
-            "mape": _sanitize_float(mape),
-            "smape": _sanitize_float(smape),
-            "forecast_bias": _sanitize_float(forecast_bias),
-            "medae": _sanitize_float(medae),
-            "extra_metrics": extra_metrics,
-        })
+        result = self._api_post(
+            "metrics",
+            {
+                "run_model_id": run_model_id,
+                "mae": _sanitize_float(mae),
+                "rmse": _sanitize_float(rmse),
+                "mase": _sanitize_float(mase),
+                "r2": _sanitize_float(r2),
+                "mape": _sanitize_float(mape),
+                "smape": _sanitize_float(smape),
+                "forecast_bias": _sanitize_float(forecast_bias),
+                "medae": _sanitize_float(medae),
+                "extra_metrics": extra_metrics,
+            },
+        )
         return result["id"]

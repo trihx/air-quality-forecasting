@@ -21,11 +21,6 @@ from src.viz.chart_factory import (
     styled_bar,
 )
 from src.viz.palettes import MODEL_FAMILY_COLORS
-from src.viz.theme import (
-    PALETTE_CATEGORICAL,
-    PALETTE_SEMANTIC,
-    get_plotly_annotation_style,
-)
 
 HORIZONS = ("1h", "6h", "24h")
 
@@ -55,9 +50,15 @@ def plot_mase_comparison(
     )
 
     for i, (model, vals) in enumerate(mase_data.items()):
-        fig.add_trace(styled_bar(
-            i, name=model, x=list(HORIZONS), y=vals, textfmt=".3f",
-        ))
+        fig.add_trace(
+            styled_bar(
+                i,
+                name=model,
+                x=list(HORIZONS),
+                y=vals,
+                textfmt=".3f",
+            )
+        )
 
     # Baseline reference line
     add_baseline(fig, y=1.0, label="Baseline (MASE = 1.0)")
@@ -91,10 +92,15 @@ def plot_mae_trend(
     )
 
     for i, (model, vals) in enumerate(mae_data.items()):
-        fig.add_trace(styled_line(
-            i, name=model, x=list(HORIZONS), y=vals,
-            text=[f"{v:.2f}" for v in vals],
-        ))
+        fig.add_trace(
+            styled_line(
+                i,
+                name=model,
+                x=list(HORIZONS),
+                y=vals,
+                text=[f"{v:.2f}" for v in vals],
+            )
+        )
 
     return fig
 
@@ -148,18 +154,23 @@ def plot_mae_trend_top5(
         vals = mae_data[model]
         mtype = get_model_type(model)
         color = _FAMILY_COLORS.get(mtype, "#888888")
-        fig.add_trace(go.Bar(
-            name=f"{model} ({mtype})",
-            x=x_vals,
-            y=vals,
-            marker_color=color,
-            textposition="none",  # annotations handle text
-        ))
+        fig.add_trace(
+            go.Bar(
+                name=f"{model} ({mtype})",
+                x=x_vals,
+                y=vals,
+                marker_color=color,
+                textposition="none",  # annotations handle text
+            )
+        )
 
     # Add value annotations with white background
     add_value_annotations(
-        fig, models=sorted_models, data=mae_data,
-        categories=list(HORIZONS), fmt=".2f",
+        fig,
+        models=sorted_models,
+        data=mae_data,
+        categories=list(HORIZONS),
+        fmt=".2f",
     )
 
     max_val = max(v for vals in mae_data.values() for v in vals)
@@ -214,18 +225,23 @@ def plot_mase_comparison_top5(
         vals = mase_data[model]
         mtype = get_model_type(model)
         color = _FAMILY_COLORS.get(mtype, "#888888")
-        fig.add_trace(go.Bar(
-            name=f"{model} ({mtype})",
-            x=x_vals,
-            y=vals,
-            marker_color=color,
-            textposition="none",  # annotations handle text
-        ))
+        fig.add_trace(
+            go.Bar(
+                name=f"{model} ({mtype})",
+                x=x_vals,
+                y=vals,
+                marker_color=color,
+                textposition="none",  # annotations handle text
+            )
+        )
 
     # Add value annotations with white background
     add_value_annotations(
-        fig, models=sorted_models, data=mase_data,
-        categories=list(HORIZONS), fmt=".3f",
+        fig,
+        models=sorted_models,
+        data=mase_data,
+        categories=list(HORIZONS),
+        fmt=".3f",
     )
 
     # Baseline reference line — bold and prominent
@@ -254,7 +270,7 @@ def plot_dm_test_heatmap(dm_results: list[dict], height: int = 400) -> go.Figure
         return fig
 
     import pandas as pd
-    from src.viz.palettes import COLORSCALES
+
 
     df = pd.DataFrame(dm_results)
     pivot = df.pivot_table(index="model_1", columns="model_2", values="p_value")
@@ -265,16 +281,17 @@ def plot_dm_test_heatmap(dm_results: list[dict], height: int = 400) -> go.Figure
         height=height,
         hovermode="closest",
     )
-    fig.add_trace(go.Heatmap(
-        z=pivot.values,
-        x=pivot.columns.tolist(),
-        y=pivot.index.tolist(),
-        colorscale="RdYlGn_r",
-        zmin=0, zmax=0.1,
-        text=pivot.applymap(
-            lambda x: f"{x:.3f}" if pd.notna(x) else ""
-        ).values,
-        texttemplate="%{text}",
-    ))
+    fig.add_trace(
+        go.Heatmap(
+            z=pivot.values,
+            x=pivot.columns.tolist(),
+            y=pivot.index.tolist(),
+            colorscale="RdYlGn_r",
+            zmin=0,
+            zmax=0.1,
+            text=pivot.applymap(lambda x: f"{x:.3f}" if pd.notna(x) else "").values,
+            texttemplate="%{text}",
+        )
+    )
 
     return fig

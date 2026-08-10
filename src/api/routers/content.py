@@ -118,4 +118,3 @@ def update_info_card(
     _signal_kb_reindex()
 
     return InfoCardResponse.model_validate(card)
-

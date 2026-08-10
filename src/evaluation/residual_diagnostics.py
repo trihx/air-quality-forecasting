@@ -30,11 +30,12 @@ def _ensure_statsmodels():
     global _sm_loaded
     if not _sm_loaded:
         import statsmodels  # noqa: F401
+
         _sm_loaded = True
 
 
 # ── VTF: Centralized theme ──
-from src.viz.theme import apply_mpl_theme, annotation_bbox, ACCENT_COLORS
+from src.viz.theme import ACCENT_COLORS, annotation_bbox, apply_mpl_theme
 
 ACCENT_BLUE = ACCENT_COLORS["blue"]
 ACCENT_ORANGE = ACCENT_COLORS["orange"]
@@ -94,7 +95,7 @@ def run_residual_diagnostics(
     results["ljung_box"] = lb_results
 
     # 3. Normality test
-    sample = residuals[:min(5000, len(residuals))]
+    sample = residuals[: min(5000, len(residuals))]
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         _, shapiro_p = stats.shapiro(sample)
@@ -217,9 +218,7 @@ def dm_test_hln(
 
     # HLN correction factor
     # Corrected variance: multiply by (n + 1 - 2h + h(h-1)/n) / n
-    hln_correction = np.sqrt(
-        (n + 1 - 2 * horizon + horizon * (horizon - 1) / n) / n
-    )
+    hln_correction = np.sqrt((n + 1 - 2 * horizon + horizon * (horizon - 1) / n) / n)
     DM_hln = DM * hln_correction
 
     # p-values: DM uses Normal, HLN uses t(n-1)
@@ -281,8 +280,15 @@ def _generate_diagnostic_chart(
     ax1.set_ylabel("Residual (µg/m³)")
     ax1.grid(True, alpha=0.3)
     mean_text = f"Mean = {np.mean(residuals):.3f}"
-    ax1.text(0.02, 0.95, mean_text, transform=ax1.transAxes, fontsize=8,
-            verticalalignment="top", bbox=annotation_bbox("light"))
+    ax1.text(
+        0.02,
+        0.95,
+        mean_text,
+        transform=ax1.transAxes,
+        fontsize=8,
+        verticalalignment="top",
+        bbox=annotation_bbox("light"),
+    )
 
     # Panel 2: Histogram + KDE
     ax2 = axes[0, 1]
@@ -297,8 +303,15 @@ def _generate_diagnostic_chart(
     ax2.legend(fontsize=8)
     ax2.grid(True, alpha=0.3)
     skew_text = f"Skew={results['residual_stats']['skew']:.2f} Kurt={results['residual_stats']['kurtosis']:.2f}"
-    ax2.text(0.02, 0.95, skew_text, transform=ax2.transAxes, fontsize=8,
-            verticalalignment="top", bbox=annotation_bbox("light"))
+    ax2.text(
+        0.02,
+        0.95,
+        skew_text,
+        transform=ax2.transAxes,
+        fontsize=8,
+        verticalalignment="top",
+        bbox=annotation_bbox("light"),
+    )
 
     # Panel 3: Q-Q Plot
     ax3 = axes[1, 0]
@@ -333,7 +346,10 @@ def _generate_diagnostic_chart(
     color = ACCENT_GREEN if "PASS" in verdict else (ACCENT_ORANGE if "PARTIAL" in verdict else ACCENT_RED)
     fig.suptitle(
         f"Residual Diagnostics — {model_name} (h={horizon})\n{verdict}",
-        fontsize=13, fontweight="bold", color=color, y=1.02
+        fontsize=13,
+        fontweight="bold",
+        color=color,
+        y=1.02,
     )
 
     plt.tight_layout()

@@ -18,7 +18,6 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 from scipy.interpolate import CubicSpline
-from sklearn.impute import KNNImputer
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 

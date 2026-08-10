@@ -42,12 +42,10 @@ class Experiment(Base):
     pipeline_version: Mapped[str | None] = mapped_column(String(50), nullable=True)
     data_hash_md5: Mapped[str | None] = mapped_column(String(32), nullable=True)
     config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
-    runs: Mapped[list["Run"]] = relationship(back_populates="experiment", cascade="all, delete-orphan")
+    runs: Mapped[list[Run]] = relationship(back_populates="experiment", cascade="all, delete-orphan")
 
 
 class Run(Base):
@@ -68,15 +66,11 @@ class Run(Base):
     )  # pending, running, completed, failed
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
-    experiment: Mapped["Experiment"] = relationship(back_populates="runs")
-    run_models: Mapped[list["RunModel"]] = relationship(
-        back_populates="run", cascade="all, delete-orphan"
-    )
+    experiment: Mapped[Experiment] = relationship(back_populates="runs")
+    run_models: Mapped[list[RunModel]] = relationship(back_populates="run", cascade="all, delete-orphan")
 
 
 class RunModel(Base):
@@ -88,25 +82,19 @@ class RunModel(Base):
     __tablename__ = "run_models"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    run_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("runs.id", ondelete="CASCADE"), nullable=False, index=True
-    )
+    run_id: Mapped[int] = mapped_column(Integer, ForeignKey("runs.id", ondelete="CASCADE"), nullable=False, index=True)
     model_name: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
     training_time_s: Mapped[float | None] = mapped_column(Float, nullable=True)
     hyperparameters: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     feature_set: Mapped[list | None] = mapped_column(JSON, nullable=True)
     weight_hash_md5: Mapped[str | None] = mapped_column(String(32), nullable=True)
     weight_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
-    run: Mapped["Run"] = relationship(back_populates="run_models")
-    metrics: Mapped[list["Metric"]] = relationship(
-        back_populates="run_model", cascade="all, delete-orphan"
-    )
-    feature_importances: Mapped[list["FeatureImportance"]] = relationship(
+    run: Mapped[Run] = relationship(back_populates="run_models")
+    metrics: Mapped[list[Metric]] = relationship(back_populates="run_model", cascade="all, delete-orphan")
+    feature_importances: Mapped[list[FeatureImportance]] = relationship(
         back_populates="run_model", cascade="all, delete-orphan"
     )
 
@@ -133,12 +121,10 @@ class Metric(Base):
     forecast_bias: Mapped[float | None] = mapped_column(Float, nullable=True)
     medae: Mapped[float | None] = mapped_column(Float, nullable=True)
     extra_metrics: Mapped[dict | None] = mapped_column(JSON, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
-    run_model: Mapped["RunModel"] = relationship(back_populates="metrics")
+    run_model: Mapped[RunModel] = relationship(back_populates="metrics")
 
 
 class FeatureImportance(Base):
@@ -153,12 +139,10 @@ class FeatureImportance(Base):
     feature_name: Mapped[str] = mapped_column(String(200), nullable=False)
     importance_score: Mapped[float] = mapped_column(Float, nullable=False)
     rank: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
-    run_model: Mapped["RunModel"] = relationship(back_populates="feature_importances")
+    run_model: Mapped[RunModel] = relationship(back_populates="feature_importances")
 
 
 class InfoCard(Base):
@@ -177,16 +161,12 @@ class InfoCard(Base):
     __tablename__ = "info_cards"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    card_key: Mapped[str] = mapped_column(
-        String(100), unique=True, nullable=False, index=True
-    )
+    card_key: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, index=True)
     title: Mapped[str] = mapped_column(String(500), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     page: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
     display_order: Mapped[int] = mapped_column(Integer, default=0)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )

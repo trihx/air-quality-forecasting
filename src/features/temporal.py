@@ -62,6 +62,7 @@ def _rolling_col(
     Returns:
         Rolling aggregation result.
     """
+
     def _apply_roll(s: pd.Series) -> pd.Series:
         roller = s.rolling(window=window, min_periods=min_periods)
         if func == "mean":
@@ -78,9 +79,7 @@ def _rolling_col(
             raise ValueError(f"Unknown rolling func: {func}")
 
     if segment_col_series is not None:
-        return series.groupby(segment_col_series).transform(
-            lambda s: _apply_roll(s)
-        )
+        return series.groupby(segment_col_series).transform(lambda s: _apply_roll(s))
     return _apply_roll(series)
 
 
@@ -92,6 +91,7 @@ def _ewm_col(
     segment_col_series: pd.Series | None = None,
 ) -> pd.Series:
     """Apply EWM aggregation, optionally within segments."""
+
     def _apply_ewm(s: pd.Series) -> pd.Series:
         ewmer = s.ewm(span=span, min_periods=min_periods)
         if func == "mean":
@@ -102,9 +102,7 @@ def _ewm_col(
             raise ValueError(f"Unknown ewm func: {func}")
 
     if segment_col_series is not None:
-        return series.groupby(segment_col_series).transform(
-            lambda s: _apply_ewm(s)
-        )
+        return series.groupby(segment_col_series).transform(lambda s: _apply_ewm(s))
     return _apply_ewm(series)
 
 

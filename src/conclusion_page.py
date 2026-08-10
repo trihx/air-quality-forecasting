@@ -7,35 +7,41 @@ Sections:
     3. Limitations
     4. Future Directions (with feasibility & impact matrix)
 """
+
 from __future__ import annotations
 
-import streamlit as st
 from pathlib import Path
 
-from src.frontend.citations import cite, render_references_section
+import streamlit as st
 
+from src.frontend.citations import cite, render_references_section
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 def page_conclusion(results: dict):
     """Main entry point for the Conclusion & Future Work page."""
-    from app import section_header, insight_card
+    from app import insight_card, section_header
 
-    st.markdown("""
+    st.markdown(
+        """
     <h1 style="text-align:center; font-size:1.8rem; margin-bottom:0.2rem;">
         📝 Kết Luận & Hướng Phát Triển
     </h1>
     <p style="text-align:center; opacity:0.6; font-size:0.95rem; margin-bottom:2rem;">
         Tổng hợp kết quả nghiên cứu và đề xuất hướng phát triển — Chương 5 Luận văn Thạc sĩ
     </p>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-    tab1, tab2, tab3 = st.tabs([
-        "1. Tổng Hợp Kết Quả",
-        "2. Hạn Chế",
-        "3. Hướng Phát Triển",
-    ])
+    tab1, tab2, tab3 = st.tabs(
+        [
+            "1. Tổng Hợp Kết Quả",
+            "2. Hạn Chế",
+            "3. Hướng Phát Triển",
+        ]
+    )
 
     with tab1:
         _render_summary(section_header, insight_card)
@@ -59,7 +65,8 @@ def _render_summary(section_header, insight_card):
     """Research summary — what was accomplished."""
     section_header("🎯", "Tóm Tắt Kết Quả Nghiên Cứu")
 
-    st.markdown("""
+    st.markdown(
+        """
     <div style="background: var(--secondary-background-color); border-radius: 12px;
                 padding: 1.5rem; border-left: 4px solid #00D4AA; margin-bottom: 1.5rem;">
         <div style="font-size: 0.95rem; line-height: 1.7;">
@@ -70,7 +77,9 @@ def _render_summary(section_header, insight_card):
             đánh giá <b>30+ mô hình</b> trên 3 độ phân giải × 3 tầm dự báo.
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # Key quantitative findings
     section_header("📊", "Các Phát Hiện Chính")
@@ -120,18 +129,21 @@ def _render_summary(section_header, insight_card):
     ]
 
     for f in findings:
-        st.markdown(f"""
+        st.markdown(
+            f"""
         <div style="background: var(--secondary-background-color); border-radius: 10px;
                     padding: 1rem 1.2rem; margin-bottom: 0.8rem;
                     border-left: 3px solid #00D4AA;">
             <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem;">
-                {f['title']}
+                {f["title"]}
             </div>
             <div style="font-size: 0.88rem; opacity: 0.85; line-height: 1.6;">
-                {f['detail']}
+                {f["detail"]}
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
     # Contribution summary
     section_header("🏆", "Đóng Góp Của Nghiên Cứu")
@@ -144,7 +156,8 @@ def _render_summary(section_header, insight_card):
     ]
     for col, (icon, label, desc) in zip([c1, c2, c3], contributions):
         with col:
-            st.markdown(f"""
+            st.markdown(
+                f"""
             <div style="background: var(--secondary-background-color); border-radius: 12px;
                         padding: 1.2rem; text-align: center; min-height: 180px;
                         border: 1px solid rgba(0,212,170,0.15);">
@@ -156,7 +169,9 @@ def _render_summary(section_header, insight_card):
                     {desc}
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
 
 # ──────────────────────────────────────────────────────────────
@@ -199,43 +214,45 @@ def _render_limitations(section_header, insight_card):
     ]
 
     for lim in limitations:
-        items_html = "".join(
-            f'<li style="margin-bottom: 0.4rem;">{item}</li>'
-            for item in lim["items"]
-        )
-        st.markdown(f"""
+        items_html = "".join(f'<li style="margin-bottom: 0.4rem;">{item}</li>' for item in lim["items"])
+        st.markdown(
+            f"""
         <div style="background: var(--secondary-background-color); border-radius: 10px;
                     padding: 1.2rem; margin-bottom: 1rem;
                     border-left: 4px solid #EF4444;">
             <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem;">
-                {lim['icon']} {lim['cat']}
+                {lim["icon"]} {lim["cat"]}
             </div>
             <ul style="font-size: 0.88rem; line-height: 1.6; margin: 0; padding-left: 1.2rem; opacity: 0.9;">
                 {items_html}
             </ul>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
     # Ablation Study: Outlier Removal Trap
     section_header("🧪", "Ablation Study: Bẫy Outlier Removal")
-    
+
     try:
         import json
+
         import pandas as pd
-        
+
         comp_path = PROJECT_ROOT / "research" / "experiments" / "v10_ablation" / "comparison_table.json"
         if comp_path.exists():
-            with open(comp_path, "r", encoding="utf-8") as f:
+            with open(comp_path, encoding="utf-8") as f:
                 ablation_data = json.load(f)
-                
+
             st.markdown(
                 """
                 <div style="background: rgba(239, 68, 68, 0.05); padding: 1rem; border-left: 3px solid #EF4444; border-radius: 4px; margin-bottom: 1rem;">
                     <span style="font-size: 0.95em;"><b>"False Sense of Accuracy" (Ảo giác chính xác):</b> Thí nghiệm v10 (Ablation) cố tình dùng thuật toán IQR thay cho Domain Bounds. Kết quả: IQR đã cắt mất 66 đợt ô nhiễm nghiêm trọng (> 54 µg/m³). Mô hình v10 trông <b>chính xác hơn (MASE thấp hơn)</b> ở các horizon ngắn, nhưng thực chất đã bị "mù" trước các đợt bùng phát ô nhiễm thật sự.</span>
                 </div>
-                """, unsafe_allow_html=True
+                """,
+                unsafe_allow_html=True,
             )
-            
+
             rows = []
             for h, models_data in ablation_data.items():
                 for model_name, metrics in models_data.items():
@@ -246,23 +263,28 @@ def _render_limitations(section_header, insight_card):
                             status = "🚨 Ảo giác (MASE giảm ảo)"
                         else:
                             status = "✅ Domain tốt hơn"
-                            
-                        rows.append({
-                            "Horizon": h,
-                            "Mô hình": model_name,
-                            "v9 MASE (Domain - Đúng)": f"{metrics['v9_mase']:.3f}",
-                            "v10 MASE (IQR - Lỗi)": f"{metrics['v10_mase']:.3f}",
-                            "Δ MASE": f"{delta:+.3f}",
-                            "Đánh giá": status
-                        })
-            
+
+                        rows.append(
+                            {
+                                "Horizon": h,
+                                "Mô hình": model_name,
+                                "v9 MASE (Domain - Đúng)": f"{metrics['v9_mase']:.3f}",
+                                "v10 MASE (IQR - Lỗi)": f"{metrics['v10_mase']:.3f}",
+                                "Δ MASE": f"{delta:+.3f}",
+                                "Đánh giá": status,
+                            }
+                        )
+
             st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-            
+
             fig_path = PROJECT_ROOT / "research" / "figures" / "ablation_outlier_impact.png"
             if fig_path.exists():
-                st.image(str(fig_path), caption="Biểu đồ MASE: Ở horizon 1h, mô hình lỗi (v10) có vẻ sai số thấp hơn, tạo ra ảo giác an toàn.")
-                
-    except Exception as e:
+                st.image(
+                    str(fig_path),
+                    caption="Biểu đồ MASE: Ở horizon 1h, mô hình lỗi (v10) có vẻ sai số thấp hơn, tạo ra ảo giác an toàn.",
+                )
+
+    except Exception:
         st.info("💡 Chạy script `v10_ablation_compare.py` để xem kết quả Ablation Study.")
 
     # External data analysis
@@ -287,27 +309,36 @@ def _render_limitations(section_header, insight_card):
         sens_path = PROJECT_ROOT / "research" / "diagnostics" / "sensitivity_analysis.json"
         if sens_path.exists():
             import json as _json2
-            sens_d = _json2.load(open(sens_path, "r", encoding="utf-8"))
+
+            sens_d = _json2.load(open(sens_path, encoding="utf-8"))
             knn_k = sens_d.get("knn_k_sensitivity", {})
             aci_g = sens_d.get("aci_gamma_sensitivity", {})
-            
+
             col_k, col_g = st.columns(2)
             with col_k:
                 st.markdown(f"**KNN Imputation $k$-value {cite('troyanskaya2001')}**")
                 rows1 = [{"k": k.replace("k_", "k="), "MAE": v["mae"], "RMSE": v["rmse"]} for k, v in knn_k.items()]
                 import pandas as _pd
+
                 st.dataframe(_pd.DataFrame(rows1), use_container_width=True, hide_index=True)
             with col_g:
                 st.markdown(f"**ACI Adaptation Rate $\\gamma$ {cite('gibbs2021')}**")
-                rows2 = [{"Gamma (γ)": v["gamma"], "Coverage": f"{v['empirical_coverage']*100:.1f}%", "Stability": v["stability_score"]} for k, v in aci_g.items()]
+                rows2 = [
+                    {
+                        "Gamma (γ)": v["gamma"],
+                        "Coverage": f"{v['empirical_coverage'] * 100:.1f}%",
+                        "Stability": v["stability_score"],
+                    }
+                    for k, v in aci_g.items()
+                ]
                 st.dataframe(_pd.DataFrame(rows2), use_container_width=True, hide_index=True)
-            
+
             insight_card(
                 "💡 Kết luận kiểm định độ nhạy",
                 f"Thử nghiệm quét siêu tham số trên `scripts/analysis/knn_k_sensitivity.py` xác nhận: "
-                f"(1) $k=5$ (KNN) cho sai số MAE tối ưu ($32,25\,\\mu\\text{{g/m}}^3$) {cite('troyanskaya2001')}. "
+                f"(1) $k=5$ (KNN) cho sai số MAE tối ưu ($32,25\\,\\mu\\text{{g/m}}^3$) {cite('troyanskaya2001')}. "
                 f"(2) $\\gamma=0,005$ (ACI) duy trì độ phủ $91,0\\%$ (mục tiêu $90\\%$) với chỉ số ổn định cao nhất ($0,988$) {cite('gibbs2021')}.",
-                card_type="info"
+                card_type="info",
             )
     except Exception:
         pass
@@ -322,7 +353,8 @@ def _render_future_work(section_header, insight_card):
     """Future research directions with feasibility assessment."""
     section_header("🚀", "Đề Xuất Hướng Phát Triển")
 
-    st.markdown("""
+    st.markdown(
+        """
     <div style="background: var(--secondary-background-color); border-radius: 12px;
                 padding: 1rem 1.2rem; margin-bottom: 1.5rem;
                 border-left: 4px solid #00D4AA; font-size: 0.9rem; line-height: 1.6;">
@@ -330,7 +362,9 @@ def _render_future_work(section_header, insight_card):
         đã xác định. Mỗi hướng được đánh giá theo <b>Mức độ khả thi</b> (dựa trên
         hạ tầng hiện có) và <b>Tác động kỳ vọng</b> (dựa trên literature review).
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     future_directions = [
         {
@@ -433,50 +467,50 @@ def _render_future_work(section_header, insight_card):
         i_bar = "█" * fd["i_score"] + "░" * (5 - fd["i_score"])
 
         # Color based on feasibility
-        border_color = (
-            "#00D4AA" if fd["f_score"] >= 4
-            else "#F59E0B" if fd["f_score"] >= 3
-            else "#EF4444"
-        )
+        border_color = "#00D4AA" if fd["f_score"] >= 4 else "#F59E0B" if fd["f_score"] >= 3 else "#EF4444"
 
-        st.markdown(f"""
+        st.markdown(
+            f"""
         <div style="background: var(--secondary-background-color); border-radius: 12px;
                     padding: 1.2rem 1.5rem; margin-bottom: 1rem;
                     border-left: 4px solid {border_color};">
             <div style="display: flex; justify-content: space-between; align-items: center;
                         margin-bottom: 0.5rem;">
                 <div style="font-weight: 700; font-size: 1rem;">
-                    {fd['icon']} {fd['id']}: {fd['title']}
+                    {fd["icon"]} {fd["id"]}: {fd["title"]}
                 </div>
             </div>
             <div style="font-size: 0.88rem; line-height: 1.6; opacity: 0.9;
                         margin-bottom: 0.8rem;">
-                {fd['desc']}
+                {fd["desc"]}
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem;
                         font-size: 0.82rem;">
                 <div>
                     <span style="opacity: 0.6;">Khả thi:</span>
                     <span style="font-family: monospace; color: {border_color};"> {f_bar}</span>
-                    <span style="opacity: 0.5;"> ({fd['feasibility']})</span>
+                    <span style="opacity: 0.5;"> ({fd["feasibility"]})</span>
                 </div>
                 <div>
                     <span style="opacity: 0.6;">Tác động:</span>
                     <span style="font-family: monospace; color: #00D4AA;"> {i_bar}</span>
-                    <span style="opacity: 0.5;"> ({fd['impact']})</span>
+                    <span style="opacity: 0.5;"> ({fd["impact"]})</span>
                 </div>
                 <div>
                     <span style="opacity: 0.6;">Tiền đề:</span>
-                    <span style="opacity: 0.7;"> {fd['prereq']}</span>
+                    <span style="opacity: 0.7;"> {fd["prereq"]}</span>
                 </div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
     # Priority matrix
     section_header("📋", "Ma Trận Ưu Tiên")
 
-    st.markdown("""
+    st.markdown(
+        """
     <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.5rem;">
         <thead>
             <tr style="border-bottom: 2px solid rgba(0,212,170,0.3);">
@@ -538,6 +572,8 @@ def _render_future_work(section_header, insight_card):
             </tr>
         </tbody>
     </table>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     st.caption("*P1 = Ưu tiên cao (có thể thực hiện ngay), P2 = Ưu tiên trung bình, P3 = Dài hạn*")

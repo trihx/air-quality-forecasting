@@ -12,7 +12,6 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Experiment Schemas
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -151,9 +150,7 @@ class PredictionRequest(BaseModel):
     """Request body for PM2.5 prediction."""
 
     horizon: int = Field(..., ge=1, le=168, examples=[1, 6, 24])
-    model_name: str = Field(
-        default="gru", examples=["gru", "gru_quantile", "lightgbm"]
-    )
+    model_name: str = Field(default="gru", examples=["gru", "gru_quantile", "lightgbm"])
 
 
 class PredictionResponse(BaseModel):

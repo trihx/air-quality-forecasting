@@ -47,12 +47,14 @@ async def lifespan(app: FastAPI):
     # Auto-seed info_cards if empty (first-run in Docker)
     try:
         from sqlalchemy import text
+
         with engine.connect() as conn:
             result = conn.execute(text("SELECT COUNT(*) FROM info_cards"))
             count = result.scalar()
         if count == 0:
             logger.info("info_cards table empty — running auto-seed...")
             from scripts.seed_info_cards import seed as seed_info_cards
+
             seed_info_cards()
             logger.info("Auto-seed complete.")
         else:
@@ -86,9 +88,9 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:8501",    # Streamlit dev
-        "http://dashboard:8501",   # Docker internal
-        "http://localhost:3000",    # React dev (future)
+        "http://localhost:8501",  # Streamlit dev
+        "http://dashboard:8501",  # Docker internal
+        "http://localhost:3000",  # React dev (future)
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -106,9 +108,7 @@ async def log_requests(request: Request, call_next):
 
     # Skip noisy health check logs in production
     if request.url.path != "/health":
-        logger.info(
-            f"{request.method} {request.url.path} → {response.status_code} ({elapsed:.0f}ms)"
-        )
+        logger.info(f"{request.method} {request.url.path} → {response.status_code} ({elapsed:.0f}ms)")
 
     return response
 
@@ -126,6 +126,7 @@ def health_check():
     # Quick DB connectivity test
     try:
         from sqlalchemy import text
+
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
         db_status = "connected"

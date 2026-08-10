@@ -23,15 +23,20 @@ RESEARCH_DIR = PROJECT_ROOT / "research"
 SHAP_DIR = RESEARCH_DIR / "figures" / "shap"
 
 # ── Design tokens (VTF: centralized from src.viz.theme) ──
-from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC, get_plotly_annotation_style
+from src.frontend.citations import render_references_section
 from src.viz.chart_factory import (
-    chart as _chart,
-    render_chart as _render_chart,
-    figure_caption as _caption,
-    styled_bar,
     add_simple_bar_labels,
 )
-from src.frontend.citations import render_references_section
+from src.viz.chart_factory import (
+    chart as _chart,
+)
+from src.viz.chart_factory import (
+    figure_caption as _caption,
+)
+from src.viz.chart_factory import (
+    render_chart as _render_chart,
+)
+from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC, get_plotly_annotation_style
 
 COLORS = {
     "primary": PALETTE_SEMANTIC["primary"],
@@ -52,25 +57,28 @@ CHART_COLORS = PALETTE_CATEGORICAL
 
 
 def _section_header(icon: str, title: str):
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div class="section-header">
         <span class="icon">{icon}</span>
         <span class="title">{title}</span>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 def _insight_card(title: str, text: str, card_type: str = "default"):
     cls = "warning" if card_type == "warning" else ""
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div class="insight-card {cls}">
         <h4>{title}</h4>
         <div class="insight-text">{text}</div>
     </div>
-    """, unsafe_allow_html=True)
-
-
-
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 @st.cache_data
@@ -94,15 +102,18 @@ def _get_hub_pipeline_metrics() -> dict:
     features_count = 0
     for filename, label in datasets:
         path = processed / filename
-        if not path.exists(): continue
+        if not path.exists():
+            continue
         try:
             with open(path, encoding="utf-8") as f:
                 header = f.readline()
                 cols = len(header.strip().split(","))
                 rows = sum(1 for _ in f)
             resolutions[label] = {"rows": rows, "cols": cols}
-            if label == "1h": features_count = cols
-        except Exception: continue
+            if label == "1h":
+                features_count = cols
+        except Exception:
+            continue
     return {"resolutions": resolutions, "features_count": features_count}
 
 
@@ -161,15 +172,19 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
         height=500,
         margin=dict(l=120, r=30, t=60, b=80),
     )
-    fig_bar.add_trace(go.Bar(
-        x=values, y=names, orientation="h",
-        marker=dict(
-            color=values,
-            colorscale="Viridis",
-        ),
-        text=[f"{v:.4f}" for v in values],
-        hovertemplate="%{y}: <b>%{x:.4f}</b><extra></extra>",
-    ))
+    fig_bar.add_trace(
+        go.Bar(
+            x=values,
+            y=names,
+            orientation="h",
+            marker=dict(
+                color=values,
+                colorscale="Viridis",
+            ),
+            text=[f"{v:.4f}" for v in values],
+            hovertemplate="%{y}: <b>%{x:.4f}</b><extra></extra>",
+        )
+    )
     add_simple_bar_labels(fig_bar, orientation="h")
     fig_bar.update_layout(yaxis=dict(automargin=True))
 
@@ -189,14 +204,19 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
         margin=dict(l=120, r=30, t=60, b=80),
         hovermode="closest",
     )
-    fig_heat.add_trace(go.Heatmap(
-        z=matrix, x=["1h", "6h", "24h"], y=features_sorted,
-        colorscale="Viridis",
-        text=[[f"{v:.3f}" if v > 0 else "" for v in row] for row in matrix],
-        texttemplate="%{text}", textfont=dict(size=9),
-        hovertemplate="Feature: %{y}<br>Horizon: %{x}<br>SHAP: %{z:.4f}<extra></extra>",
-        colorbar=dict(title=dict(text="SHAP", font=dict(color="#4B5563")), tickfont=dict(color="#4B5563")),
-    ))
+    fig_heat.add_trace(
+        go.Heatmap(
+            z=matrix,
+            x=["1h", "6h", "24h"],
+            y=features_sorted,
+            colorscale="Viridis",
+            text=[[f"{v:.3f}" if v > 0 else "" for v in row] for row in matrix],
+            texttemplate="%{text}",
+            textfont=dict(size=9),
+            hovertemplate="Feature: %{y}<br>Horizon: %{x}<br>SHAP: %{z:.4f}<extra></extra>",
+            colorbar=dict(title=dict(text="SHAP", font=dict(color="#4B5563")), tickfont=dict(color="#4B5563")),
+        )
+    )
     fig_heat.update_layout(yaxis=dict(dtick=1, tickfont=dict(size=9), automargin=True))
 
     # include_plotlyjs=True embeds ~3MB plotly.js inline → fully offline/Docker-ready
@@ -242,7 +262,7 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
   <p><b>Dự án:</b> PM2.5 Forecasting — Đề án Thạc sĩ ĐH Cần Thơ (QĐ 1799)<br>
      <b>Tác giả:</b> trihx (Anh Trí)<br>
      <b>Dữ liệu:</b> IoT sensors, Sa Đéc, Đồng Tháp, Việt Nam (2022–2025)<br>
-     <b>Model:</b> LightGBM (Optuna-tuned) · n_test = {horizon_data.get('n_test', '?')}</p>
+     <b>Model:</b> LightGBM (Optuna-tuned) · n_test = {horizon_data.get("n_test", "?")}</p>
 </div>
 
 <div class="stats-grid">
@@ -280,7 +300,6 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
 # ══════════════════════════════════════════════════════════════════════
 
 
-
 def _tab_pipeline_journey():
     """Interactive Sankey diagram showing data flow through the pipeline."""
 
@@ -295,10 +314,10 @@ def _tab_pipeline_journey():
 
     # ── Dynamic pipeline data ──
     pm = _get_hub_pipeline_metrics()
-    f_count = pm.get('features_count', 119)
-    rows_1h = pm.get('resolutions', {}).get('1h', {}).get('rows', 27649)
-    rows_30m = pm.get('resolutions', {}).get('30m', {}).get('rows', 55000)
-    rows_15m = pm.get('resolutions', {}).get('15m', {}).get('rows', 110000)
+    f_count = pm.get("features_count", 119)
+    rows_1h = pm.get("resolutions", {}).get("1h", {}).get("rows", 27649)
+    rows_30m = pm.get("resolutions", {}).get("30m", {}).get("rows", 55000)
+    rows_15m = pm.get("resolutions", {}).get("15m", {}).get("rows", 110000)
     total_rows = rows_1h + rows_30m + rows_15m
     best = _get_best_mase()
     best_6h_model, best_6h_mase = best["6h"]
@@ -307,42 +326,52 @@ def _tab_pipeline_journey():
     # ── Node definitions (7-Step Workflow) ──
     labels = [
         # Step 1: Raw Data
-        f"1. Raw Data ({raw_rows//1000}K)",  # 0
+        f"1. Raw Data ({raw_rows // 1000}K)",  # 0
         # Step 2: Cleaning
-        f"2. Cleaning (S-ESD)",             # 1
+        "2. Cleaning (S-ESD)",  # 1
         # Step 3: Resample
-        f"3. Resample (15m)",               # 2
-        f"3. Resample (30m)",               # 3
-        f"3. Resample (1h)",                # 4
+        "3. Resample (15m)",  # 2
+        "3. Resample (30m)",  # 3
+        "3. Resample (1h)",  # 4
         # Step 4: Impute
-        f"4. Impute (15m)",                 # 5
-        f"4. Impute (30m)",                 # 6
-        f"4. Impute (1h)",                  # 7
+        "4. Impute (15m)",  # 5
+        "4. Impute (30m)",  # 6
+        "4. Impute (1h)",  # 7
         # Step 5: Features
-        f"5. Features (15m)",               # 8
-        f"5. Features (30m)",               # 9
-        f"5. Features (1h)",                # 10
+        "5. Features (15m)",  # 8
+        "5. Features (30m)",  # 9
+        "5. Features (1h)",  # 10
         # Step 6: Split
-        "6. Split (15m)",                   # 11
-        "6. Split (30m)",                   # 12
-        "6. Split (1h)",                    # 13
+        "6. Split (15m)",  # 11
+        "6. Split (30m)",  # 12
+        "6. Split (1h)",  # 13
         # Step 7: Models
-        "7. Models (15m)",                  # 14
-        "7. Models (30m)",                  # 15
-        "7. Models (1h)",                   # 16
+        "7. Models (15m)",  # 14
+        "7. Models (30m)",  # 15
+        "7. Models (1h)",  # 16
         # Final: Evaluation
-        "Unified Evaluation",               # 17
-        f"🏆 Best: {best_6h_model.split('_')[0]} ({best_6h_mase:.3f})", # 18
+        "Unified Evaluation",  # 17
+        f"🏆 Best: {best_6h_model.split('_')[0]} ({best_6h_mase:.3f})",  # 18
     ]
 
     hover_labels = [
         "Bước 1: Thu thập dữ liệu IoT thô",
         "Bước 2: Xử lý ngoại lai S-ESD & kẹp giá trị [0, 500]",
-        "Bước 3: Resample 15 phút", "Bước 3: Resample 30 phút", "Bước 3: Resample 1 giờ",
-        "Bước 4: Nội suy dữ liệu (15m)", "Bước 4: Nội suy dữ liệu (30m)", "Bước 4: Nội suy dữ liệu (1h)",
-        "Bước 5: Kỹ nghệ đặc trưng (15m)", "Bước 5: Kỹ nghệ đặc trưng (30m)", "Bước 5: Kỹ nghệ đặc trưng (1h)",
-        "Bước 6: Tách tập Train/Val/Test (15m)", "Bước 6: Tách tập Train/Val/Test (30m)", "Bước 6: Tách tập Train/Val/Test (1h)",
-        "Bước 7: Huấn luyện mô hình 15m", "Bước 7: Huấn luyện mô hình 30m", "Bước 7: Huấn luyện mô hình 1h",
+        "Bước 3: Resample 15 phút",
+        "Bước 3: Resample 30 phút",
+        "Bước 3: Resample 1 giờ",
+        "Bước 4: Nội suy dữ liệu (15m)",
+        "Bước 4: Nội suy dữ liệu (30m)",
+        "Bước 4: Nội suy dữ liệu (1h)",
+        "Bước 5: Kỹ nghệ đặc trưng (15m)",
+        "Bước 5: Kỹ nghệ đặc trưng (30m)",
+        "Bước 5: Kỹ nghệ đặc trưng (1h)",
+        "Bước 6: Tách tập Train/Val/Test (15m)",
+        "Bước 6: Tách tập Train/Val/Test (30m)",
+        "Bước 6: Tách tập Train/Val/Test (1h)",
+        "Bước 7: Huấn luyện mô hình 15m",
+        "Bước 7: Huấn luyện mô hình 30m",
+        "Bước 7: Huấn luyện mô hình 1h",
         "Đánh giá tổng thể MASE, MAE, RMSE",
         "Mô hình vô địch toàn diện",
     ]
@@ -357,13 +386,25 @@ def _tab_pipeline_journey():
     C_BEST = "#FFD700"
 
     node_colors = [
-        C_RAW, C_CLEAN, 
-        C_15M, C_30M, C_1H,
-        C_15M, C_30M, C_1H,
-        C_15M, C_30M, C_1H,
-        C_15M, C_30M, C_1H,
-        C_15M, C_30M, C_1H,
-        C_EVAL, C_BEST
+        C_RAW,
+        C_CLEAN,
+        C_15M,
+        C_30M,
+        C_1H,
+        C_15M,
+        C_30M,
+        C_1H,
+        C_15M,
+        C_30M,
+        C_1H,
+        C_15M,
+        C_30M,
+        C_1H,
+        C_15M,
+        C_30M,
+        C_1H,
+        C_EVAL,
+        C_BEST,
     ]
 
     # ── Link definitions ──
@@ -382,11 +423,11 @@ def _tab_pipeline_journey():
 
     # 1 -> 2
     add_link(0, 1, raw_rows, f"Xử lý ngoại lai ({raw_rows:,} dòng)", "rgba(249,115,22,0.25)")
-    
+
     # 2 -> 3
-    add_link(1, 2, rows_15m, f"Resample 15m", "rgba(255,107,107,0.20)")
-    add_link(1, 3, rows_30m, f"Resample 30m ⭐", "rgba(255,230,109,0.30)")
-    add_link(1, 4, rows_1h, f"Resample 1h", "rgba(96,165,250,0.20)")
+    add_link(1, 2, rows_15m, "Resample 15m", "rgba(255,107,107,0.20)")
+    add_link(1, 3, rows_30m, "Resample 30m ⭐", "rgba(255,230,109,0.30)")
+    add_link(1, 4, rows_1h, "Resample 1h", "rgba(96,165,250,0.20)")
 
     # Parallel paths for 15m, 30m, 1h
     paths = [
@@ -405,26 +446,28 @@ def _tab_pipeline_journey():
     # Eval -> Best
     add_link(17, 18, total_rows, "Chọn Best Model", "rgba(0,212,170,0.35)")
 
-    fig = go.Figure(go.Sankey(
-        arrangement="snap",
-        node=dict(
-            pad=15,
-            thickness=15,
-            line=dict(color="rgba(0,0,0,0.3)", width=1),
-            label=labels,
-            color=node_colors,
-            customdata=hover_labels,
-            hovertemplate="%{customdata}<extra></extra>",
-        ),
-        link=dict(
-            source=sources,
-            target=targets,
-            value=values,
-            label=link_labels,
-            color=link_colors,
-            hovertemplate="%{label}<extra></extra>",
-        ),
-    ))
+    fig = go.Figure(
+        go.Sankey(
+            arrangement="snap",
+            node=dict(
+                pad=15,
+                thickness=15,
+                line=dict(color="rgba(0,0,0,0.3)", width=1),
+                label=labels,
+                color=node_colors,
+                customdata=hover_labels,
+                hovertemplate="%{customdata}<extra></extra>",
+            ),
+            link=dict(
+                source=sources,
+                target=targets,
+                value=values,
+                label=link_labels,
+                color=link_colors,
+                hovertemplate="%{label}<extra></extra>",
+            ),
+        )
+    )
 
     fig.update_layout(
         title=dict(
@@ -435,9 +478,11 @@ def _tab_pipeline_journey():
     )
     fig.update_traces(textfont=dict(size=11, color="#FAFAFA"))
     fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
         font=dict(family="Inter, Arial, sans-serif", size=10),
-        margin=dict(l=60, r=30, t=60, b=80), height=650,
+        margin=dict(l=60, r=30, t=60, b=80),
+        height=650,
     )
     _render_chart(fig, filename="pipeline_sankey")
 
@@ -451,7 +496,8 @@ def _tab_pipeline_journey():
         ("🔧 Imputed Rows", "88 (15m) / 230 (30m) / 631 (1h)", "Hybrid: Spline + KNN"),
         ("📐 Features", f"{f_count} columns", "v9: anti-leakage ✅"),
     ]
-    st.markdown("""
+    st.markdown(
+        """
     <style>
         .pipeline-card { text-align: center; padding: 1.2rem 0.4rem;
             background: var(--text-color) !important;
@@ -467,17 +513,22 @@ def _tab_pipeline_journey():
         .pipeline-card .pc-detail { font-size: 0.7rem; color: var(--background-color) !important; opacity: 0.8;
             margin-top: 0.2rem; }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     for col, (label, value, detail) in zip([col1, col2, col3, col4], stats):
         with col:
-            st.markdown(f"""
+            st.markdown(
+                f"""
             <div class="pipeline-card">
                 <div class="pc-label">{label}</div>
                 <div class="pc-value">{value}</div>
                 <div class="pc-detail">{detail}</div>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
     # ── Anti-leakage checkpoints ──
     _section_header("🛡️", "Anti-Leakage Checkpoints")
@@ -490,7 +541,8 @@ def _tab_pipeline_journey():
         ("✅ Purging Gap", "Gap = max_lookback giữa train/val/test"),
     ]
     for check, desc in checkpoints:
-        st.markdown(f"""
+        st.markdown(
+            f"""
         <style>
             .checkpoint-card {{
                 display: flex; align-items: center; gap: 0.75rem;
@@ -505,7 +557,9 @@ def _tab_pipeline_journey():
                          min-width: 200px;">{check}</span>
             <span style="font-size: 0.85rem; color: var(--background-color); opacity: 0.8;">{desc}</span>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
     # ── Detail Sankey — Zoom into one resolution ──
     st.divider()
@@ -636,9 +690,9 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     # ── Build hover labels ──
     hover = [
         f"Bước 1: Dữ liệu thô từ IoT sensor ({raw_rows:,} records)",
-        f"Bước 2: Domain clipping [0,500] & S-ESD outlier removal",
+        "Bước 2: Domain clipping [0,500] & S-ESD outlier removal",
         f"Bước 3: Resample xuống {res} (mean aggregation)",
-        f"Bước 4: Impute gaps (Spline ≤6h + KNN 6-24h)",
+        "Bước 4: Impute gaps (Spline ≤6h + KNN 6-24h)",
         f"Bước 5: Build {n_cols} features (anti-leakage)",
         f"Bước 6: Training set (80%) - {train_rows:,} rows",
         f"Bước 6: Validation set (10%) - {val_rows:,} rows",
@@ -702,10 +756,10 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
             c_tr, c_val, c_ev = "rgba(255,230,109,0.30)", "rgba(255,230,109,0.20)", "rgba(255,230,109,0.20)"
         else:
             c_tr, c_val, c_ev = "rgba(167,139,250,0.20)", "rgba(167,139,250,0.15)", "rgba(167,139,250,0.15)"
-            
+
         add_link(IDX_TRAIN, idx, train_per_model, f"Train {name}", c_tr)
         add_link(IDX_VAL, idx, val_per_model, f"Val {name}", c_val)
-        
+
         # Models -> Eval
         add_link(idx, IDX_EVAL, train_per_model + val_per_model, f"Eval {name}", c_ev)
 
@@ -718,26 +772,28 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     # Eval -> Best
     add_link(IDX_EVAL, IDX_BEST, total_rows, f"Winner: {best_display}", "rgba(255,215,0,0.40)")
 
-    fig = go.Figure(go.Sankey(
-        arrangement="snap",
-        node=dict(
-            pad=30,
-            thickness=16,
-            line=dict(color="rgba(0,0,0,0.3)", width=1),
-            label=labels,
-            color=node_colors,
-            customdata=hover,
-            hovertemplate="%{customdata}<extra></extra>",
-        ),
-        link=dict(
-            source=sources,
-            target=targets,
-            value=values,
-            label=link_labels,
-            color=link_colors,
-            hovertemplate="%{label}<extra></extra>",
-        ),
-    ))
+    fig = go.Figure(
+        go.Sankey(
+            arrangement="snap",
+            node=dict(
+                pad=30,
+                thickness=16,
+                line=dict(color="rgba(0,0,0,0.3)", width=1),
+                label=labels,
+                color=node_colors,
+                customdata=hover,
+                hovertemplate="%{customdata}<extra></extra>",
+            ),
+            link=dict(
+                source=sources,
+                target=targets,
+                value=values,
+                label=link_labels,
+                color=link_colors,
+                hovertemplate="%{label}<extra></extra>",
+            ),
+        )
+    )
 
     res_display = {"15m": "15 phút", "30m": "30 phút", "1h": "1 giờ"}.get(res, res)
     fig.update_layout(
@@ -749,15 +805,17 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     )
     fig.update_traces(textfont=dict(size=10, color="#FAFAFA"))
     fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
         font=dict(family="Inter, Arial, sans-serif", size=10),
-        margin=dict(l=60, r=30, t=60, b=80), height=750,
+        margin=dict(l=60, r=30, t=60, b=80),
+        height=750,
     )
     _render_chart(fig, filename="detailed_sankey")
 
-
     # ── Legend for model families ──
-    st.markdown("""
+    st.markdown(
+        """
     <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; margin-top: -0.5rem;">
         <span style="display: flex; align-items: center; gap: 0.4rem;">
             <span style="width: 12px; height: 12px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
@@ -780,7 +838,9 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
             <span style="font-size: 0.8rem; opacity: 0.8;">Best Model</span>
         </span>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # ── Per-horizon best summary for selected resolution ──
     if best_info:
@@ -814,7 +874,7 @@ def _image_to_plotly(img_path: Path, display_height: int = 500) -> go.Figure:
             sizey=img.height,
             sizing="stretch",
             opacity=1,
-            layer="below"
+            layer="below",
         )
     )
     fig.update_layout(
@@ -849,13 +909,15 @@ def _tab_feature_explainability():
         "phương pháp model-agnostic, đo trực tiếp ảnh hưởng khi shuffle từng feature.",
     )
 
-    sub1, sub2, sub3, sub4, sub5 = st.tabs([
-        "📊 Interactive Feature Importance",
-        "🗺️ Feature × Horizon Heatmap",
-        "🌊 SHAP Beeswarm & Dependence",
-        "🧠 GRU Permutation Importance",
-        "📄 Export HTML Report",
-    ])
+    sub1, sub2, sub3, sub4, sub5 = st.tabs(
+        [
+            "📊 Interactive Feature Importance",
+            "🗺️ Feature × Horizon Heatmap",
+            "🌊 SHAP Beeswarm & Dependence",
+            "🧠 GRU Permutation Importance",
+            "📄 Export HTML Report",
+        ]
+    )
 
     # ── Sub-tab 1: Interactive bar chart ──
     with sub1:
@@ -877,27 +939,24 @@ def _tab_feature_explainability():
                 height=500,
                 margin=dict(l=120, r=30, t=20, b=80),
             )
-            fig.add_trace(go.Bar(
-                x=values, y=names, orientation="h",
-                marker=dict(
-                    color=values,
-                    colorscale="Viridis",
-                    line=dict(width=0),
-                ),
-                hovertemplate="%{y}: <b>%{x:.4f}</b><extra></extra>",
-            ))
-            
-            # Use unified design token for annotations
-            annot_style = get_plotly_annotation_style(
-                overrides={"xanchor": "left", "xshift": 5}
-            )
-            for name, value in zip(names, values):
-                fig.add_annotation(
-                    x=value,
-                    y=name,
-                    text=f"<b>{value:.3f}</b>",
-                    **annot_style
+            fig.add_trace(
+                go.Bar(
+                    x=values,
+                    y=names,
+                    orientation="h",
+                    marker=dict(
+                        color=values,
+                        colorscale="Viridis",
+                        line=dict(width=0),
+                    ),
+                    hovertemplate="%{y}: <b>%{x:.4f}</b><extra></extra>",
                 )
+            )
+
+            # Use unified design token for annotations
+            annot_style = get_plotly_annotation_style(overrides={"xanchor": "left", "xshift": 5})
+            for name, value in zip(names, values):
+                fig.add_annotation(x=value, y=name, text=f"<b>{value:.3f}</b>", **annot_style)
             _render_chart(fig, filename=f"shap_importance_{h}")
             _caption(f"SHAP Feature Importance — h={h} (n_test={horizon_data.get('n_test', '?')})")
 
@@ -906,8 +965,12 @@ def _tab_feature_explainability():
             categories = {
                 "🕐 Lag Features": [n for n in names if "lag" in n],
                 "📈 Rolling Stats": [n for n in names if "roll" in n or "ewm" in n],
-                "🌙 Calendar/Fourier": [n for n in names if any(k in n for k in ("hour", "month", "dow", "fourier", "sin", "cos"))],
-                "🌡️ Domain/Interaction": [n for n in names if any(k in n for k in ("ratio", "interaction", "aqi", "diff", "pct"))],
+                "🌙 Calendar/Fourier": [
+                    n for n in names if any(k in n for k in ("hour", "month", "dow", "fourier", "sin", "cos"))
+                ],
+                "🌡️ Domain/Interaction": [
+                    n for n in names if any(k in n for k in ("ratio", "interaction", "aqi", "diff", "pct"))
+                ],
                 "🔬 Raw Sensors": [n for n in names if n in ("nhiet_do", "do_am", "diem_suong", "co2")],
             }
             cols = st.columns(len(categories))
@@ -915,7 +978,8 @@ def _tab_feature_explainability():
                 with col:
                     count = len(feats)
                     feat_list = ", ".join(feats[:3]) + ("..." if len(feats) > 3 else "")
-                    st.markdown(f"""
+                    st.markdown(
+                        f"""
                     <div style="background: rgba(0,212,170,0.06); border-radius: 10px;
                                 padding: 1rem; text-align: center; min-height: 120px;">
                         <div style="font-size: 1.3rem;">{cat_name.split()[0]}</div>
@@ -927,7 +991,9 @@ def _tab_feature_explainability():
                                     overflow: hidden; text-overflow: ellipsis;">
                             {feat_list if feats else "—"}</div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    """,
+                        unsafe_allow_html=True,
+                    )
 
     # ── Sub-tab 2: Heatmap features × horizons ──
     with sub2:
@@ -953,9 +1019,12 @@ def _tab_feature_explainability():
 
         # Mapping names to be more intuitive and avoid "lag1h" confusion for 24h
         def map_feat_name(f: str) -> str:
-            if f == "pm25_lag_1h": return "pm25_lag_1h (Giá trị HT T=0)"
-            if f == "pm25_lag_24h": return "pm25_lag_24h (T-24h trước)"
-            if "roll_24h_mean" in f: return f"{f} (TB 24h)"
+            if f == "pm25_lag_1h":
+                return "pm25_lag_1h (Giá trị HT T=0)"
+            if f == "pm25_lag_24h":
+                return "pm25_lag_24h (T-24h trước)"
+            if "roll_24h_mean" in f:
+                return f"{f} (TB 24h)"
             return f
 
         features_mapped = [map_feat_name(f) for f in features_sorted]
@@ -966,17 +1035,19 @@ def _tab_feature_explainability():
             margin=dict(l=120, r=30, t=60, b=80),
             hovermode="closest",
         )
-        fig.add_trace(go.Heatmap(
-            z=matrix,
-            x=["1h", "6h", "24h"],
-            y=features_mapped,
-            colorscale="Viridis",
-            text=[[f"{v:.3f}" if v > 0 else "" for v in row] for row in matrix],
-            texttemplate="%{text}",
-            textfont=dict(size=9),
-            hovertemplate="Feature: %{y}<br>Horizon: %{x}<br>SHAP: %{z:.4f}<extra></extra>",
-            colorbar=dict(title=dict(text="SHAP", font=dict(color="#4B5563")), tickfont=dict(color="#4B5563")),
-        ))
+        fig.add_trace(
+            go.Heatmap(
+                z=matrix,
+                x=["1h", "6h", "24h"],
+                y=features_mapped,
+                colorscale="Viridis",
+                text=[[f"{v:.3f}" if v > 0 else "" for v in row] for row in matrix],
+                texttemplate="%{text}",
+                textfont=dict(size=9),
+                hovertemplate="Feature: %{y}<br>Horizon: %{x}<br>SHAP: %{z:.4f}<extra></extra>",
+                colorbar=dict(title=dict(text="SHAP", font=dict(color="#4B5563")), tickfont=dict(color="#4B5563")),
+            )
+        )
         fig.update_layout(yaxis=dict(dtick=1, tickfont=dict(size=10)))
         _render_chart(fig, filename="shap_heatmap")
 
@@ -985,7 +1056,7 @@ def _tab_feature_explainability():
             "Về mặt khoa học: Target của 24h là <code>Y_{t+24}</code>. Tính năng <code>pm25_lag_1h</code> chính là "
             "<b>giá trị PM2.5 hiện tại (t)</b> (last known state). Việc lấy mức độ ô nhiễm hiện tại "
             "làm mốc baseline để dự báo cho 24 giờ sau là hoàn toàn chuẩn xác theo lý thuyết Time Series (tính tự hồi quy), "
-            "kết hợp cùng chu kỳ ngày đêm (hour_cos, fourier)."
+            "kết hợp cùng chu kỳ ngày đêm (hour_cos, fourier).",
         )
 
     # ── Sub-tab 3: Static SHAP images ──
@@ -1009,7 +1080,7 @@ def _tab_feature_explainability():
                 with cols[i % 3]:
                     feature_name = img.stem.split(f"_{h3}_")[-1]
                     fig_dep = _image_to_plotly(img, display_height=300)
-                    
+
                     _render_chart(fig_dep, filename=f"shap_dep_{h3}_{feature_name}")
 
     # ── Sub-tab 4: GRU Permutation Importance ──
@@ -1025,8 +1096,7 @@ def _tab_feature_explainability():
         h4 = st.selectbox("Chọn horizon", ["1h", "6h", "24h"], key="expl_perm_h")
         perm_path = SHAP_DIR / f"gru_permutation_{h4}.png"
         if perm_path.exists():
-            st.image(str(perm_path), caption=f"GRU Permutation Importance — h={h4}",
-                     use_container_width=True)
+            st.image(str(perm_path), caption=f"GRU Permutation Importance — h={h4}", use_container_width=True)
         else:
             st.warning(f"File chưa tồn tại: {perm_path.name}")
 
@@ -1042,8 +1112,7 @@ def _tab_feature_explainability():
 
         h5 = st.selectbox("Chọn horizon", ["1h", "6h", "24h"], key="expl_export_h")
 
-        if st.button("🚀 Generate HTML Report", key="btn_gen_report",
-                     type="primary", use_container_width=True):
+        if st.button("🚀 Generate HTML Report", key="btn_gen_report", type="primary", use_container_width=True):
             if not shap_data:
                 st.error("Chưa có SHAP results.")
             else:
@@ -1053,7 +1122,7 @@ def _tab_feature_explainability():
                     output_path = SHAP_DIR / output_name
                     output_path.write_text(html_content, encoding="utf-8")
 
-                    st.success(f"✅ Report đã tạo: `{output_name}` ({len(html_content)//1024} KB)")
+                    st.success(f"✅ Report đã tạo: `{output_name}` ({len(html_content) // 1024} KB)")
                     st.download_button(
                         label="⬇️ Download HTML Report",
                         data=html_content,
@@ -1104,7 +1173,8 @@ def _tab_model_selection(results: dict):
     cols = st.columns(len(phases))
     for col, (ver, name, note, color) in zip(cols, phases):
         with col:
-            st.markdown(f"""
+            st.markdown(
+                f"""
             <style>
                 .timeline-step {{
                     text-align: center; padding: 1rem 0.5rem;
@@ -1123,7 +1193,9 @@ def _tab_model_selection(results: dict):
                 <div style="font-size: 0.65rem; color: var(--background-color); opacity: 0.8;
                             margin-top: 0.4rem; line-height: 1.3;">{note}</div>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
     st.markdown("---")
 
@@ -1151,13 +1223,17 @@ def _tab_model_selection(results: dict):
 
     rows = []
     for model_name, meta in model_meta.items():
-        row = {"Model": model_name, "Type": meta["type"],
-               "Complexity": meta["complexity"], "Interpretability": meta["interp"]}
+        row = {
+            "Model": model_name,
+            "Type": meta["type"],
+            "Complexity": meta["complexity"],
+            "Interpretability": meta["interp"],
+        }
         for h in horizons:
             if model_name == "Persistence":
                 row[f"MASE {h}"] = "1.000 (baseline)"
                 continue
-                
+
             h_dict = std_results.get(h, {})
             # Map frontend names to JSON keys
             search_key = model_name
@@ -1175,7 +1251,7 @@ def _tab_model_selection(results: dict):
                     if m is not None:
                         if best_mase is None or m < best_mase:
                             best_mase = m
-            
+
             if best_mase is not None:
                 row[f"MASE {h}"] = f"{best_mase:.3f}"
             else:
@@ -1196,12 +1272,14 @@ def _tab_model_selection(results: dict):
     b6_improvement = (1 - b6_mase) * 100
 
     winners = [
-        ("1h", b1_model, f"{b1_mase:.3f}",
-         f"{b1_model} — MASE < 1.0 tại horizon 1h! ⭐" if b1_mase < 1.0 else f"{b1_model} — MASE={b1_mase:.3f}"),
-        ("6h", b6_model, f"{b6_mase:.3f}",
-         f"Giảm {b6_improvement:.1f}% lỗi vs Persistence ⭐⭐"),
-        ("24h", b24_model, f"{b24_mase:.3f}",
-         "Long-range champion — 30m là resolution tối ưu ⭐"),
+        (
+            "1h",
+            b1_model,
+            f"{b1_mase:.3f}",
+            f"{b1_model} — MASE < 1.0 tại horizon 1h! ⭐" if b1_mase < 1.0 else f"{b1_model} — MASE={b1_mase:.3f}",
+        ),
+        ("6h", b6_model, f"{b6_mase:.3f}", f"Giảm {b6_improvement:.1f}% lỗi vs Persistence ⭐⭐"),
+        ("24h", b24_model, f"{b24_mase:.3f}", "Long-range champion — 30m là resolution tối ưu ⭐"),
     ]
 
     cols = st.columns(3)
@@ -1209,7 +1287,8 @@ def _tab_model_selection(results: dict):
         with col:
             is_best = True  # All winners beat Persistence
             border = "#FFE66D"
-            st.markdown(f"""
+            st.markdown(
+                f"""
             <style>
                 .best-model-card {{
                     background: var(--text-color) !important;
@@ -1227,7 +1306,9 @@ def _tab_model_selection(results: dict):
                 <div style="font-size: 0.75rem; color: var(--background-color); opacity: 0.8;
                             margin-top: 0.8rem; line-height: 1.4;">{reason}</div>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
     # ── Key Decision Insight ──
     st.markdown("")
@@ -1254,7 +1335,7 @@ def _tab_anti_leakage():
 
     _insight_card(
         "⚠️ Tại sao Leakage Audit quan trọng?",
-        "Data leakage = model \"nhìn\" thông tin tương lai khi training. "
+        'Data leakage = model "nhìn" thông tin tương lai khi training. '
         "Hậu quả: MASE/MAE <b>rất đẹp nhưng giả</b> — model sẽ fail hoàn toàn khi deploy. "
         "Dự án này đã phát hiện và sửa <b>4 nguồn leakage</b> trong 6 phiên bản.",
         card_type="warning",
@@ -1264,18 +1345,27 @@ def _tab_anti_leakage():
     _section_header("🔍", "4 Nguồn Leakage Đã Phát Hiện & Sửa")
 
     leaks = [
-        ("1️⃣", "diff(y) / pct_change(y)", "Chứa y[t] — target tại thời điểm t",
-         "Dùng shift(1).diff() — chỉ dùng past values", "v2 → v3"),
-        ("2️⃣", "STL Decomposition (full data)", "fit trên toàn bộ data (train+test)",
-         "STL fit trên TRAIN ONLY", "v3 → v4"),
-        ("3️⃣", "Scaler fit full data", "StandardScaler.fit(all_data)",
-         "Scaler.fit(train_only)", "v3 → v4"),
-        ("4️⃣", "Imputed data in test", "Test set chứa imputed rows",
-         "Filter is_imputed==0 trên test", "v2 → v3"),
+        (
+            "1️⃣",
+            "diff(y) / pct_change(y)",
+            "Chứa y[t] — target tại thời điểm t",
+            "Dùng shift(1).diff() — chỉ dùng past values",
+            "v2 → v3",
+        ),
+        (
+            "2️⃣",
+            "STL Decomposition (full data)",
+            "fit trên toàn bộ data (train+test)",
+            "STL fit trên TRAIN ONLY",
+            "v3 → v4",
+        ),
+        ("3️⃣", "Scaler fit full data", "StandardScaler.fit(all_data)", "Scaler.fit(train_only)", "v3 → v4"),
+        ("4️⃣", "Imputed data in test", "Test set chứa imputed rows", "Filter is_imputed==0 trên test", "v2 → v3"),
     ]
 
     for num, source, problem, fix, version in leaks:
-        st.markdown(f"""
+        st.markdown(
+            f"""
         <style>
             .leakage-card {{
                 display: flex; gap: 1rem; padding: 1rem 1.2rem; margin: 0.5rem 0;
@@ -1297,7 +1387,9 @@ def _tab_anti_leakage():
                     Phát hiện: {version}</div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
     # ── Before/After Impact ──
     st.markdown("---")
@@ -1315,12 +1407,15 @@ def _tab_anti_leakage():
         showlegend=False,
     )
     for label, mase, is_leaky in comparison:
-        fig.add_trace(go.Bar(
-            x=[label], y=[mase],
-            marker_color=PALETTE_SEMANTIC["accent"] if is_leaky else PALETTE_SEMANTIC["primary"],
-            text=[f"{mase:.3f}"],
-            hovertemplate=f"{label}: MASE = {mase:.3f}<extra></extra>",
-        ))
+        fig.add_trace(
+            go.Bar(
+                x=[label],
+                y=[mase],
+                marker_color=PALETTE_SEMANTIC["accent"] if is_leaky else PALETTE_SEMANTIC["primary"],
+                text=[f"{mase:.3f}"],
+                hovertemplate=f"{label}: MASE = {mase:.3f}<extra></extra>",
+            )
+        )
     add_simple_bar_labels(fig, orientation="v")
     _render_chart(fig, filename="stl_leakage_impact")
     _caption("MASE@6h — STL Leakage Impact")
@@ -1336,6 +1431,7 @@ def _tab_anti_leakage():
     _section_header("✅", "Test Coverage")
     # Count tests dynamically
     import ast
+
     tests_dir = Path(__file__).resolve().parent.parent / "tests"
     _test_count = 0
     for _tf in tests_dir.rglob("test_*.py"):
@@ -1347,7 +1443,8 @@ def _tab_anti_leakage():
         except Exception:
             continue
 
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
                 border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
                 padding: 1.5rem; text-align: center;">
@@ -1356,7 +1453,9 @@ def _tab_anti_leakage():
         <div style="font-size: 0.8rem; color: var(--text-color); opacity: 0.5; margin-top: 0.5rem;">
             Bao gồm: leakage tests, shuffle tests, metric validation, pipeline integrity</div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -1373,28 +1472,56 @@ def _tab_scientific_foundation():
     _section_header("📖", "Sách & Tài Liệu Tham Khảo Chính")
 
     references = [
-        ("Hyndman & Athanasopoulos (2021)", "Forecasting: Principles & Practice (3rd ed.)",
-         "MASE metric, time series cross-validation, ETS/ARIMA", "#00D4AA"),
-        ("Brownlee (2020)", "Deep Learning for Time Series Forecasting",
-         "LSTM/GRU architecture, walk-forward validation", "#A78BFA"),
-        ("Chen & Guestrin (2016)", "XGBoost: A Scalable Tree Boosting System",
-         "Gradient boosting, regularization, feature importance", "#4ECDC4"),
-        ("Ke et al. (2017)", "LightGBM: A Highly Efficient GBDT",
-         "Histogram-based split, leaf-wise growth", "#FFE66D"),
-        ("Lundberg & Lee (2017)", "SHAP: A Unified Approach to Interpreting Predictions",
-         "TreeExplainer, SHAP values for model explainability", "#FB923C"),
-        ("Box, Jenkins & Reinsel (2015)", "Time Series Analysis (5th ed.)",
-         "ARIMA/SARIMA methodology, stationarity testing", "#60A5FA"),
-        ("Lim et al. (2021)", "Temporal Fusion Transformers",
-         "Multi-horizon forecasting, variable selection, attention", "#F472B6"),
-        ("Molnar (2022)", "Interpretable Machine Learning (2nd ed.)",
-         "Permutation importance, SHAP, global vs local explanations", "#FF6B6B"),
+        (
+            "Hyndman & Athanasopoulos (2021)",
+            "Forecasting: Principles & Practice (3rd ed.)",
+            "MASE metric, time series cross-validation, ETS/ARIMA",
+            "#00D4AA",
+        ),
+        (
+            "Brownlee (2020)",
+            "Deep Learning for Time Series Forecasting",
+            "LSTM/GRU architecture, walk-forward validation",
+            "#A78BFA",
+        ),
+        (
+            "Chen & Guestrin (2016)",
+            "XGBoost: A Scalable Tree Boosting System",
+            "Gradient boosting, regularization, feature importance",
+            "#4ECDC4",
+        ),
+        ("Ke et al. (2017)", "LightGBM: A Highly Efficient GBDT", "Histogram-based split, leaf-wise growth", "#FFE66D"),
+        (
+            "Lundberg & Lee (2017)",
+            "SHAP: A Unified Approach to Interpreting Predictions",
+            "TreeExplainer, SHAP values for model explainability",
+            "#FB923C",
+        ),
+        (
+            "Box, Jenkins & Reinsel (2015)",
+            "Time Series Analysis (5th ed.)",
+            "ARIMA/SARIMA methodology, stationarity testing",
+            "#60A5FA",
+        ),
+        (
+            "Lim et al. (2021)",
+            "Temporal Fusion Transformers",
+            "Multi-horizon forecasting, variable selection, attention",
+            "#F472B6",
+        ),
+        (
+            "Molnar (2022)",
+            "Interpretable Machine Learning (2nd ed.)",
+            "Permutation importance, SHAP, global vs local explanations",
+            "#FF6B6B",
+        ),
     ]
 
     cols = st.columns(2)
     for i, (author, title, contribution, color) in enumerate(references):
         with cols[i % 2]:
-            st.markdown(f"""
+            st.markdown(
+                f"""
             <style>
                 .ref-card-{i} {{
                     background: var(--text-color) !important; border-left: 4px solid {color};
@@ -1410,13 +1537,16 @@ def _tab_scientific_foundation():
                 <div style="font-size: 0.8rem; color: var(--background-color); opacity: 0.8; line-height: 1.4;">
                     → {contribution}</div>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
     # ── Literature Cross-Reference ──
     st.markdown("---")
     _section_header("🔬", "So Sánh Với Nghiên Cứu Gần Đây")
 
-    st.markdown("""
+    st.markdown(
+        """
     <div style="background: var(--secondary-background-color); border-radius: 10px; 
                 padding: 1.2rem; border-left: 3px solid #00D4AA; margin: 0.5rem 0;">
         <p style="margin: 0; font-size: 0.95rem;">
@@ -1427,7 +1557,9 @@ def _tab_scientific_foundation():
             <i>Bảng so sánh bao gồm: MAE, RMSE, MASE benchmark, Radar chart, và vị thế học thuật của dự án.</i>
         </p>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -1438,7 +1570,8 @@ def _tab_scientific_foundation():
 def page_explainability_hub(results: dict):
     """Main entry — renders the Explainability Hub page."""
 
-    st.markdown("""
+    st.markdown(
+        """
     <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
         🧠 Giải Thích Trực Quan — Model Explainability Hub
     </h1>
@@ -1448,16 +1581,20 @@ def page_explainability_hub(results: dict):
            style="color: #00D4AA;">MAIF/Shapash</a>,
         tùy chỉnh cho Time Series multi-horizon
     </p>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # ── Tabs ──
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "🗺️ Pipeline Journey",
-        "🔬 Feature Explainability",
-        "🏆 Model Selection",
-        "🛡️ Anti-Leakage Audit",
-        "📚 Scientific Foundation",
-    ])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
+        [
+            "🗺️ Pipeline Journey",
+            "🔬 Feature Explainability",
+            "🏆 Model Selection",
+            "🛡️ Anti-Leakage Audit",
+            "📚 Scientific Foundation",
+        ]
+    )
 
     with tab1:
         _tab_pipeline_journey()

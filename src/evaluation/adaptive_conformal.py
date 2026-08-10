@@ -13,6 +13,7 @@ References:
          "Adaptive Conformal Predictions for Time Series," ICML 2022.
          DOI: 10.48550/arXiv.2202.07282
 """
+
 import numpy as np
 from loguru import logger
 
@@ -107,7 +108,7 @@ def adaptive_conformal_inference(
 
     logger.info(
         f"ACI complete: coverage={final_coverage:.4f} "
-        f"(target={1-alpha:.2f}), avg_width={avg_width:.2f}, "
+        f"(target={1 - alpha:.2f}), avg_width={avg_width:.2f}, "
         f"gamma={gamma}, n_test={n_test}, n_cal={n_cal}"
     )
 

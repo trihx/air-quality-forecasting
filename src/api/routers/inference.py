@@ -45,10 +45,9 @@ def predict(request: PredictionRequest):
             result = predictor.predict(recent_data)
 
         elif model_name == "lightgbm":
-            from src.inference.predictor import LightGBMPredictor
-
             # LightGBM needs feature-engineered data
             from src.features.builder import build_features
+            from src.inference.predictor import LightGBMPredictor
 
             df_features = build_features(recent_data)
             predictor = LightGBMPredictor(horizon=horizon)

@@ -21,6 +21,7 @@ Usage in Streamlit pages::
 from __future__ import annotations
 
 import urllib.parse
+
 import streamlit as st
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -471,7 +472,7 @@ IEEE_REFS: dict[str, dict] = {
         "used_in": "Data Cleaning - Domain clipping",
         "context": "WHO khuyến nghị giới hạn nồng độ bụi mịn PM2.5 ở mức rất thấp (15 µg/m3 cho trung bình 24h). Tuy nhiên, trên thang đo Air Quality Index (AQI) chuẩn, nồng độ PM2.5 thường được giới hạn tối đa ở mức 500 µg/m3 (mức Hazardous cực độ). Bất kỳ giá trị nào >500 đều được coi là lỗi cảm biến (anomalies) hoặc nằm ngoài domain do lượng vật lý của thiết bị IoT thông dụng.",
         "quote": "The guidelines offer global guidance on thresholds and limits for key air pollutants that pose health risks, providing a clear benchmark for evaluating air quality.",
-        "location": "Executive Summary"
+        "location": "Executive Summary",
     },
     "barkjohn2021": {
         "id": 2,
@@ -501,7 +502,7 @@ IEEE_REFS: dict[str, dict] = {
         "used_in": "EDA - Mutual Information & Multivariate Analysis",
         "context": "Khác với Pearson chỉ bắt được tương quan tuyến tính, Mutual Information (MI) dựa trên lý thuyết thông tin giúp định lượng sự phụ thuộc phi tuyến. Luận văn áp dụng MI để chứng minh Nhiệt độ và Điểm sương dẫn dắt sự biến thiên của PM2.5, phù hợp với động lực học khí quyển.",
         "quote": "The complexity of climatic and environmental variability across all timescales requires the use of advanced methods to unravel primary dynamics from observations.",
-        "location": "Book Overview"
+        "location": "Book Overview",
     },
     "zannetti1990": {
         "id": 4,
@@ -515,7 +516,7 @@ IEEE_REFS: dict[str, dict] = {
         "used_in": "EDA - Temperature Inversion (Conditional Distribution)",
         "context": "Sách cơ sở về mô hình hóa ô nhiễm không khí. Luận văn áp dụng lý thuyết nghịch nhiệt (temperature inversion): khi nhiệt độ bề mặt thấp, khí quyển ổn định ngăn chặn đối lưu, giữ lại PM2.5 gần mặt đất. Điều này giải thích phân phối đuôi dài (long-tail) của ô nhiễm ở mức nhiệt <26°C.",
         "quote": "Inversions act as a lid on the lower atmosphere, trapping air pollutants such as particulate matter close to the ground and preventing their dispersion.",
-        "location": "Chapter 3: Meteorological Dynamics"
+        "location": "Chapter 3: Meteorological Dynamics",
     },
     "blanchard2003": {
         "id": 5,
@@ -529,7 +530,7 @@ IEEE_REFS: dict[str, dict] = {
         "used_in": "EDA - Weekday vs Weekend Analysis",
         "context": "Hiệu ứng cuối tuần (Weekend Effect) được quan sát khi phát thải giảm nhưng mức độ ô nhiễm không giảm tương ứng. Luận văn sử dụng Boxplot để kiểm chứng: PM2.5 vào T7/CN duy trì ở mức cao tương tự ngày thường, cho thấy ô nhiễm không chỉ do giao thông công sở mà là sự cộng hưởng của nhiều nguồn.",
         "quote": "Weekday-weekend differences in ambient concentrations of primary pollutants provide a means for evaluating emission inventories.",
-        "location": "Abstract, p. 816"
+        "location": "Abstract, p. 816",
     },
     "joseph2022": {
         "id": 34,
@@ -543,7 +544,7 @@ IEEE_REFS: dict[str, dict] = {
         "used_in": "EDA - Forecastability and Complexity Assessment",
         "context": "Cuốn sách cung cấp framework để đánh giá tính khả thi dự báo (Forecastability) và độ phức tạp của chuỗi thời gian (Complexity Profile) trước khi chọn mô hình.",
         "quote": "Before jumping into modeling, it is essential to measure the forecastability and complexity of the time series.",
-        "location": "Chapter 4"
+        "location": "Chapter 4",
     },
     "huang2022": {
         "id": 35,
@@ -557,7 +558,7 @@ IEEE_REFS: dict[str, dict] = {
         "used_in": "EDA - Cross-Correlation and Spectral Analysis",
         "context": "Tài liệu tham khảo chuyên sâu về phân tích chuỗi thời gian áp dụng trong Python, sử dụng để xác nhận các frequencies bằng Periodogram và đo lường độ trễ (Lag) bằng Cross-Correlation.",
         "quote": "Spectral analysis provides a complementary view of time series data by identifying the dominant cyclical patterns.",
-        "location": "Chapter 7"
+        "location": "Chapter 7",
     },
     "vishwas2020": {
         "id": 36,
@@ -571,7 +572,7 @@ IEEE_REFS: dict[str, dict] = {
         "used_in": "EDA - Seasonal Pattern Visualization",
         "context": "Hướng dẫn thực hành phân tích trực quan chuỗi thời gian, áp dụng trong việc phân tích phân phối PM2.5 theo từng giờ trong ngày qua Box Plot.",
         "quote": "Visualizing time series distributions across specific seasonal periods, such as hour of the day, reveals patterns crucial for feature engineering.",
-        "location": "Chapter 4"
+        "location": "Chapter 4",
     },
     "kang2017": {
         "id": 37,
@@ -585,7 +586,7 @@ IEEE_REFS: dict[str, dict] = {
         "used_in": "EDA - Time series complexity profiling",
         "context": "Nghiên cứu về không gian đặc trưng (instance space) của chuỗi thời gian, giúp trực quan hóa nhiều chiều độ phức tạp (Complexity Profile) như tính dừng, mùa vụ, nhiễu và độ dài dự báo.",
         "quote": "By projecting multiple time series features into a 2D instance space, we can better understand the diversity and complexity of the forecasting problem.",
-        "location": "Abstract"
+        "location": "Abstract",
     },
     "cleveland1993": {
         "id": 10,
@@ -599,7 +600,7 @@ IEEE_REFS: dict[str, dict] = {
         "used_in": "EDA - Scatter Matrix",
         "context": "Cuốn sách kinh điển về trực quan hóa dữ liệu nhiều chiều. Luận văn áp dụng biểu đồ Scatter Matrix (Pairs Plot) để kiểm tra đồng thời mối quan hệ tuyến tính, phi tuyến tính và phân cụm giữa PM2.5 và tất cả các biến môi trường.",
         "quote": "A scatterplot matrix is a powerful tool for discovering the relationships between variables in multivariate data.",
-        "location": "Chapter 3"
+        "location": "Chapter 3",
     },
     "shetty2024": {
         "id": 46,
@@ -821,10 +822,26 @@ IEEE_REFS: dict[str, dict] = {
 
 # Unicode circled numbers: visually distinct from IEEE [number] citations.
 _CIRCLED = {
-    1: "①", 2: "②", 3: "③", 4: "④", 5: "⑤",
-    6: "⑥", 7: "⑦", 8: "⑧", 9: "⑨", 10: "⑩",
-    11: "⑪", 12: "⑫", 13: "⑬", 14: "⑭", 15: "⑮",
-    16: "⑯", 17: "⑰", 18: "⑱", 19: "⑲", 20: "⑳",
+    1: "①",
+    2: "②",
+    3: "③",
+    4: "④",
+    5: "⑤",
+    6: "⑥",
+    7: "⑦",
+    8: "⑧",
+    9: "⑨",
+    10: "⑩",
+    11: "⑪",
+    12: "⑫",
+    13: "⑬",
+    14: "⑭",
+    15: "⑮",
+    16: "⑯",
+    17: "⑰",
+    18: "⑱",
+    19: "⑲",
+    20: "⑳",
 }
 
 
@@ -845,15 +862,15 @@ def step(n: int) -> str:
     return (
         f'<span class="pipeline-step" '
         f'style="display:inline-block; '
-        f'background:rgba(255,149,0,0.25); '
-        f'color:#FF9500; '
-        f'padding:0 0.35rem; '
-        f'border-radius:4px; '
-        f'font-size:0.85rem; '
-        f'font-weight:700; '
-        f'margin:0 2px; '
-        f'font-family:\'Inter\',sans-serif;"'
-        f'>{icon}</span>'
+        f"background:rgba(255,149,0,0.25); "
+        f"color:#FF9500; "
+        f"padding:0 0.35rem; "
+        f"border-radius:4px; "
+        f"font-size:0.85rem; "
+        f"font-weight:700; "
+        f"margin:0 2px; "
+        f"font-family:'Inter',sans-serif;\""
+        f">{icon}</span>"
     )
 
 
@@ -1008,38 +1025,44 @@ def cite(ref_id: str) -> str:
     # Build IEEE-style citation text
     vol_info = f", vol. {ref['vol']}" if ref["vol"] else ""
     page_info = f", pp. {ref['pages']}" if ref["pages"] else ""
-    doi_info = f'<br>DOI: {ref["doi"]}' if ref["doi"] else ""
+    doi_info = f"<br>DOI: {ref['doi']}" if ref["doi"] else ""
     used = ref.get("used_in", "")
     context = ref.get("context", "")
     quote = ref.get("quote", "")
     location = ref.get("location", "")
-    
+
     # Use span instead of div to avoid breaking Markdown parser when nested in **...**
     context_html = f'<span class="cite-context">{context}</span>' if context else ""
     quote_html = f'<span class="cite-quote">"{quote}"</span>' if quote else ""
     location_html = f'<span class="cite-location">📍 {location}</span>' if location else ""
-    
+
     if ref["doi"]:
-        link_html = f'<a href="https://doi.org/{ref["doi"]}" target="_blank" class="cite-link">🔗 Đọc tài liệu (DOI) ↗</a>'
+        link_html = (
+            f'<a href="https://doi.org/{ref["doi"]}" target="_blank" class="cite-link">🔗 Đọc tài liệu (DOI) ↗</a>'
+        )
     else:
         # Fallback to Google Scholar search by title if no DOI exists
         search_query = urllib.parse.quote_plus(ref["title"])
         link_html = f'<a href="https://scholar.google.com/scholar?q={search_query}" target="_blank" class="cite-link" title="Tìm trên Google Scholar">🔍 Tìm sách/tài liệu: {ref["title"]} ↗</a>'
 
-    pdf_link_html = f'<a href="{ref["pdf_link"]}" target="_blank" class="cite-link pdf-link" style="color: #FF6B6B; margin-left: 10px;">📄 Tải PDF ↗</a>' if ref.get("pdf_link") else ""
+    pdf_link_html = (
+        f'<a href="{ref["pdf_link"]}" target="_blank" class="cite-link pdf-link" style="color: #FF6B6B; margin-left: 10px;">📄 Tải PDF ↗</a>'
+        if ref.get("pdf_link")
+        else ""
+    )
 
     tooltip = (
         f'<span class="cite-content">'
         f'<span class="cite-title">{ref["title"]}</span>'
         f'<span class="cite-meta">{ref["authors"]}, '
-        f'<em>{ref["journal"]}</em>{vol_info}{page_info}, {ref["year"]}.'
-        f'{doi_info}</span>'
+        f"<em>{ref['journal']}</em>{vol_info}{page_info}, {ref['year']}."
+        f"{doi_info}</span>"
         f'<span class="cite-used">📌 Áp dụng: {used}</span>'
-        f'{context_html}'
-        f'{quote_html}'
-        f'{location_html}'
+        f"{context_html}"
+        f"{quote_html}"
+        f"{location_html}"
         f'<span style="display: block; margin-top: 0.5rem;">{link_html}{pdf_link_html}</span>'
-        f'</span>'
+        f"</span>"
     )
 
     return f'<span class="cite-tooltip">[{ref["id"]}]{tooltip}</span>'
@@ -1059,7 +1082,7 @@ def render_references_section(title: str = "📚 Tài Liệu Tham Khảo (IEEE)"
     for ref in sorted_refs:
         vol_info = f", vol. {ref['vol']}" if ref["vol"] else ""
         page_info = f", pp. {ref['pages']}" if ref["pages"] else ""
-        
+
         if ref["doi"]:
             doi_link = f' DOI: <a href="https://doi.org/{ref["doi"]}" target="_blank" style="color:#60A5FA; text-decoration:none;">{ref["doi"]}</a>.'
         else:
@@ -1068,25 +1091,25 @@ def render_references_section(title: str = "📚 Tài Liệu Tham Khảo (IEEE)"
 
         # Format detection: if it doesn't have vol and pages, treat as a book
         is_book = not ref["vol"] and not ref["pages"]
-        
+
         if is_book:
             # IEEE Book format: Author, Title (italic), Edition. Place: Publisher, Year.
             # We map "journal" to publisher here
-            title_str = f'<em>{ref["title"]}</em>.'
-            journal_str = f'{ref["journal"]}'
+            title_str = f"<em>{ref['title']}</em>."
+            journal_str = f"{ref['journal']}"
         else:
             # IEEE Article format: Author, "Title," Journal (italic), vol., pp., Year.
             title_str = f'"{ref["title"]},"'
-            journal_str = f'<em>{ref["journal"]}</em>'
+            journal_str = f"<em>{ref['journal']}</em>"
 
         rows.append(
             f'<div style="margin-bottom:0.75rem; font-size:0.9rem; line-height:1.5; padding-left: 2.2rem; text-indent: -2.2rem;">'
             f'<span style="color:#00D4AA; font-weight:700; display:inline-block; width: 2rem;">[{ref["id"]}]</span>'
-            f'{ref["authors"]}, '
-            f'{title_str} '
-            f'{journal_str}{vol_info}{page_info}, {ref["year"]}.'
-            f'{doi_link}'
-            f'</div>'
+            f"{ref['authors']}, "
+            f"{title_str} "
+            f"{journal_str}{vol_info}{page_info}, {ref['year']}."
+            f"{doi_link}"
+            f"</div>"
         )
 
     if title == "VERIFIED_CARD_INTL":
@@ -1095,11 +1118,9 @@ def render_references_section(title: str = "📚 Tài Liệu Tham Khảo (IEEE)"
             '<div style="display: flex; align-items: center; margin-bottom: 1.2rem;">'
             '<span style="background: #00D4AA; color: #0E1117; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; margin-right: 10px;">VERIFIED</span>'
             '<b style="color: #00D4AA; font-size: 1.1rem; letter-spacing: 0.5px;">📎 Danh Mục Nguồn Tham Khảo & DOI (Quốc tế)</b>'
-            '</div>'
-            '<div style="display: flex; flex-direction: column; gap: 0.8rem;">'
-            + "\n".join(rows) +
-            '</div></div>',
-            unsafe_allow_html=True
+            "</div>"
+            '<div style="display: flex; flex-direction: column; gap: 0.8rem;">' + "\n".join(rows) + "</div></div>",
+            unsafe_allow_html=True,
         )
     elif title == "VERIFIED_CARD_VN":
         st.markdown(
@@ -1107,11 +1128,9 @@ def render_references_section(title: str = "📚 Tài Liệu Tham Khảo (IEEE)"
             '<div style="display: flex; align-items: center; margin-bottom: 1.2rem;">'
             '<span style="background: #00D4AA; color: #0E1117; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; margin-right: 10px;">VERIFIED</span>'
             '<b style="color: #00D4AA; font-size: 1.1rem; letter-spacing: 0.5px;">📎 Danh Mục Nguồn Tham Khảo & DOI (Việt Nam)</b>'
-            '</div>'
-            '<div style="display: flex; flex-direction: column; gap: 0.8rem;">'
-            + "\n".join(rows) +
-            '</div></div>',
-            unsafe_allow_html=True
+            "</div>"
+            '<div style="display: flex; flex-direction: column; gap: 0.8rem;">' + "\n".join(rows) + "</div></div>",
+            unsafe_allow_html=True,
         )
     else:
         st.markdown(

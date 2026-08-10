@@ -8,7 +8,6 @@ All providers use OpenAI-compatible API — zero extra dependencies.
 """
 
 import logging
-import os
 from collections.abc import Generator
 
 from openai import OpenAI
@@ -73,9 +72,7 @@ def _build_client(provider: LLMProvider) -> OpenAI | None:
         )
         return client
     except Exception as e:
-        logger.error(
-            f"Cannot create client for {provider.display_name}: {e}"
-        )
+        logger.error(f"Cannot create client for {provider.display_name}: {e}")
         return None
 
 
@@ -164,9 +161,7 @@ def _try_stream_provider(
         return _gen()
     except Exception as e:
         error_msg = str(e)
-        logger.warning(
-            f"Provider {provider.display_name} failed: {error_msg[:100]}"
-        )
+        logger.warning(f"Provider {provider.display_name} failed: {error_msg[:100]}")
         return None
 
 
@@ -223,14 +218,9 @@ def chat_stream(
         if model:
             provider.model = model
 
-        logger.info(
-            f"Trying provider: {provider.display_name} "
-            f"(key: {mask_api_key(provider.api_key)})"
-        )
+        logger.info(f"Trying provider: {provider.display_name} (key: {mask_api_key(provider.api_key)})")
 
-        gen = _try_stream_provider(
-            provider, full_messages, temperature, max_tokens
-        )
+        gen = _try_stream_provider(provider, full_messages, temperature, max_tokens)
         if gen is not None:
             # Yield provider info header
             yield f"*🤖 {provider.display_name}*\n\n"

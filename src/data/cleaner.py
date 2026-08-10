@@ -205,12 +205,13 @@ def _handle_outliers(
             total_outliers += n_outliers
 
     if total_outliers > 0:
-        logger.info(f"[4/7] Replaced {total_outliers} outliers with NaN (method={method}, threshold={threshold}, PM2.5=domain)")
+        logger.info(
+            f"[4/7] Replaced {total_outliers} outliers with NaN (method={method}, threshold={threshold}, PM2.5=domain)"
+        )
     else:
         logger.info("[4/7] No outliers detected")
 
     return df, total_outliers
-
 
 
 def _resample(df: pd.DataFrame, freq: str = "1h") -> pd.DataFrame:
