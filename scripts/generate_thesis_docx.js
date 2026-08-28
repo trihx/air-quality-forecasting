@@ -6,7 +6,7 @@ const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
   Header, Footer, AlignmentType, LevelFormat, HeadingLevel,
   BorderStyle, WidthType, PageBreak, PageNumber, ShadingType,
-  TableOfContents, TabStopType, TabStopPosition
+  TableOfContents, TabStopType, TabStopPosition, ImageRun
 } = require("docx");
 
 // ── QĐ 1799 Constants (DXA: 1cm ≈ 567, 1inch = 1440) ──
@@ -115,7 +115,7 @@ function figureLabel(text) {
   return new Paragraph({
     spacing: { ...LINE_SPACING_SINGLE, before: 60, after: 120 },
     alignment: AlignmentType.CENTER,
-    children: [new TextRun({ text, font: FONT, size: TABLE_LABEL_SIZE })],
+    children: [new TextRun({ text, font: FONT, size: TABLE_LABEL_SIZE, bold: true })],
   });
 }
 
@@ -129,6 +129,32 @@ function figurePlaceholder(label, desc) {
     }),
     figureLabel(label),
   ];
+}
+
+function figureBlock(label, desc, imgFilename, width = 500, height = 270) {
+  const imgPath = imgFilename ? `docs/pics/${imgFilename}` : null;
+  if (imgPath && fs.existsSync(imgPath)) {
+    try {
+      const data = fs.readFileSync(imgPath);
+      return [
+        new Paragraph({
+          spacing: { ...LINE_SPACING_SINGLE, before: 120, after: 60 },
+          alignment: AlignmentType.CENTER,
+          children: [
+            new ImageRun({
+              data,
+              transformation: { width, height },
+              type: "png",
+            })
+          ],
+        }),
+        figureLabel(label),
+      ];
+    } catch (e) {
+      console.warn(`Could not embed ${imgPath}:`, e);
+    }
+  }
+  return figurePlaceholder(label, desc);
 }
 
 function numberedItem(ref, text, opts = {}) {
@@ -248,44 +274,46 @@ function buildFrontMatter() {
   const children = [];
 
   // ── TRANG BÌA CHÍNH ──
-  children.push(...emptyPara(2));
+  children.push(...emptyPara(1));
+  children.push(coverLine("BỘ GIÁO DỤC VÀ ĐÀO TẠO", COVER_OTHER_SIZE));
   children.push(coverLine("TRƯỜNG ĐẠI HỌC CẦN THƠ", COVER_OTHER_SIZE));
-  children.push(coverLine("KHOA CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG", COVER_OTHER_SIZE, { after: 240 }));
+  children.push(coverLine("TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG", COVER_OTHER_SIZE, { after: 240 }));
+  children.push(...emptyPara(2));
+  children.push(coverLine("HOÀNG XUÂN TRÍ", COVER_OTHER_SIZE, { after: 240 }));
+  children.push(...emptyPara(1));
+  children.push(coverLine("ỨNG DỤNG BUSINESS INTELLIGENT ĐỂ", COVER_TITLE_SIZE));
+  children.push(coverLine("PHÂN TÍCH DỮ LIỆU MÔI TRƯỜNG", COVER_TITLE_SIZE));
+  children.push(coverLine("CHO MỘT HUYỆN", COVER_TITLE_SIZE, { after: 120 }));
+  children.push(coverLine("(DỰ BÁO NỒNG ĐỘ BỤI MỊN PM2.5 BẰNG MÁY HỌC VÀ HỌC SÂU ĐA MÔ HÌNH DỰA TRÊN DỮ LIỆU CẢM BIẾN IOT ĐA ĐỘ PHÂN GIẢI)", PT(12), { italics: true, after: 240 }));
+  children.push(...emptyPara(1));
+  children.push(coverLine("ĐỀ ÁN TỐT NGHIỆP THẠC SĨ", COVER_OTHER_SIZE));
+  children.push(coverLine("NGÀNH: HỆ THỐNG THÔNG TIN", COVER_OTHER_SIZE));
+  children.push(coverLine("MÃ SỐ: 8480104", COVER_OTHER_SIZE));
   children.push(...emptyPara(3));
-  children.push(coverLine("NGUYỄN HOÀNG XUÂN TRÍ", COVER_OTHER_SIZE, { after: 240 }));
-  children.push(...emptyPara(2));
-  children.push(coverLine("NGHỆ THUẬT VÀ PHƯƠNG PHÁP DỰ BÁO", COVER_TITLE_SIZE));
-  children.push(coverLine("NỒNG ĐỘ BỤI MỊN PM2.5 BẰNG MÁY HỌC VÀ HỌC SÂU", COVER_TITLE_SIZE));
-  children.push(coverLine("ĐA MÔ HÌNH DỰA TRÊN DỮ LIỆU CẢM BIẾN IOT", COVER_TITLE_SIZE));
-  children.push(coverLine("ĐA ĐỘ PHÂN GIẢI", COVER_TITLE_SIZE, { after: 240 }));
-  children.push(...emptyPara(2));
-  children.push(coverLine("LUẬN VĂN THẠC SĨ", COVER_OTHER_SIZE));
-  children.push(coverLine("NGÀNH: KHOA HỌC MÁY TÍNH", COVER_OTHER_SIZE));
-  children.push(coverLine("MÃ SỐ: 8480101", COVER_OTHER_SIZE));
-  children.push(...emptyPara(4));
   children.push(coverLine("CẦN THƠ, NĂM 2026", COVER_OTHER_SIZE));
   children.push(pageBreakPara());
 
   // ── TRANG BÌA PHỤ ──
-  children.push(...emptyPara(2));
+  children.push(...emptyPara(1));
+  children.push(coverLine("BỘ GIÁO DỤC VÀ ĐÀO TẠO", COVER_OTHER_SIZE));
   children.push(coverLine("TRƯỜNG ĐẠI HỌC CẦN THƠ", COVER_OTHER_SIZE));
-  children.push(coverLine("KHOA CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG", COVER_OTHER_SIZE, { after: 240 }));
+  children.push(coverLine("TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG", COVER_OTHER_SIZE, { after: 180 }));
   children.push(...emptyPara(1));
-  children.push(coverLine("NGUYỄN HOÀNG XUÂN TRÍ", COVER_OTHER_SIZE));
-  children.push(coverLine("MÃ SỐ HV: M2522016", COVER_OTHER_SIZE, { after: 240 }));
+  children.push(coverLine("HOÀNG XUÂN TRÍ", COVER_OTHER_SIZE));
+  children.push(coverLine("MÃ SỐ HV: M2522016", COVER_OTHER_SIZE, { after: 180 }));
   children.push(...emptyPara(1));
-  children.push(coverLine("NGHỆ THUẬT VÀ PHƯƠNG PHÁP DỰ BÁO", COVER_TITLE_SIZE));
-  children.push(coverLine("NỒNG ĐỘ BỤI MỊN PM2.5 BẰNG MÁY HỌC VÀ HỌC SÂU", COVER_TITLE_SIZE));
-  children.push(coverLine("ĐA MÔ HÌNH DỰA TRÊN DỮ LIỆU CẢM BIẾN IOT", COVER_TITLE_SIZE));
-  children.push(coverLine("ĐA ĐỘ PHÂN GIẢI", COVER_TITLE_SIZE, { after: 240 }));
+  children.push(coverLine("ỨNG DỤNG BUSINESS INTELLIGENT ĐỂ", COVER_TITLE_SIZE));
+  children.push(coverLine("PHÂN TÍCH DỮ LIỆU MÔI TRƯỜNG", COVER_TITLE_SIZE));
+  children.push(coverLine("CHO MỘT HUYỆN", COVER_TITLE_SIZE, { after: 120 }));
+  children.push(coverLine("(DỰ BÁO NỒNG ĐỘ BỤI MỊN PM2.5 BẰNG MÁY HỌC VÀ HỌC SÂU ĐA MÔ HÌNH DỰA TRÊN DỮ LIỆU CẢM BIẾN IOT ĐA ĐỘ PHÂN GIẢI)", PT(12), { italics: true, after: 180 }));
   children.push(...emptyPara(1));
-  children.push(coverLine("LUẬN VĂN THẠC SĨ", COVER_OTHER_SIZE));
-  children.push(coverLine("CHUYÊN NGÀNH: KHOA HỌC MÁY TÍNH", COVER_OTHER_SIZE));
-  children.push(coverLine("MÃ SỐ NGÀNH: 8480101", COVER_OTHER_SIZE, { after: 240 }));
+  children.push(coverLine("ĐỀ ÁN TỐT NGHIỆP THẠC SĨ", COVER_OTHER_SIZE));
+  children.push(coverLine("CHUYÊN NGÀNH: HỆ THỐNG THÔNG TIN", COVER_OTHER_SIZE));
+  children.push(coverLine("MÃ SỐ NGÀNH: 8480104", COVER_OTHER_SIZE, { after: 180 }));
   children.push(...emptyPara(1));
-  children.push(coverLine("NGƯỜI HƯỚNG DẪN KHOA HỌC:", COVER_OTHER_SIZE));
+  children.push(coverLine("NGƯỜI HƯỚNG DẪN:", COVER_OTHER_SIZE));
   children.push(coverLine("TS. NGUYỄN MINH KHIÊM", COVER_OTHER_SIZE));
-  children.push(...emptyPara(3));
+  children.push(...emptyPara(2));
   children.push(coverLine("CẦN THƠ, NĂM 2026", COVER_OTHER_SIZE));
   children.push(pageBreakPara());
 
@@ -295,21 +323,21 @@ function buildFrontMatter() {
     children: [new TextRun({ text: "CHẤP THUẬN CỦA HỘI ĐỒNG", font: FONT, size: CHAPTER_TITLE_SIZE, bold: true })],
   }));
   children.push(bodyParaRuns([
-    { text: 'Luận văn thạc sĩ này, với đề tựa: ' },
-    { text: '"Nghệ thuật và phương pháp dự báo nồng độ bụi mịn PM2.5 bằng máy học và học sâu đa mô hình dựa trên dữ liệu cảm biến IoT đa độ phân giải"', bold: true },
+    { text: 'Đề án tốt nghiệp thạc sĩ này, với đề tựa: ' },
+    { text: '“Ứng dụng Business Intelligent để phân tích dữ liệu môi trường cho một huyện (Dự báo nồng độ bụi mịn PM2.5 bằng máy học và học sâu đa mô hình dựa trên dữ liệu cảm biến IoT đa độ phân giải)”', bold: true },
     { text: ', do học viên ' },
-    { text: 'Nguyễn Hoàng Xuân Trí', bold: true },
-    { text: ' thực hiện theo sự hướng dẫn khoa học của ' },
+    { text: 'Hoàng Xuân Trí', bold: true },
+    { text: ' (MSHV: M2522016) thực hiện theo sự hướng dẫn khoa học của ' },
     { text: 'TS. Nguyễn Minh Khiêm', bold: true },
-    { text: '. Luận văn đã được báo cáo và thông qua trước Hội đồng chấm luận văn thạc sĩ vào ngày ..... tháng ..... năm 2026.' },
+    { text: '. Đề án tốt nghiệp đã được báo cáo và thông qua trước Hội đồng chấm đề án vào ngày ..... tháng ..... năm 2026.' },
   ]));
-  children.push(bodyPara("Luận văn đã được hoàn thiện và chỉnh sửa theo đúng biên bản góp ý của Hội đồng chấm luận văn."));
+  children.push(bodyPara("Đề án đã được hoàn thiện và chỉnh sửa theo đúng biên bản góp ý của Hội đồng chấm đề án tốt nghiệp."));
   children.push(...emptyPara(2));
   children.push(signatureBlock("Thư ký Hội đồng", "Ủy viên Hội đồng", ".....................................................", "....................................................."));
   children.push(...emptyPara(2));
   children.push(signatureBlock("Phản biện 1", "Phản biện 2", ".....................................................", "....................................................."));
   children.push(...emptyPara(2));
-  children.push(signatureBlock("Người hướng dẫn khoa học", "Chủ tịch Hội đồng", "TS. Nguyễn Minh Khiêm", "....................................................."));
+  children.push(signatureBlock("Người hướng dẫn", "Chủ tịch Hội đồng", "TS. Nguyễn Minh Khiêm", "....................................................."));
   children.push(pageBreakPara());
 
   // ── LỜI CẢM ƠN ──
@@ -320,9 +348,9 @@ function buildFrontMatter() {
   children.push(bodyParaRuns([
     { text: "Lời đầu tiên, tôi xin bày tỏ lòng biết ơn sâu sắc và chân thành nhất đến " },
     { text: "TS. Nguyễn Minh Khiêm", bold: true },
-    { text: ", người thầy đã tận tình hướng dẫn, định hướng khoa học và dành nhiều thời gian trao đổi, truyền đạt những kiến thức phương pháp luận quý báu cho tôi trong suốt quá trình thực hiện đề tài luận văn thạc sĩ này." },
+    { text: ", người thầy đã tận tình hướng dẫn, định hướng khoa học và dành nhiều thời gian trao đổi, truyền đạt những kiến thức phương pháp luận quý báu cho tôi trong suốt quá trình thực hiện đề án thạc sĩ này." },
   ]));
-  children.push(bodyPara("Tôi xin chân thành cảm ơn Quý Thầy, Cô trong Khoa Công nghệ Thông tin và Truyền thông, Trường Đại học Cần Thơ đã giảng dạy, trang bị cho tôi những nền tảng kiến thức chuyên môn vững chắc và tạo mọi điều kiện thuận lợi về cơ sở vật chất, thủ tục hành chính trong suốt khóa học Cao học."));
+  children.push(bodyPara("Tôi xin chân thành cảm ơn Quý Thầy, Cô trong Trường Công nghệ Thông tin và Truyền thông, Trường Đại học Cần Thơ đã giảng dạy, trang bị cho tôi những nền tảng kiến thức chuyên môn vững chắc và tạo mọi điều kiện thuận lợi về cơ sở vật chất, thủ tục hành chính trong suốt khóa học Cao học."));
   children.push(bodyPara("Tôi cũng xin gửi lời cảm ơn đến Ban Quản lý trạm quan trắc cảm biến IoT Sa Đéc (tỉnh Đồng Tháp) đã hỗ trợ cung cấp nguồn dữ liệu thực nghiệm liên tục, giúp đề tài có được bộ dữ liệu thực tế giàu giá trị khoa học."));
   children.push(bodyPara("Sau cùng, tôi xin gửi lời cảm ơn tha thiết đến gia đình, bạn bè và các đồng nghiệp đã luôn động viên, chia sẻ và tạo động lực to lớn để tôi hoàn thành tốt công trình nghiên cứu này."));
   children.push(...emptyPara(2));
@@ -337,7 +365,7 @@ function buildFrontMatter() {
   children.push(...emptyPara(3));
   children.push(new Paragraph({
     spacing: LINE_SPACING, alignment: AlignmentType.CENTER,
-    children: [new TextRun({ text: "Nguyễn Hoàng Xuân Trí", font: FONT, size: BODY_SIZE, bold: true })],
+    children: [new TextRun({ text: "Hoàng Xuân Trí", font: FONT, size: BODY_SIZE, bold: true })],
   }));
   children.push(pageBreakPara());
 
@@ -388,13 +416,13 @@ function buildFrontMatter() {
   }));
   children.push(bodyParaRuns([
     { text: "Tôi tên là " },
-    { text: "Nguyễn Hoàng Xuân Trí", bold: true },
-    { text: ", học viên cao học khóa 2023–2025, chuyên ngành Khoa học Máy tính, Mã số HV: M2522016, Trường Đại học Cần Thơ." },
+    { text: "Hoàng Xuân Trí", bold: true },
+    { text: ", học viên cao học khóa 2023–2025, chuyên ngành Hệ thống Thông tin, Mã số HV: M2522016, Trường Đại học Cần Thơ." },
   ]));
   children.push(bodyPara("Tôi xin cam đoan rằng:"));
-  children.push(bodyPara("1. Quyển luận văn thạc sĩ này là công trình nghiên cứu khoa học thực sự của bản thân tôi, được thực hiện dưới sự hướng dẫn khoa học của TS. Nguyễn Minh Khiêm.", { noIndent: true }));
-  children.push(bodyPara("2. Tất cả các dữ liệu, kết quả tính toán và số liệu thực nghiệm trình bày trong luận văn là trung thực, khách quan, được trích xuất trực tiếp từ hệ thống mã nguồn codebase và cơ sở dữ liệu thực nghiệm của dự án, chưa từng được công bố trong bất kỳ công trình luận văn hay luận án nào khác.", { noIndent: true }));
-  children.push(bodyPara("3. Các tài liệu tham khảo, công trình nghiên cứu của các tác giả khác được trích dẫn và sử dụng trong luận văn đều được dẫn nguồn và kê khai đầy đủ, chính xác theo chuẩn trích dẫn quốc tế IEEE.", { noIndent: true }));
+  children.push(bodyPara("1. Quyển đề án tốt nghiệp thạc sĩ này là công trình nghiên cứu khoa học thực sự của bản thân tôi, được thực hiện dưới sự hướng dẫn khoa học của TS. Nguyễn Minh Khiêm.", { noIndent: true }));
+  children.push(bodyPara("2. Tất cả các dữ liệu, kết quả tính toán và số liệu thực nghiệm trình bày trong đề án là trung thực, khách quan, được trích xuất trực tiếp từ hệ thống mã nguồn codebase và cơ sở dữ liệu thực nghiệm của dự án, chưa từng được công bố trong bất kỳ công trình luận văn hay luận án nào khác.", { noIndent: true }));
+  children.push(bodyPara("3. Các tài liệu tham khảo, công trình nghiên cứu của các tác giả khác được trích dẫn và sử dụng trong đề án đều được dẫn nguồn và kê khai đầy đủ, chính xác theo chuẩn trích dẫn quốc tế IEEE.", { noIndent: true }));
   children.push(bodyPara("Tôi xin chịu hoàn toàn trách nhiệm trước nhà trường và pháp luật về lời cam đoan này."));
   children.push(...emptyPara(1));
   children.push(new Paragraph({
@@ -403,12 +431,12 @@ function buildFrontMatter() {
   }));
   children.push(new Paragraph({
     spacing: LINE_SPACING, alignment: AlignmentType.CENTER,
-    children: [new TextRun({ text: "Tác giả luận văn", font: FONT, size: BODY_SIZE, bold: true })],
+    children: [new TextRun({ text: "Tác giả đề án", font: FONT, size: BODY_SIZE, bold: true })],
   }));
   children.push(...emptyPara(3));
   children.push(new Paragraph({
     spacing: LINE_SPACING, alignment: AlignmentType.CENTER,
-    children: [new TextRun({ text: "Nguyễn Hoàng Xuân Trí", font: FONT, size: BODY_SIZE, bold: true })],
+    children: [new TextRun({ text: "Hoàng Xuân Trí", font: FONT, size: BODY_SIZE, bold: true })],
   }));
   children.push(pageBreakPara());
 
@@ -483,18 +511,20 @@ function buildFrontMatter() {
   }));
   const figList = [
     ["Hình 1.1", "Sơ đồ quy trình tổng quan của nghiên cứu từ dữ liệu thô IoT đến dự báo đa mốc"],
-    ["Hình 3.1", "Bản đồ vị trí trạm cảm biến IoT Sa Đéc và sơ đồ thu thập dữ liệu về Cloud"],
+    ["Hình 3.1", "Kiểm định tính dừng — Chuỗi nồng độ PM2.5 gốc (Raw)"],
     ["Hình 3.2", "Mã vạch mất mát dữ liệu (Missing Data Barcode) thể hiện các gap rớt tín hiệu"],
-    ["Hình 3.3", "Quy trình 7 bước tiền xử lý dữ liệu và chiến lược Nội suy phân tầng (Tiered Imputation)"],
-    ["Hình 3.4", "Minh họa cơ chế chống rò rỉ dữ liệu (Anti-Leakage Discipline) bằng phép biến đổi shift(1)"],
-    ["Hình 3.5", "Biểu đồ kỹ thuật phân rã TimeSeriesSplit 80/10/10 với Purging Gap cách ly"],
+    ["Hình 3.3", "Đánh giá sai số và giới hạn phục hồi dữ liệu của các thuật toán nội suy (Tiered Imputation)"],
+    ["Hình 3.4", "Kiểm định tính dừng — Biến đổi Log PM2.5"],
+    ["Hình 3.5", "Kiểm định tính dừng — Sai phân bậc 1 của Log PM2.5"],
     ["Hình 3.6", "Sơ đồ kiến trúc phần mềm 3 tầng (Streamlit Frontend + FastAPI Backend + PostgreSQL DB)"],
     ["Hình 4.1", "Biểu đồ phân phối đuôi dài (Fat-Tailed Distribution) của nồng độ PM2.5 Sa Đéc"],
     ["Hình 4.2", "Biểu đồ Hàm tự tương quan ACF thể hiện hiện tượng Autocorrelation Trap tại 1h"],
-    ["Hình 4.3", "Biểu đồ so sánh MASE giữa các độ phân giải 15m, 30m, 1h tại 3 mốc dự báo"],
-    ["Hình 4.4", "Đồ thị SHAP Summary Beeswarm Plot thể hiện mức độ quan trọng 20 đặc trưng hàng đầu"],
-    ["Hình 4.5", "Đồ thị SHAP Dependence Plot giải mã Ngưỡng tới hạn ô nhiễm (Physical Tipping Point)"],
-    ["Hình 4.6", "Giao diện Dashboard dự báo PM2.5 thời gian thực và dải khoảng tin cậy CQR"],
+    ["Hình 4.3", "Biểu đồ so sánh tốc độ suy giảm MASE giữa các độ phân giải 15m, 30m, 1h tại 3 mốc dự báo"],
+    ["Hình 4.4", "Đồ thị SHAP Summary Beeswarm Plot mô hình LightGBM tại mốc 1h"],
+    ["Hình 4.5", "Đồ thị SHAP Summary Beeswarm Plot tại mốc dự báo 6h giải mã Ngưỡng tới hạn ô nhiễm"],
+    ["Hình 4.6", "Dải khoảng tin cậy dự báo Conformal Prediction (LightGBM 1h)"],
+    ["Hình 4.7", "Dải khoảng tin cậy dự báo Conformal Prediction (LightGBM 6h)"],
+    ["Hình 4.8", "Đánh giá mức độ ảnh hưởng của loại bỏ ngoại lai đến hiệu năng mô hình (Ablation Study)"],
   ];
   children.push(buildTable(["Số hiệu", "Tên hình vẽ"], figList, [1500, 7200]));
   children.push(pageBreakPara());
@@ -526,7 +556,7 @@ function buildMainContent() {
     { text: "PM2.5", bold: true },
     { text: " (hạt bụi có đường kính khí động học ≤2,5 μm), đã trở thành một trong những mối đe dọa sinh thái và sức khỏe cộng đồng nghiêm trọng nhất trên phạm vi toàn cầu cũng như tại Việt Nam. Theo báo cáo của Tổ chức Y tế Thế giới (WHO), bụi mịn PM2.5 có khả năng luồn sâu vào phế nang phổi, xâm nhập trực tiếp vào hệ tuần hoàn máu, gây ra các bệnh lý mãn tính nguy hiểm như viêm đường hô hấp, hen suyễn, đột quỵ và ung thư phổi [28]. Tại các khu vực đô thị và đồng bằng đang trong quá trình công nghiệp hóa nhanh như Đồng bằng sông Cửu Long (ĐBSCL), biến động nồng độ PM2.5 chịu ảnh hưởng phức tạp bởi sự kết hợp giữa các hoạt động dân sinh, giao thông, đốt phụ phẩm nông nghiệp và các hiện tượng khí tượng đặc thù (nghịch nhiệt, độ ẩm cao) [31]." },
   ]));
-  c.push(bodyPara("Để chủ động giảm thiểu tác động tiêu cực của ô nhiễm không khí, việc xây dựng một hệ thống dự báo nồng độ PM2.5 chính xác theo nhiều khoảng thời gian (Multi-Horizon: 1 giờ, 6 giờ, 24 giờ) đóng vai trò then chốt. Nguồn dữ liệu truyền thống từ các trạm quan trắc tham chiếu quốc gia (Reference-Grade Stations) tuy có độ chính xác rất cao nhưng chi phí đầu tư và vận hành đắt đỏ, dẫn đến mật độ phân bố thưa thớt, không thể bao phủ toàn diện các vùng kinh tế trọng điểm. Sự phát triển mạnh mẽ của mạng lưới Internet vạn vật (IoT) với các hệ thống Cảm biến Chi phí thấp (Low-Cost Sensors - LCS) đã mở ra giải pháp thu thập dữ liệu PM2.5 với tần suất cao (~2 phút/lần đo) và mật độ dày đặc [29]."));
+  c.push(bodyPara("Để giảm thiểu tác động của ô nhiễm không khí, việc xây dựng hệ thống dự báo nồng độ PM2.5 theo nhiều mốc thời gian (Multi-Horizon: 1 giờ, 6 giờ, 24 giờ) là cần thiết. Nguồn dữ liệu từ các trạm quan trắc tham chiếu quốc gia (Reference-Grade Stations) có độ chính xác cao nhưng chi phí đầu tư đắt đỏ, dẫn đến mật độ phân bố thưa thớt. Sự phổ biến của mạng lưới cảm biến IoT chi phí thấp (Low-Cost Sensors - LCS) cung cấp giải pháp thu thập dữ liệu PM2.5 tần suất cao (~2 phút/lần đo) với chi phí hợp lý [29]."));
   c.push(bodyPara("Tuy nhiên, việc khai thác dữ liệu cảm biến IoT chi phí thấp để dự báo chuỗi thời gian đặt ra những thách thức khoa học và kỹ thuật rất lớn:"));
   c.push(bodyParaRuns([
     { text: "1. Nhiễu dữ liệu và Khoảng trống dữ liệu dài (Data Gaps): ", bold: true },
@@ -538,7 +568,7 @@ function buildMainContent() {
   ], { noIndent: true }));
   c.push(bodyParaRuns([
     { text: "3. Bẫy Tự Tương Quan (Autocorrelation Trap) tại mốc siêu ngắn (1h): ", bold: true },
-    { text: "Chuỗi nồng độ PM2.5 có hệ số tự tương quan rất cao (ACF ≈ 0,97 ở trễ 1h). Do đó, tại mốc 1h, mô hình ngây ngô Persistence (y_{t+1} = y_t) tỏ ra cực kỳ mạnh mẽ. Việc chứng minh mô hình Học máy/Học sâu có \"kỹ năng dự báo thực sự\" đòi hỏi phải đánh giá bằng các thước đo chuẩn hóa như MASE (Mean Absolute Scaled Error) [1]." },
+    { text: "Chuỗi nồng độ PM2.5 có hệ số tự tương quan cao (ACF ≈ 0,97 ở trễ 1h). Do đó, tại mốc 1h, mô hình Persistence (y_{t+1} = y_t) đạt sai số thấp do quán tính ngắn hạn của dữ liệu. Việc đánh giá khả năng dự báo thực sự của các mô hình Học máy/Học sâu đòi hỏi phải sử dụng thước đo chuẩn hóa MASE (Mean Absolute Scaled Error) [1]." },
   ], { noIndent: true }));
   c.push(bodyParaRuns([
     { text: "4. Vấn đề Đa Độ Phân Giải (Multi-Resolution): ", bold: true },
@@ -649,7 +679,7 @@ function buildMainContent() {
   c.push(bodyPara("Kết hợp nhiều mô hình (Ensemble) là chiến lược đã được chứng minh hiệu quả trong nhiều cuộc thi dự báo quy mô lớn như M4 Competition [17]. Wolpert (1992) đã đề xuất phương pháp Stacked Generalization [26], trong khi Dietterich (2000) hệ thống hóa lý thuyết Ensemble Methods [49]. Luận văn áp dụng phương pháp Weighted Ensemble — kết hợp dự báo từ mô hình Tree-based (LightGBM) và Recurrent (GRU) theo trọng số tối ưu hóa bằng Grid Search: ŷ_Ensemble = w_GRU × ŷ_GRU + w_LGBM × ŷ_LGBM. Phương pháp này khai thác ưu thế bổ sung của hai họ mô hình: LightGBM mạnh ở nắm bắt tương tác đặc trưng phi tuyến (feature interactions), còn GRU mạnh ở học phụ thuộc thời gian tuần tự (sequential dependencies) [49]."));
 
   c.push(sectionHeading("2.3", "Lược khảo các nghiên cứu trong và ngoài nước (2022–2026)"));
-  c.push(bodyPara("Nghiên cứu tiến hành rà soát 15 công trình công bố quốc tế (ISI/Scopus) và trong nước tiêu biểu nhằm xây dựng bức tranh tổng quan SOTA (State-of-the-Art). Các công trình được phân loại theo 4 nhóm chính:"));
+  c.push(bodyPara("Nghiên cứu rà soát 15 công trình công bố quốc tế (ISI/Scopus) và trong nước tiêu biểu nhằm tổng hợp hiện trạng nghiên cứu (State-of-the-Art). Các công trình được phân loại theo 4 nhóm chính:"));
   c.push(bodyParaRuns([{ text: "Nhóm 1 — Dự báo PM2.5 bằng mô hình kết hợp CNN-LSTM: ", bold: true }, { text: "Zhang và Li (2022) [37] đạt MAE = 8,12 μg/m³ và R² = 0,92 trên dữ liệu trạm chuẩn Trung Quốc. Tương tự, Bui và cộng sự (2025) [43] đạt MAE = 2,45 μg/m³ bằng CNN-LSTM Hybrid. Tuy nhiên, cả hai nghiên cứu đều sử dụng dữ liệu trạm chuẩn có chất lượng cao, không đối mặt với thách thức Data Gaps từ cảm biến IoT chi phí thấp, và không kiểm soát Data Leakage trong feature engineering." }]));
   c.push(bodyParaRuns([{ text: "Nhóm 2 — Ứng dụng SHAP cho giải thích mô hình ô nhiễm: ", bold: true }, { text: "Bhardwaj và cộng sự (2023) [8] kết hợp XGBoost với SHAP đạt R² = 0,87 trên dữ liệu Ấn Độ. Houdou và cộng sự (2024) [52] trong nghiên cứu tổng quan hệ thống chỉ ra rằng SHAP chiếm 46,4% trong các phương pháp giải thích mô hình ô nhiễm không khí, khẳng định đây là tiêu chuẩn thực hành tốt nhất." }]));
   c.push(bodyParaRuns([{ text: "Nhóm 3 — Dự báo PM2.5 tại Việt Nam: ", bold: true }, { text: "Nguyen T.N.T. và cộng sự (2024) [45] sử dụng CNN-Bi-LSTM đạt MAE = 5,37 μg/m³ trên dữ liệu trạm quan trắc TP.HCM. Rakholia và cộng sự (2022) [46] phát triển mô hình AI cho TP.HCM với Urban Climate. Tuy nhiên, chưa có nghiên cứu nào tại Việt Nam thực hiện đánh giá đa độ phân giải (Multi-Resolution) hoặc kiểm soát rò rỉ dữ liệu bằng Anti-Leakage Audit." }]));
@@ -700,7 +730,7 @@ function buildMainContent() {
 
   c.push(sectionHeading("3.1", "Dữ liệu thu thập và Phân tích chất lượng dữ liệu IoT Sa Đéc"));
   c.push(bodyPara("Dữ liệu được thu thập từ trạm cảm biến IoT chi phí thấp đặt tại thành phố Sa Đéc, tỉnh Đồng Tháp — một đô thị loại III thuộc vùng ĐBSCL với đặc trưng khí hậu nhiệt đới gió mùa. Trạm quan trắc sử dụng module cảm biến quang học tán xạ laser để đo nồng độ PM2.5, kết hợp với cảm biến đo nhiệt độ, độ ẩm, điểm sương và CO₂. Dữ liệu được truyền về máy chủ Cloud qua kết nối WiFi/4G với tần suất đo ~2 phút/lần, tổng cộng 209.594 bản ghi thô trong khoảng thời gian 3,1 năm (16/03/2022 đến 11/05/2025)."));
-  c.push(...figurePlaceholder("Hình 3.1 Bản đồ vị trí trạm cảm biến IoT Sa Đéc và sơ đồ thu thập dữ liệu về Cloud", "Bản đồ Sa Đéc + sơ đồ IoT Cloud"));
+  c.push(...figureBlock("Hình 3.1: Kiểm định tính dừng trên chuỗi PM2.5 gốc (Raw)", "Kiểm định tính dừng Raw PM2.5", "Hinh_3.1_Stationarity_Raw_PM25.png"));
   c.push(tableLabel("Bảng 3.1 Thống kê mô tả các biến đo lường từ trạm cảm biến IoT Sa Đéc"));
   c.push(buildTable(
     ["Biến", "Ý nghĩa", "Đơn vị", "Range", "Median", "Vai trò"],
@@ -715,7 +745,7 @@ function buildMainContent() {
   ));
   c.push(subHeading("3.1.1", "Đánh giá độ phủ dữ liệu theo tháng"));
   c.push(bodyPara("Do đặc thù cảm biến IoT chi phí thấp, tín hiệu bị gián đoạn khoảng 89 ngày/năm do các nguyên nhân: mất điện, lỗi module WiFi/4G, quá nhiệt cảm biến vào mùa nóng, và ngập nước trong mùa mưa. Bảng 3.2 trình bày chi tiết độ phủ dữ liệu theo từng tháng, cho thấy tháng 2 (36%) và tháng 9 (27%) là hai tháng có tỷ lệ mất tín hiệu nghiêm trọng nhất."));
-  c.push(...figurePlaceholder("Hình 3.2 Mã vạch mất mát dữ liệu (Missing Data Barcode) thể hiện các gap rớt tín hiệu", "Missing Data Barcode chart"));
+  c.push(...figureBlock("Hình 3.2: Mã vạch mất mát dữ liệu (Missing Data Barcode) thể hiện các gap rớt tín hiệu", "Missing Data Barcode chart", "Hinh_4.7_EDA_Missing_Data_Barcode.png"));
   c.push(tableLabel("Bảng 3.2 Bảng tỷ lệ độ phủ dữ liệu theo 12 tháng trong năm"));
   c.push(buildTable(
     ["Tháng", "Số ngày khả dụng (TB)", "Độ phủ (%)", "Ghi chú"],
@@ -732,7 +762,7 @@ function buildMainContent() {
 
   c.push(sectionHeading("3.2", "Quy trình Tiền xử lý Dữ liệu 7 Bước và Tiered Imputation"));
   c.push(bodyPara("Quy trình tiền xử lý được thiết kế gồm 7 bước tuần tự, mỗi bước giải quyết một thách thức cụ thể của dữ liệu IoT chi phí thấp:"));
-  c.push(...figurePlaceholder("Hình 3.3 Quy trình 7 bước tiền xử lý dữ liệu và chiến lược Nội suy phân tầng", "Flowchart 7 bước tiền xử lý"));
+  c.push(...figureBlock("Hình 3.3: Đánh giá sai số và giới hạn phục hồi dữ liệu của các thuật toán nội suy (Tiered Imputation)", "Recovery Limits", "Hinh_4.8_EDA_Recovery_Limits.png"));
   c.push(bodyParaRuns([{ text: "Bước 1 — Deduplication: ", bold: true }, { text: "Loại bỏ các bản ghi trùng lặp thời gian do cảm biến gửi lại dữ liệu khi mất kết nối. Thuật toán giữ lại bản ghi đầu tiên của mỗi timestamp trùng lặp." }], { noIndent: true }));
   c.push(bodyParaRuns([{ text: "Bước 2 — Datetime Indexing: ", bold: true }, { text: "Gán khung giờ chuẩn liên tục UTC+7, tạo DatetimeIndex với tần suất gốc 2 phút cho toàn bộ khoảng thời gian thu thập." }], { noIndent: true }));
   c.push(bodyParaRuns([{ text: "Bước 3 — Physical Bounds: ", bold: true }, { text: "Cắt ngưỡng giá trị PM2.5 trong khoảng [0, 500] μg/m³ theo tiêu chuẩn AQI. Các giá trị âm (lỗi cảm biến) được đặt về 0, giá trị >500 (cực hiếm, lỗi phần cứng) được loại bỏ. Nghiên cứu không sử dụng phương pháp IQR/Z-score để loại outlier vì PM2.5 có phân phối đuôi dài — các đỉnh ô nhiễm thật sự sẽ bị xóa nhầm [14]." }], { noIndent: true }));
@@ -750,7 +780,7 @@ function buildMainContent() {
   c.push(bodyPara("  • Tính SAI: rolling_mean_3h(t) = mean(y_{t-2}, y_{t-1}, y_t) → chứa y_t chính là giá trị target cần dự báo!", { noIndent: true }));
   c.push(bodyPara("Nếu không áp dụng shift(1), biến diff(1) = y_t - y_{t-1} sẽ chứa thông tin trực tiếp từ y_t (target), khiến mô hình đạt R² ≈ 1,0 ảo trên tập huấn luyện nhưng thất bại hoàn toàn khi triển khai thực tế. Luận văn kiểm thử 100% tính tuân thủ Anti-Leakage bằng 192 unit tests tự động."));
   c.push(bodyPara("Hệ thống trích xuất 119 đặc trưng kỹ nghệ phân thành 7 nhóm:"));
-  c.push(...figurePlaceholder("Hình 3.4 Minh họa cơ chế chống rò rỉ dữ liệu (Anti-Leakage Discipline) bằng phép biến đổi shift(1)", "Anti-Leakage shift(1) diagram"));
+  c.push(...figureBlock("Hình 3.4: Kiểm định tính dừng trên chuỗi biến đổi Log PM2.5", "Biến đổi Log PM2.5", "Hinh_3.4_Stationarity_Log_PM25.png"));
   c.push(tableLabel("Bảng 3.3 Tổng hợp danh mục 119 đặc trưng kỹ nghệ temporal phân loại theo 7 nhóm"));
   c.push(buildTable(
     ["Nhóm đặc trưng", "Số lượng", "Mô tả", "Nguyên tắc shift(1)"],
@@ -785,7 +815,7 @@ function buildMainContent() {
   c.push(bodyParaRuns([{ text: "Validation Set: ", bold: true }, { text: "10% tiếp theo (669 dòng ở 1h) — dùng cho tối ưu siêu tham số Optuna [12]" }], { noIndent: true }));
   c.push(bodyParaRuns([{ text: "Test Set (Anchor): ", bold: true }, { text: "10% cuối cùng (669 dòng ở 1h, ~11.000 dòng ở 30m, ~22.000 dòng ở 15m) — chỉ đánh giá 1 lần duy nhất" }], { noIndent: true }));
   c.push(bodyPara("Khái niệm Anchor Test Set đảm bảo tính nghiêm ngặt: tập test được \"neo\" cố định trong suốt quá trình thí nghiệm, không bao giờ bị sử dụng để tối ưu hay lựa chọn mô hình. Ngoài ra, LightGBM sử dụng TimeSeriesSplit(n_splits=5) trong quá trình tối ưu siêu tham số bằng Optuna để đảm bảo cross-validation đúng chuẩn temporal [15]."));
-  c.push(...figurePlaceholder("Hình 3.5 Biểu đồ kỹ thuật phân rã TimeSeriesSplit 80/10/10 với Purging Gap cách ly", "TimeSeriesSplit diagram"));
+  c.push(...figureBlock("Hình 3.5: Kiểm định tính dừng trên chuỗi sai phân bậc 1 của Log PM2.5", "Log 1st Diff", "Hinh_3.5_Stationarity_Log_1st_Diff.png"));
   c.push(tableLabel("Bảng 3.4 Bảng so sánh 3 cấp độ phân giải dữ liệu (15m, 30m, 1h) sau tiền xử lý"));
   c.push(buildTable(
     ["Độ phân giải", "Số bản ghi (Train)", "Số bản ghi (Test)", "Kích thước cửa sổ (DL)", "Ưu điểm", "Nhược điểm"],
@@ -833,9 +863,9 @@ function buildMainContent() {
   c.push(sectionHeading("4.1", "Khám phá dữ liệu qua lăng kính Data Storytelling"));
   c.push(bodyPara("Phân tích khám phá dữ liệu (EDA) được thực hiện trước khi xây dựng mô hình nhằm hiểu rõ đặc tính thống kê và vật lý của chuỗi PM2.5. Kết quả cho thấy ba đặc trưng nổi bật:"));
   c.push(bodyParaRuns([{ text: "Phân phối đuôi dài (Fat-Tailed Distribution): ", bold: true }, { text: "Biểu đồ histogram PM2.5 cho thấy phần lớn giá trị tập trung ở mức thấp (10-15 μg/m³, chiếm >80% quan sát), nhưng có các đỉnh bùng phát đột biến vượt 50 μg/m³. Phân tích Q-Q Plot xác nhận dữ liệu gốc vi phạm nghiêm trọng giả định phân phối chuẩn (đường chấm uốn cong lồi ở giữa và vút lên ở đuôi phải). Sau phép biến đổi Log-transform, phân phối tiến gần chuẩn hơn (đường chấm bám sát đường tham chiếu), tuy nhiên thực nghiệm cho thấy Log-transform làm giảm hiệu năng dự báo ở các điểm cực trị vì đã \"cào bằng\" các đỉnh ô nhiễm. Do đó, nghiên cứu giữ nguyên phân phối gốc và chỉ sử dụng StandardScaler [9]." }]));
-  c.push(...figurePlaceholder("Hình 4.1 Biểu đồ phân phối đuôi dài (Fat-Tailed Distribution) của nồng độ PM2.5 Sa Đéc", "Fat-Tailed Distribution histogram + Q-Q Plot"));
+  c.push(...figureBlock("Hình 4.1: Biểu đồ phân phối đuôi dài (Fat-Tailed Distribution) của nồng độ PM2.5 Sa Đéc", "Fat-Tailed Distribution histogram + Q-Q Plot", "Hinh_4.3_EDA_PM25_Fat_Tailed_Distribution.png"));
   c.push(bodyParaRuns([{ text: "Bẫy tự tương quan (Autocorrelation Trap): ", bold: true }, { text: "Biểu đồ ACF cho thấy hệ số tự tương quan ACF(1) = 0,97 tại tần suất 1h, giảm dần theo quy luật mũ nhưng vẫn duy trì ACF > 0,5 đến lag 12h. Hiện tượng này đặt ra thách thức: tại mốc 1h, mô hình Persistence (y_{t+1} = y_t) đạt MAE chỉ 2,596 μg/m³ — cực kỳ khó bị đánh bại. Chỉ đến mốc 6h (ACF ≈ 0,85) và 24h (ACF ≈ 0,60), quán tính ô nhiễm mới giảm đủ để mô hình ML/DL phát huy \"kỹ năng thực sự\" [1]." }]));
-  c.push(...figurePlaceholder("Hình 4.2 Biểu đồ Hàm tự tương quan ACF thể hiện hiện tượng Autocorrelation Trap tại 1h", "ACF plot with lag labels"));
+  c.push(...figureBlock("Hình 4.2: Biểu đồ Hàm tự tương quan ACF thể hiện hiện tượng Autocorrelation Trap tại 1h", "ACF plot with lag labels", "Hinh_4.1_EDA_Autocorrelation_Memory.png"));
   c.push(bodyParaRuns([{ text: "Chu kỳ ngày đêm (Diurnal Cycle): ", bold: true }, { text: "Phân tích biến thiên PM2.5 theo giờ cho thấy nồng độ đạt đỉnh vào 5-7h sáng (do nghịch nhiệt bức xạ) và giảm thấp nhất vào 13-15h chiều (do đối lưu nhiệt phá vỡ lớp nghịch nhiệt). Chu kỳ 24h này được mã hóa bằng đặc trưng Fourier (sin_hour, cos_hour) trong nhóm Calendar Features [32]." }]));
 
   c.push(sectionHeading("4.2", "Thử nghiệm phát hiện và khắc phục Rò rỉ Dữ liệu (Data Leakage Audit)"));
@@ -871,8 +901,8 @@ function buildMainContent() {
   ));
   c.push(bodyPara("Nhận xét: R² âm hoặc gần 0 (VD: Ensemble tại 6h đạt R² = -0,044) không có nghĩa mô hình kém. Trong bối cảnh dự báo chuỗi thời gian đa bước (multi-step forecasting), R² được tính trên tập test với phương sai thấp (PM2.5 Sa Đéc có trung bình ~10 μg/m³ và IQR ≈ 5), khiến bất kỳ sai số tuyệt đối nào cũng cho R² thấp. Armstrong (2001) [35] và Hyndman & Athanasopoulos (2021) [1] khuyến nghị sử dụng MASE thay vì R² làm chỉ số chính cho bài toán dự báo chuỗi thời gian, vì R² không phù hợp với dữ liệu có phương sai thấp và dự báo đa bước.", { italics: true }));
   c.push(bodyPara("Lưu ý về Forecast Bias: Ensemble_Weighted_v9_30m có xu hướng dự báo cao hơn thực tế (over-forecasting) với Bias = +1,30 μg/m³ tại 6h. Mặc dù bias dương không ảnh hưởng đến MASE (vì MASE tính trên sai số tuyệt đối), nhưng có thể dẫn đến cảnh báo giả dương (false alarms) trong hệ thống cảnh báo ô nhiễm. Tỷ lệ Precision = 0,812 trong Bảng 4.5 xác nhận hệ thống vẫn kiểm soát tốt tỷ lệ cảnh báo sai.", { italics: true }));
-  c.push(bodyPara("Đối chiếu RMSE với các nghiên cứu quốc tế: RMSE 6h của Ensemble_Weighted_v9_30m đạt 5,079 μg/m³, nằm trong nhóm Top 15% khi so với phạm vi RMSE 5,20–14,80 μg/m³ của các nghiên cứu SOTA quốc tế được khảo sát tại Bảng 2.1. Đặc biệt, kết quả này vượt trội hoàn toàn so với phạm vi RMSE 7,10–15,40 μg/m³ của các nghiên cứu dự báo PM2.5 tại Việt Nam. Về MAE, mô hình đạt 3,493 μg/m³ tại 6h (Top 20% quốc tế, phạm vi 3,12–8,12) và 3,417 μg/m³ tại 24h (vượt chuẩn quốc tế, phạm vi 3,85–12,50). Toàn bộ số liệu đối chiếu được trích xuất tự động từ ReportingEngine trong codebase, đảm bảo tính truy xuất nguồn gốc (traceability) và loại bỏ sai sót do hardcode thủ công."));
-  c.push(...figurePlaceholder("Hình 4.3 Biểu đồ so sánh MASE giữa các độ phân giải 15m, 30m, 1h tại 3 mốc dự báo", "MASE comparison bar chart"));
+  c.push(bodyPara("Đối chiếu RMSE với các nghiên cứu quốc tế: Sai số RMSE ở mốc 6h của Ensemble_Weighted_v9_30m đạt 5,079 μg/m³, nằm trong khoảng 5,20–14,80 μg/m³ của các công trình công bố quốc tế tại Bảng 2.1 và thấp hơn khoảng sai số 7,10–15,40 μg/m³ của các nghiên cứu tại Việt Nam. Về MAE, mô hình đạt 3,493 μg/m³ tại 6h và 3,417 μg/m³ tại 24h. Kết quả này được trích xuất trực tiếp từ ReportingEngine trong codebase, đảm bảo tính minh bạch và có thể kiểm chứng."));
+  c.push(...figureBlock("Hình 4.3: Biểu đồ so sánh tốc độ suy giảm MASE giữa các độ phân giải 15m, 30m, 1h tại 3 mốc dự báo", "MASE comparison bar chart", "Hinh_PhuLuc_MASE_Decay.png"));
 
   c.push(sectionHeading("4.4", "Thảo luận về Điểm ngọt độ phân giải 30m và Bẫy tự tương quan"));
   c.push(bodyParaRuns([{ text: "Khắc phục Bẫy tự tương quan (1h): ", bold: true }, { text: "Tại mốc siêu ngắn 1h, tính tự tương quan ACF ≈ 0,97 khiến Persistence đạt MAE = 2,596 μg/m³. Các mô hình ML/DL ở tần suất 1h đều đạt MASE > 1 (thua Persistence) — xác nhận sự tồn tại của Autocorrelation Trap. Tuy nhiên, mạng GRU ở tần số 15m đã phá vỡ bẫy này với MASE = 0,667, nhờ khả năng nắm bắt biến thiên vi mô (sub-hourly variations) mà tần suất 1h bỏ lỡ. Kiểm định Diebold-Mariano tại h=1 cho DM statistic = +13,729 (dương, GRU tệ hơn Persistence tại 1h/1h), củng cố lập luận rằng Multi-Resolution là giải pháp bắt buộc [11]." }]));
@@ -898,13 +928,13 @@ function buildMainContent() {
 
   c.push(sectionHeading("4.6", "Phân tích Minh bạch Mô hình bằng Explainable AI (SHAP)"));
   c.push(bodyPara("Phân tích SHAP (SHapley Additive exPlanations) [20] được thực hiện trên mô hình LightGBM — đóng vai trò Mô hình Đại diện (Surrogate Model) nhờ khả năng nắm bắt phi tuyến xuất sắc và hỗ trợ thuật toán TreeExplainer cực nhanh. Nghiên cứu tập trung phân tích ở Horizon 6h vì: (1) 1h bị chi phối bởi quán tính tuyến tính, biểu đồ SHAP tẻ nhạt, (2) 24h có quá nhiều nhiễu, (3) 6h đòi hỏi \"kỹ năng thực sự\" — mô hình phải học chu kỳ ngày đêm, nghịch nhiệt, và tốc độ phân tán ô nhiễm [20]."));
-  c.push(...figurePlaceholder("Hình 4.4 Đồ thị SHAP Summary Beeswarm Plot thể hiện mức độ quan trọng 20 đặc trưng hàng đầu", "SHAP Beeswarm Plot"));
+  c.push(...figureBlock("Hình 4.4: Đồ thị SHAP Summary Beeswarm Plot mô hình LightGBM tại mốc 1h", "SHAP Beeswarm Plot 1h", "Hinh_4.19_SHAP_Beeswarm_1h.png"));
   c.push(bodyPara("Biểu đồ Beeswarm cho thấy pm25_roll_24h_mean là biến quan trọng nhất, với vệt màu đỏ (nồng độ nền cao) kéo dài đột biến về phía phải — phản ánh hiệu ứng đuôi dài của ô nhiễm: khi nền PM2.5 cao, tác động đẩy dự báo tăng mạnh phi tuyến. Biến hour_sin cho thấy mẫu phân bổ đan xen (không tách bạch trái-phải), chứng minh tác động phi tuyến phụ thuộc vào tương tác chéo với các biến khí tượng [20]."));
   c.push(bodyParaRuns([
     { text: "Phát hiện Ngưỡng tới hạn ô nhiễm (Physical Tipping Point): ", bold: true },
-    { text: "Đồ thị SHAP Dependence cho biến pm25_roll_24h_mean cho thấy SHAP value duy trì ở mức âm (mô hình dự báo giảm) khi trung bình 24h dưới 15 μg/m³. Tuy nhiên, ngay khi nồng độ này vượt qua ngưỡng tới hạn khoảng 17-18 μg/m³, SHAP value vọt thẳng đứng lên mức dương cực đại (mô hình dự báo tăng mạnh). Điều này chứng minh mô hình đã tự học được giới hạn tự làm sạch (self-cleansing capacity) của tầng khí quyển khu vực Sa Đéc: khi nồng độ ô nhiễm vượt ngưỡng, cơ chế phân tán tự nhiên bị bão hòa, ô nhiễm bùng phát theo cấp số nhân [20]." },
+    { text: "Đồ thị SHAP Dependence của biến pm25_roll_24h_mean thể hiện SHAP value chuyển từ giá trị âm sang giá trị dương khi nồng độ trung bình 24h vượt ngưỡng 17-18 μg/m³. Kết quả này phản ánh giới hạn tự làm sạch của tầng khí quyển Sa Đéc: khi nồng độ nền vượt ngưỡng 17-18 μg/m³, tác động đóng góp vào nồng độ dự báo tăng nhanh do khả năng phát tán tự nhiên bị giảm [20]." },
   ]));
-  c.push(...figurePlaceholder("Hình 4.5 Đồ thị SHAP Dependence Plot giải mã Ngưỡng tới hạn ô nhiễm (Physical Tipping Point)", "SHAP Dependence Plot"));
+  c.push(...figureBlock("Hình 4.5: Đồ thị SHAP Summary Beeswarm Plot tại mốc dự báo 6h giải mã Ngưỡng tới hạn ô nhiễm", "SHAP Beeswarm Plot 6h", "Hinh_4.20_SHAP_Beeswarm_6h.png"));
 
   c.push(sectionHeading("4.7", "Kiểm định ý nghĩa thống kê Diebold-Mariano và Cảnh báo ô nhiễm WHO"));
   c.push(bodyPara("Kiểm định Diebold-Mariano (DM) [11] được sử dụng để xác nhận sự vượt trội của Ensemble so với Persistence có ý nghĩa thống kê, thay vì chỉ là kết quả ngẫu nhiên từ một lần chia dữ liệu:"));
@@ -933,7 +963,9 @@ function buildMainContent() {
     [2000, 1000, 1200, 1000, 1200, 1200],
   ));
   c.push(bodyPara("Ensemble_Weighted_v9_30m đạt F1-Score cao nhất 0,782 tại 6h, với Precision 0,812 (ít cảnh báo sai) và Recall 0,754 (phát hiện được 75,4% đợt ô nhiễm thực). Kết quả này có ý nghĩa thực tiễn lớn: hệ thống có thể cảnh báo trước 6 giờ cho 3 trong 4 đợt ô nhiễm nguy hiểm, cho phép cơ quan quản lý đủ thời gian đưa ra khuyến cáo bảo vệ sức khỏe cộng đồng [28].", { italics: true }));
-  c.push(...figurePlaceholder("Hình 4.6 Giao diện Dashboard dự báo PM2.5 thời gian thực và dải khoảng tin cậy CQR", "Dashboard screenshot"));
+  c.push(...figureBlock("Hình 4.6: Dải khoảng tin cậy dự báo Conformal Prediction (LightGBM 1h)", "Prediction Intervals Conformal 1h", "Hinh_4.25_PI_Conformal_LightGBM_1h.png"));
+  c.push(...figureBlock("Hình 4.7: Dải khoảng tin cậy dự báo Conformal Prediction (LightGBM 6h)", "Prediction Intervals Conformal 6h", "Hinh_4.26_PI_Conformal_LightGBM_6h.png"));
+  c.push(...figureBlock("Hình 4.8: Đánh giá mức độ ảnh hưởng của loại bỏ ngoại lai đến hiệu năng mô hình (Ablation Study)", "Ablation Outlier Impact", "Hinh_4.28_Ablation_Outlier_Impact.png"));
 
   // ═══════════════ CHƯƠNG 5: KẾT LUẬN VÀ ĐỀ XUẤT (EXPANDED) ═══════════════
   c.push(pageBreakPara());
@@ -944,7 +976,7 @@ function buildMainContent() {
   c.push(bodyParaRuns([{ text: "1. Xây dựng thành công Pipeline Anti-Leakage: ", bold: true }, { text: "Quy trình kỹ nghệ dữ liệu chống rò rỉ (Anti-Leakage Pipeline) chuẩn mực đã được thiết lập, vượt qua 192 unit tests tự động. Kiểm định Anti-Leakage Audit chứng minh R² giảm từ 1,000 (ảo) về 0,11-0,27 (thực tế) sau khi áp dụng shift(1) triệt để, đáp ứng Câu hỏi nghiên cứu CH1 và Giả thuyết GH1." }], { noIndent: true }));
   c.push(bodyParaRuns([{ text: "2. Chiến lược Tiered Imputation hiệu quả: ", bold: true }, { text: "Chiến lược nội suy phân tầng (Cubic Spline → KNN → Drop) đã giải quyết thách thức Data Gaps từ cảm biến IoT chi phí thấp, bảo toàn cấu trúc phân đoạn tự nhiên thông qua segment_id mà không tạo ra ảo giác dữ liệu." }], { noIndent: true }));
   c.push(bodyParaRuns([{ text: "3. Chứng minh Điểm ngọt 30 phút: ", bold: true }, { text: "Độ phân giải 30m chiếm 12/15 vị trí top-5 (80%) trong bảng xếp hạng MASE toàn hệ thống, xác lập \"Resolution Sweet Spot\" cho dự báo PM2.5 trung và dài hạn, đáp ứng CH2 và GH2." }], { noIndent: true }));
-  c.push(bodyParaRuns([{ text: "4. Ensemble đạt hiệu năng xuất sắc nhất: ", bold: true }, { text: "Ensemble_Weighted_v9_30m đạt MASE = 0,382 tại 6h (giảm 49,6% MAE so với Persistence) và MASE = 0,469 tại 24h (giảm 46,0%), vượt qua mọi mô hình đơn lẻ, đáp ứng GH3. Kiểm định Diebold-Mariano xác nhận sự vượt trội có ý nghĩa thống kê (p < 0,001)." }], { noIndent: true }));
+  c.push(bodyParaRuns([{ text: "4. Mô hình Ensemble đạt sai số thấp nhất: ", bold: true }, { text: "Ensemble_Weighted_v9_30m đạt MASE = 0,382 tại 6h (giảm 49,6% MAE so với Persistence) và MASE = 0,469 tại 24h (giảm 46,0% MAE), đạt kết quả tốt hơn các mô hình đơn lẻ, phù hợp với giả thuyết GH3. Kiểm định Diebold-Mariano xác nhận sự khác biệt có ý nghĩa thống kê (p < 0,001)." }], { noIndent: true }));
   c.push(bodyParaRuns([{ text: "5. Khoảng tin cậy CQR đạt Coverage hợp lệ: ", bold: true }, { text: "Phương pháp Conformal Quantile Regression đưa ra dải khoảng tin cậy 90% với Coverage 76-88% và Winkler Score chấp nhận được. F1-Score cảnh báo ô nhiễm vượt ngưỡng WHO đạt 0,782 tại 6h." }], { noIndent: true }));
   c.push(bodyParaRuns([{ text: "6. Phát hiện Ngưỡng tới hạn phi tuyến: ", bold: true }, { text: "SHAP TreeExplainer phát hiện Physical Tipping Point tại nồng độ trung bình 24h khoảng 17-18 μg/m³ — vượt ngưỡng này, ô nhiễm bùng phát theo cấp số nhân do cơ chế tự làm sạch khí quyển bị bão hòa, đáp ứng CH4." }], { noIndent: true }));
 
@@ -1140,8 +1172,10 @@ const doc = new Document({
   ],
 });
 
-const OUTPUT = "docs/Luan_van_ThS_Nguyen_Hoang_Xuan_Tri_QD1799.docx";
+const OUTPUT1 = "docs/Hoang Xuan Tri_M2522016_Bao_cao_de_an_tot_nghiep.docx";
+const OUTPUT2 = "docs/Luan_van_ThS_Nguyen_Hoang_Xuan_Tri_QD1799.docx";
 Packer.toBuffer(doc).then(buffer => {
-  fs.writeFileSync(OUTPUT, buffer);
-  console.log(`Done. Output: ${OUTPUT} (${(buffer.length / 1024).toFixed(0)} KB)`);
+  fs.writeFileSync(OUTPUT1, buffer);
+  fs.writeFileSync(OUTPUT2, buffer);
+  console.log(`Done. Saved to:\n  1. ${OUTPUT1} (${(buffer.length / 1024).toFixed(0)} KB)\n  2. ${OUTPUT2} (${(buffer.length / 1024).toFixed(0)} KB)`);
 }).catch(err => { console.error("Error:", err); process.exit(1); });

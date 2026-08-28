@@ -334,6 +334,24 @@ def page_ai_assistant(results):
             prompt = user_input
 
         if prompt:
+            # ── Guardrails Validation ──
+            from src.chatbot.guardrails import ChatGuardrails
+            is_valid, block_reason = ChatGuardrails.validate_prompt(prompt)
+            
+            if not is_valid:
+                # Add user message
+                st.session_state.chat_messages.append({"role": "user", "content": prompt})
+                with st.chat_message("user"):
+                    st.markdown(prompt)
+                
+                # Add guardrail block message
+                st.session_state.chat_messages.append({"role": "assistant", "content": block_reason})
+                with st.chat_message("assistant"):
+                    st.markdown(block_reason)
+                
+                # Stop processing
+                st.rerun()
+
             # Add user message
             st.session_state.chat_messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"):

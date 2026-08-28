@@ -952,27 +952,21 @@
       "tests_unit_test_evaluation_testwinklerscore_test_perfect_coverage_tight"
     ],
     "25": [
-      "src_data_cleaner_clip_physical_bounds",
       "src_data_cleaner_handle_outliers",
-      "src_data_cleaner_rationale_124",
       "src_data_cleaner_rationale_150",
       "src_data_cleaner_rationale_97",
       "src_data_cleaner_remove_duplicates",
-      "src_training_trainer",
-      "src_training_trainer_get_default_params",
-      "src_training_trainer_prepare_hybrid_data",
-      "src_training_trainer_rationale_1",
-      "src_training_trainer_rationale_40",
-      "src_training_trainer_rationale_68",
       "tests_unit_test_cleaner",
       "tests_unit_test_cleaner_py_dataframe",
       "tests_unit_test_cleaner_rationale_1",
+      "tests_unit_test_cleaner_rationale_112",
+      "tests_unit_test_cleaner_rationale_120",
       "tests_unit_test_cleaner_rationale_19",
       "tests_unit_test_cleaner_raw_df",
-      "tests_unit_test_cleaner_testclipphysicalbounds",
-      "tests_unit_test_cleaner_testclipphysicalbounds_test_clips_extreme_temperature",
-      "tests_unit_test_cleaner_testclipphysicalbounds_test_clips_negative_pm25",
-      "tests_unit_test_cleaner_testclipphysicalbounds_test_no_clipping_needed",
+      "tests_unit_test_cleaner_testcleandata",
+      "tests_unit_test_cleaner_testcleandata_test_full_pipeline",
+      "tests_unit_test_cleaner_testcleandata_test_full_pipeline_with_outliers",
+      "tests_unit_test_cleaner_testcleandata_test_pipeline_preserves_datetime_index",
       "tests_unit_test_cleaner_testhandleoutliers",
       "tests_unit_test_cleaner_testhandleoutliers_test_invalid_method_raises",
       "tests_unit_test_cleaner_testhandleoutliers_test_iqr_method",
@@ -1078,8 +1072,6 @@
       "src_info_cards_render_info_card"
     ],
     "30": [
-      "src_data_imputer_get_imputation_stats",
-      "src_data_imputer_rationale_483",
       "tests_test_imputer",
       "tests_test_imputer_clean_data",
       "tests_test_imputer_hourly_data_with_gaps",
@@ -1088,14 +1080,14 @@
       "tests_test_imputer_rationale_156",
       "tests_test_imputer_rationale_166",
       "tests_test_imputer_rationale_189",
-      "tests_test_imputer_rationale_237",
+      "tests_test_imputer_rationale_213",
       "tests_test_imputer_rationale_24",
       "tests_test_imputer_rationale_63",
       "tests_test_imputer_rationale_79",
+      "tests_test_imputer_testgapidentification",
+      "tests_test_imputer_testgapidentification_test_identify_gaps_correct",
       "tests_test_imputer_testhybrid",
       "tests_test_imputer_testhybrid_test_hybrid_fills_most",
-      "tests_test_imputer_testimputationstats",
-      "tests_test_imputer_testimputationstats_test_stats_tracking",
       "tests_test_imputer_testmlimpute",
       "tests_test_imputer_testmlimpute_test_knn_features_no_target",
       "tests_test_imputer_testmlimpute_test_ml_impute_fills_medium_gaps",
@@ -1187,6 +1179,8 @@
     ],
     "35": [
       "src_data_imputer_build_knn_features",
+      "src_data_imputer_identify_gaps",
+      "src_data_imputer_rationale_336",
       "src_data_imputer_rationale_364",
       "tests_test_knn_temporal_order",
       "tests_test_knn_temporal_order_create_test_series",
@@ -1218,13 +1212,7 @@
       "src_eda_run_eda",
       "src_eda_run_eda_main",
       "src_eda_run_eda_rationale_1",
-      "src_eda_run_eda_rationale_20",
-      "tests_unit_test_cleaner_rationale_112",
-      "tests_unit_test_cleaner_rationale_120",
-      "tests_unit_test_cleaner_testcleandata",
-      "tests_unit_test_cleaner_testcleandata_test_full_pipeline",
-      "tests_unit_test_cleaner_testcleandata_test_full_pipeline_with_outliers",
-      "tests_unit_test_cleaner_testcleandata_test_pipeline_preserves_datetime_index"
+      "src_eda_run_eda_rationale_20"
     ],
     "37": [
       "src_data_imputer",
@@ -1376,11 +1364,18 @@
       "src_data_augmentation_timeseriesaugmenter_scale"
     ],
     "46": [
-      "src_data_imputer_identify_gaps",
-      "src_data_imputer_rationale_336",
-      "tests_test_imputer_rationale_213",
-      "tests_test_imputer_testgapidentification",
-      "tests_test_imputer_testgapidentification_test_identify_gaps_correct"
+      "src_data_cleaner_clip_physical_bounds",
+      "src_data_cleaner_rationale_124",
+      "src_training_trainer",
+      "src_training_trainer_get_default_params",
+      "src_training_trainer_prepare_hybrid_data",
+      "src_training_trainer_rationale_1",
+      "src_training_trainer_rationale_40",
+      "src_training_trainer_rationale_68",
+      "tests_unit_test_cleaner_testclipphysicalbounds",
+      "tests_unit_test_cleaner_testclipphysicalbounds_test_clips_extreme_temperature",
+      "tests_unit_test_cleaner_testclipphysicalbounds_test_clips_negative_pm25",
+      "tests_unit_test_cleaner_testclipphysicalbounds_test_no_clipping_needed"
     ],
     "47": [
       "src_evaluation_metrics_forecast_bias",
@@ -1616,6 +1611,13 @@
       "reproduce_log",
       "reproduce_sh__entry",
       "reproduce_warn"
+    ],
+    "70": [
+      "src_data_imputer_get_imputation_stats",
+      "src_data_imputer_rationale_483",
+      "tests_test_imputer_rationale_237",
+      "tests_test_imputer_testimputationstats",
+      "tests_test_imputer_testimputationstats_test_stats_tracking"
     ],
     "71": [
       "src_evaluation_adaptive_conformal",
@@ -2221,18 +2223,18 @@
     "22": 0.11076923076923077,
     "23": 0.11333333333333333,
     "24": 0.10144927536231885,
-    "25": 0.12561576354679804,
+    "25": 0.14624505928853754,
     "26": 0.2015810276679842,
     "27": 0.1341991341991342,
     "28": 0.12380952380952381,
     "29": 0.14285714285714285,
-    "30": 0.11462450592885376,
+    "30": 0.11904761904761904,
     "31": 0.15263157894736842,
     "32": 0.15789473684210525,
     "33": 0.1503267973856209,
     "34": 0.1437908496732026,
-    "35": 0.18095238095238095,
-    "36": 0.12987012987012986,
+    "35": 0.16911764705882354,
+    "36": 0.18333333333333332,
     "37": 0.21666666666666667,
     "38": 0.16666666666666666,
     "39": 0.21666666666666667,
@@ -2242,7 +2244,7 @@
     "43": 0.2087912087912088,
     "44": 0.19230769230769232,
     "45": 0.19696969696969696,
-    "46": 0.4,
+    "46": 0.21212121212121213,
     "47": 0.21212121212121213,
     "48": 0.25757575757575757,
     "49": 0.25757575757575757,
@@ -2266,6 +2268,7 @@
     "67": 0.3333333333333333,
     "68": 0.4,
     "69": 0.7,
+    "70": 0.4,
     "71": 0.4,
     "72": 0.5,
     "73": 0.5,
@@ -2560,41 +2563,8 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
     }
   ],
-  "questions": [
-    {
-      "type": "bridge_node",
-      "question": "Why does `APIClient` connect `APIClient` to `ContentManager`, `knowledge_base.py`, `._put`, `KnowledgeBase`, `api_client.py`, `._post`?",
-      "why": "High betweenness centrality (0.070) - this node is a cross-community bridge."
-    },
-    {
-      "type": "bridge_node",
-      "question": "Why does `ContentManager` connect `ContentManager` to `APIClient`, `info_cards.py`, `load_all_snapshots`, `get_version_data`?",
-      "why": "High betweenness centrality (0.050) - this node is a cross-community bridge."
-    },
-    {
-      "type": "bridge_node",
-      "question": "Why does `DataValidator` connect `DataValidator` to `load_raw_data`, `clean_data`, `builder.py`, `build_features`?",
-      "why": "High betweenness centrality (0.048) - this node is a cross-community bridge."
-    },
-    {
-      "type": "verify_inferred",
-      "question": "Are the 5 inferred relationships involving `DataValidator` (e.g. with `TestIntermediateValidation` and `TestMartsValidation`) actually correct?",
-      "why": "`DataValidator` has 5 INFERRED edges - model-reasoned connections that need verification."
-    },
-    {
-      "type": "verify_inferred",
-      "question": "Are the 2 inferred relationships involving `APIClient` (e.g. with `KnowledgeBase` and `ContentManager`) actually correct?",
-      "why": "`APIClient` has 2 INFERRED edges - model-reasoned connections that need verification."
-    },
-    {
-      "type": "verify_inferred",
-      "question": "Are the 5 inferred relationships involving `ExperimentLogger` (e.g. with `Experiment` and `FeatureImportance`) actually correct?",
-      "why": "`ExperimentLogger` has 5 INFERRED edges - model-reasoned connections that need verification."
-    },
-    {
-      "type": "isolated_nodes",
-      "question": "What connects `run_dashboard.sh script`, `Docker Publish`, `Keep Render App Alive` to the rest of the system?",
-      "why": "91 weakly-connected nodes found - possible documentation gaps or missing edges."
-    }
-  ]
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
 }

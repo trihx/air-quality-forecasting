@@ -1,4 +1,4 @@
-# Graph Report - .  (2026-08-28)
+# Graph Report - .  (2026-08-11)
 
 ## Corpus Check
 - cluster-only mode — file stats not available
@@ -29,6 +29,7 @@
 - chart
 - DataFrame
 - ExperimentLogger
+- DataFrame
 - chart_factory.py
 - _resample
 - test_loader.py
@@ -39,8 +40,8 @@
 - APIClient
 - mae
 - test_evaluation.py
-- test_cleaner.py
 - run_full_eda
+- clean_data
 - snapshot_adapter.py
 - evaluate_forecast
 - info_cards.py
@@ -50,7 +51,6 @@
 - render_references_section
 - mase
 - _build_knn_features
-- clean_data
 - impute_missing_data
 - temporal.py
 - theme.py
@@ -60,7 +60,6 @@
 - create_calendar_features
 - KnowledgeBase
 - TimeSeriesAugmenter
-- _identify_gaps
 - forecast_bias
 - create_lag_features
 - load_config
@@ -84,6 +83,7 @@
 - TestDataIntegrity
 - manifest.json
 - reproduce.sh
+- _identify_gaps
 - adaptive_conformal_inference
 - mape
 - dependencies
@@ -345,93 +345,93 @@ Nodes (23): feature_cols(), marts_df(), DataFrame, Data leakage detection tests 
 Cohesion: 0.11
 Nodes (13): ExperimentLogger, Any, Log a model within a run, return run_model_id., Log metrics for a model, return metric_id., Check if experiment with given name already exists., Parse a full JSON result dict → Experiment + Runs + Models + Metrics.          E, Convert NaN/Infinity to None for DB storage., Centralized experiment tracking — write to DB or API. (+5 more)
 
-### Community 15 - "chart_factory.py"
+### Community 15 - "DataFrame"
+Cohesion: 0.15
+Nodes (14): _clip_physical_bounds(), _handle_outliers(), Clip values to physically valid ranges., Detect and replace outliers with NaN (will be interpolated later).      Strategy, get_default_params(), _prepare_hybrid_data(), Interactive Model Training Service for Dashboard.  Provides trainers for Light, Load and prepare hybrid dataset. (+6 more)
+
+### Community 16 - "chart_factory.py"
 Cohesion: 0.11
 Nodes (27): _chart_bootstrap_ci(), _chart_mase_decay(), _chart_residual_bias(), _chart_shap_comparison(), _chart_train_time(), _load_bootstrap_ci(), _load_ljungbox(), _load_sensitivity() (+19 more)
 
-### Community 16 - "_resample"
+### Community 17 - "_resample"
 Cohesion: 0.09
 Nodes (19): Resample to regular frequency using mean aggregation., _resample(), get_latest_data(), get_suggestion_values(), GRUPredictor, GRUQuantilePredictor, LightGBMPredictor, DataFrame (+11 more)
 
-### Community 17 - "test_loader.py"
+### Community 18 - "test_loader.py"
 Cohesion: 0.11
 Nodes (20): get_data_summary(), Any, Run basic validation checks on dataset.      Args:         df: Input DataFrame., Generate summary statistics about the dataset.      Args:         df: Input Data, validate_dataset(), DataFrame, Tests for data loader module., Should detect duplicated timestamps. (+12 more)
 
-### Community 18 - "load_raw_data"
-Cohesion: 0.09
-Nodes (19): load_raw_data(), DataFrame, Path, Check that all expected columns exist., Load raw PM2.5 dataset from CSV.      Args:         path: Path to CSV file. Defa, _validate_columns(), Integration test with real dataset., TestRealDataCleaning (+11 more)
+### Community 19 - "load_raw_data"
+Cohesion: 0.10
+Nodes (17): load_raw_data(), DataFrame, Path, Check that all expected columns exist., Load raw PM2.5 dataset from CSV.      Args:         path: Path to CSV file. Defa, _validate_columns(), Integration tests against the real dataset., Real dataset should load successfully. (+9 more)
 
-### Community 19 - "pipeline_walkthrough.py"
+### Community 20 - "pipeline_walkthrough.py"
 Cohesion: 0.13
 Nodes (27): cite(), Return an inline HTML tooltip for a citation.      Args:         ref_id: Key, get_current_version(), Get the currently selected version from session state., _get_dashboard_content(), _get_pipeline_metrics(), _load_standardized_metrics(), page_pipeline_walkthrough() (+19 more)
 
-### Community 20 - "run_residual_diagnostics"
+### Community 21 - "run_residual_diagnostics"
 Cohesion: 0.11
 Nodes (22): dm_test_hln(), _ensure_statsmodels(), _generate_diagnostic_chart(), _ljung_box_test(), Any, ndarray, Path, Residual Diagnostics — Post-model residual analysis.  Implements Peixeiro Ch.6 (+14 more)
 
-### Community 21 - "llm_client.py"
+### Community 22 - "llm_client.py"
 Cohesion: 0.14
 Nodes (23): OpenAI, _build_client(), chat_stream(), check_connection(), get_available_models(), Multi-LLM Client for PM2.5 AI Assistant.  Supports tiered fallback across multip, List models available on a provider., Attempt to stream from a single provider. Returns None on failure. (+15 more)
 
-### Community 22 - "APIClient"
+### Community 23 - "APIClient"
 Cohesion: 0.11
 Nodes (12): APIClient, Get metrics for a model., Get data file hashes for audit., Get model weight hashes for audit., Get full audit report., Verify file integrity against manifest.json expected MD5 hashes., List all info cards, optionally filtered by page., Get a single info card by key. (+4 more)
 
-### Community 23 - "mae"
+### Community 24 - "mae"
 Cohesion: 0.11
 Nodes (15): mae(), Mean Absolute Error — Primary metric per SKILL.md., Root Mean Squared Error — penalizes large errors., rmse(), TestMAE, TestRMSE, Validation tests — cross-reference results with literature & best practices.  Sc, RMSE >= MAE always (Cauchy-Schwarz inequality). (+7 more)
 
-### Community 24 - "test_evaluation.py"
+### Community 25 - "test_evaluation.py"
 Cohesion: 0.10
 Nodes (13): r2_score(), R² (coefficient of determination)., Winkler Score for interval prediction evaluation (Winkler 1972).      Penalizes, Symmetric MAPE — safer than MAPE for near-zero values.      Per evaluation-metri, smape(), winkler_score(), Tests for evaluation metrics and data splitter., TestNaivePredictions (+5 more)
-
-### Community 25 - "test_cleaner.py"
-Cohesion: 0.13
-Nodes (18): _clip_physical_bounds(), _handle_outliers(), Clip values to physically valid ranges., Detect and replace outliers with NaN (will be interpolated later).      Strategy, Remove duplicate rows, keeping first occurrence., _remove_duplicates(), get_default_params(), _prepare_hybrid_data() (+10 more)
 
 ### Community 26 - "run_full_eda"
 Cohesion: 0.20
 Nodes (22): _correlation_analysis(), _descriptive_stats(), _missing_analysis(), _plot_acf_pacf(), _plot_distributions(), _plot_time_series(), Any, DataFrame (+14 more)
 
-### Community 27 - "snapshot_adapter.py"
+### Community 27 - "clean_data"
+Cohesion: 0.09
+Nodes (23): clean_data(), get_cleaning_stats(), _interpolate_gaps(), Any, DataFrame, Data cleaner — clean, handle missing values, outliers, and resample.  Pipeline:, Set datetime column as index., Interpolate missing values, respecting max gap size.      Args:         df: Data (+15 more)
+
+### Community 28 - "snapshot_adapter.py"
 Cohesion: 0.13
 Nodes (21): _compute_best_models(), _compute_top_n(), _derive_models(), extract_mase(), _extract_results(), load_all_normalized(), _normalize_model_entry(), _normalize_results() (+13 more)
 
-### Community 28 - "evaluate_forecast"
+### Community 29 - "evaluate_forecast"
 Cohesion: 0.12
 Nodes (14): evaluate_forecast(), medae(), Median Absolute Error — robust to outliers.      More robust than MAE for fat-ta, Evaluate a forecast with all metrics.      Args:         y_true: Actual values., Tests for P0-3: Forecast Bias, P0-4: RMSE/MAE Ratio, P2-4: MedAE, and P0-5: Resi, P2-4: Median Absolute Error — robust to outliers., MedAE should be less affected by outliers than MAE., P0-4: RMSE/MAE Ratio — outlier detection. (+6 more)
 
-### Community 29 - "info_cards.py"
+### Community 30 - "info_cards.py"
 Cohesion: 0.14
 Nodes (20): cards_actual_vs_predicted(), cards_ai_assistant(), cards_eda(), cards_forecast(), cards_hyperparams(), cards_multi_horizon(), cards_prediction_intervals(), cards_shap() (+12 more)
 
-### Community 30 - "test_imputer.py"
+### Community 31 - "test_imputer.py"
 Cohesion: 0.11
 Nodes (17): get_imputation_stats(), Get statistics about real vs imputed data in a DataFrame., clean_data(), hourly_data_with_gaps(), DataFrame, Tests for data imputer — multi-strategy missing data recovery.  Each test has ve, KNN feature matrix must NOT contain pm25 (anti-leakage)., ML imputation should fill gaps up to max_gap. (+9 more)
 
-### Community 31 - "build_features"
+### Community 32 - "build_features"
 Cohesion: 0.15
 Nodes (13): build_features(), _create_domain_features(), get_feature_columns(), DataFrame, Path, Domain-specific features for air quality per SKILL.md §5.3.      ANTI-LEAKAGE: U, Categorize feature columns by type for documentation.      Returns:         Dict, Save Marts-ready data with optional validation.      Args:         df: Feature-r (+5 more)
 
-### Community 32 - "ContentManager"
+### Community 33 - "ContentManager"
 Cohesion: 0.16
 Nodes (6): ContentManager, Get content specific to a snapshot version., Get global content that is shared across versions (e.g. literature, general info, Manager class to handle loading and providing textual content for the dashboard., Lazy-load info cards from JSON export file (Tier 2 fallback).          Caches th, Get info card content with 3-tier fallback.          Tier 1: API (PostgreSQL via
 
-### Community 33 - "render_references_section"
+### Community 34 - "render_references_section"
 Cohesion: 0.15
 Nodes (16): page_conclusion(), Page: Kết Luận & Hướng Phát Triển — Thesis conclusion dashboard.  Designed for a, Research limitations — honest scientific assessment., Main entry point for the Conclusion & Future Work page., Future research directions with feasibility assessment., Research summary — what was accomplished., _render_future_work(), _render_limitations() (+8 more)
 
-### Community 34 - "mase"
+### Community 35 - "mase"
 Cohesion: 0.14
 Nodes (11): mase(), Mean Absolute Scaled Error — BẮT BUỘC benchmark per SKILL.md.      MASE < 1.0 →, TestMASE, Verify MASE = MAE_model / MAE_naive (Hyndman & Koehler 2006).      Reference: ht, Verify MASE matches manual calculation., Shuffle test: if we randomize targets, model should fail (MASE ≈ 1.0+).      Thi, After shuffling targets, MASE should be >> 1.0 (no signal)., MASE = 1.0 exactly when model = naive baseline. (+3 more)
 
-### Community 35 - "_build_knn_features"
+### Community 36 - "_build_knn_features"
 Cohesion: 0.18
 Nodes (11): _build_knn_features(), Build feature matrix for KNN imputation.      ANTI-LEAKAGE: Uses only auxiliary, _create_test_series(), DataFrame, Test KNN imputation temporal order — no future data leakage.  Verifies that the, Integration test: run full hybrid imputation and verify temporal safety., Create a synthetic hourly time series with a known gap., Verify KNN imputation uses only past data. (+3 more)
-
-### Community 36 - "clean_data"
-Cohesion: 0.13
-Nodes (17): clean_data(), get_cleaning_stats(), _interpolate_gaps(), Any, DataFrame, Data cleaner — clean, handle missing values, outliers, and resample.  Pipeline:, Set datetime column as index., Interpolate missing values, respecting max gap size.      Args:         df: Data (+9 more)
 
 ### Community 37 - "impute_missing_data"
 Cohesion: 0.22
@@ -469,103 +469,103 @@ Nodes (8): get_knowledge_base(), KnowledgeBase, Vector-based knowledge base usin
 Cohesion: 0.20
 Nodes (7): Time Series Data Augmentation Module.  Implements techniques to artificially aug, Applies data augmentation to time series sequences., Args:             technique (str): Augmentation technique to apply ('jitter' or, Apply augmentation to a batch of sequences.          Args:             X (np.nda, Add Gaussian noise to the sequences.         This helps models become robust aga, Scale the sequences by a random factor.         This helps models generalize acr, TimeSeriesAugmenter
 
-### Community 46 - "_identify_gaps"
-Cohesion: 0.40
-Nodes (4): _identify_gaps(), Identify contiguous NaN gap segments.      Returns:         DataFrame with colum, Gap identifier should find correct gap segments., TestGapIdentification
-
-### Community 47 - "forecast_bias"
+### Community 46 - "forecast_bias"
 Cohesion: 0.21
 Nodes (8): forecast_bias(), Forecast Bias — over- or under-forecasting indicator.      Ref: Manu Joseph Ch.4, P0-3: Forecast Bias metric — Manu Joseph Ch.4 p.80., FB ≈ 0 when predictions match actuals., FB > 0 when model over-predicts., FB < 0 when model under-predicts (dangerous for PM2.5)., Returns NaN when total actual is near zero., TestForecastBias
 
-### Community 48 - "create_lag_features"
+### Community 47 - "create_lag_features"
 Cohesion: 0.26
 Nodes (5): create_lag_features(), Create lag features for target and optionally for feature columns.      Args:, Lag features must only use PAST data (shift ≥ 1)., Segment-aware lag should NOT leak across segment boundaries., TestLagFeatures
 
-### Community 49 - "load_config"
+### Community 48 - "load_config"
 Cohesion: 0.26
 Nodes (11): load_config(), load_model_config(), merge_configs(), Any, Path, Configuration loader — đọc YAML configs., Load YAML config file.      Args:         config_path: Path to YAML config fi, Load model-specific config by name.      Args:         model_name: Model name (+3 more)
 
-### Community 50 - "chat_page.py"
+### Community 49 - "chat_page.py"
 Cohesion: 0.27
 Nodes (9): _ensure_index(), _get_knowledge_base(), page_ai_assistant(), AI Assistant page for PM2.5 Forecasting Dashboard.  Provides a chat interface wi, Render AI Assistant chatbot page., Lazy import and get knowledge base singleton., Ensure knowledge base is indexed, re-index if user content changed.      Checks, Render AI provider configuration in sidebar. (+1 more)
 
-### Community 51 - "_cubic_spline_fill"
+### Community 50 - "_cubic_spline_fill"
 Cohesion: 0.22
 Nodes (7): _cubic_spline_fill(), Series, Fill NaN gaps using Cubic Spline, respecting max_gap limit.      Only fills gaps, Extended interpolation should retain more rows than segment-only., Cubic spline should not modify known (non-NaN) values., Gaps longer than max_gap should NOT be filled., TestExtendedInterp
 
-### Community 52 - "create_rolling_features"
+### Community 51 - "create_rolling_features"
 Cohesion: 0.29
 Nodes (5): create_rolling_features(), Create rolling window statistics.      Shift(1) ensures no data leakage — window, Rolling window must use shift(1) to prevent leakage., Rolling should reset at segment boundaries., TestRollingFeatures
 
-### Community 53 - "._post"
+### Community 52 - "._post"
 Cohesion: 0.20
 Nodes (4): Run PM2.5 prediction., Create a new experiment., Log a model within a run., Log metrics for a model.
 
-### Community 54 - "TestResultPlausibility"
+### Community 53 - "TestResultPlausibility"
 Cohesion: 0.20
 Nodes (6): Cross-reference our results with known literature values.      Literature refere, Persistence MAE should be 1-10 µg/m³ for hourly indoor PM2.5., Theoretical expectations for MASE at different horizons.          Theory (autoco, If MASE < 0.1 for any model → almost certainly leakage., Literature expectations for model comparison.          Expected pattern (PM2.5 l, TestResultPlausibility
 
-### Community 55 - "loader.py"
+### Community 54 - "loader.py"
 Cohesion: 0.31
 Nodes (7): Data loader — load, validate, and provide basic info about PM2.5 dataset., Path, Path validation utilities — security rules from SKILL.md §1.7., Validate and resolve a file path within the project.      Args:         path: Fi, Validate a data file path (must be in dataset/ directory).      Args:         pa, validate_data_path(), validate_path()
 
-### Community 56 - "segmenter.py"
+### Community 55 - "segmenter.py"
 Cohesion: 0.28
 Nodes (8): get_segment_stats(), identify_contiguous_segments(), DataFrame, Data segmenter — Identify and manage contiguous data segments.  For IoT time ser, Validate that no segment contains a time gap larger than allowed.      This catc, Assign segment IDs to contiguous non-NaN blocks in the target column.      Each, Get summary statistics about segments in a DataFrame.      Args:         df: Dat, validate_segment_boundaries()
 
-### Community 57 - "temporal_train_val_test_split"
+### Community 56 - "temporal_train_val_test_split"
 Cohesion: 0.25
 Nodes (8): create_naive_predictions(), DataFrame, ndarray, Series, Data splitter for time series — temporal split, NO shuffle.  Per SKILL.md §6.3:, Split data temporally: oldest → train → val → test → newest.      NEVER shuffles, Create naive baseline predictions for MASE calculation.      Per SKILL.md Level, temporal_train_val_test_split()
 
-### Community 58 - "create_diff_features"
+### Community 57 - "create_diff_features"
 Cohesion: 0.28
 Nodes (6): create_diff_features(), DataFrame, Create rate-of-change / difference features.      Domain-specific: PM2.5 rate of, Diff uses shift(1) → diff_1s[t] = y[t-1] - y[t-2] (anti-leakage).          shift, Diff should not cross segment boundaries., TestDiffFeatures
 
-### Community 60 - "split_real_imputed"
+### Community 59 - "split_real_imputed"
 Cohesion: 0.33
 Nodes (5): Split DataFrame into real and imputed portions.      Use this to ensure test set, split_real_imputed(), Split should not lose any rows., After imputation, splitting test to real-only should work., TestSplitRealImputed
 
-### Community 61 - "builder.py"
+### Community 60 - "builder.py"
 Cohesion: 0.33
 Nodes (5): Feature builder — orchestrates all feature creation and produces Marts-ready dat, create_fourier_features(), DataFrame, Fourier feature engineering — capture daily and weekly seasonality.  Fourier fea, Create Fourier sin/cos features for daily and weekly seasonality.      For each
 
-### Community 62 - "load_all_snapshots"
+### Community 61 - "load_all_snapshots"
 Cohesion: 0.33
 Nodes (6): cards_experiment_runs(), load_all_snapshots(), Load all version snapshots from dashboard_runs/, normalized., Info cards for Experiment Runs page., Render version selector in sidebar. Returns selected version name., version_selector_sidebar()
 
-### Community 63 - "get_version_data"
+### Community 62 - "get_version_data"
 Cohesion: 0.33
 Nodes (6): cards_overview(), get_version_data(), Info cards for Overview page., Get snapshot data for a specific version., Render a small version badge at top of page., render_version_badge()
 
-### Community 64 - "validate_snapshot"
+### Community 63 - "validate_snapshot"
 Cohesion: 0.40
 Nodes (5): main(), Path, Snapshot Validator — Validates JSON schema for dashboard snapshots.  Ensures eve, Validate a single snapshot file against the schema contract.      Returns:, validate_snapshot()
 
-### Community 66 - "test_features.py"
+### Community 65 - "test_features.py"
 Cohesion: 0.33
 Nodes (5): Tests for feature engineering modules.  Per SKILL.md test spec: - Lag/rolling cr, Create a sample hourly DataFrame for testing., Create a sample DataFrame with segment IDs for testing segment-aware features., sample_df(), segmented_df()
 
-### Community 67 - "TestDataIntegrity"
+### Community 66 - "TestDataIntegrity"
 Cohesion: 0.33
 Nodes (4): Verify data pipeline produces valid outputs., Train data must be BEFORE test data (no temporal leakage)., Filtering imputed data should reduce test set size., TestDataIntegrity
 
-### Community 68 - "manifest.json"
+### Community 67 - "manifest.json"
 Cohesion: 0.40
 Nodes (4): data_files, generated_at, models, version
 
-### Community 69 - "reproduce.sh"
+### Community 68 - "reproduce.sh"
 Cohesion: 0.70
 Nodes (4): err(), log(), reproduce.sh script, warn()
 
-### Community 71 - "adaptive_conformal_inference"
+### Community 69 - "_identify_gaps"
+Cohesion: 0.40
+Nodes (4): _identify_gaps(), Identify contiguous NaN gap segments.      Returns:         DataFrame with colum, Gap identifier should find correct gap segments., TestGapIdentification
+
+### Community 70 - "adaptive_conformal_inference"
 Cohesion: 0.40
 Nodes (4): adaptive_conformal_inference(), ndarray, Adaptive Conformal Inference (ACI) for non-stationary time series.  Implements A, Run ACI on test predictions using calibration residuals.      Unlike static CQR
 
-### Community 72 - "mape"
+### Community 71 - "mape"
 Cohesion: 0.50
 Nodes (3): mape(), Mean Absolute Percentage Error.      Skips near-zero values to avoid division by, TestMAPE
 
-### Community 73 - "dependencies"
+### Community 72 - "dependencies"
 Cohesion: 0.50
 Nodes (3): docx, dependencies, docx
 
@@ -579,9 +579,9 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `APIClient` connect `APIClient` to `ContentManager`, `knowledge_base.py`, `._put`, `KnowledgeBase`, `api_client.py`, `._post`?**
   _High betweenness centrality (0.070) - this node is a cross-community bridge._
-- **Why does `ContentManager` connect `ContentManager` to `APIClient`, `info_cards.py`, `load_all_snapshots`, `get_version_data`?**
+- **Why does `ContentManager` connect `ContentManager` to `get_version_data`, `load_all_snapshots`, `info_cards.py`, `APIClient`?**
   _High betweenness centrality (0.050) - this node is a cross-community bridge._
-- **Why does `DataValidator` connect `DataValidator` to `load_raw_data`, `clean_data`, `builder.py`, `build_features`?**
+- **Why does `DataValidator` connect `DataValidator` to `build_features`, `load_raw_data`, `clean_data`, `builder.py`?**
   _High betweenness centrality (0.048) - this node is a cross-community bridge._
 - **Are the 5 inferred relationships involving `DataValidator` (e.g. with `TestIntermediateValidation` and `TestMartsValidation`) actually correct?**
   _`DataValidator` has 5 INFERRED edges - model-reasoned connections that need verification._

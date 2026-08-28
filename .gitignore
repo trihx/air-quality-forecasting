@@ -47,11 +47,14 @@ desktop.ini
 *.pem
 
 # ══════════════════════════════════════════════════════════════
-# Docs — Chỉ push các file PDF (loại bỏ md, docx, txt, epub...)
+# Docs — Push PDF, DOCX và hình ảnh thực nghiệm docs/pics/
 # ══════════════════════════════════════════════════════════════
 docs/**
 !docs/**/
 !docs/**/*.pdf
+!docs/**/*.docx
+docs/**/*_backup.docx
+!docs/pics/**
 
 # ══════════════════════════════════════════════════════════════
 # Dataset — Giữ raw data, loại processed (có thể tái tạo)
@@ -108,6 +111,6 @@ src/.chroma_db/
 notebooks/*
 !notebooks/.gitkeep
 
-# ---- local ---- 
-scripts/
-docs/
+# Global Skills & Bundles symlinks
+.agents/skills
+.agents/bundles

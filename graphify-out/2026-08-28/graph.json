@@ -3592,7 +3592,7 @@
       "source_file": "src/training/trainer.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": "trainer.py",
       "community_name": "test_cleaner.py",
       "id": "src_training_trainer"
@@ -3603,7 +3603,7 @@
       "source_file": "src/training/trainer.py",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": "_prepare_hybrid_data()",
       "community_name": "test_cleaner.py",
       "id": "src_training_trainer_prepare_hybrid_data"
@@ -3614,7 +3614,7 @@
       "source_file": "src/training/trainer.py",
       "source_location": "L67",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": "get_default_params()",
       "community_name": "test_cleaner.py",
       "id": "src_training_trainer_get_default_params"
@@ -3735,7 +3735,7 @@
       "source_file": "src/training/trainer.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": "interactive model training service for dashboard.  provides trainers for light",
       "community_name": "test_cleaner.py",
       "id": "src_training_trainer_rationale_1"
@@ -3746,7 +3746,7 @@
       "source_file": "src/training/trainer.py",
       "source_location": "L40",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": "load and prepare hybrid dataset.",
       "community_name": "test_cleaner.py",
       "id": "src_training_trainer_rationale_40"
@@ -3757,7 +3757,7 @@
       "source_file": "src/training/trainer.py",
       "source_location": "L68",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": "get recommended default hyperparameters.",
       "community_name": "test_cleaner.py",
       "id": "src_training_trainer_rationale_68"
@@ -4714,9 +4714,9 @@
       "source_file": "tests/test_imputer.py",
       "source_location": "L211",
       "_origin": "ast",
-      "community": 46,
+      "community": 30,
       "norm_label": "testgapidentification",
-      "community_name": "_identify_gaps",
+      "community_name": "test_imputer.py",
       "id": "tests_test_imputer_testgapidentification"
     },
     {
@@ -4725,9 +4725,9 @@
       "source_file": "tests/test_imputer.py",
       "source_location": "L212",
       "_origin": "ast",
-      "community": 46,
+      "community": 30,
       "norm_label": ".test_identify_gaps_correct()",
-      "community_name": "_identify_gaps",
+      "community_name": "test_imputer.py",
       "id": "tests_test_imputer_testgapidentification_test_identify_gaps_correct"
     },
     {
@@ -4736,9 +4736,9 @@
       "source_file": "tests/test_imputer.py",
       "source_location": "L235",
       "_origin": "ast",
-      "community": 30,
+      "community": 70,
       "norm_label": "testimputationstats",
-      "community_name": "test_imputer.py",
+      "community_name": "get_imputation_stats",
       "id": "tests_test_imputer_testimputationstats"
     },
     {
@@ -4747,9 +4747,9 @@
       "source_file": "tests/test_imputer.py",
       "source_location": "L236",
       "_origin": "ast",
-      "community": 30,
+      "community": 70,
       "norm_label": ".test_stats_tracking()",
-      "community_name": "test_imputer.py",
+      "community_name": "get_imputation_stats",
       "id": "tests_test_imputer_testimputationstats_test_stats_tracking"
     },
     {
@@ -4901,9 +4901,9 @@
       "source_file": "tests/test_imputer.py",
       "source_location": "L213",
       "_origin": "ast",
-      "community": 46,
+      "community": 30,
       "norm_label": "gap identifier should find correct gap segments.",
-      "community_name": "_identify_gaps",
+      "community_name": "test_imputer.py",
       "id": "tests_test_imputer_rationale_213"
     },
     {
@@ -4912,9 +4912,9 @@
       "source_file": "tests/test_imputer.py",
       "source_location": "L237",
       "_origin": "ast",
-      "community": 30,
+      "community": 70,
       "norm_label": "stats should correctly report real vs imputed counts.",
-      "community_name": "test_imputer.py",
+      "community_name": "get_imputation_stats",
       "id": "tests_test_imputer_rationale_237"
     },
     {
@@ -4947,7 +4947,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "test_knn_temporal_order.py",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order"
     },
     {
@@ -4958,7 +4958,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "_create_test_series()",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_create_test_series"
     },
     {
@@ -4969,7 +4969,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "dataframe",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_py_dataframe"
     },
     {
@@ -4980,7 +4980,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "testknntemporalorder",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_testknntemporalorder"
     },
     {
@@ -4991,7 +4991,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_knn_does_not_use_future_neighbors()",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_testknntemporalorder_test_knn_does_not_use_future_neighbors"
     },
     {
@@ -5002,7 +5002,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_knn_skip_gap_with_insufficient_past()",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_testknntemporalorder_test_knn_skip_gap_with_insufficient_past"
     },
     {
@@ -5013,7 +5013,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": ".test_full_imputation_pipeline_temporal_safe()",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_testknntemporalorder_test_full_imputation_pipeline_temporal_safe"
     },
     {
@@ -5024,7 +5024,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "test knn imputation temporal order \u2014 no future data leakage.  verifies that the",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_rationale_1"
     },
     {
@@ -5035,7 +5035,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "create a synthetic hourly time series with a known gap.",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_rationale_15"
     },
     {
@@ -5046,7 +5046,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "verify knn imputation uses only past data.",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_rationale_34"
     },
     {
@@ -5057,7 +5057,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "core test: after imputation, verify no future data was used.          strategy:",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_rationale_37"
     },
     {
@@ -5068,7 +5068,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "if gap is very early (not enough past donors), knn should skip.",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_rationale_86"
     },
     {
@@ -5079,7 +5079,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "integration test: run full hybrid imputation and verify temporal safety.",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "tests_test_knn_temporal_order_rationale_118"
     },
     {
@@ -5748,7 +5748,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": "testclipphysicalbounds",
       "community_name": "test_cleaner.py",
       "id": "tests_unit_test_cleaner_testclipphysicalbounds"
@@ -5759,7 +5759,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": ".test_no_clipping_needed()",
       "community_name": "test_cleaner.py",
       "id": "tests_unit_test_cleaner_testclipphysicalbounds_test_no_clipping_needed"
@@ -5770,7 +5770,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L58",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": ".test_clips_negative_pm25()",
       "community_name": "test_cleaner.py",
       "id": "tests_unit_test_cleaner_testclipphysicalbounds_test_clips_negative_pm25"
@@ -5781,7 +5781,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": ".test_clips_extreme_temperature()",
       "community_name": "test_cleaner.py",
       "id": "tests_unit_test_cleaner_testclipphysicalbounds_test_clips_extreme_temperature"
@@ -5869,7 +5869,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L110",
       "_origin": "ast",
-      "community": 36,
+      "community": 25,
       "norm_label": "testcleandata",
       "community_name": "clean_data",
       "id": "tests_unit_test_cleaner_testcleandata"
@@ -5880,7 +5880,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L111",
       "_origin": "ast",
-      "community": 36,
+      "community": 25,
       "norm_label": ".test_full_pipeline()",
       "community_name": "clean_data",
       "id": "tests_unit_test_cleaner_testcleandata_test_full_pipeline"
@@ -5891,7 +5891,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L119",
       "_origin": "ast",
-      "community": 36,
+      "community": 25,
       "norm_label": ".test_full_pipeline_with_outliers()",
       "community_name": "clean_data",
       "id": "tests_unit_test_cleaner_testcleandata_test_full_pipeline_with_outliers"
@@ -5902,7 +5902,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L127",
       "_origin": "ast",
-      "community": 36,
+      "community": 25,
       "norm_label": ".test_pipeline_preserves_datetime_index()",
       "community_name": "clean_data",
       "id": "tests_unit_test_cleaner_testcleandata_test_pipeline_preserves_datetime_index"
@@ -5957,7 +5957,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L112",
       "_origin": "ast",
-      "community": 36,
+      "community": 25,
       "norm_label": "full cleaning pipeline should run without errors.",
       "community_name": "clean_data",
       "id": "tests_unit_test_cleaner_rationale_112"
@@ -5968,7 +5968,7 @@
       "source_file": "tests/unit/test_cleaner.py",
       "source_location": "L120",
       "_origin": "ast",
-      "community": 36,
+      "community": 25,
       "norm_label": "pipeline should handle data with outliers.",
       "community_name": "clean_data",
       "id": "tests_unit_test_cleaner_rationale_120"
@@ -13723,7 +13723,7 @@
       "source_file": "src/data/cleaner.py",
       "source_location": "L123",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": "_clip_physical_bounds()",
       "community_name": "test_cleaner.py",
       "id": "src_data_cleaner_clip_physical_bounds"
@@ -13822,7 +13822,7 @@
       "source_file": "src/data/cleaner.py",
       "source_location": "L124",
       "_origin": "ast",
-      "community": 25,
+      "community": 46,
       "norm_label": "clip values to physically valid ranges.",
       "community_name": "test_cleaner.py",
       "id": "src_data_cleaner_rationale_124"
@@ -13954,7 +13954,7 @@
       "source_file": "src/data/imputer.py",
       "source_location": "L335",
       "_origin": "ast",
-      "community": 46,
+      "community": 35,
       "norm_label": "_identify_gaps()",
       "community_name": "_identify_gaps",
       "id": "src_data_imputer_identify_gaps"
@@ -13967,7 +13967,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "_build_knn_features()",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "src_data_imputer_build_knn_features"
     },
     {
@@ -13987,9 +13987,9 @@
       "source_file": "src/data/imputer.py",
       "source_location": "L482",
       "_origin": "ast",
-      "community": 30,
+      "community": 70,
       "norm_label": "get_imputation_stats()",
-      "community_name": "test_imputer.py",
+      "community_name": "get_imputation_stats",
       "id": "src_data_imputer_get_imputation_stats"
     },
     {
@@ -14086,7 +14086,7 @@
       "source_file": "src/data/imputer.py",
       "source_location": "L336",
       "_origin": "ast",
-      "community": 46,
+      "community": 35,
       "norm_label": "identify contiguous nan gap segments.      returns:         dataframe with colum",
       "community_name": "_identify_gaps",
       "id": "src_data_imputer_rationale_336"
@@ -14099,7 +14099,7 @@
       "_origin": "ast",
       "community": 35,
       "norm_label": "build feature matrix for knn imputation.      anti-leakage: uses only auxiliary",
-      "community_name": "_build_knn_features",
+      "community_name": "_identify_gaps",
       "id": "src_data_imputer_rationale_364"
     },
     {
@@ -14119,9 +14119,9 @@
       "source_file": "src/data/imputer.py",
       "source_location": "L483",
       "_origin": "ast",
-      "community": 30,
+      "community": 70,
       "norm_label": "get statistics about real vs imputed data in a dataframe.",
-      "community_name": "test_imputer.py",
+      "community_name": "get_imputation_stats",
       "id": "src_data_imputer_rationale_483"
     },
     {
