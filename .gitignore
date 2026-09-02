@@ -1,63 +1,76 @@
 # ══════════════════════════════════════════════════════════════
-# .gitignore — Time Series Forecasting (PM2.5 Thesis Project)
+# .gitignore — Time Series Forecasting (PM2.5 Research Codebase)
 # ══════════════════════════════════════════════════════════════
-# Mục tiêu: Người dùng clone repo → có thể chạy Dashboard demo
-# ngay lập tức mà không cần tải thêm file nặng.
+# Cấu hình chia sẻ mã nguồn sạch cho Giảng viên / Hội đồng:
+# - Giữ lại: Toàn bộ mã nguồn cốt lõi (src/), kiểm thử (tests/),
+#   cấu hình dự án (pyproject.toml, Makefile, Dockerfile, README.md),
+#   dữ liệu mẫu & mô hình phục vụ chạy demo/kiểm định.
+# - Loại bỏ: Toàn bộ tài liệu luận văn (docs/), AI Agents (.agents/),
+#   Graphify (graphify-out/), Scripts hỗ trợ biên soạn/export (scripts/),
+#   và các file tạm, file Office export, file cache.
 # ══════════════════════════════════════════════════════════════
 
-# ── Python ──
+# ── Python / Build & Test Caches ──
 __pycache__/
 *.py[oc]
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
 
-# ── Virtual Environment ──
+# ── Virtual Environment & Package Managers ──
 .venv/
+.uv_cache/
+node_modules/
 
-# ── Environment Variables ──
+# ── Environment Variables & Secrets ──
 .env
 .env.*
+*.key
+*.pem
 
-# ── IDE / Editor ──
+# ── IDE / Editor / OS Metadata ──
 .idea/
 .vscode/
 *.swp
 *.swo
-
-# ── Lint & Quality Caches ──
-.mypy_cache/
-.ruff_cache/
-.pytest_cache/
-
-# ── Coverage Reports ──
-htmlcov/
-.coverage
-.coverage.*
-
-# ── OS ──
 .DS_Store
 ._*
 Thumbs.db
 desktop.ini
 
-# ── Security ──
-*.key
-*.pem
+# ══════════════════════════════════════════════════════════════
+# LOẠI BỎ TÀI LIỆU LUẬN VĂN, VĂN BẢN & EXPORTS (DOCS & OFFICE)
+# ══════════════════════════════════════════════════════════════
+docs/
+*.docx
+*.pdf
+*.pptx
+*.xlsx
+~$*
+*~
 
 # ══════════════════════════════════════════════════════════════
-# Docs — Push PDF, DOCX và hình ảnh thực nghiệm docs/pics/
+# LOẠI BỎ SCRIPTS BIÊN TẬP, SINH DOCX & TIỆN ÍCH PHỤ TRỢ
 # ══════════════════════════════════════════════════════════════
-docs/**
-!docs/**/
-!docs/**/*.pdf
-!docs/**/*.docx
-docs/**/*_backup.docx
-!docs/pics/**
+scripts/
 
 # ══════════════════════════════════════════════════════════════
-# Dataset — Giữ raw data, loại processed (có thể tái tạo)
+# LOẠI BỎ AI AGENTS, GRAPHIFY & VECTOR DATABASES
+# ══════════════════════════════════════════════════════════════
+.agents/
+graphify-out/
+.chroma_db/
+src/.chroma_db/
+
+# ══════════════════════════════════════════════════════════════
+# DATASET — Giữ cấu trúc & raw data, loại bỏ cache trung gian
 # ══════════════════════════════════════════════════════════════
 dataset/processed/*
 !dataset/processed/.gitkeep
@@ -67,7 +80,13 @@ dataset/external/*
 !dataset/external/.gitkeep
 
 # ══════════════════════════════════════════════════════════════
-# Research — Giữ kết quả thí nghiệm + hình, loại logs + cache
+# MODELS — Giữ exported (cho demo), loại user_trained (nặng)
+# ══════════════════════════════════════════════════════════════
+models/user_trained/*
+!models/user_trained/.gitkeep
+
+# ══════════════════════════════════════════════════════════════
+# RESEARCH — Giữ kết quả mấu chốt, loại bỏ logs & cache
 # ══════════════════════════════════════════════════════════════
 research/logs/*
 !research/logs/.gitkeep
@@ -76,13 +95,7 @@ research/cache/*
 research/scripts/
 
 # ══════════════════════════════════════════════════════════════
-# Models — Giữ exported (cho demo), loại user_trained (nặng)
-# ══════════════════════════════════════════════════════════════
-models/user_trained/*
-!models/user_trained/.gitkeep
-
-# ══════════════════════════════════════════════════════════════
-# Scratch / Temp — Tất cả file tạm, debug
+# SCRATCH & TEMPORARY FILES
 # ══════════════════════════════════════════════════════════════
 scratch/
 *.log
@@ -93,24 +106,6 @@ yearly_coverage.txt
 search_results.txt
 error.log
 
-# ── Utility scripts (gom nhóm trong scripts/utilities/) ──
-# Các script tiện ích một lần đã được chuyển vào scripts/utilities/ và được Git theo dõi
-
-# ── ChromaDB (vector store, có thể tái tạo) ──
-.chroma_db/
-src/.chroma_db/
-
-# ── UV Cache ──
-.uv_cache/
-
-# ── Agents (không push lên github) ──
-.agents/
-/.agents
-
-# ── Notebooks (hiện tại rỗng) ──
+# ── Notebooks ──
 notebooks/*
 !notebooks/.gitkeep
-
-# Global Skills & Bundles symlinks
-.agents/skills
-.agents/bundles
