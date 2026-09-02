@@ -1,6 +1,7 @@
 # ═══════════════════════════════════════════
-# PM2.5 Forecasting — Dockerfile for HuggingFace Spaces
+# PM2.5 Forecasting — Dockerfile for Production
 # Runs Streamlit (port 7860) + FastAPI (port 8000) via supervisord
+# Compatible with Render.com & HuggingFace Spaces
 # ═══════════════════════════════════════════
 
 # --- Stage 1: Builder (UV for fast installs) ---
@@ -12,7 +13,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 # System build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential gcc && rm -rf /var/lib/apt/lists/*
+    build-essential gcc libpq-dev && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency files first (layer caching)
 COPY pyproject.toml uv.lock ./
@@ -20,7 +21,7 @@ COPY pyproject.toml uv.lock ./
 # Install dependencies with UV
 RUN uv sync --frozen --no-dev --no-install-project
 
-# Remove massive CUDA/NVIDIA binaries (not needed on HF Spaces CPU)
+# Remove massive CUDA/NVIDIA binaries (not needed on CPU)
 RUN rm -rf /app/.venv/lib/python*/site-packages/nvidia* && \
     rm -rf /app/.venv/lib/python*/site-packages/triton*
 
@@ -36,9 +37,9 @@ RUN find /app/.venv -name "*.so" -exec strip {} \; || true
 FROM python:3.11-slim
 WORKDIR /app
 
-# Install supervisord and libgomp1 (OpenMP for LightGBM)
+# Install supervisord, libgomp1 (OpenMP for LightGBM), libpq5 (PostgreSQL) and curl (Healthcheck)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    supervisor libgomp1 && rm -rf /var/lib/apt/lists/*
+    supervisor libgomp1 libpq5 curl && rm -rf /var/lib/apt/lists/*
 
 # Copy venv from builder
 COPY --from=builder /app/.venv /app/.venv
@@ -83,7 +84,7 @@ stderr_logfile=/dev/fd/2
 stderr_logfile_maxbytes=0
 EOF
 
-# HuggingFace Spaces expects port 7860
-EXPOSE 7860
+# Expose default port (Render will override via $PORT)
+EXPOSE 7860 8000
 
 CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
