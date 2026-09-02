@@ -28,9 +28,13 @@ DATABASE_URL = os.getenv(
     "sqlite:///./research/experiments/forecasting.db",
 )
 
+# Fix postgres:// -> postgresql:// for SQLAlchemy 2.0 compatibility
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 # SQLAlchemy 2.0 engine
 # - SQLite needs check_same_thread=False for FastAPI async
-# - PostgreSQL uses pool with sensible defaults
+# - PostgreSQL uses a lightweight connection pool optimized for Render Free (512MB RAM) & Supabase Supavisor
 if DATABASE_URL.startswith("sqlite"):
     engine = create_engine(
         DATABASE_URL,
@@ -40,9 +44,13 @@ if DATABASE_URL.startswith("sqlite"):
 else:
     engine = create_engine(
         DATABASE_URL,
-        pool_size=5,
-        max_overflow=10,
-        pool_pre_ping=True,
+        pool_size=2,          # Compact connection pool to conserve RAM & avoid Supabase pool exhaustion
+        max_overflow=3,       # Allow burst of up to 3 extra connections during traffic spikes
+        pool_recycle=300,     # Recycle connection every 5 minutes (prevents Supabase idle TCP timeout)
+        pool_pre_ping=True,   # Verify connection liveness before checkout (avoids dropped socket errors)
+        connect_args={
+            "connect_timeout": 10,
+        },
         echo=False,
     )
 

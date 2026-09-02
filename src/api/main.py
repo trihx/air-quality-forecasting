@@ -107,7 +107,7 @@ async def log_requests(request: Request, call_next):
     elapsed = (time.time() - t0) * 1000  # ms
 
     # Skip noisy health check logs in production
-    if request.url.path != "/health":
+    if request.url.path not in ("/health", "/api/health"):
         logger.info(f"{request.method} {request.url.path} → {response.status_code} ({elapsed:.0f}ms)")
 
     return response
@@ -121,8 +121,9 @@ app.include_router(content.router, prefix="/api/v1", tags=["content"])
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])
+@app.get("/api/health", response_model=HealthResponse, tags=["system"])
 def health_check():
-    """API health check — verifies DB connectivity and model availability."""
+    """API health check — verifies DB connectivity and resets Supabase 7-day inactivity timer via SELECT 1."""
     # Quick DB connectivity test
     try:
         from sqlalchemy import text

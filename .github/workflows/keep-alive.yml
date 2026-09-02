@@ -21,7 +21,9 @@ jobs:
       - name: Ping Web Service & Supabase Database
         run: |
           TARGET_URLS=(
+            "https://pm25.hoangxuantri.id.vn/api/health"
             "https://pm25.hoangxuantri.id.vn"
+            "https://pm25-air-quality-forecasting.onrender.com/api/health"
             "https://pm25-air-quality-forecasting.onrender.com"
           )
 
