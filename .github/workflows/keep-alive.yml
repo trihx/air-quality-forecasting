@@ -1,53 +1,43 @@
-# Keep Render App & Supabase Alive — Defense-in-Depth v2
-#
-# ARCHITECTURE (3-tier keep-alive):
-#   Tier 1 (Primary):    UptimeRobot      — ping every 5 min (external, most reliable)
-#   Tier 2 (Backup):     Cron-Job.org     — ping every 5 min (external, independent)
-#   Tier 3 (Safety net): GitHub Actions   — ping every 14 min (this workflow)
-#
-# WHY 3 TIERS?
-#   GitHub Actions cron is unreliable — runner queue delays of 5–30 min are common.
-#   Render.com free tier sleeps after only 15 min of inactivity.
-#   A single-source strategy (GitHub Actions only) is a single point of failure.
-#
-# This workflow is now a SAFETY NET, not the primary keep-alive mechanism.
-# External services (UptimeRobot, Cron-Job.org) handle the primary ping duty.
+# ══════════════════════════════════════════════════════════════
+# Keep Render App & Supabase Database Alive (Keep-Alive Safety Net)
+# ══════════════════════════════════════════════════════════════
+# Mục tiêu: Ngăn chặn Render Free Tier ngủ đông (sau 15 phút)
+# và ngăn Supabase Free Tier bị tạm dừng (sau 7 ngày không có query).
+# ══════════════════════════════════════════════════════════════
 
 name: Keep Render & Supabase Alive
 
 on:
   schedule:
-    # Safety net: every 14 minutes (reduced from 12 to save GitHub Actions minutes)
-    # Primary keep-alive is handled by UptimeRobot + Cron-Job.org (every 5 min)
-    - cron: '*/14 * * * *'
-  workflow_dispatch:  # Allow manual trigger
+    # Chạy mỗi 10 phút một lần
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Cho phép kích hoạt thủ công từ GitHub Actions UI
 
 jobs:
-  ping:
+  ping-services:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Ping Render App & Supabase DB
+      - name: Ping Web Service & Supabase Database
         run: |
-          RENDER_URL="${{ secrets.RENDER_URL }}"
-          if [ -z "$RENDER_URL" ]; then
-            # Default fallback URL for the project if secret is not set yet
-            RENDER_URL="https://time-series-forecasting-c8gz.onrender.com"
-          fi
+          TARGET_URLS=(
+            "https://pm25.hoangxuantri.id.vn"
+            "https://pm25-air-quality-forecasting.onrender.com"
+          )
 
-          # Trim trailing slash
-          RENDER_URL="${RENDER_URL%/}"
+          for URL in "${TARGET_URLS[@]}"; do
+            echo "🏓 Pinging target: $URL ..."
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 "$URL" || echo "000")
+            
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 400 ]; then
+              echo "✅ $URL is active! (HTTP $HTTP_CODE)"
+            else
+              echo "⚠️ $URL returned HTTP $HTTP_CODE — retrying after 15s (waking up instance)..."
+              sleep 15
+              RETRY_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 "$URL" || echo "000")
+              echo "🔄 Retry result for $URL: HTTP $RETRY_CODE"
+            fi
+          done
 
-          echo "🏓 [Tier 3 - Safety Net] Pinging Render App: $RENDER_URL ..."
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 120 "$RENDER_URL")
-
-          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 400 ]; then
-            echo "✅ Render App is awake! HTTP $HTTP_CODE"
-          else
-            echo "⚠️ Render App returned HTTP $HTTP_CODE — retrying after 30s (cold start recovery)..."
-            sleep 30
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 120 "$RENDER_URL")
-            echo "🔄 Retry result: HTTP $HTTP_CODE"
-          fi
 
 
