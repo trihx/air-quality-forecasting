@@ -1012,10 +1012,10 @@ def page_actual_vs_predicted(results):
     st.markdown(f"""
     <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
                 border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
-        <div style="font-size: 0.85rem; opacity: 0.65;">
-            📌 Đánh giá trên tập test (temporal split 80/10/10) {cite('tashman2000')},
-            chỉ dùng real data (is_imputed == 0). Metrics chính: MASE {cite('hyndman2006')},
-            MAE {cite('willmott2005')}, cùng Diebold-Mariano test {cite('diebold1995')} cho so sánh thống kê.
+        <div style="font-size: 0.85rem; opacity: 0.85;">
+            📌 Đánh giá trên <b>Anchor Test Set</b> (1.200 giờ cuối cố định, 100% dữ liệu thực <code>is_imputed == 0</code>) {cite('tashman2000')}.
+            Metrics chính: <b>MASE</b> {cite('hyndman2006')} (scale-independent), MAE {cite('willmott2005')},
+            kiểm định Diebold-Mariano {cite('diebold1995')} và khoảng dự báo thích ứng ACI {cite('gibbs2021')}.
         </div>
     </div>
     """, unsafe_allow_html=True)

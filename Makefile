@@ -2,8 +2,8 @@
 # PM2.5 Forecasting — Project Automation Makefile
 # ═══════════════════════════════════════════
 
-.PHONY: help install dev test check seed update-memory graphify clean
-
+.PHONY: help install dev test check seed update-memory map-skills graphify clean
+ 
 help:
 	@echo "📌 Các lệnh tự động hóa dự án PM2.5 Forecasting:"
 	@echo "  make install         - Cài đặt môi trường & dependencies bằng uv"
@@ -12,6 +12,7 @@ help:
 	@echo "  make check           - Kiểm tra chất lượng code (Ruff Lint, Format, Mypy, Tests)"
 	@echo "  make seed            - Nạp dữ liệu mẫu (Seed Data) lên PostgreSQL Database"
 	@echo "  make update-memory   - Tự động tối ưu hóa và dọn dẹp bộ nhớ dự án (L1 -> L3)"
+	@echo "  make map-skills      - Cập nhật linking & mapping skills, bundles từ global vào dự án"
 	@echo "  make graphify        - Cập nhật Knowledge Graph (Graphify) từ codebase"
 	@echo "  make clean           - Dọn dẹp các file cache tạm (__pycache__, pytest, ruff...)"
 
@@ -66,3 +67,13 @@ clean:
 	find . -type d -name ".mypy_cache" -exec rm -r {} + 2>/dev/null || true
 	@echo "✨ Đã dọn dẹp xong!"
 
+
+# AI DevKit & Knowledge Graph Targets (Playbook v4)
+agent-console: ## Mở live console giám sát AI agents
+	@npx ai-devkit@latest agent console
+
+memory-sync: ## Đồng bộ Markdown SoT vào local SQLite cache
+	@python3 ~/.gemini/scripts/utilities/project_workflow.py sync-memory .
+
+map-skills: ## Cập nhật linking & mapping skills, bundles từ global vào dự án
+	@python3 ~/.gemini/scripts/utilities/project_workflow.py map .

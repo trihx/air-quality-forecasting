@@ -445,14 +445,15 @@ def pollution_event_f1(
     y_pred: np.ndarray,
     threshold: float = 45.0,
 ) -> float:
-    """F1-Score for WHO PM2.5 Severe Pollution Threshold Exceedance.
+    """F1-Score for Early Warning PM2.5 Severe Pollution Threshold Exceedance.
 
     Measures capability to correctly alert severe pollution events.
 
     Args:
         y_true: Actual PM2.5 values (µg/m³).
         y_pred: Predicted PM2.5 values (µg/m³).
-        threshold: Pollution alert threshold (default: 45.0 µg/m³ per WHO 1h guideline).
+        threshold: Pollution alert threshold (default: 45.0 µg/m³, early warning approaching
+            Vietnam QCVN 05:2023/BTNMT 24h limit of 50 µg/m³).
 
     Returns:
         F1-score (0.0 to 1.0).

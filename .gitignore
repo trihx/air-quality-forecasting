@@ -1,16 +1,73 @@
 # ══════════════════════════════════════════════════════════════
-# .gitignore — Time Series Forecasting (PM2.5 Research Codebase)
+# .gitignore — Time Series Forecasting (Academic Code Sharing)
 # ══════════════════════════════════════════════════════════════
-# Cấu hình chia sẻ mã nguồn sạch cho Giảng viên / Hội đồng:
-# - Giữ lại: Toàn bộ mã nguồn cốt lõi (src/), kiểm thử (tests/),
-#   cấu hình dự án (pyproject.toml, Makefile, Dockerfile, README.md),
-#   dữ liệu mẫu & mô hình phục vụ chạy demo/kiểm định.
-# - Loại bỏ: Toàn bộ tài liệu luận văn (docs/), AI Agents (.agents/),
-#   Graphify (graphify-out/), Scripts hỗ trợ biên soạn/export (scripts/),
-#   và các file tạm, file Office export, file cache.
+# Cấu hình chuẩn hóa chia sẻ mã nguồn sạch cho Giảng viên / Hội đồng:
+# ✅ GIỮ LẠI ĐỂ CHẠY & ĐÁNH GIÁ:
+#    • Mã nguồn ứng dụng cốt lõi: src/ (FastAPI backend, Streamlit dashboard)
+#    • Kiểm thử tự động: tests/ (193 unit & validation test cases)
+#    • Cấu hình môi trường & triển khai: pyproject.toml, uv.lock, Makefile, Dockerfile, render.yaml
+#    • Dữ liệu mẫu & mô hình phục vụ demo: dataset/raw/, models/exported/
+#    • Tài liệu hướng dẫn sử dụng: README.md, reproduce.sh, run_dashboard.sh, run_dashboard.bat
+#
+# ❌ LOẠI BỎ HOÀN TOÀN KHỎI GITHUB:
+#    • Tài liệu học thuật cá nhân, bản thảo luận văn, sách tham khảo (docs/, *.docx, *.pdf, *.pptx, *.xlsx, *.epub)
+#    • Cấu hình & bộ nhớ AI Agents (.agents/, .ai-devkit*, .claude/, .cursor/, .gemini/, graphify-out/)
+#    • Toàn bộ scripts hỗ trợ biên tập, sinh tài liệu & scratch nội bộ (scripts/, scratch/, research/scripts/)
+#    • Các tệp nhị phân tạm, database cache, logs và biến môi trường nhạy cảm (.env, *.db, *.sqlite)
 # ══════════════════════════════════════════════════════════════
 
-# ── Python / Build & Test Caches ──
+# ── 1. TÀI LIỆU HỌC THUẬT, BẢN THẢO LUẬN VĂN & TẬP TIN OFFICE ──
+docs/
+*.docx
+*.pdf
+*.pptx
+*.xlsx
+*.epub
+~$*
+*~
+Screenshot*.png
+*.tmp
+
+# ── 2. HỆ THỐNG AI AGENTS, PROMPTS, KNOWLEDGE GRAPH & CACHE ──
+.agents/
+.ai-devkit*
+.ai-devkit/
+.claude/
+.cursor/
+.gemini/
+graphify-out/
+.chroma_db/
+src/.chroma_db/
+
+# ── 3. SCRIPTS BIÊN SOẠN NỘI BỘ, DOWNLOAD & TIỆN ÍCH PHỤ TRỢ ──
+scripts/
+scratch/
+research/scripts/
+
+# ── 4. CƠ SỞ DỮ LIỆU LOCAL CACHE & SQLITE (GIT-SAFE) ──
+.agents/cache/
+.ai-devkit/memory.db
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.db-journal
+*.db-wal
+*.db-shm
+tests/**/*.db
+# Giữ lại SQLite database mẫu để Giảng viên chạy demo local tức thì không cần PostgreSQL
+!research/experiments/forecasting.db
+
+# ── 5. MÔI TRƯỜNG ẢO, PACKAGE MANAGERS & SECRETS ──
+.venv/
+.uv_cache/
+node_modules/
+.env
+.env.*
+*.key
+*.pem
+
+# ── 6. PYTHON BUILDS, RUNTIME & TEST CACHES ──
 __pycache__/
 *.py[oc]
 build/
@@ -23,20 +80,35 @@ wheels/
 .coverage
 .coverage.*
 htmlcov/
-tests/**/*.db
 
-# ── Virtual Environment & Package Managers ──
-.venv/
-.uv_cache/
-node_modules/
+# ── 7. DATASET — Giữ cấu trúc & raw data, loại bỏ cache trung gian ──
+dataset/processed/*
+!dataset/processed/.gitkeep
+dataset/interim/*
+!dataset/interim/.gitkeep
+dataset/external/*
+!dataset/external/.gitkeep
 
-# ── Environment Variables & Secrets ──
-.env
-.env.*
-*.key
-*.pem
+# ── 8. MODELS — Giữ exported (cho demo), loại bỏ user_trained lớn ──
+models/user_trained/*
+!models/user_trained/.gitkeep
 
-# ── IDE / Editor / OS Metadata ──
+# ── 9. RESEARCH & LOGS — Giữ kết quả quan trọng, loại bỏ file tạm ──
+research/logs/*
+!research/logs/.gitkeep
+research/cache/*
+!research/cache/.gitkeep
+notebooks/*
+!notebooks/.gitkeep
+*.log
+temp.txt
+temp_*.json
+missing_dates_report.txt
+yearly_coverage.txt
+search_results.txt
+error.log
+
+# ── 10. IDE & HỆ ĐIỀU HÀNH ──
 .idea/
 .vscode/
 *.swp
@@ -46,67 +118,6 @@ node_modules/
 Thumbs.db
 desktop.ini
 
-# ══════════════════════════════════════════════════════════════
-# LOẠI BỎ TÀI LIỆU LUẬN VĂN, VĂN BẢN & EXPORTS (DOCS & OFFICE)
-# ══════════════════════════════════════════════════════════════
-docs/
-*.docx
-*.pdf
-*.pptx
-*.xlsx
-~$*
-*~
-
-# ══════════════════════════════════════════════════════════════
-# LOẠI BỎ SCRIPTS BIÊN TẬP, SINH DOCX & TIỆN ÍCH PHỤ TRỢ
-# ══════════════════════════════════════════════════════════════
-scripts/
-
-# ══════════════════════════════════════════════════════════════
-# LOẠI BỎ AI AGENTS, GRAPHIFY & VECTOR DATABASES
-# ══════════════════════════════════════════════════════════════
-.agents/
-graphify-out/
-.chroma_db/
-src/.chroma_db/
-
-# ══════════════════════════════════════════════════════════════
-# DATASET — Giữ cấu trúc & raw data, loại bỏ cache trung gian
-# ══════════════════════════════════════════════════════════════
-dataset/processed/*
-!dataset/processed/.gitkeep
-dataset/interim/*
-!dataset/interim/.gitkeep
-dataset/external/*
-!dataset/external/.gitkeep
-
-# ══════════════════════════════════════════════════════════════
-# MODELS — Giữ exported (cho demo), loại user_trained (nặng)
-# ══════════════════════════════════════════════════════════════
-models/user_trained/*
-!models/user_trained/.gitkeep
-
-# ══════════════════════════════════════════════════════════════
-# RESEARCH — Giữ kết quả mấu chốt, loại bỏ logs & cache
-# ══════════════════════════════════════════════════════════════
-research/logs/*
-!research/logs/.gitkeep
-research/cache/*
-!research/cache/.gitkeep
-research/scripts/
-
-# ══════════════════════════════════════════════════════════════
-# SCRATCH & TEMPORARY FILES
-# ══════════════════════════════════════════════════════════════
-scratch/
-*.log
-temp.txt
-temp_*.json
-missing_dates_report.txt
-yearly_coverage.txt
-search_results.txt
-error.log
-
-# ── Notebooks ──
-notebooks/*
-!notebooks/.gitkeep
+# Global Skills & Bundles symlinks
+.agents/skills
+.agents/bundles

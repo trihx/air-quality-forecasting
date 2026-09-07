@@ -189,18 +189,18 @@ def _render_limitations(section_header, insight_card):
             "icon": "📉",
             "items": [
                 "Data Sparsity: 89 ngày/năm bị 'mù' hoàn toàn (Tháng 2 & 9), giảm khả năng học chu kỳ mùa",
-                "Đơn trạm: Chỉ 1 vị trí đo (Sa Đéc), không đại diện cho toàn ĐBSCL",
-                "4 biến phụ giới hạn: Thiếu biến khí tượng quan trọng (tốc độ gió, áp suất, lượng mưa)",
-                "Outlier Removal Trap: Áp dụng phương pháp loại nhiễu thống kê thuần túy (IQR) cho PM2.5 đã vô tình xóa bỏ các đỉnh ô nhiễm thật (fat-tailed). Bắt buộc sử dụng Domain Bounds (0 - 500) thay thế để giữ nguyên cảnh báo.",
+                "Phạm vi quan trắc: Hệ thống gồm 6 trạm/vị trí đo tại một huyện (Đồng Tháp), cần mở rộng mạng lưới quan trắc trên toàn vùng ĐBSCL để phát triển mô hình không - thời gian (Spatio-Temporal)",
+                "4 biến phụ giới hạn: Thiếu biến khí tượng nâng cao (tốc độ gió, áp suất khí quyển, lượng mưa)",
+                "Outlier Removal Trap: Áp dụng phương pháp loại nhiễu thống kê thuần túy (IQR) cho PM2.5 đã vô tình xóa bỏ các đỉnh ô nhiễm thật (fat-tailed). Bắt buộc sử dụng Domain Bounds (0 - 500 µg/m³) thay thế để giữ nguyên cảnh báo.",
             ],
         },
         {
             "cat": "Mô hình",
             "icon": "🤖",
             "items": [
-                "Horizon 1h: Autocorrelation ~0.97 khiến Persistence baseline rất mạnh, chỉ GRU_15m phá vỡ",
+                "Bẫy tự tương quan ở 1h: Chuỗi giờ có r ≈ 0,86 khiến Persistence baseline rất mạnh (MASE > 1,0); mô hình GRU 15m đa phân giải đã phá vỡ giới hạn này với MASE = 0,667 (< 1,0)",
                 "TFT_1h thất bại: Kiến trúc Transformer không phù hợp dữ liệu autocorrelation cực cao",
-                "Batch processing: Chưa có online learning — mô hình không tự cập nhật khi có data mới",
+                "Chu kỳ vận hành batch: Hệ thống chạy theo chu kỳ batch (15m/1h) trên kiến trúc 3-Tier (FastAPI + Render + Supabase) với 193 automated tests bảo vệ chống rò rỉ dữ liệu",
             ],
         },
         {

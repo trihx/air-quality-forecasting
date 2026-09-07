@@ -191,11 +191,11 @@ def _step_data_cleaning():
     c_30m = f"~{metrics['resolutions'].get('30m', {}).get('rows', 55000):,} (30m)"
     c_15m = f"~{metrics['resolutions'].get('15m', {}).get('rows', 110000):,} (15m)"
     with col1:
-        _render_custom_metric("Trước", "209,397 rows")
+        _render_custom_metric("Trước (Thô)", "209.594 bản ghi (15m)")
     with col2:
         _render_custom_metric("Sau cleaning", f"{c_1h} / {c_30m} / {c_15m}")
     with col3:
-        _render_custom_metric("Missing", "~85% gaps (IoT sensor)")
+        _render_custom_metric("Missing Gaps", "74,0% (110 gaps IoT)")
 
     with st.expander("💡 Tại sao KHÔNG DÙNG IQR cho PM2.5?", expanded=False):
         st.markdown(
@@ -226,19 +226,19 @@ def _step_eda():
     )
 
     findings = {
-        f"🔄 Autocorrelation {cite('shumway2017')}": "PM2.5 có autocorrelation **rất cao** (~0.97 lag 1h) → Persistence baseline cực mạnh ở horizon ngắn",
-        f"📈 Seasonality {cite('cleveland1990')}": "Chu kỳ ngày (24h) + tuần (168h) + năm — STL decomposition cho thấy trend nhẹ giảm",
-        "🌡️ Correlations": "Nhiệt độ (-0.45), Độ ẩm (+0.38), CO₂ (+0.52) có tương quan có ý nghĩa với PM2.5",
-        f"📊 Distribution {cite('boxcox1964')}": "PM2.5 right-skewed (thiên phải) → Box-Cox transform (λ≈-0.147) giúp normalize",
-        "⏰ Diurnal Pattern": "PM2.5 cao nhất 6-8h sáng và 18-20h tối (giờ cao điểm giao thông)",
+        f"🔄 Autocorrelation {cite('shumway2017')}": "Tự tương quan **rất cao** ($r \\approx 0,86$ ở chuỗi giờ 1h, $r \\approx 0,97$ ở chuỗi 15m) → Persistence baseline cực mạnh ở bước 1h",
+        f"📈 Seasonality {cite('cleveland1990')}": "Chu kỳ ngày (24h) + tuần (168h) + mùa khô/mưa — STL decomposition bóc tách trend và seasonal rõ rệt",
+        "🌡️ Correlations": "Nhiệt độ ($r = -0,48$), Độ ẩm ($r = -0,26$), Điểm sương ($r = +0,12$), CO₂ ($r = 0,069$ Pearson / $+0,251$ Spearman)",
+        f"📊 Distribution {cite('boxcox1964')}": "PM2.5 lệch phải (Mean 17,46 > Median 13,67, Skewness = 2,0046, Kurtosis = 6,1458, Max 138,5 µg/m³)",
+        "⏰ Diurnal Pattern": "PM2.5 đạt đỉnh sáng sớm 6h–8h (nghịch nhiệt mặt đất) và chiều tối 18h–20h",
     }
 
     for key, finding in findings.items():
         st.markdown(f"**{key}**: {finding}", unsafe_allow_html=True)
 
     st.info(
-        "💡 **Key insight**: Autocorrelation cao (~0.97) nghĩa là giá trị hiện tại gần giống giá trị 1 giờ trước. "
-        "Persistence baseline (y_pred = y_last) rất khó beat ở horizon 1h. ML/DL chỉ vượt trội ở horizons dài hơn (6h, 24h)."
+        "💡 **Key insight**: Do tự tương quan chuỗi giờ cao ($r \\approx 0,86$), Persistence baseline rất khó bị đánh bại ở bước 1h trên chuỗi 1h. "
+        "Mô hình học máy và học sâu khai thác biến động đa phân giải (15m) đã phá vỡ giới hạn này (GRU 15m đạt MASE = 0,667 < 1,0), và vượt trội ở horizons dài hơn (6h, 24h)."
     )
 
 
@@ -614,7 +614,7 @@ def _step_results():
         ),
         (
             f"📏 Phá vỡ bẫy Autocorrelation {cite('hyndman2021')}",
-            "Ở 1h (1h res.), Persistence thường thắng do autocorrelation ~0.97. Lần đầu tiên, mô hình GRU_v9_15m ở v9 đã chính thức phá vỡ giới hạn này (MASE < Persistence)!",
+            "Ở bước 1h trên chuỗi giờ (r ≈ 0,86), Persistence rất mạnh khiến các mô hình 1h chuẩn đều có MASE > 1,0. Bằng cách khai thác đa phân giải 15m, mô hình GRU 15m đã chính thức phá vỡ giới hạn này (MASE = 0,667 < 1,0)!",
         ),
         (
             "🌲 ML vs DL",

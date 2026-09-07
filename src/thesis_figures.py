@@ -272,7 +272,7 @@ def _chart_shap_comparison(shap_data):
         top10 = list(top_features.items())[:10]
         top10.reverse()  # Plotly horizontal bar: bottom-to-top
 
-        features = [f[0].replace("pm25_", "").replace("_", " ") for f, _ in top10]
+        features = [f.replace("pm25_", "").replace("_", " ") for f, _ in top10]
         values = [v for _, v in top10]
 
         max_v = max(values) if values else 1

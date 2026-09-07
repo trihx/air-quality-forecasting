@@ -25,7 +25,7 @@
   },
   "eda_findings": {
     "title": "Phát hiện: Tác động của Độ phân giải (Resolution)",
-    "content": "**Phát hiện quan trọng về tần suất đo lường (15m vs 30m vs 1h):**\n\n- **Độ nhiễu (Noise level)**: Dữ liệu 15 phút (15m) chứa rất nhiều nhiễu vi mô và các đợt tăng đột biến ngắn hạn, trong khi dữ liệu 1 giờ (1h) lại quá mịn, vô tình làm mất đi các biến động cực đoan của nồng độ bụi.\n- **Tự tương quan (ACF)**: Ở khung 1 giờ, ACF bậc 1 ≈ 0.97 tạo bẫy tự tương quan. Khi sử dụng dữ liệu 15m và 30m, mô hình có thể nhìn chi tiết hơn vào chuỗi thời gian và bớt phụ thuộc vào giá trị quá khứ trực tiếp.\n- **Khoảng trống dữ liệu (Gaps)**: Ở độ phân giải 15m, số lượng khoảng trống dữ liệu (missing values) nhiều hơn đáng kể, đòi hỏi kỹ thuật điền khuyết (Spline/KNN) cẩn thận hơn để không tạo ra dữ liệu giả.",
+    "content": "**Phát hiện quan trọng về tần suất đo lường (15m vs 30m vs 1h):**\n\n- **Độ nhiễu (Noise level)**: Dữ liệu 15 phút (15m) chứa nhiều nhiễu vi mô và các đợt tăng đột biến ngắn hạn, trong khi dữ liệu 1 giờ (1h) lại quá mịn, vô tình làm mất đi các biến động cực đoan của nồng độ bụi.\n- **Tự tương quan (ACF)**: Ở chuỗi giờ 1h, ACF bậc 1 ≈ 0,86 (và ở chuỗi cảm biến 15m đạt ≈ 0,97) tạo bẫy tự tương quan. Khi khai thác đa phân giải 15m, mô hình học sâu GRU 15m có thể nhìn thấu vi biến động và phá vỡ bẫy tự tương quan (MASE = 0,667 < 1,0).\n- **Khoảng trống dữ liệu (Gaps)**: Chiến lược Tiered Imputation khôi phục 656 giờ gap ngắn ≤ 24h (3,2%) và loại bỏ 19.810 giờ gap dài > 24h (96,8%), bảo vệ 100% dữ liệu thực cho tập kiểm thử (Anchor Test Set 1.200h).",
     "page": "eda",
     "display_order": 2
   },

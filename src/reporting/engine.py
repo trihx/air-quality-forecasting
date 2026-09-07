@@ -472,7 +472,7 @@ class ReportingEngine:
                 f"<b>MASE={b1['mase']:.3f}</b> — model duy nhất thắng Persistence! ⭐"
             )
         else:
-            h1_text = f"Persistence vẫn thắng ở 1h (ACF≈0.97). <b>{b1['model']}</b> gần nhất với MASE={b1['mase']:.3f}"
+            h1_text = f"Persistence vẫn thắng trên chuỗi 1h (r≈0,86). <b>{b1['model']}</b> gần nhất với MASE={b1['mase']:.3f}"
 
         h6_text = (
             f"<b>{b6['model']}</b> giảm <b>{abs(b6['improvement_pct']):.1f}%</b> lỗi "
