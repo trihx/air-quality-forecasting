@@ -382,9 +382,11 @@ class DataValidator:
             # Check if any feature has a perfect correlation with target (suspiciously close to 1.0)
             if target_col in df.columns and col in df.columns:
                 try:
-                    corr = df[col].corr(df[target_col])
-                    if abs(corr) > 0.99:
-                        leakage_cols.append(f"{col} (corr={corr:.4f})")
+                    # Bỏ qua cột hằng số (std == 0) để tránh NumPy RuntimeWarning (divide by zero)
+                    if pd.api.types.is_numeric_dtype(df[col]) and df[col].std() > 0:
+                        corr = df[col].corr(df[target_col])
+                        if pd.notna(corr) and abs(corr) > 0.99:
+                            leakage_cols.append(f"{col} (corr={corr:.4f})")
                 except (ValueError, TypeError):
                     pass
 
