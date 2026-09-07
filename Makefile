@@ -2,7 +2,7 @@
 # PM2.5 Forecasting — Project Automation Makefile
 # ═══════════════════════════════════════════
 
-.PHONY: help install dev test check seed update-memory map-skills graphify clean
+.PHONY: help install dev test check seed update-memory map-skills graphify sync-figures clean
  
 help:
 	@echo "📌 Các lệnh tự động hóa dự án PM2.5 Forecasting:"
@@ -11,6 +11,7 @@ help:
 	@echo "  make test            - Chạy toàn bộ Unit và Integration tests"
 	@echo "  make check           - Kiểm tra chất lượng code (Ruff Lint, Format, Mypy, Tests)"
 	@echo "  make seed            - Nạp dữ liệu mẫu (Seed Data) lên PostgreSQL Database"
+	@echo "  make sync-figures    - Đồng bộ 38 hình ảnh chuẩn thức giữa docs/pics và research/figures/thesis"
 	@echo "  make update-memory   - Tự động tối ưu hóa và dọn dẹp bộ nhớ dự án (L1 -> L3)"
 	@echo "  make map-skills      - Cập nhật linking & mapping skills, bundles từ global vào dự án"
 	@echo "  make graphify        - Cập nhật Knowledge Graph (Graphify) từ codebase"
@@ -57,7 +58,9 @@ graphify:
 	@echo "🔗 Đang cập nhật Knowledge Graph (Graphify)..."
 	uvx --from graphifyy graphify extract . --code-only
 	uvx --from graphifyy graphify cluster-only .
-	@echo "✅ Graphify graph đã được cập nhật tại graphify-out/"
+sync-figures:
+	@echo "📸 Đang đồng bộ và kiểm định 38 hình ảnh luận văn..."
+	@uv run python scripts/sync_thesis_figures.py
 
 clean:
 	@echo "🧹 Đang dọn dẹp các file cache..."

@@ -1,0 +1,101 @@
+[
+  {
+    "method": "conformal_prediction",
+    "model": "LightGBM",
+    "horizon": 1,
+    "alpha": 0.1,
+    "conformal_width": 5.507,
+    "coverage": 0.8183,
+    "avg_width": 11.014,
+    "mae": 3.674,
+    "n_cal": 757,
+    "n_test": 600
+  },
+  {
+    "method": "quantile_regression",
+    "model": "LightGBM",
+    "horizon": 1,
+    "alpha": 0.1,
+    "coverage": 0.8717,
+    "avg_width": 16.43,
+    "mae": 3.352,
+    "n_test": 600
+  },
+  {
+    "method": "mc_dropout",
+    "model": "GRU",
+    "horizon": 1,
+    "alpha": 0.1,
+    "mc_samples": 50,
+    "coverage": 0.149,
+    "avg_width": 2.64,
+    "mae": 4.376,
+    "n_test": 604
+  },
+  {
+    "method": "conformal_prediction",
+    "model": "LightGBM",
+    "horizon": 6,
+    "alpha": 0.1,
+    "conformal_width": 7.479,
+    "coverage": 0.7815,
+    "avg_width": 14.958,
+    "mae": 5.259,
+    "n_cal": 757,
+    "n_test": 595
+  },
+  {
+    "method": "quantile_regression",
+    "model": "LightGBM",
+    "horizon": 6,
+    "alpha": 0.1,
+    "coverage": 0.8336,
+    "avg_width": 19.483,
+    "mae": 4.956,
+    "n_test": 595
+  },
+  {
+    "method": "mc_dropout",
+    "model": "GRU",
+    "horizon": 6,
+    "alpha": 0.1,
+    "mc_samples": 50,
+    "coverage": 0.1921,
+    "avg_width": 2.758,
+    "mae": 4.874,
+    "n_test": 604
+  },
+  {
+    "method": "conformal_prediction",
+    "model": "LightGBM",
+    "horizon": 24,
+    "alpha": 0.1,
+    "conformal_width": 7.728,
+    "coverage": 0.7884,
+    "avg_width": 15.457,
+    "mae": 5.374,
+    "n_cal": 755,
+    "n_test": 586
+  },
+  {
+    "method": "quantile_regression",
+    "model": "LightGBM",
+    "horizon": 24,
+    "alpha": 0.1,
+    "coverage": 0.8242,
+    "avg_width": 19.834,
+    "mae": 5.154,
+    "n_test": 586
+  },
+  {
+    "method": "mc_dropout",
+    "model": "GRU",
+    "horizon": 24,
+    "alpha": 0.1,
+    "mc_samples": 50,
+    "coverage": 0.1854,
+    "avg_width": 3.014,
+    "mae": 4.904,
+    "n_test": 604
+  }
+]

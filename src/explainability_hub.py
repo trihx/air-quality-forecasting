@@ -21,6 +21,7 @@ from PIL import Image
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RESEARCH_DIR = PROJECT_ROOT / "research"
 SHAP_DIR = RESEARCH_DIR / "figures" / "shap"
+THESIS_DIR = RESEARCH_DIR / "figures" / "thesis"
 
 # ── Design tokens (VTF: centralized from src.viz.theme) ──
 from src.frontend.citations import render_references_section
@@ -960,6 +961,13 @@ def _tab_feature_explainability():
             _render_chart(fig, filename=f"shap_importance_{h}")
             _caption(f"SHAP Feature Importance — h={h} (n_test={horizon_data.get('n_test', '?')})")
 
+            # Link to publication figure
+            h_suffix_map = {"1h": "a", "6h": "b", "24h": "c"}
+            bar_fig = THESIS_DIR / f"Hinh_4.7{h_suffix_map.get(h, 'a')}_SHAP_Bar_{h}.png"
+            if bar_fig.exists():
+                with st.expander(f"🖼️ Xem Biểu đồ Chuẩn Luận Văn — Hình 4.7{h_suffix_map.get(h, 'a')}: SHAP Bar {h} (300 DPI)", expanded=False):
+                    st.image(str(bar_fig), caption=f"Hình 4.7{h_suffix_map.get(h, 'a')}: Tầm quan trọng đặc trưng trung bình (SHAP Bar Plot) tại mốc {h}", use_container_width=True)
+
             # Feature category breakdown
             _section_header("📂", "Phân Loại Features Quan Trọng")
             categories = {
@@ -1059,14 +1067,22 @@ def _tab_feature_explainability():
             "kết hợp cùng chu kỳ ngày đêm (hour_cos, fourier).",
         )
 
+        horizons_fig = THESIS_DIR / "Hinh_PL.3_SHAP_Horizons.png"
+        if horizons_fig.exists():
+            with st.expander("🖼️ Xem Biểu đồ Chuẩn Luận Văn — Hình PL.3: SHAP Horizons Dynamics (300 DPI)", expanded=False):
+                st.image(str(horizons_fig), caption="Hình PL.3: So sánh động lực học đặc trưng SHAP chuyển dịch qua 3 horizon dự báo (1h, 6h, 24h)", use_container_width=True)
+
     # ── Sub-tab 3: Static SHAP images ──
     with sub3:
         _section_header("🌊", "SHAP Beeswarm & Dependence Plots")
         h3 = st.selectbox("Chọn horizon", ["1h", "6h", "24h"], key="expl_bee_h")
-        bee_path = SHAP_DIR / f"shap_beeswarm_{h3}.png"
+        h_suffix_map = {"1h": "a", "6h": "b", "24h": "c"}
+        bee_thesis = THESIS_DIR / f"Hinh_4.9{h_suffix_map.get(h3, 'a')}_SHAP_Beeswarm_{h3}.png"
+        bee_path = bee_thesis if bee_thesis.exists() else SHAP_DIR / f"shap_beeswarm_{h3}.png"
         if bee_path.exists():
             fig_bee = _image_to_plotly(bee_path, display_height=550)
             _render_chart(fig_bee, filename=f"shap_beeswarm_{h3}")
+            _caption(f"Hình 4.9{h_suffix_map.get(h3, 'a')}: Biểu đồ SHAP Beeswarm mô hình LightGBM tại mốc {h3}")
         else:
             st.warning(f"File chưa tồn tại: {bee_path.name}")
 
@@ -1084,6 +1100,17 @@ def _tab_feature_explainability():
                     _render_chart(fig_dep, filename=f"shap_dep_{h3}_{feature_name}")
 
             # Phân tích Bước Ngoặt Phát Thải (Tipping Point)
+            st.markdown("---")
+            dep_tipping = THESIS_DIR / "Hinh_4.8_SHAP_Dependence_6h.png"
+            if not dep_tipping.exists():
+                dep_tipping = SHAP_DIR / "shap_dep_6h_pm25_roll_24s_mean.png"
+            if dep_tipping.exists():
+                st.image(
+                    str(dep_tipping),
+                    caption="Hình 4.8: Đồ thị SHAP Dependence Plot cho biến pm25_roll_24s_mean tại mốc 6h (Tipping Point 14–17 µg/m³ & Chuẩn WHO 15 µg/m³)",
+                    use_container_width=True,
+                )
+
             _insight_card(
                 "🔥 Phát Hiện Bước Ngoặt Phát Thải (Tipping Point: 14 – 17 µg/m³ & Ngưỡng WHO 15 µg/m³)",
                 "Biểu đồ <b>SHAP Dependence Plot</b> cho biến nền 24h và biến trễ (Mục 4.6.2 Đề án) làm sáng tỏ điểm chuyển pha phi tuyến (Tipping Point) "
@@ -1106,9 +1133,14 @@ def _tab_feature_explainability():
             "Ưu điểm: model-agnostic, không cần biết kiến trúc bên trong.",
         )
         h4 = st.selectbox("Chọn horizon", ["1h", "6h", "24h"], key="expl_perm_h")
-        perm_path = SHAP_DIR / f"gru_permutation_{h4}.png"
+        perm_thesis = THESIS_DIR / f"Hinh_4.10{h_suffix_map.get(h4, 'a')}_GRU_Permutation_{h4}.png"
+        perm_path = perm_thesis if perm_thesis.exists() else SHAP_DIR / f"gru_permutation_{h4}.png"
         if perm_path.exists():
-            st.image(str(perm_path), caption=f"GRU Permutation Importance — h={h4}", use_container_width=True)
+            st.image(
+                str(perm_path),
+                caption=f"Hình 4.10{h_suffix_map.get(h4, 'a')}: Tầm quan trọng đặc trưng mô hình GRU (Permutation Importance) tại {h4}",
+                use_container_width=True,
+            )
         else:
             st.warning(f"File chưa tồn tại: {perm_path.name}")
 

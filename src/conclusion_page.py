@@ -189,7 +189,7 @@ def _render_limitations(section_header, insight_card):
             "icon": "📉",
             "items": [
                 "Data Sparsity: 89 ngày/năm bị 'mù' hoàn toàn (Tháng 2 & 9), giảm khả năng học chu kỳ mùa",
-                "Phạm vi quan trắc: Hệ thống gồm 6 trạm/vị trí đo tại một huyện (Đồng Tháp), cần mở rộng mạng lưới quan trắc trên toàn vùng ĐBSCL để phát triển mô hình không - thời gian (Spatio-Temporal)",
+                "Phạm vi quan trắc: Nghiên cứu thực nghiệm trên trạm cảm biến IoT ngoài trời tại Sa Đéc (Đồng Tháp), cần mở rộng mạng lưới đa trạm trên toàn vùng ĐBSCL để phát triển mô hình không - thời gian (Spatio-Temporal)",
                 "4 biến phụ giới hạn: Thiếu biến khí tượng nâng cao (tốc độ gió, áp suất khí quyển, lượng mưa)",
                 "Outlier Removal Trap: Áp dụng phương pháp loại nhiễu thống kê thuần túy (IQR) cho PM2.5 đã vô tình xóa bỏ các đỉnh ô nhiễm thật (fat-tailed). Bắt buộc sử dụng Domain Bounds (0 - 500 µg/m³) thay thế để giữ nguyên cảnh báo.",
             ],
@@ -277,11 +277,14 @@ def _render_limitations(section_header, insight_card):
 
             st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
-            fig_path = PROJECT_ROOT / "research" / "figures" / "ablation_outlier_impact.png"
+            fig_path = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_4.12_Ablation_Outlier_Impact.png"
+            if not fig_path.exists():
+                fig_path = PROJECT_ROOT / "research" / "figures" / "ablation_outlier_impact.png"
             if fig_path.exists():
                 st.image(
                     str(fig_path),
-                    caption="Biểu đồ MASE: Ở horizon 1h, mô hình lỗi (v10) có vẻ sai số thấp hơn, tạo ra ảo giác an toàn.",
+                    caption="Hình 4.12: Đánh giá mức độ ảnh hưởng của loại bỏ ngoại lai đến hiệu năng mô hình (Ablation)",
+                    use_container_width=True,
                 )
 
     except Exception:

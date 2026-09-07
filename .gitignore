@@ -18,6 +18,7 @@
 
 # ── 1. TÀI LIỆU HỌC THUẬT, BẢN THẢO LUẬN VĂN & TẬP TIN OFFICE ──
 docs/
+bao-cao/
 *.docx
 *.pdf
 *.pptx
@@ -30,6 +31,7 @@ Screenshot*.png
 
 # ── 2. HỆ THỐNG AI AGENTS, PROMPTS, KNOWLEDGE GRAPH & CACHE ──
 .agents/
+agents/
 .ai-devkit*
 .ai-devkit/
 .claude/

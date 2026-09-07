@@ -28,7 +28,7 @@
         "limitations": [
           "⏱️ Bẫy tự tương quan ở bước 1h: Tự tương quan cao (r ≈ 0,86 ở chuỗi giờ, r ≈ 0,97 ở chuỗi 15m) khiến Persistence rất mạnh trên chuỗi 1h. Bằng cách khai thác đa phân giải 15m, mô hình GRU 15m đã phá vỡ giới hạn này (MASE = 0,667 < 1,0)",
           "📉 Data Sparsity & Missing Data: Dữ liệu bị 'mù' hoàn toàn 89 ngày (đặc biệt Tháng 2 & Tháng 9), làm giảm khả năng học chu kỳ mùa (seasonality). <b>Bài học:</b> KHÔNG dùng ML để nội suy gaps > 1 tuần (tránh Data Leakage), thay vào đó ưu tiên dùng External Data (vd: Open-Meteo) để lấp khoảng trống.",
-          "🌍 Phạm vi không gian: Hệ thống gồm 6 trạm/vị trí đo tại một huyện (Đồng Tháp) với 4 biến phụ (Nhiệt độ, Độ ẩm, Điểm sương, CO₂). Cần mở rộng mạng lưới đa trạm trên toàn vùng ĐBSCL để phát triển mô hình không - thời gian (Spatio-Temporal GNN).",
+          "🌍 Phạm vi không gian: Thực nghiệm trên trạm cảm biến IoT ngoài trời tại Sa Đéc, Đồng Tháp (4 biến phụ: Nhiệt độ, Độ ẩm, Điểm sương, CO₂). Hướng phát triển: mở rộng mạng lưới đa trạm trên toàn vùng ĐBSCL để phát triển mô hình không - thời gian (Spatio-Temporal GNN).",
           "🔧 Apple Silicon constraints: Một số PyTorch operations chưa hỗ trợ đầy đủ trên MPS (M1 Pro), phải fallback CPU cho TFT và một số ops",
           "📊 TFT_1h failed: TFT tại resolution 1h cho kết quả NaN do architecture không phù hợp với dữ liệu có autocorrelation quá cao",
           "🔄 Chu kỳ vận hành batch: Hệ thống chạy theo chu kỳ batch (15m/1h) trên kiến trúc 3-Tier (FastAPI + Render + Supabase) với 193 automated tests bảo vệ chống rò rỉ dữ liệu"

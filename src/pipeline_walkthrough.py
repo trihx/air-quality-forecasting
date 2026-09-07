@@ -110,13 +110,18 @@ def _step_data_collection():
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        _render_custom_metric("Tổng Records", "209,397", "📦")
+        _render_custom_metric("Tổng Records", "209.594 (~2 phút thô)", "📦")
     with col2:
-        _render_custom_metric("Thời gian", "3.1 năm", "📅")
+        _render_custom_metric("Thời gian", "38 tháng (03/2022 — 05/2025)", "📅")
     with col3:
-        _render_custom_metric("Tần suất", "~2 phút/lần", "⏱️")
+        _render_custom_metric("Phạm vi", "Trạm IoT ngoài trời, Sa Đéc, Đồng Tháp", "📍")
     with col4:
         _render_custom_metric("Biến số", "5 (PM2.5, Nhiệt độ, Độ ẩm, Điểm sương, CO₂)", "📊")
+
+    # Overview Pipeline Figure (Hinh 1.1)
+    fig_1_1 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_1.1_Overview_Pipeline.png"
+    if fig_1_1.exists():
+        st.image(str(fig_1_1), caption="Hình 1.1: Quy trình nghiên cứu tổng quan (Data Pipeline v9)", use_container_width=True)
 
     st.markdown("#### 📋 Mô tả biến")
     var_data = {
@@ -191,7 +196,7 @@ def _step_data_cleaning():
     c_30m = f"~{metrics['resolutions'].get('30m', {}).get('rows', 55000):,} (30m)"
     c_15m = f"~{metrics['resolutions'].get('15m', {}).get('rows', 110000):,} (15m)"
     with col1:
-        _render_custom_metric("Trước (Thô)", "209.594 bản ghi (15m)")
+        _render_custom_metric("Trước (Thô)", "209.594 bản ghi (~2 phút)")
     with col2:
         _render_custom_metric("Sau cleaning", f"{c_1h} / {c_30m} / {c_15m}")
     with col3:
@@ -499,6 +504,11 @@ def _step_modeling():
 
     st.markdown("---")
 
+    # Architecture Overview (Hinh 3.1)
+    fig_3_1 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_3.1_System_Architecture.png"
+    if fig_3_1.exists():
+        st.image(str(fig_3_1), caption="Hình 3.1: Kiến trúc tổng thể hệ thống dự báo nồng độ bụi mịn PM2.5 đa phân giải v9", use_container_width=True)
+
     # Results table from pre-computed data
     metrics = _load_standardized_metrics()
     if metrics and "results" in metrics:
@@ -679,6 +689,17 @@ def _step_results():
                 height=450,
             )
             _render_chart(fig, filename="pipeline_mase_comparison")
+
+    # Thesis Figures PL.1 & PL.2
+    c_pl1, c_pl2 = st.columns(2)
+    fig_pl1 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_PL.1_MASE_Decay.png"
+    fig_pl2 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_PL.2_Bootstrap_CI.png"
+    with c_pl1:
+        if fig_pl1.exists():
+            st.image(str(fig_pl1), caption="Hình PL.1: Động thái suy giảm chỉ số MASE theo tầm nhìn dự báo (1h - 24h)", use_container_width=True)
+    with c_pl2:
+        if fig_pl2.exists():
+            st.image(str(fig_pl2), caption="Hình PL.2: Khoảng tin cậy Bootstrap 95% cho MASE giữa các mô hình", use_container_width=True)
 
     # Lessons learned
     st.markdown("#### 📝 Bài học kinh nghiệm")
