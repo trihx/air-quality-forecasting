@@ -104,12 +104,9 @@ class TestExtendedInterp:
         """Extended interpolation should retain more rows than segment-only."""
         print("\n  [test] Strategy B: Extended Interpolation...", flush=True)
 
-        result_a = impute_missing_data(
-            hourly_data_with_gaps.copy(), strategy="segment_only", verbose=False
-        )
+        result_a = impute_missing_data(hourly_data_with_gaps.copy(), strategy="segment_only", verbose=False)
         result_b = impute_missing_data(
-            hourly_data_with_gaps.copy(), strategy="extended_interp",
-            max_gap_interp=12, verbose=True
+            hourly_data_with_gaps.copy(), strategy="extended_interp", max_gap_interp=12, verbose=True
         )
 
         print(f"    A (segment): {len(result_a)} rows", flush=True)
@@ -166,13 +163,8 @@ class TestMLImpute:
         """ML imputation should fill gaps up to max_gap."""
         print("\n  [test] Strategy C: ML Imputation...", flush=True)
 
-        result_a = impute_missing_data(
-            hourly_data_with_gaps.copy(), strategy="segment_only", verbose=False
-        )
-        result_c = impute_missing_data(
-            hourly_data_with_gaps.copy(), strategy="ml_impute",
-            max_gap_ml=24, verbose=True
-        )
+        result_a = impute_missing_data(hourly_data_with_gaps.copy(), strategy="segment_only", verbose=False)
+        result_c = impute_missing_data(hourly_data_with_gaps.copy(), strategy="ml_impute", max_gap_ml=24, verbose=True)
 
         print(f"    A (segment): {len(result_a)} rows", flush=True)
         print(f"    C (ml_impute): {len(result_c)} rows", flush=True)
@@ -189,12 +181,9 @@ class TestHybrid:
         """Hybrid should be the best or second-best strategy for data retention."""
         print("\n  [test] Strategy D: Hybrid...", flush=True)
 
-        result_a = impute_missing_data(
-            hourly_data_with_gaps.copy(), strategy="segment_only", verbose=False
-        )
+        result_a = impute_missing_data(hourly_data_with_gaps.copy(), strategy="segment_only", verbose=False)
         result_d = impute_missing_data(
-            hourly_data_with_gaps.copy(), strategy="hybrid",
-            max_gap_interp=6, max_gap_ml=24, verbose=True
+            hourly_data_with_gaps.copy(), strategy="hybrid", max_gap_interp=6, max_gap_ml=24, verbose=True
         )
 
         print(f"    A (segment): {len(result_a)} rows", flush=True)
@@ -276,8 +265,7 @@ class TestSplitRealImputed:
         print("\n  [test] Test set real-only principle...", flush=True)
 
         result = impute_missing_data(
-            hourly_data_with_gaps.copy(), strategy="hybrid",
-            max_gap_interp=6, max_gap_ml=24, verbose=True
+            hourly_data_with_gaps.copy(), strategy="hybrid", max_gap_interp=6, max_gap_ml=24, verbose=True
         )
 
         real, imputed = split_real_imputed(result)

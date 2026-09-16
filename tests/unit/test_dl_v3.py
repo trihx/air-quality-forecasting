@@ -2,7 +2,6 @@
 
 import numpy as np
 import pandas as pd
-import pytest
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
@@ -48,12 +47,14 @@ class TestPCAFeatureSelection:
         # Create correlated features (like PM2.5 lag/rolling/ewm)
         base = np.random.randn(500, 10)
         # Add correlated copies with noise
-        X = np.hstack([
-            base,
-            base + np.random.randn(500, 10) * 0.1,  # highly correlated
-            base[:, :5] + np.random.randn(500, 5) * 0.5,  # medium correlated
-            np.random.randn(500, 92),  # random features
-        ])
+        X = np.hstack(
+            [
+                base,
+                base + np.random.randn(500, 10) * 0.1,  # highly correlated
+                base[:, :5] + np.random.randn(500, 5) * 0.5,  # medium correlated
+                np.random.randn(500, 92),  # random features
+            ]
+        )
         assert X.shape[1] == 117, "Should have 117 features"
 
         scaler = StandardScaler()
@@ -92,10 +93,15 @@ class TestTopNFeatureSelection:
 
     def test_top_n_ordered_by_importance(self):
         """Selected features should be ordered by importance."""
-        importances = pd.Series({
-            "pm25_lag_1h": 500, "co2": 200, "nhiet_do": 100,
-            "noise_1": 1, "noise_2": 0,
-        })
+        importances = pd.Series(
+            {
+                "pm25_lag_1h": 500,
+                "co2": 200,
+                "nhiet_do": 100,
+                "noise_1": 1,
+                "noise_2": 0,
+            }
+        )
         top3 = list(importances.sort_values(ascending=False).head(3).index)
         assert top3 == ["pm25_lag_1h", "co2", "nhiet_do"]
 
@@ -106,9 +112,16 @@ class TestTFTDataPrep:
     def test_static_cols_are_cyclical(self):
         """Static columns should be calendar cyclical features."""
         feature_cols = [
-            "pm25_lag_1h", "pm25_lag_2h", "nhiet_do",
-            "hour_sin", "hour_cos", "day_sin", "day_cos",
-            "month_sin", "month_cos", "fourier_daily_sin_1",
+            "pm25_lag_1h",
+            "pm25_lag_2h",
+            "nhiet_do",
+            "hour_sin",
+            "hour_cos",
+            "day_sin",
+            "day_cos",
+            "month_sin",
+            "month_cos",
+            "fourier_daily_sin_1",
         ]
         static = [c for c in feature_cols if c.startswith(("hour_", "day_", "month_"))]
         temporal = [c for c in feature_cols if c not in static]

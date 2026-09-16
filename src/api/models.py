@@ -161,7 +161,7 @@ class InfoCard(Base):
     __tablename__ = "info_cards"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    card_key: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, index=True)
+    card_key: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     title: Mapped[str] = mapped_column(String(500), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     page: Mapped[str] = mapped_column(String(100), nullable=False, index=True)

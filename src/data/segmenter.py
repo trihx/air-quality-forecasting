@@ -43,7 +43,7 @@ def identify_contiguous_segments(
     df = df.copy()
 
     is_valid = df[target_col].notna()
-    n_valid_before = int(is_valid.sum())
+    int(is_valid.sum())
 
     # Assign group IDs: each transition (valid→NaN or NaN→valid) starts a new group
     groups = (is_valid != is_valid.shift()).cumsum()

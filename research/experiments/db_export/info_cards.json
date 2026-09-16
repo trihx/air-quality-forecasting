@@ -91,7 +91,7 @@
   },
   "multi_horizon_comparison": {
     "title": "So sánh với các Nghiên cứu Hiện hành",
-    "content": "Kết quả của V9 được đối chiếu với các công trình nghiên cứu hiện hành trong và ngoài nước (2022-2025):\n\n1. **Khắc phục sự phụ thuộc nồng độ nền**: Việc tiên phong áp dụng chỉ số MASE (theo Hyndman & Koehler, 2006) thay vì MAE/RMSE giúp so sánh hiệu suất một cách công bằng tại Đồng Tháp (nồng độ nền thấp).\n2. **Đa độ phân giải (Multi-Resolution)**: V9 vượt qua giới hạn của các bài báo khoa học hiện nay vốn chỉ tập trung vào dữ liệu 1 giờ. Sự vượt trội của dữ liệu 30 phút cho thấy hướng tiếp cận này là đóng góp khoa học quan trọng.\n3. **Khoảng tin cậy**: Kết hợp đánh giá bằng Diebold-Mariano với phân tích phương sai, luận văn trình bày minh chứng vững chắc về sức mạnh của trí tuệ nhân tạo so với các phương pháp thống kê truyền thống.",
+    "content": "Kết quả của V9 được đối chiếu với các công trình nghiên cứu hiện hành trong và ngoài nước (2022-2025):\n\n1. **Khắc phục sự phụ thuộc nồng độ nền**: Việc tiên phong áp dụng chỉ số MASE (theo Hyndman & Koehler, 2006) thay vì MAE/RMSE giúp so sánh hiệu suất một cách công bằng tại Đồng Tháp (nồng độ nền thấp).\n2. **Đa độ phân giải (Multi-Resolution)**: V9 vượt qua giới hạn của các bài báo khoa học hiện nay vốn chỉ tập trung vào dữ liệu 1 giờ. Sự vượt trội của dữ liệu 30 phút cho thấy hướng tiếp cận này là đóng góp khoa học quan trọng.\n3. **Khoảng tin cậy**: Kết hợp đánh giá bằng Diebold-Mariano với phân tích phương sai, đề án trình bày minh chứng vững chắc về sức mạnh của trí tuệ nhân tạo so với các phương pháp thống kê truyền thống.",
     "page": "multi_horizon",
     "display_order": 3
   },

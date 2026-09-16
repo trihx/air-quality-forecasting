@@ -1,4 +1,4 @@
-"""Thesis Figures Dashboard Page — Đồng bộ 100% với Báo cáo Luận văn Thạc sĩ (docs/pics & research/figures/thesis).
+"""Thesis Figures Dashboard Page — Đồng bộ 100% với Báo cáo Đề án Thạc sĩ (docs/pics & research/figures/thesis).
 
 Hiển thị toàn diện 38 hình ảnh thực nghiệm chuẩn thức (300 DPI, bảo toàn Aspect Ratio):
   - Chương 1 & 3: Sơ đồ Quy trình 7 bước (Hình 1.1) & Kiến trúc 3 tầng DevOps/SRE (Hình 3.1)
@@ -25,10 +25,12 @@ import streamlit as st
 from src.frontend.citations import cite, render_references_section
 from src.viz.chart_factory import (
     chart as _chart,
-    figure_caption_numbered,
+)
+from src.viz.chart_factory import (
     render_bw_download,
+)
+from src.viz.chart_factory import (
     render_chart as _render_chart,
-    to_bw,
 )
 from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC
 
@@ -152,16 +154,16 @@ def _chart_bootstrap_ci(bc_data):
                 opacity=0.85,
                 text=[f"{v:.3f}" if v else "" for v in mase_vals],
                 textposition="outside",
-                textfont=dict(size=9),
-                error_y=dict(
-                    type="data",
-                    symmetric=False,
-                    array=err_plus,
-                    arrayminus=err_minus,
-                    color="#CCCCCC",
-                    thickness=1.5,
-                    width=4,
-                ),
+                textfont={"size": 9},
+                error_y={
+                    "type": "data",
+                    "symmetric": False,
+                    "array": err_plus,
+                    "arrayminus": err_minus,
+                    "color": "#CCCCCC",
+                    "thickness": 1.5,
+                    "width": 4,
+                },
             )
         )
 
@@ -218,8 +220,8 @@ def _chart_mase_decay(sm_data):
                 x=h_numeric,
                 y=mase_vals,
                 mode="lines+markers",
-                line=dict(color=color, width=2.5, dash=dash),
-                marker=dict(size=10, symbol=symbol, line=dict(width=1.5, color="#333")),
+                line={"color": color, "width": 2.5, "dash": dash},
+                marker={"size": 10, "symbol": symbol, "line": {"width": 1.5, "color": "#333"}},
             )
         )
 
@@ -282,7 +284,7 @@ def _chart_shap_comparison(shap_data):
                 showlegend=False,
                 text=[f"{v:.2f}" for v in values],
                 textposition="outside",
-                textfont=dict(size=9),
+                textfont={"size": 9},
             ),
             row=1,
             col=idx + 1,
@@ -292,7 +294,7 @@ def _chart_shap_comparison(shap_data):
         height=500,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(l=10, r=10, t=40, b=20),
+        margin={"l": 10, "r": 10, "t": 40, "b": 20},
     )
     for i in range(3):
         fig.update_xaxes(title_text="SHAP Value", row=1, col=i + 1, gridcolor="rgba(128,128,128,0.2)")
@@ -307,9 +309,9 @@ def _chart_residual_bias(lb_data):
     horizons = ["1h", "6h", "24h"]
 
     z_vals = []
-    for i, model in enumerate(models):
+    for _i, model in enumerate(models):
         row = []
-        for j, h in enumerate(horizons):
+        for _j, h in enumerate(horizons):
             if model in lb_data and h in lb_data[model]:
                 mean_val = lb_data[model][h]["mean"]
                 row.append(mean_val)
@@ -330,8 +332,8 @@ def _chart_residual_bias(lb_data):
             zmid=0,
             text=[[f"{v:+.2f}" for v in row] for row in z_vals],
             texttemplate="%{text}",
-            textfont=dict(size=13),
-            colorbar=dict(title=dict(text="Mean Residual<br>(µg/m³)", side="right")),
+            textfont={"size": 13},
+            colorbar={"title": {"text": "Mean Residual<br>(µg/m³)", "side": "right"}},
             hovertemplate="Model: %{y}<br>Horizon: %{x}<br>Bias: %{z:+.2f} µg/m³<extra></extra>",
         )
     )
@@ -339,9 +341,9 @@ def _chart_residual_bias(lb_data):
         height=350,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(l=10, r=10, t=10, b=10),
-        xaxis=dict(title="Horizon dự báo"),
-        yaxis=dict(title=""),
+        margin={"l": 10, "r": 10, "t": 10, "b": 10},
+        xaxis={"title": "Horizon dự báo"},
+        yaxis={"title": ""},
     )
     return fig
 
@@ -376,12 +378,12 @@ def _chart_train_time():
             marker_color=colors,
             text=[f"{t:.1f}s" if t >= 1 else f"{t * 1000:.0f}ms" for t in times],
             textposition="outside",
-            textfont=dict(size=10),
+            textfont={"size": 10},
             showlegend=False,
         )
     )
     fig.update_xaxes(type="log", range=[-1.5, 2.5])
-    fig.update_layout(margin=dict(l=10, r=40, t=10, b=30))
+    fig.update_layout(margin={"l": 10, "r": 40, "t": 10, "b": 30})
     return fig
 
 
@@ -391,13 +393,13 @@ def _chart_train_time():
 
 
 def page_thesis_figures(results):
-    """Trình bày trọn vẹn 38 hình ảnh chuẩn thức của Luận văn Thạc sĩ."""
+    """Trình bày trọn vẹn 38 hình ảnh chuẩn thức của Đề án Thạc sĩ."""
     from app import insight_card, kpi_card, section_header
 
     st.markdown(
         """
     <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
-        📊 Thesis Figures — Bộ Trực Quan Hóa Chuẩn Luận Văn (38 Hình Chuẩn Thức)
+        📊 Thesis Figures — Bộ Trực Quan Hóa Chuẩn Đề Án (38 Hình Chuẩn Thức)
     </h1>
     <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 2rem;">
         Đồng bộ 100% với Báo cáo Đề án Thạc sĩ (QĐ 1799/ĐHCT) — Định dạng 300 DPI, bảo toàn Aspect Ratio, chuẩn in ấn B&W.
@@ -420,7 +422,7 @@ def page_thesis_figures(results):
         {kpi_card("Hình chuẩn Đề án", str(n_official), "300 DPI — research/figures/thesis")}
         {kpi_card("Tỷ lệ khung hình", "100%", "Bảo toàn Aspect Ratio")}
         {kpi_card("Biểu đồ tương tác", "5", "Plotly dynamic")}
-        {kpi_card("Độ tin cậy", "✅ 100% Verified", "193/193 tests pass")}
+        {kpi_card("Độ tin cậy", "✅ 100% Verified", "193 core / 204 CI tests pass")}
     </div>
     """,
         unsafe_allow_html=True,
@@ -430,11 +432,11 @@ def page_thesis_figures(results):
         "💡 **Quy chuẩn hiển thị & Trích xuất:**\n"
         "- **Nguồn ảnh duy nhất (Single Source of Truth):** Toàn bộ hình ảnh được đọc từ `research/figures/thesis/` (đồng bộ hoàn hảo với `docs/pics/`).\n"
         "- **Bảo toàn tỷ lệ (Aspect Ratio):** Tất cả hình ảnh được scale tự động theo kích thước gốc, tuyệt đối không co giãn làm vỡ chữ hay méo phối cảnh.\n"
-        "- **Chuẩn QĐ 1799/ĐHCT:** Tất cả biểu đồ có kèm bản in Đen-Trắng (B&W) với hatch patterns đạt chuẩn in ấn luận văn."
+        "- **Chuẩn QĐ 1799/ĐHCT:** Tất cả biểu đồ có kèm bản in Đen-Trắng (B&W) với hatch patterns đạt chuẩn in ấn đề án."
     )
 
     # ══════════════════════════════════════════════════════
-    # 6 Tabs theo Chương Luận Văn
+    # 6 Tabs theo Chương Đề Án
     # ══════════════════════════════════════════════════════
     tab_ch1_3, tab_eda, tab_diag, tab_xai, tab_pi_abl, tab_appx = st.tabs(
         [
@@ -487,7 +489,9 @@ def page_thesis_figures(results):
                 _render_image_card("Hinh_4.1b_Stationarity_1st_Diff.png", "Hình 4.1b: Sai phân bậc 1 (d=1)")
                 _render_image_card("Hinh_4.1e_Stationarity_Log_1st_Diff.png", "Hình 4.1e: Sai phân bậc 1 của Log PM2.5")
             with c2:
-                _render_image_card("Hinh_4.1c_Stationarity_Seasonal_Diff_24h.png", "Hình 4.1c: Sai phân chu kỳ ngày (Seasonal d=24h)")
+                _render_image_card(
+                    "Hinh_4.1c_Stationarity_Seasonal_Diff_24h.png", "Hình 4.1c: Sai phân chu kỳ ngày (Seasonal d=24h)"
+                )
                 _render_image_card("Hinh_4.1d_Stationarity_Log_PM25.png", "Hình 4.1d: Biến đổi Log PM2.5")
 
         elif "4.1.2" in eda_sel:
@@ -558,19 +562,25 @@ def page_thesis_figures(results):
             with c1:
                 _render_image_card("Hinh_4.6a_Diagnostics_GRU_1h.png", "Hình 4.6a: Phân tích thặng dư GRU tại 1h")
             with c2:
-                _render_image_card("Hinh_4.6b_Diagnostics_LightGBM_1h.png", "Hình 4.6b: Phân tích thặng dư LightGBM tại 1h")
+                _render_image_card(
+                    "Hinh_4.6b_Diagnostics_LightGBM_1h.png", "Hình 4.6b: Phân tích thặng dư LightGBM tại 1h"
+                )
 
         elif diag_sel == "6 giờ (h=6)":
             _render_image_card("Hinh_4.6c_Diagnostics_GRU_6h.png", "Hình 4.6c: Phân tích thặng dư GRU tại 6h")
             _render_image_card("Hinh_4.6d_Diagnostics_LightGBM_6h.png", "Hình 4.6d: Phân tích thặng dư LightGBM tại 6h")
-            _render_image_card("Hinh_4.6e_Diagnostics_Persistence_6h.png", "Hình 4.6e: Phân tích thặng dư Persistence tại 6h")
+            _render_image_card(
+                "Hinh_4.6e_Diagnostics_Persistence_6h.png", "Hình 4.6e: Phân tích thặng dư Persistence tại 6h"
+            )
 
         elif diag_sel == "24 giờ (h=24)":
             c1, c2 = st.columns(2)
             with c1:
                 _render_image_card("Hinh_4.6f_Diagnostics_GRU_24h.png", "Hình 4.6f: Phân tích thặng dư GRU tại 24h")
             with c2:
-                _render_image_card("Hinh_4.6g_Diagnostics_LightGBM_24h.png", "Hình 4.6g: Phân tích thặng dư LightGBM tại 24h")
+                _render_image_card(
+                    "Hinh_4.6g_Diagnostics_LightGBM_24h.png", "Hình 4.6g: Phân tích thặng dư LightGBM tại 24h"
+                )
 
         else:
             for fn, cap in [
@@ -664,11 +674,41 @@ def page_thesis_figures(results):
         st.markdown("**Bảng 4.5: Đối chứng chéo Top-5 đặc trưng SHAP (LightGBM) vs Permutation (GRU) tại mốc 6h**")
         cross_df = pd.DataFrame(
             [
-                {"Thứ hạng": 1, "Đặc trưng SHAP (LightGBM)": "pm25_roll_24s_mean", "mean(|SHAP|)": "2,910", "Biến Permutation (GRU)": "pm25", "Δ MAE": "+2,481"},
-                {"Thứ hạng": 2, "Đặc trưng SHAP (LightGBM)": "hour_sin", "mean(|SHAP|)": "1,330", "Biến Permutation (GRU)": "do_am", "Δ MAE": "+0,319"},
-                {"Thứ hạng": 3, "Đặc trưng SHAP (LightGBM)": "pm25_roll_24s_min", "mean(|SHAP|)": "0,949", "Biến Permutation (GRU)": "nhiet_do", "Δ MAE": "+0,269"},
-                {"Thứ hạng": 4, "Đặc trưng SHAP (LightGBM)": "fourier_daily_cos_2", "mean(|SHAP|)": "0,879", "Biến Permutation (GRU)": "diem_suong", "Δ MAE": "+0,152"},
-                {"Thứ hạng": 5, "Đặc trưng SHAP (LightGBM)": "pm25_roll_6s_min", "mean(|SHAP|)": "0,433", "Biến Permutation (GRU)": "co2", "Δ MAE": "+0,089"},
+                {
+                    "Thứ hạng": 1,
+                    "Đặc trưng SHAP (LightGBM)": "pm25_roll_24s_mean",
+                    "mean(|SHAP|)": "2,910",
+                    "Biến Permutation (GRU)": "pm25",
+                    "Δ MAE": "+2,481",
+                },
+                {
+                    "Thứ hạng": 2,
+                    "Đặc trưng SHAP (LightGBM)": "hour_sin",
+                    "mean(|SHAP|)": "1,330",
+                    "Biến Permutation (GRU)": "do_am",
+                    "Δ MAE": "+0,319",
+                },
+                {
+                    "Thứ hạng": 3,
+                    "Đặc trưng SHAP (LightGBM)": "pm25_roll_24s_min",
+                    "mean(|SHAP|)": "0,949",
+                    "Biến Permutation (GRU)": "nhiet_do",
+                    "Δ MAE": "+0,269",
+                },
+                {
+                    "Thứ hạng": 4,
+                    "Đặc trưng SHAP (LightGBM)": "fourier_daily_cos_2",
+                    "mean(|SHAP|)": "0,879",
+                    "Biến Permutation (GRU)": "diem_suong",
+                    "Δ MAE": "+0,152",
+                },
+                {
+                    "Thứ hạng": 5,
+                    "Đặc trưng SHAP (LightGBM)": "pm25_roll_6s_min",
+                    "mean(|SHAP|)": "0,433",
+                    "Biến Permutation (GRU)": "co2",
+                    "Δ MAE": "+0,089",
+                },
             ]
         )
         st.dataframe(cross_df, use_container_width=True, hide_index=True)
@@ -680,7 +720,9 @@ def page_thesis_figures(results):
         st.markdown("#### 1. Chuỗi Thời Gian Khoảng Tin Cậy Conformal Prediction (Hình 4.11a-c)")
         _render_image_card("Hinh_4.11a_PI_Conformal_LightGBM_1h.png", "Hình 4.11a: Conformal Prediction (LightGBM 1h)")
         _render_image_card("Hinh_4.11b_PI_Conformal_LightGBM_6h.png", "Hình 4.11b: Conformal Prediction (LightGBM 6h)")
-        _render_image_card("Hinh_4.11c_PI_Conformal_LightGBM_24h.png", "Hình 4.11c: Conformal Prediction (LightGBM 24h)")
+        _render_image_card(
+            "Hinh_4.11c_PI_Conformal_LightGBM_24h.png", "Hình 4.11c: Conformal Prediction (LightGBM 24h)"
+        )
 
         st.markdown("---")
         st.markdown("#### 2. Ablation Study — Tác Động Của Xử Lý Ngoại Lai (Hình 4.12)")
@@ -695,7 +737,10 @@ def page_thesis_figures(results):
             st.markdown("#### 3. Phân Tích Độ Nhạy Siêu Tham Số (Bảng 4.17 & 4.18)")
             col_k, col_g = st.columns(2)
             with col_k:
-                st.markdown(f"**Bảng 4.17: KNN Imputation $k$-value Sensitivity {cite('troyanskaya2001')}**")
+                st.markdown(
+                    f"**Bảng 4.17: KNN Imputation $k$-value Sensitivity {cite('troyanskaya2001')}**",
+                    unsafe_allow_html=True,
+                )
                 knn_dict = sens_data.get("knn_k_sensitivity", {})
                 if knn_dict:
                     rows_knn = [
@@ -703,14 +748,19 @@ def page_thesis_figures(results):
                             "k-value": k.replace("k_", "k="),
                             "MAE (µg/m³)": f"{v['mae']:.4f}",
                             "RMSE (µg/m³)": f"{v['rmse']:.4f}",
-                            "Đánh giá": "Điểm rơi tối ưu ✅" if k == "k_5" else ("Nhiễu cục bộ" if k == "k_3" else "Oversmoothing"),
+                            "Đánh giá": "Điểm rơi tối ưu ✅"
+                            if k == "k_5"
+                            else ("Nhiễu cục bộ" if k == "k_3" else "Oversmoothing"),
                         }
                         for k, v in knn_dict.items()
                     ]
                     st.dataframe(pd.DataFrame(rows_knn), use_container_width=True, hide_index=True)
 
             with col_g:
-                st.markdown(f"**Bảng 4.18: ACI Adaptation Rate $\\gamma$ Sensitivity {cite('gibbs2021')}**")
+                st.markdown(
+                    f"**Bảng 4.18: ACI Adaptation Rate $\\gamma$ Sensitivity {cite('gibbs2021')}**",
+                    unsafe_allow_html=True,
+                )
                 aci_dict = sens_data.get("aci_gamma_sensitivity", {})
                 if aci_dict:
                     rows_aci = [
@@ -718,7 +768,9 @@ def page_thesis_figures(results):
                             "Gamma (γ)": f"{v['gamma']:.3f}",
                             "Coverage": f"{v['empirical_coverage'] * 100:.1f}%",
                             "Stability": f"{v['stability_score']:.3f}",
-                            "Nhận xét": "Ổn định cao nhất ✔️" if v["gamma"] == 0.005 else ("Cân bằng tốt" if v["gamma"] == 0.01 else "Dao động mạnh"),
+                            "Nhận xét": "Ổn định cao nhất ✔️"
+                            if v["gamma"] == 0.005
+                            else ("Cân bằng tốt" if v["gamma"] == 0.01 else "Dao động mạnh"),
                         }
                         for v in aci_dict.values()
                     ]
@@ -726,11 +778,14 @@ def page_thesis_figures(results):
 
     # ── Tab 6: Phụ Lục Đề Án ──
     with tab_appx:
-        section_header("📑", "Phụ Lục Luận Văn (Phụ Lục 3)")
+        section_header("📑", "Phụ Lục Đề Án (Phụ Lục 3)")
 
         # Hình PL.1
         st.markdown("#### Hình PL.1: Tốc độ suy giảm chỉ số MASE qua các mốc thời gian dự báo")
-        _render_image_card("Hinh_PL.1_MASE_Decay.png", "Hình PL.1: Tốc độ suy giảm chỉ số MASE qua các mốc thời gian dự báo (Bản tĩnh 300 DPI)")
+        _render_image_card(
+            "Hinh_PL.1_MASE_Decay.png",
+            "Hình PL.1: Tốc độ suy giảm chỉ số MASE qua các mốc thời gian dự báo (Bản tĩnh 300 DPI)",
+        )
         if sm_data:
             with st.expander("📊 Xem Biểu đồ Tương tác Plotly (Hình PL.1)", expanded=False):
                 fig_decay = _chart_mase_decay(sm_data)
@@ -740,7 +795,9 @@ def page_thesis_figures(results):
         st.markdown("---")
         # Hình PL.2
         st.markdown("#### Hình PL.2: Khoảng tin cậy Bootstrap 95% cho sai số dự báo của các mô hình")
-        _render_image_card("Hinh_PL.2_Bootstrap_CI.png", "Hình PL.2: Khoảng tin cậy Bootstrap 95% cho MASE (Bản tĩnh 300 DPI)")
+        _render_image_card(
+            "Hinh_PL.2_Bootstrap_CI.png", "Hình PL.2: Khoảng tin cậy Bootstrap 95% cho MASE (Bản tĩnh 300 DPI)"
+        )
         if bc_data:
             with st.expander("📊 Xem Biểu đồ Tương tác Plotly (Hình PL.2)", expanded=False):
                 fig_ci = _chart_bootstrap_ci(bc_data)
@@ -750,7 +807,10 @@ def page_thesis_figures(results):
         st.markdown("---")
         # Hình PL.3
         st.markdown("#### Hình PL.3: So sánh động lực học đặc trưng SHAP chuyển dịch giữa các horizon")
-        _render_image_card("Hinh_PL.3_SHAP_Horizons.png", "Hình PL.3: So sánh động lực học đặc trưng SHAP chuyển dịch qua 3 horizon (Bản tĩnh 300 DPI)")
+        _render_image_card(
+            "Hinh_PL.3_SHAP_Horizons.png",
+            "Hình PL.3: So sánh động lực học đặc trưng SHAP chuyển dịch qua 3 horizon (Bản tĩnh 300 DPI)",
+        )
         if shap_data:
             with st.expander("📊 Xem Biểu đồ Tương tác Plotly (Hình PL.3)", expanded=False):
                 fig_shap = _chart_shap_comparison(shap_data)
@@ -775,11 +835,23 @@ def page_thesis_figures(results):
     with col_filter:
         chap_filter = st.selectbox(
             "Lọc theo chương:",
-            ["Tất cả (38 hình)", "Chương 1 & 3", "Chương 4 §4.1 (EDA)", "Chương 4 §4.5 (Thặng dư)", "Chương 4 §4.6 (XAI)", "Chương 4 §4.7-4.10", "Phụ Lục"],
+            [
+                "Tất cả (38 hình)",
+                "Chương 1 & 3",
+                "Chương 4 §4.1 (EDA)",
+                "Chương 4 §4.5 (Thặng dư)",
+                "Chương 4 §4.6 (XAI)",
+                "Chương 4 §4.7-4.10",
+                "Phụ Lục",
+            ],
             key="gallery_chap_filter",
         )
     with col_search:
-        search_kw = st.text_input("Tìm kiếm theo tên hình / từ khóa:", placeholder="Ví dụ: Tipping, Barcode, Conformal...", key="gallery_search_kw")
+        search_kw = st.text_input(
+            "Tìm kiếm theo tên hình / từ khóa:",
+            placeholder="Ví dụ: Tipping, Barcode, Conformal...",
+            key="gallery_search_kw",
+        )
 
     def _matches_filter(fn: str) -> bool:
         fn_lower = fn.lower()
@@ -790,7 +862,20 @@ def page_thesis_figures(results):
         if chap_filter == "Chương 1 & 3":
             return "hinh_1." in fn_lower or "hinh_3." in fn_lower
         if chap_filter == "Chương 4 §4.1 (EDA)":
-            return any(k in fn_lower for k in ["hinh_4.1a", "hinh_4.1b", "hinh_4.1c", "hinh_4.1d", "hinh_4.1e", "hinh_4.2", "hinh_4.3", "hinh_4.4", "hinh_4.5"])
+            return any(
+                k in fn_lower
+                for k in [
+                    "hinh_4.1a",
+                    "hinh_4.1b",
+                    "hinh_4.1c",
+                    "hinh_4.1d",
+                    "hinh_4.1e",
+                    "hinh_4.2",
+                    "hinh_4.3",
+                    "hinh_4.4",
+                    "hinh_4.5",
+                ]
+            )
         if chap_filter == "Chương 4 §4.5 (Thặng dư)":
             return "hinh_4.6" in fn_lower
         if chap_filter == "Chương 4 §4.6 (XAI)":
@@ -825,7 +910,7 @@ def page_thesis_figures(results):
     <div style="background: var(--secondary-background-color); border-radius: 10px;
                 padding: 1rem; border-left: 3px solid #00D4AA; margin-bottom: 1rem;
                 font-size: 0.9rem; opacity: 0.85;">
-        Tải toàn bộ 38 hình ảnh chuẩn thức của Luận văn Thạc sĩ (300 DPI, bảo toàn tỷ lệ khung hình, định dạng PNG)
+        Tải toàn bộ 38 hình ảnh chuẩn thức của Đề án Thạc sĩ (300 DPI, bảo toàn tỷ lệ khung hình, định dạng PNG)
         kèm file danh mục <b>README_PICS_MAP.md</b> đóng gói trong 1 file ZIP duy nhất — sẵn sàng chèn vào Word hoặc gửi Hội đồng.
     </div>
     """,

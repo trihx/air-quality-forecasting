@@ -320,7 +320,8 @@ class KnowledgeBase:
 
         # Clear existing
         if force and collection.count() > 0:
-            self._client.delete_collection("pm25_knowledge")
+            if self._client is not None:
+                self._client.delete_collection("pm25_knowledge")
             self._collection = None  # Reset reference
             collection = self._get_collection()
 

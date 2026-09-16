@@ -15,10 +15,13 @@ Usage:
 from __future__ import annotations
 
 import os
-from collections.abc import Generator
+from typing import TYPE_CHECKING
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 # ── Connection URL ──
 # Dev default: SQLite fallback for local dev without Docker.
@@ -44,10 +47,10 @@ if DATABASE_URL.startswith("sqlite"):
 else:
     engine = create_engine(
         DATABASE_URL,
-        pool_size=2,          # Compact connection pool to conserve RAM & avoid Supabase pool exhaustion
-        max_overflow=3,       # Allow burst of up to 3 extra connections during traffic spikes
-        pool_recycle=300,     # Recycle connection every 5 minutes (prevents Supabase idle TCP timeout)
-        pool_pre_ping=True,   # Verify connection liveness before checkout (avoids dropped socket errors)
+        pool_size=2,  # Compact connection pool to conserve RAM & avoid Supabase pool exhaustion
+        max_overflow=3,  # Allow burst of up to 3 extra connections during traffic spikes
+        pool_recycle=300,  # Recycle connection every 5 minutes (prevents Supabase idle TCP timeout)
+        pool_pre_ping=True,  # Verify connection liveness before checkout (avoids dropped socket errors)
         connect_args={
             "connect_timeout": 10,
         },

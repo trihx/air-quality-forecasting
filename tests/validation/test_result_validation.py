@@ -38,9 +38,9 @@ class TestMASEFormula:
         y_naive = np.array([8.0, 10.0, 15.0, 12.0, 18.0])
 
         # Hand calculation
-        mae_model = np.mean(np.abs(y_true - y_pred))   # |1|+|1|+|1|+|1|+|1| / 5 = 1.0
-        mae_naive = np.mean(np.abs(y_true - y_naive))   # |2|+|5|+|3|+|6|+|4| / 5 = 4.0
-        expected_mase = mae_model / mae_naive             # 1.0 / 4.0 = 0.25
+        mae_model = np.mean(np.abs(y_true - y_pred))  # |1|+|1|+|1|+|1|+|1| / 5 = 1.0
+        mae_naive = np.mean(np.abs(y_true - y_naive))  # |2|+|5|+|3|+|6|+|4| / 5 = 4.0
+        expected_mase = mae_model / mae_naive  # 1.0 / 4.0 = 0.25
 
         actual_mase = mase(y_true, y_pred, y_naive)
         print(f"    MAE_model = {mae_model:.4f}", flush=True)
@@ -67,7 +67,7 @@ class TestMASEFormula:
         print("\n  [test] MASE < 1.0 = better than naive...", flush=True)
         y_true = np.array([10.0, 15.0, 12.0, 18.0])
         y_pred_good = np.array([10.5, 14.5, 12.5, 17.5])  # Close to true
-        y_naive = np.array([5.0, 10.0, 15.0, 12.0])        # Far from true
+        y_naive = np.array([5.0, 10.0, 15.0, 12.0])  # Far from true
 
         result = mase(y_true, y_pred_good, y_naive)
         print(f"    MAE_model = {mae(y_true, y_pred_good):.4f}", flush=True)
@@ -80,8 +80,8 @@ class TestMASEFormula:
         """MASE > 1.0 iff model MAE > naive MAE."""
         print("\n  [test] MASE > 1.0 = worse than naive...", flush=True)
         y_true = np.array([10.0, 15.0, 12.0, 18.0])
-        y_pred_bad = np.array([20.0, 5.0, 22.0, 8.0])   # Very bad
-        y_naive = np.array([9.0, 14.0, 11.0, 17.0])      # Close to true
+        y_pred_bad = np.array([20.0, 5.0, 22.0, 8.0])  # Very bad
+        y_naive = np.array([9.0, 14.0, 11.0, 17.0])  # Close to true
 
         result = mase(y_true, y_pred_bad, y_naive)
         print(f"    MASE = {result:.4f}", flush=True)
@@ -147,9 +147,9 @@ class TestPersistenceBaseline:
         y = np.array([10.0, 12.0, 14.0, 16.0, 18.0])
 
         # Persistence: predict y[t] = y[t-1]
-        y_true = y[1:]        # [12, 14, 16, 18]
-        y_naive = y[:-1]      # [10, 12, 14, 16]
-        expected_mae = 2.0    # All errors = 2
+        y_true = y[1:]  # [12, 14, 16, 18]
+        y_naive = y[:-1]  # [10, 12, 14, 16]
+        expected_mae = 2.0  # All errors = 2
 
         actual = mae(y_true, y_naive)
         print(f"    y_true  = {y_true}", flush=True)
@@ -344,6 +344,7 @@ class TestDataIntegrity:
         """Train data must be BEFORE test data (no temporal leakage)."""
         print("\n  [test] Temporal split ordering...", flush=True)
         import pandas as pd
+
         n = 1000
         idx = pd.date_range("2023-01-01", periods=n, freq="1h")
 
@@ -395,17 +396,19 @@ class TestShuffleValidation:
         np.random.seed(42)
         n = 500
         # Create realistic time series features
-        X = np.column_stack([
-            np.sin(2 * np.pi * np.arange(n) / 24),   # hour cycle
-            np.cos(2 * np.pi * np.arange(n) / 24),
-            np.random.randn(n),                        # noise feature
-        ])
+        X = np.column_stack(
+            [
+                np.sin(2 * np.pi * np.arange(n) / 24),  # hour cycle
+                np.cos(2 * np.pi * np.arange(n) / 24),
+                np.random.randn(n),  # noise feature
+            ]
+        )
         y = 20 + 5 * np.sin(2 * np.pi * np.arange(n) / 24) + np.random.randn(n)
 
         tr = int(n * 0.8)
         X_tr, y_tr = X[:tr], y[:tr]
         X_te, y_te = X[tr:], y[tr:]
-        y_naive = y[tr - 1:-1]  # Persistence
+        y_naive = y[tr - 1 : -1]  # Persistence
 
         # Train on real data
         model = GradientBoostingRegressor(n_estimators=50, max_depth=3, random_state=42)

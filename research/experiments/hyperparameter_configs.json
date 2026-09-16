@@ -1,4 +1,14 @@
 {
+  "matrix_summary": {
+    "total_configurations": 41,
+    "parametric_models": 36,
+    "baseline_models": 5,
+    "resolutions": {
+      "15m": {"count": 15, "models": ["Persistence", "ARIMA", "SARIMA", "LightGBM", "RandomForest", "ElasticNet", "GradientBoosting", "GRU", "LSTM", "TFT", "GRU_Expert", "LSTM_Expert", "TFT_Expert", "Stacking_Ridge", "Weighted_Ensemble"]},
+      "30m": {"count": 15, "models": ["Persistence", "ARIMA", "SARIMA", "LightGBM", "RandomForest", "ElasticNet", "GradientBoosting", "GRU", "LSTM", "TFT", "GRU_Expert", "LSTM_Expert", "TFT_Expert", "Stacking_Ridge", "Weighted_Ensemble"]},
+      "1h": {"count": 11, "models": ["Persistence", "ARIMA", "SARIMA", "LightGBM", "RandomForest", "ElasticNet", "GRU", "LSTM", "TFT", "Stacking_Ridge", "Weighted_Ensemble"]}
+    }
+  },
   "lightgbm": {
     "description": "LightGBM (Optuna Bayesian TPE sampler, 100 trials/horizon, TimeSeriesSplit(5), minimize MAE)",
     "params": ["n_estimators", "max_depth", "learning_rate", "num_leaves", "subsample", "colsample_bytree", "min_child_samples", "reg_alpha", "reg_lambda"],
@@ -8,8 +18,23 @@
       "h24": [450, 4, 0.015, 52, 0.75, 0.65, 35, 0.08, 0.4]
     }
   },
+  "simplified_tft": {
+    "description": "Simplified Temporal Fusion Transformer (PyTorch native, không phụ thuộc pytorch-forecasting)",
+    "architecture": "Input (72 steps × 5 features) → Variable Selection Network (GRN) → GRU Encoder (2 layers, hidden=32) → Interpretable Multi-Head Attention (4 heads) → GLU → Output",
+    "params": {
+      "hidden_dim": 32,
+      "num_heads": 4,
+      "dropout": 0.1,
+      "batch_size": 64,
+      "learning_rate": 0.0005,
+      "patience": 15,
+      "total_parameters": 25089,
+      "optimizer": "AdamW",
+      "loss_function": "QuantileLoss / HuberLoss"
+    }
+  },
   "deep_learning": {
-    "description": "GRU / LSTM (Features: pm25, nhiet_do, do_am, diem_suong, co2 | Device: MPS M1 Pro GPU)",
+    "description": "GRU / LSTM (Đặc trưng: pm25, nhiet_do, do_am, diem_suong, co2 | Thiết bị: MPS M1 Pro / CUDA GPU)",
     "params": {
       "lookback": 72,
       "hidden_dim": 64,
@@ -22,6 +47,34 @@
       "optimizer": "Adam",
       "scheduler": "ReduceLROnPlateau (factor=0.5, patience=5)"
     }
+  },
+  "sklearn_tabular": {
+    "description": "Mô hình học máy dạng bảng bổ sung (Random Forest & ElasticNet điều hòa L1/L2)",
+    "models": [
+      {
+        "name": "Random Forest",
+        "family": "Ensemble Bagging",
+        "n_estimators": 100,
+        "max_depth": 15,
+        "features": 119,
+        "purpose": "Kiểm chuẩn tính vững giảm phương sai, chống overfitting"
+      },
+      {
+        "name": "ElasticNet",
+        "family": "Regularized Linear",
+        "alpha": 0.1,
+        "l1_ratio": 0.5,
+        "max_iter": 10000,
+        "target_transform": "ln(PM2.5) / log1p",
+        "purpose": "Ổn định phương sai chuỗi đuôi dài (Skewness=2.00), kiểm soát độ lệch bias"
+      }
+    ]
+  },
+  "stacking_ensemble": {
+    "description": "Học kết hợp Stacking & Weighted Blending",
+    "meta_learner": "Ridge Regression (alpha=1.0) / Bayesian Optimal Weights",
+    "base_models": ["LightGBM", "GRU", "LSTM", "RandomForest", "ElasticNet"],
+    "combination_strategy": "Inverse Variance Weighting & Out-of-fold Stacking"
   },
   "arima": {
     "description": "ARIMA / SARIMA (auto_arima AIC selection)",

@@ -19,6 +19,7 @@ import time
 import warnings
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -64,20 +65,45 @@ def _prepare_hybrid_data():
     )
 
 
-def get_default_params(model_type: str) -> dict:
-    """Get recommended default hyperparameters."""
+def get_default_params(model_type: str, horizon: int = 1) -> dict:
+    """Get recommended default hyperparameters (Optuna Bayesian best params)."""
     if model_type == "LightGBM":
-        return {
-            "n_estimators": 500,
-            "max_depth": 3,
-            "learning_rate": 0.013,
-            "num_leaves": 64,
-            "subsample": 0.80,
-            "colsample_bytree": 0.60,
-            "min_child_samples": 30,
-            "reg_alpha": 0.05,
-            "reg_lambda": 0.50,
+        hp_map = {
+            1: {
+                "n_estimators": 500,
+                "max_depth": 3,
+                "learning_rate": 0.013,
+                "num_leaves": 64,
+                "subsample": 0.80,
+                "colsample_bytree": 0.60,
+                "min_child_samples": 30,
+                "reg_alpha": 0.05,
+                "reg_lambda": 0.50,
+            },
+            6: {
+                "n_estimators": 637,
+                "max_depth": 3,
+                "learning_rate": 0.012,
+                "num_leaves": 87,
+                "subsample": 0.85,
+                "colsample_bytree": 0.55,
+                "min_child_samples": 25,
+                "reg_alpha": 0.03,
+                "reg_lambda": 0.70,
+            },
+            24: {
+                "n_estimators": 450,
+                "max_depth": 4,
+                "learning_rate": 0.015,
+                "num_leaves": 52,
+                "subsample": 0.75,
+                "colsample_bytree": 0.65,
+                "min_child_samples": 35,
+                "reg_alpha": 0.08,
+                "reg_lambda": 0.40,
+            },
         }
+        return hp_map.get(horizon, hp_map[1])
     elif model_type == "GRU":
         return {
             "lookback": 72,
@@ -98,10 +124,10 @@ class LightGBMTrainer:
     def __init__(self, horizon: int, params: dict):
         self.horizon = horizon
         self.params = params
-        self.model = None
-        self.metrics = None
-        self._feature_cols = None
-        self._train_time = None
+        self.model: Any = None
+        self.metrics: dict[str, Any] = {}
+        self._feature_cols: list[str] = []
+        self._train_time: float = 0.0
 
     def train(self, progress_callback=None) -> dict:
         """Train and evaluate LightGBM.
@@ -135,23 +161,30 @@ class LightGBMTrainer:
         valid = ~np.isnan(y_target) & ~np.isnan(X).any(axis=1)
         X, y_target, is_imputed_valid = X[valid], y_target[valid], is_imputed[valid]
 
-        # Split 80/10/10
+        # Split 80/10/10 with Purging Gap (prevents target overlap across split boundaries)
         n = len(X)
-        train_end = int(n * 0.8)
-        val_end = int(n * 0.9)
+        purge = self.horizon
+        train_end = max(int(n * 0.8) - purge, 1)
+        val_start = int(n * 0.8)
+        val_end = max(int(n * 0.9) - purge, val_start + 1)
+        test_start = int(n * 0.9)
 
         X_train, y_train = X[:train_end], y_target[:train_end]
-        X_val, y_val = X[train_end:val_end], y_target[train_end:val_end]
-        X_test, y_test = X[val_end:], y_target[val_end:]
-        test_imputed = is_imputed_valid[val_end:]
+        X_val, y_val = X[val_start:val_end], y_target[val_start:val_end]
+        X_test, y_test = X[test_start:], y_target[test_start:]
+        test_imputed = is_imputed_valid[test_start:]
 
         if progress_callback:
             progress_callback(2, 5, "Training LightGBM...")
 
+        lgb_params = dict(self.params)
+        lgb_params.setdefault("n_jobs", 1)  # Single thread to prevent OpenMP crash on macOS
+        lgb_params.setdefault("objective", "regression_l1")  # Direct MAE minimization per Optuna
+        lgb_params.setdefault("random_state", 42)
+
         self.model = lgb.LGBMRegressor(
-            **self.params,
+            **lgb_params,
             verbose=-1,
-            n_jobs=-1,
         )
         self.model.fit(
             X_train,
@@ -168,9 +201,9 @@ class LightGBMTrainer:
         y_test_real = y_test[real_mask]
         y_pred_real = self.model.predict(X_test[real_mask])
 
-        # Persistence baseline
+        # Persistence baseline (t predicting t+h)
         y_orig = y[valid]
-        persist_mae = float(np.mean(np.abs(y_test_real - y_orig[val_end:][real_mask])))
+        persist_mae = float(np.mean(np.abs(y_test_real - y_orig[test_start:][real_mask])))
 
         mae = float(mean_absolute_error(y_test_real, y_pred_real))
         rmse = float(np.sqrt(mean_squared_error(y_test_real, y_pred_real)))
@@ -245,10 +278,13 @@ class GRUTrainer:
     def __init__(self, horizon: int, params: dict):
         self.horizon = horizon
         self.params = params
-        self.model = None
-        self.metrics = None
-        self._train_time = None
-        self._model_state = None
+        self.model: Any = None
+        self.metrics: dict[str, Any] = {}
+        self._train_time: float = 0.0
+        self._model_state: dict[str, Any] | None = None
+        self._feat_scaler: Any = None
+        self._tgt_scaler: Any = None
+        self._available_features: list[str] = []
 
     def train(self, progress_callback=None) -> dict:
         """Train and evaluate GRU."""
@@ -348,7 +384,7 @@ class GRUTrainer:
 
         for ep in range(epochs):
             model.train()
-            tl = 0
+            tl = 0.0
             for xb, yb in train_loader:
                 xb, yb = xb.to(device), yb.to(device)
                 optimizer.zero_grad()
@@ -360,7 +396,7 @@ class GRUTrainer:
             tl /= max(len(train_loader), 1)
 
             model.eval()
-            vl = 0
+            vl = 0.0
             with torch.no_grad():
                 for xb, yb in val_loader:
                     vl += criterion(model(xb.to(device)), yb.to(device)).item()
@@ -412,8 +448,8 @@ class GRUTrainer:
         preds_real = preds[real_mask]
         actuals_real = actuals[real_mask]
 
-        # Persistence
-        persist_preds = np.array([target[i] for i in test_ds.indices])[real_mask]
+        # Persistence baseline: last observed value before forecast horizon h is target[i + lb - 1]
+        persist_preds = np.array([target[i + lb - 1] for i in test_ds.indices])[real_mask]
         persist_mae = float(np.mean(np.abs(actuals_real - persist_preds)))
 
         mae = float(mean_absolute_error(actuals_real, preds_real))

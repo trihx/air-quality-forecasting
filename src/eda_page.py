@@ -62,8 +62,8 @@ def _insight_card(title: str, text: str, card_type: str = "default"):
     parsed_text = re.sub(r"\*(.*?)\*", r"<i>\1</i>", parsed_text)
     st.markdown(
         f"""
-    <div class="insight-card {cls}" style="background: var(--secondary-background-color); 
-                border-left: 4px solid #00D4AA; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; 
+    <div class="insight-card {cls}" style="background: var(--secondary-background-color);
+                border-left: 4px solid #00D4AA; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0;
                 margin: 1rem 0; border: 1px solid rgba(0,212,170,0.2);">
         <h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem; color: #00D4AA;">{title}</h4>
         <div style="font-size: 0.92rem; line-height: 1.6; opacity: 0.9;">{parsed_text}</div>
@@ -71,6 +71,27 @@ def _insight_card(title: str, text: str, card_type: str = "default"):
     """,
         unsafe_allow_html=True,
     )
+
+
+@st.cache_data(show_spinner=False)
+def _get_scatter_dispersion_data() -> pd.DataFrame | None:
+    """Load and sample dispersion data for interactive scatter plot."""
+    candidate_paths = [
+        PROJECT_ROOT / "dataset" / "interim" / "cleaned_hourly.csv",
+        PROJECT_ROOT / "dataset" / "processed" / "marts_features.csv",
+    ]
+    for p in candidate_paths:
+        if p.exists():
+            try:
+                df = pd.read_csv(p, usecols=["pm25"]).dropna()
+                df["h1"] = df["pm25"].shift(-1)
+                df["h24"] = df["pm25"].shift(-24)
+                df_clean = df.dropna()
+                if len(df_clean) > 0:
+                    return df_clean.sample(min(2000, len(df_clean)), random_state=42)
+            except Exception:  # noqa: S112
+                continue
+    return None
 
 
 def page_eda(results):
@@ -207,7 +228,7 @@ def page_eda(results):
                 z_grid = [[None] * max_week for _ in range(7)]
                 text_grid = [[""] * max_week for _ in range(7)]
 
-                for d, v, w, wd in zip(year_dates, year_values, weeks, weekdays):
+                for d, v, w, wd in zip(year_dates, year_values, weeks, weekdays, strict=False):
                     w_idx = int(w) - 1
                     if 0 <= w_idx < max_week:
                         z_grid[wd][w_idx] = round(float(v), 1)
@@ -224,21 +245,21 @@ def page_eda(results):
                 fig_cal = _chart(
                     height=250,
                     hovermode="closest",
-                    margin=dict(l=40, r=20, t=30, b=30),
+                    margin={"l": 40, "r": 20, "t": 30, "b": 30},
                     layout_overrides={
-                        "yaxis": dict(
-                            tickmode="array",
-                            tickvals=list(range(7)),
-                            ticktext=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                            autorange="reversed",
-                            tickfont=dict(size=10),
-                        ),
-                        "xaxis": dict(
-                            tickmode="array",
-                            tickvals=[t[0] for t in month_ticks],
-                            ticktext=[t[1] for t in month_ticks],
-                            tickfont=dict(size=11),
-                        ),
+                        "yaxis": {
+                            "tickmode": "array",
+                            "tickvals": list(range(7)),
+                            "ticktext": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                            "autorange": "reversed",
+                            "tickfont": {"size": 10},
+                        },
+                        "xaxis": {
+                            "tickmode": "array",
+                            "tickvals": [t[0] for t in month_ticks],
+                            "ticktext": [t[1] for t in month_ticks],
+                            "tickfont": {"size": 11},
+                        },
                     },
                 )
                 fig_cal.add_trace(
@@ -255,12 +276,12 @@ def page_eda(results):
                         ],
                         zmin=0,
                         zmax=50,
-                        colorbar=dict(
-                            title=dict(text="<b>PM2.5</b><br>(µg/m³)", font=dict(size=11)),
-                            thickness=12,
-                            len=0.8,
-                            tickfont=dict(size=10),
-                        ),
+                        colorbar={
+                            "title": {"text": "<b>PM2.5</b><br>(µg/m³)", "font": {"size": 11}},
+                            "thickness": 12,
+                            "len": 0.8,
+                            "tickfont": {"size": 10},
+                        },
                         xgap=2,
                         ygap=2,
                     )
@@ -316,8 +337,8 @@ def page_eda(results):
             fig_corr = _chart(
                 height=420,
                 hovermode="closest",
-                margin=dict(l=20, r=20, t=20, b=20),
-                layout_overrides={"xaxis": dict(side="bottom"), "yaxis": dict(autorange="reversed")},
+                margin={"l": 20, "r": 20, "t": 20, "b": 20},
+                layout_overrides={"xaxis": {"side": "bottom"}, "yaxis": {"autorange": "reversed"}},
             )
             fig_corr.add_trace(
                 go.Heatmap(
@@ -332,7 +353,7 @@ def page_eda(results):
                     texttemplate="%{text}",
                     textfont={"size": 13},
                     hovertemplate="<b>%{y}</b> vs <b>%{x}</b><br>r = %{z:.3f}<extra></extra>",
-                    colorbar=dict(title=dict(text="r"), thickness=15),
+                    colorbar={"title": {"text": "r"}, "thickness": 15},
                 )
             )
             _render_chart(fig_corr, filename=f"corr_{corr_method.lower()}")
@@ -348,7 +369,7 @@ def page_eda(results):
         # Mutual Information & Complexity Radar
         c_mi, c_rad = st.columns([1, 1])
         with c_mi:
-            st.markdown(f"#### 🧠 Mutual Information {cite('zhang2017')}")
+            st.markdown(f"#### 🧠 Mutual Information {cite('zhang2017')}", unsafe_allow_html=True)
             mi_dict = {"CO₂": 0.142, "Điểm sương": 0.128, "Nhiệt độ": 0.121, "Độ ẩm": 0.108}
             mi_df = pd.DataFrame(list(mi_dict.items()), columns=["Feature", "MI Score"]).sort_values(
                 "MI Score", ascending=True
@@ -366,9 +387,9 @@ def page_eda(results):
             fig_mi.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(family="Inter, Arial, sans-serif", size=10),
+                font={"family": "Inter, Arial, sans-serif", "size": 10},
                 height=300,
-                margin=dict(l=20, r=20, t=10, b=30),
+                margin={"l": 20, "r": 20, "t": 10, "b": 30},
                 coloraxis_showscale=False,
                 xaxis_title="Mutual Information Score",
                 yaxis_title="",
@@ -377,10 +398,10 @@ def page_eda(results):
             _caption("Mutual Information với Target PM2.5")
 
         with c_rad:
-            st.markdown(f"#### 🕸️ Complexity Profile Radar {cite('kang2017')}")
+            st.markdown(f"#### 🕸️ Complexity Profile Radar {cite('christ2018')}", unsafe_allow_html=True)
             radar_data = p5_data.get("complexity_radar")
             if radar_data:
-                fig_radar = _chart(height=300, showlegend=False, margin=dict(l=20, r=20, t=10, b=20))
+                fig_radar = _chart(height=300, showlegend=False, margin={"l": 20, "r": 20, "t": 10, "b": 20})
                 fig_radar.add_trace(
                     go.Scatterpolar(
                         r=radar_data["values"] + [radar_data["values"][0]],
@@ -391,11 +412,11 @@ def page_eda(results):
                     )
                 )
                 fig_radar.update_layout(
-                    polar=dict(
-                        radialaxis=dict(visible=True, range=[0, 1], gridcolor="rgba(139,149,165,0.3)"),
-                        angularaxis=dict(gridcolor="rgba(139,149,165,0.3)"),
-                        bgcolor="rgba(0,0,0,0)",
-                    ),
+                    polar={
+                        "radialaxis": {"visible": True, "range": [0, 1], "gridcolor": "rgba(139,149,165,0.3)"},
+                        "angularaxis": {"gridcolor": "rgba(139,149,165,0.3)"},
+                        "bgcolor": "rgba(0,0,0,0)",
+                    },
                 )
                 _render_chart(fig_radar, filename="complexity_radar_eda")
                 _caption("Độ phức tạp đa chiều của chuỗi PM2.5")
@@ -407,10 +428,10 @@ def page_eda(results):
         st.markdown("### 2. §4.1.1 Kiểm Định Tính Dừng & Đồ Thị Chẩn Đoán Qua 5 Trạng Thái Biến Đổi")
         st.markdown(
             "Thực thi quy trình kiểm định kép ADF và KPSS trên chuỗi thời gian PM2.5 thực tế quan trắc tại Sa Đéc, "
-            "kết quả thu được trên chuỗi gốc và các dạng biến đổi sai phân được lượng hóa trong Bảng 4.1 của Luận văn:"
+            "kết quả thu được trên chuỗi gốc và các dạng biến đổi sai phân được lượng hóa trong Bảng 4.1 của Đề án:"
         )
 
-        # Bảng 4.1 Luận văn
+        # Bảng 4.1 Đề án
         st.markdown("#### 📋 Bảng 4.1: Kết quả kiểm định tính dừng ADF và KPSS trên chuỗi PM2.5 gốc và sai phân")
         df_bang_4_1 = pd.DataFrame(
             [
@@ -528,7 +549,7 @@ def page_eda(results):
                         x=lags,
                         y=acf_data["acf"],
                         mode="markers",
-                        marker=dict(color="#3B82F6", size=5),
+                        marker={"color": "#3B82F6", "size": 5},
                         showlegend=False,
                     ),
                     row=1,
@@ -539,7 +560,7 @@ def page_eda(results):
                         x=lags,
                         y=acf_data["acf_conf_upper"],
                         mode="lines",
-                        line=dict(color="rgba(156,163,175,0.5)", width=0),
+                        line={"color": "rgba(156,163,175,0.5)", "width": 0},
                         fill="tonexty",
                         fillcolor="rgba(156,163,175,0.2)",
                         showlegend=False,
@@ -552,7 +573,7 @@ def page_eda(results):
                         x=lags,
                         y=acf_data["acf_conf_lower"],
                         mode="lines",
-                        line=dict(color="rgba(156,163,175,0.5)", width=0),
+                        line={"color": "rgba(156,163,175,0.5)", "width": 0},
                         fill="tonexty",
                         fillcolor="rgba(156,163,175,0.2)",
                         showlegend=False,
@@ -572,7 +593,7 @@ def page_eda(results):
                         x=lags,
                         y=acf_data["pacf"],
                         mode="markers",
-                        marker=dict(color="#10B981", size=5),
+                        marker={"color": "#10B981", "size": 5},
                         showlegend=False,
                     ),
                     row=2,
@@ -583,7 +604,7 @@ def page_eda(results):
                         x=lags,
                         y=acf_data["pacf_conf_upper"],
                         mode="lines",
-                        line=dict(color="rgba(156,163,175,0.5)", width=0),
+                        line={"color": "rgba(156,163,175,0.5)", "width": 0},
                         fill="tonexty",
                         fillcolor="rgba(156,163,175,0.2)",
                         showlegend=False,
@@ -596,7 +617,7 @@ def page_eda(results):
                         x=lags,
                         y=acf_data["pacf_conf_lower"],
                         mode="lines",
-                        line=dict(color="rgba(156,163,175,0.5)", width=0),
+                        line={"color": "rgba(156,163,175,0.5)", "width": 0},
                         fill="tonexty",
                         fillcolor="rgba(156,163,175,0.2)",
                         showlegend=False,
@@ -607,7 +628,7 @@ def page_eda(results):
                 fig_acf.update_layout(
                     height=400,
                     showlegend=False,
-                    margin=dict(l=20, r=20, t=40, b=20),
+                    margin={"l": 20, "r": 20, "t": 40, "b": 20},
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
                 )
@@ -654,58 +675,80 @@ def page_eda(results):
         # Plotly Interactive Dispersion Tool
         with st.expander("🔍 Xem biểu đồ phân tán tương tác (Interactive Plotly Scatter)", expanded=False):
             try:
-                df_clean = pd.read_csv(
-                    PROJECT_ROOT / "dataset" / "interim" / "cleaned_hourly.csv", usecols=["pm25"]
-                ).dropna()
-                df_disp = df_clean.copy()
-                df_disp["h1"] = df_disp["pm25"].shift(-1)
-                df_disp["h24"] = df_disp["pm25"].shift(-24)
-                df_disp = df_disp.dropna().sample(min(2000, len(df_disp)))
-
-                fig_disp = make_subplots(
-                    rows=1, cols=2, subplot_titles=("h=1 (Tương quan chặt chẽ)", "h=24 (Phân tán mở rộng)")
-                )
-                fig_disp.add_trace(
-                    go.Scatter(
-                        x=df_disp["pm25"],
-                        y=df_disp["h1"],
-                        mode="markers",
-                        marker=dict(size=3, color="#3B82F6", opacity=0.5),
-                    ),
-                    row=1,
-                    col=1,
-                )
-                fig_disp.add_trace(
-                    go.Scatter(
-                        x=df_disp["pm25"],
-                        y=df_disp["h24"],
-                        mode="markers",
-                        marker=dict(size=3, color="#F59E0B", opacity=0.5),
-                    ),
-                    row=1,
-                    col=2,
-                )
-                max_val = df_disp["pm25"].max()
-                fig_disp.add_trace(
-                    go.Scatter(x=[0, max_val], y=[0, max_val], mode="lines", line=dict(color="gray", dash="dash")),
-                    row=1,
-                    col=1,
-                )
-                fig_disp.add_trace(
-                    go.Scatter(x=[0, max_val], y=[0, max_val], mode="lines", line=dict(color="gray", dash="dash")),
-                    row=1,
-                    col=2,
-                )
-                fig_disp.update_layout(
-                    height=280,
-                    showlegend=False,
-                    margin=dict(l=20, r=20, t=30, b=20),
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                )
-                _render_chart(fig_disp, filename="scatter_dispersion_eda")
-            except Exception:
-                pass
+                df_disp = _get_scatter_dispersion_data()
+                if df_disp is not None and not df_disp.empty:
+                    fig_disp = make_subplots(
+                        rows=1,
+                        cols=2,
+                        subplot_titles=(
+                            "h=1 (Tương quan chặt chẽ: r ≈ 0,86)",
+                            "h=24 (Phân tán mở rộng: r ≈ 0,45)",
+                        ),
+                    )
+                    fig_disp.add_trace(
+                        go.Scatter(
+                            x=df_disp["pm25"],
+                            y=df_disp["h1"],
+                            mode="markers",
+                            marker={"size": 3, "color": "#3B82F6", "opacity": 0.5},
+                            name="h=1h",
+                        ),
+                        row=1,
+                        col=1,
+                    )
+                    fig_disp.add_trace(
+                        go.Scatter(
+                            x=df_disp["pm25"],
+                            y=df_disp["h24"],
+                            mode="markers",
+                            marker={"size": 3, "color": "#F59E0B", "opacity": 0.5},
+                            name="h=24h",
+                        ),
+                        row=1,
+                        col=2,
+                    )
+                    max_val = float(df_disp["pm25"].max())
+                    fig_disp.add_trace(
+                        go.Scatter(
+                            x=[0, max_val],
+                            y=[0, max_val],
+                            mode="lines",
+                            line={"color": "gray", "dash": "dash"},
+                            name="x=y",
+                        ),
+                        row=1,
+                        col=1,
+                    )
+                    fig_disp.add_trace(
+                        go.Scatter(
+                            x=[0, max_val],
+                            y=[0, max_val],
+                            mode="lines",
+                            line={"color": "gray", "dash": "dash"},
+                            name="x=y",
+                        ),
+                        row=1,
+                        col=2,
+                    )
+                    fig_disp.update_layout(
+                        height=300,
+                        showlegend=False,
+                        margin={"l": 20, "r": 20, "t": 30, "b": 20},
+                        paper_bgcolor="rgba(0,0,0,0)",
+                        plot_bgcolor="rgba(0,0,0,0)",
+                    )
+                    _render_chart(
+                        fig_disp,
+                        filename="scatter_dispersion_eda",
+                        key="eda_scatter_dispersion_chart",
+                    )
+                    _caption(
+                        "Hình 4.2b: Biểu đồ phân tán tương tác — Độ tản mát giãn rộng khi chân trời dự báo tăng từ 1h lên 24h"
+                    )
+                else:
+                    st.warning("⚠️ Không thể tải dữ liệu phân tán tương tác từ tập tin chuỗi thời gian.")
+            except Exception as e:
+                st.warning(f"⚠️ Không thể hiển thị biểu đồ phân tán: {e}")
 
     # ══════════════════════════════════════════════════════════════════
     # TAB 4: ⚡ §4.1.3 PHÂN PHỐI ĐUÔI DÀI & ĐỈNH DỊ THƯỜNG
@@ -750,7 +793,7 @@ def page_eda(results):
             "⚠️ Bẫy Loại Bỏ Ngoại Lai (Outlier Removal Trap)",
             "<b>Cảnh báo phương pháp luận:</b> Áp dụng các bộ lọc thống kê tiêu chuẩn (như IQR 1.5 hay Z-Score) để cắt bỏ các giá trị lớn hơn ngưỡng sẽ xóa nhầm chính các đỉnh ô nhiễm cực đoan thật sự. "
             "Hành động này tạo ra hội chứng 'Độ chính xác giả mạo' (False Sense of Accuracy): mô hình có MAE rất thấp nhưng hoàn toàn bị 'mù' trước các thảm họa môi trường. "
-            "<b>Giải pháp Luận văn:</b> Bắt buộc sử dụng <b>Domain Bounds (0 – 500 µg/m³)</b> theo giới hạn vật lý và quy chuẩn kỹ thuật quốc gia, bảo toàn nguyên vẹn 100% các đỉnh bùng phát thực tế.",
+            "<b>Giải pháp Đề án:</b> Bắt buộc sử dụng <b>Domain Bounds (0 – 500 µg/m³)</b> theo giới hạn vật lý và quy chuẩn kỹ thuật quốc gia, bảo toàn nguyên vẹn 100% các đỉnh bùng phát thực tế.",
             card_type="warning",
         )
 
@@ -766,7 +809,7 @@ def page_eda(results):
                 d_raw = qq_data["raw"]
                 fig_qq.add_trace(
                     go.Scatter(
-                        x=d_raw["theo"], y=d_raw["sample"], mode="markers", marker=dict(color="#3B82F6", size=4)
+                        x=d_raw["theo"], y=d_raw["sample"], mode="markers", marker={"color": "#3B82F6", "size": 4}
                     ),
                     row=1,
                     col=1,
@@ -777,7 +820,7 @@ def page_eda(results):
                         x=[min_th, max_th],
                         y=[min(d_raw["sample"]), max(d_raw["sample"])],
                         mode="lines",
-                        line=dict(color="#EF4444", dash="dash"),
+                        line={"color": "#EF4444", "dash": "dash"},
                     ),
                     row=1,
                     col=1,
@@ -785,7 +828,7 @@ def page_eda(results):
                 d_log = qq_data["log"]
                 fig_qq.add_trace(
                     go.Scatter(
-                        x=d_log["theo"], y=d_log["sample"], mode="markers", marker=dict(color="#10B981", size=4)
+                        x=d_log["theo"], y=d_log["sample"], mode="markers", marker={"color": "#10B981", "size": 4}
                     ),
                     row=1,
                     col=2,
@@ -795,7 +838,7 @@ def page_eda(results):
                         x=[min_th, max_th],
                         y=[min(d_log["sample"]), max(d_log["sample"])],
                         mode="lines",
-                        line=dict(color="#EF4444", dash="dash"),
+                        line={"color": "#EF4444", "dash": "dash"},
                     ),
                     row=1,
                     col=2,
@@ -803,7 +846,7 @@ def page_eda(results):
                 fig_qq.update_layout(
                     height=320,
                     showlegend=False,
-                    margin=dict(l=20, r=20, t=40, b=20),
+                    margin={"l": 20, "r": 20, "t": 40, "b": 20},
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
                 )
@@ -864,7 +907,7 @@ def page_eda(results):
                 )
                 fig_diurnal.update_layout(
                     height=260,
-                    margin=dict(l=30, r=20, t=20, b=30),
+                    margin={"l": 30, "r": 20, "t": 20, "b": 30},
                     xaxis_title="Giờ trong ngày",
                     yaxis_title="PM2.5 trung bình (µg/m³)",
                     paper_bgcolor="rgba(0,0,0,0)",
@@ -872,7 +915,7 @@ def page_eda(results):
                 )
                 _render_chart(fig_diurnal, filename="diurnal_cycle_eda")
                 _caption("Chu kỳ nồng độ trung bình theo giờ trong ngày (Diurnal)")
-            except Exception:
+            except Exception:  # noqa: S110
                 pass
 
         with c_stl:
@@ -903,13 +946,13 @@ def page_eda(results):
 
                 fig_stl = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.08)
                 fig_stl.add_trace(
-                    go.Scatter(x=df_stl.index, y=df_stl["trend"], name="Trend", line=dict(color="#F59E0B", width=2)),
+                    go.Scatter(x=df_stl.index, y=df_stl["trend"], name="Trend", line={"color": "#F59E0B", "width": 2}),
                     row=1,
                     col=1,
                 )
                 fig_stl.add_trace(
                     go.Scatter(
-                        x=df_stl.index, y=df_stl["seasonal"], name="Seasonal", line=dict(color="#3B82F6", width=1)
+                        x=df_stl.index, y=df_stl["seasonal"], name="Seasonal", line={"color": "#3B82F6", "width": 1}
                     ),
                     row=2,
                     col=1,
@@ -920,14 +963,14 @@ def page_eda(results):
                         y=df_stl["resid"],
                         name="Residual",
                         mode="markers",
-                        marker=dict(color="#EF4444", size=3),
+                        marker={"color": "#EF4444", "size": 3},
                     ),
                     row=3,
                     col=1,
                 )
                 fig_stl.update_layout(
                     height=260,
-                    margin=dict(l=30, r=20, t=10, b=20),
+                    margin={"l": 30, "r": 20, "t": 10, "b": 20},
                     showlegend=False,
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
@@ -995,14 +1038,17 @@ def page_eda(results):
                         yaxis_title="Số lượng gaps",
                         height=320,
                         showlegend=False,
-                        margin=dict(l=40, r=20, t=20, b=20),
+                        margin={"l": 40, "r": 20, "t": 20, "b": 20},
                     )
                     fig_gap.add_trace(
                         go.Bar(
                             x=gap_labels,
                             y=gap_counts,
                             marker_color=bar_colors[: len(gap_labels)],
-                            text=[f"{c} gaps<br>{h}h ({p}%)" for c, h, p in zip(gap_counts, gap_hours, gap_pcts)],
+                            text=[
+                                f"{c} gaps<br>{h}h ({p}%)"
+                                for c, h, p in zip(gap_counts, gap_hours, gap_pcts, strict=False)
+                            ],
                         )
                     )
                     add_simple_bar_labels(fig_gap, orientation="v", yshift=8)
@@ -1074,7 +1120,10 @@ def page_eda(results):
 
         gc = di_data.get("granger_causality", {})
         if gc:
-            st.markdown(f"**Kiểm định Nhân quả Granger (Granger Causality Test - α=0.05)** {cite('peixeiro2022')}:")
+            st.markdown(
+                f"**Kiểm định Nhân quả Granger (Granger Causality Test - α=0.05)** {cite('peixeiro2022')}:",
+                unsafe_allow_html=True,
+            )
             gc_rows = []
             for col_name, gr in gc.items():
                 if "error" not in gr:

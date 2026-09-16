@@ -21,6 +21,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
 
+# ── VTF: Centralized theme ──
+from src.viz.theme import ACCENT_COLORS, annotation_bbox, apply_mpl_theme
+
+ACCENT_BLUE = ACCENT_COLORS["blue"]
+ACCENT_ORANGE = ACCENT_COLORS["orange"]
+ACCENT_GREEN = ACCENT_COLORS["green"]
+ACCENT_RED = ACCENT_COLORS["red"]
+
 # Lazy imports for statsmodels
 _sm_loaded = False
 
@@ -32,15 +40,6 @@ def _ensure_statsmodels():
         import statsmodels  # noqa: F401
 
         _sm_loaded = True
-
-
-# ── VTF: Centralized theme ──
-from src.viz.theme import ACCENT_COLORS, annotation_bbox, apply_mpl_theme
-
-ACCENT_BLUE = ACCENT_COLORS["blue"]
-ACCENT_ORANGE = ACCENT_COLORS["orange"]
-ACCENT_GREEN = ACCENT_COLORS["green"]
-ACCENT_RED = ACCENT_COLORS["red"]
 
 
 def run_residual_diagnostics(
@@ -148,7 +147,7 @@ def _ljung_box_test(
     from statsmodels.stats.diagnostic import acorr_ljungbox
 
     test_lags = [1, 6, 12, 24, min(max_lags, len(residuals) // 3)]
-    test_lags = sorted(set(l for l in test_lags if l > 0 and l < len(residuals) // 2))
+    test_lags = sorted({lag_val for lag_val in test_lags if lag_val > 0 and lag_val < len(residuals) // 2})
 
     results = {}
     for lag in test_lags:

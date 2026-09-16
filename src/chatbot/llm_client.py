@@ -147,7 +147,7 @@ def _try_stream_provider(
     try:
         stream = client.chat.completions.create(
             model=model,
-            messages=full_messages,
+            messages=full_messages,  # type: ignore[arg-type]
             temperature=temperature,
             max_tokens=max_tokens,
             stream=True,

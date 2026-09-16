@@ -10,7 +10,6 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from src.api.database import Base, get_db
 from src.api.main import app
 
@@ -79,11 +78,14 @@ class TestExperiments:
     """Test /api/v1/experiments endpoints."""
 
     def test_create_experiment(self, client):
-        resp = client.post("/api/v1/experiments", json={
-            "name": "v8_test",
-            "pipeline_version": "v8",
-            "description": "Test experiment",
-        })
+        resp = client.post(
+            "/api/v1/experiments",
+            json={
+                "name": "v8_test",
+                "pipeline_version": "v8",
+                "description": "Test experiment",
+            },
+        )
         assert resp.status_code == 201
         data = resp.json()
         assert data["name"] == "v8_test"
@@ -125,20 +127,26 @@ class TestRuns:
         # Create experiment first
         exp = client.post("/api/v1/experiments", json={"name": "run_test"}).json()
 
-        resp = client.post("/api/v1/runs", json={
-            "experiment_id": exp["id"],
-            "horizon": 6,
-        })
+        resp = client.post(
+            "/api/v1/runs",
+            json={
+                "experiment_id": exp["id"],
+                "horizon": 6,
+            },
+        )
         assert resp.status_code == 201
         data = resp.json()
         assert data["horizon"] == 6
         assert data["status"] == "pending"
 
     def test_create_run_invalid_experiment(self, client):
-        resp = client.post("/api/v1/runs", json={
-            "experiment_id": 9999,
-            "horizon": 1,
-        })
+        resp = client.post(
+            "/api/v1/runs",
+            json={
+                "experiment_id": 9999,
+                "horizon": 1,
+            },
+        )
         assert resp.status_code == 404
 
     def test_list_runs_for_experiment(self, client):
@@ -163,19 +171,26 @@ class TestRunModelsAndMetrics:
     def _create_chain(self, client):
         """Helper: create experiment → run → return run_id."""
         exp = client.post("/api/v1/experiments", json={"name": "metric_test"}).json()
-        run = client.post("/api/v1/runs", json={
-            "experiment_id": exp["id"], "horizon": 6,
-        }).json()
+        run = client.post(
+            "/api/v1/runs",
+            json={
+                "experiment_id": exp["id"],
+                "horizon": 6,
+            },
+        ).json()
         return run["id"]
 
     def test_create_run_model(self, client):
         run_id = self._create_chain(client)
-        resp = client.post("/api/v1/run-models", json={
-            "run_id": run_id,
-            "model_name": "GRU",
-            "training_time_s": 45.2,
-            "hyperparameters": {"hidden_dim": 64, "lr": 0.001},
-        })
+        resp = client.post(
+            "/api/v1/run-models",
+            json={
+                "run_id": run_id,
+                "model_name": "GRU",
+                "training_time_s": 45.2,
+                "hyperparameters": {"hidden_dim": 64, "lr": 0.001},
+            },
+        )
         assert resp.status_code == 201
         data = resp.json()
         assert data["model_name"] == "GRU"
@@ -183,18 +198,24 @@ class TestRunModelsAndMetrics:
 
     def test_create_metrics(self, client):
         run_id = self._create_chain(client)
-        rm = client.post("/api/v1/run-models", json={
-            "run_id": run_id,
-            "model_name": "LightGBM",
-        }).json()
+        rm = client.post(
+            "/api/v1/run-models",
+            json={
+                "run_id": run_id,
+                "model_name": "LightGBM",
+            },
+        ).json()
 
-        resp = client.post("/api/v1/metrics", json={
-            "run_model_id": rm["id"],
-            "mae": 2.145,
-            "rmse": 3.567,
-            "mase": 0.737,
-            "r2": 0.85,
-        })
+        resp = client.post(
+            "/api/v1/metrics",
+            json={
+                "run_model_id": rm["id"],
+                "mae": 2.145,
+                "rmse": 3.567,
+                "mase": 0.737,
+                "r2": 0.85,
+            },
+        )
         assert resp.status_code == 201
         data = resp.json()
         assert data["mae"] == 2.145
@@ -202,19 +223,49 @@ class TestRunModelsAndMetrics:
 
     def test_get_metrics_for_model(self, client):
         run_id = self._create_chain(client)
-        rm = client.post("/api/v1/run-models", json={
-            "run_id": run_id, "model_name": "GRU",
-        }).json()
+        rm = client.post(
+            "/api/v1/run-models",
+            json={
+                "run_id": run_id,
+                "model_name": "GRU",
+            },
+        ).json()
 
-        client.post("/api/v1/metrics", json={
-            "run_model_id": rm["id"], "mae": 1.5, "mase": 0.8,
-        })
+        client.post(
+            "/api/v1/metrics",
+            json={
+                "run_model_id": rm["id"],
+                "mae": 1.5,
+                "mase": 0.8,
+            },
+        )
 
         resp = client.get(f"/api/v1/run-models/{rm['id']}/metrics")
         assert resp.status_code == 200
         data = resp.json()
         assert len(data) == 1
         assert data[0]["mae"] == 1.5
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Inference
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+class TestInference:
+    """Test /api/v1/predict endpoint."""
+
+    @pytest.mark.parametrize("model_name", ["gru", "gru_quantile", "lightgbm", "ensemble"])
+    def test_predict_models(self, client, model_name):
+        resp = client.post(
+            "/api/v1/predict",
+            json={"horizon": 6, "model_name": model_name},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "predicted_pm25" in data
+        assert data["predicted_pm25"] > 0
+        assert data["horizon"] == 6
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -29,8 +29,8 @@ dev:
 	@echo "🌐 Khởi chạy ứng dụng..."
 	@echo "FastAPI Backend: http://localhost:8000"
 	@echo "Streamlit Frontend: http://localhost:8501"
-	@uv run uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --log-level info & \
-	 uv run streamlit run app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true & \
+	@OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1 uv run uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --log-level info & \
+	 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1 uv run streamlit run app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true & \
 	 wait
 
 test:
@@ -39,11 +39,11 @@ test:
 
 check:
 	@echo "🔍 1. Chạy Ruff Format..."
-	uv run ruff format src/
+	uv run ruff format src/ app.py pages.py tests/
 	@echo "🔍 2. Chạy Ruff Lint..."
-	uv run ruff check src/ --fix
+	uv run ruff check src/ app.py pages.py tests/ --fix
 	@echo "🔍 3. Chạy Mypy Type Check..."
-	uv run mypy src/
+	uv run mypy src/ app.py pages.py
 	@echo "🧪 4. Chạy Pytest..."
 	uv run pytest tests/
 

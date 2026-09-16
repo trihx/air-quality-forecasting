@@ -142,11 +142,11 @@ def plot_mae_trend_top5(
         height=height,
         barmode="group",
         layout_overrides={
-            "xaxis": dict(
-                tickmode="array",
-                tickvals=x_vals,
-                ticktext=list(HORIZONS),
-            ),
+            "xaxis": {
+                "tickmode": "array",
+                "tickvals": x_vals,
+                "ticktext": list(HORIZONS),
+            },
         },
     )
 
@@ -213,11 +213,11 @@ def plot_mase_comparison_top5(
         height=height,
         barmode="group",
         layout_overrides={
-            "xaxis": dict(
-                tickmode="array",
-                tickvals=x_vals,
-                ticktext=list(HORIZONS),
-            ),
+            "xaxis": {
+                "tickmode": "array",
+                "tickvals": x_vals,
+                "ticktext": list(HORIZONS),
+            },
         },
     )
 
@@ -270,7 +270,6 @@ def plot_dm_test_heatmap(dm_results: list[dict], height: int = 400) -> go.Figure
         return fig
 
     import pandas as pd
-
 
     df = pd.DataFrame(dm_results)
     pivot = df.pivot_table(index="model_1", columns="model_2", values="p_value")

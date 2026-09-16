@@ -201,10 +201,10 @@ class ReportingEngine:
         for h in HORIZONS:
             col = f"{h}_MASE"
             df[col] = df.apply(
-                lambda row: (
-                    f"⭐ {row[col]:.3f}"
-                    if row["Model"] == best_per_h.get(h) and row[col] is not None
-                    else (f"{row[col]:.3f}" if row[col] is not None else "—")
+                lambda row, c=col, horizon=h: (
+                    f"⭐ {row[c]:.3f}"
+                    if row["Model"] == best_per_h.get(horizon) and row[c] is not None
+                    else (f"{row[c]:.3f}" if row[c] is not None else "—")
                 ),
                 axis=1,
             )
@@ -333,7 +333,7 @@ class ReportingEngine:
             rmse = metrics.get("rmse")
             r2 = metrics.get("r2")
             da = metrics.get("da")
-            bias = metrics.get("forecast_bias")
+            metrics.get("forecast_bias")
 
             rows.append(
                 {
@@ -472,7 +472,9 @@ class ReportingEngine:
                 f"<b>MASE={b1['mase']:.3f}</b> — model duy nhất thắng Persistence! ⭐"
             )
         else:
-            h1_text = f"Persistence vẫn thắng trên chuỗi 1h (r≈0,86). <b>{b1['model']}</b> gần nhất với MASE={b1['mase']:.3f}"
+            h1_text = (
+                f"Persistence vẫn thắng trên chuỗi 1h (r≈0,86). <b>{b1['model']}</b> gần nhất với MASE={b1['mase']:.3f}"
+            )
 
         h6_text = (
             f"<b>{b6['model']}</b> giảm <b>{abs(b6['improvement_pct']):.1f}%</b> lỗi "

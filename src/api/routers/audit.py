@@ -32,7 +32,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 
 def _md5_file(path: Path) -> str:
     """Compute MD5 hash of a file."""
-    hasher = hashlib.md5()
+    hasher = hashlib.md5(usedforsecurity=False)
     with open(path, "rb") as f:
         for chunk in iter(lambda: f.read(8192), b""):
             hasher.update(chunk)
@@ -128,7 +128,7 @@ def verify_integrity():
             passed=0,
             failed=0,
             missing=0,
-            pass_rate="N/A",
+            pass_rate="N/A",  # noqa: S106
             verified_at=datetime.now().isoformat(),
         )
 

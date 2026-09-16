@@ -14,8 +14,9 @@ class ContentManager:
         3. Default string — last resort
     """
 
-    def __init__(self, content_path: str = None):
+    def __init__(self, content_path: str | Path | None = None):
         self._project_root = Path(__file__).resolve().parent.parent.parent
+        self.content_path: Path
         if content_path is None:
             # Default to research/experiments/dashboard_content.json
             self.content_path = self._project_root / "research" / "experiments" / "dashboard_content.json"
@@ -62,6 +63,18 @@ class ContentManager:
     def get_dm_test_data(self) -> list:
         return self.get_global_content().get("multi_horizon", {}).get("dm_test", [])
 
+    def get_who_threshold_alert(self) -> list:
+        return self.get_global_content().get("multi_horizon", {}).get("who_threshold_alert", [])
+
+    def get_anchor_test_summary(self) -> list:
+        return self.get_global_content().get("multi_horizon", {}).get("anchor_test_summary", [])
+
+    def get_residual_diagnostics(self) -> list:
+        return self.get_global_content().get("multi_horizon", {}).get("residual_diagnostics", [])
+
+    def get_conformal_prediction(self) -> list:
+        return self.get_global_content().get("multi_horizon", {}).get("conformal_prediction", [])
+
     def get_literature_intl(self) -> list:
         return self.get_global_content().get("multi_horizon", {}).get("literature_intl", [])
 
@@ -83,7 +96,7 @@ class ContentManager:
                 with open(json_path, encoding="utf-8") as f:
                     self._info_cards_cache = json.load(f)
                     return self._info_cards_cache
-            except Exception:
+            except Exception:  # noqa: S110
                 pass
 
         self._info_cards_cache = {}
@@ -104,7 +117,7 @@ class ContentManager:
             result = client.get_info_card(key, quiet=True)
             if isinstance(result, dict) and "content" in result:
                 return result["content"]
-        except Exception:
+        except Exception:  # noqa: S110
             pass
 
         # Tier 2: JSON export file

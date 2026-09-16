@@ -64,9 +64,7 @@ class TestNoTargetLeakage:
             if np.allclose(marts_df[col].values, target, equal_nan=True):
                 identical_features.append(col)
 
-        assert not identical_features, (
-            f"Features identical to target {TARGET_COL}: {identical_features}"
-        )
+        assert not identical_features, f"Features identical to target {TARGET_COL}: {identical_features}"
 
     def test_diff_features_use_shifted_values(self, marts_df: pd.DataFrame) -> None:
         """Diff features should NOT contain y[t] in their calculation.
@@ -108,9 +106,8 @@ class TestNoTargetLeakage:
                 if corr > 0.95:
                     leaky.append((col, corr))
 
-        assert not leaky, (
-            "Domain features likely use current target value:\n"
-            + "\n".join(f"  {c}: corr={v:.4f}" for c, v in leaky)
+        assert not leaky, "Domain features likely use current target value:\n" + "\n".join(
+            f"  {c}: corr={v:.4f}" for c, v in leaky
         )
 
 
@@ -156,9 +153,8 @@ class TestTemporalIntegrity:
             if corr > 0.99:
                 suspicious.append((col, corr))
 
-        assert not suspicious, (
-            "Rolling features may include current value (shift needed):\n"
-            + "\n".join(f"  {c}: corr={v:.4f}" for c, v in suspicious)
+        assert not suspicious, "Rolling features may include current value (shift needed):\n" + "\n".join(
+            f"  {c}: corr={v:.4f}" for c, v in suspicious
         )
 
 
@@ -197,8 +193,7 @@ class TestShuffleTest:
 
         # R² should be very low with shuffled target
         assert r2 < 0.5, (
-            f"R²={r2:.4f} is too high with shuffled target — "
-            f"features likely encode the target directly (data leakage)"
+            f"R²={r2:.4f} is too high with shuffled target — features likely encode the target directly (data leakage)"
         )
 
 
@@ -208,9 +203,7 @@ class TestFeatureNamePatterns:
     def test_no_raw_target_in_features(self, marts_df: pd.DataFrame, feature_cols: list[str]) -> None:
         """Feature list should not contain the raw target column name
         (it should be excluded during X/y split)."""
-        assert TARGET_COL not in feature_cols, (
-            f"Raw target column '{TARGET_COL}' found in features — must be excluded"
-        )
+        assert TARGET_COL not in feature_cols, f"Raw target column '{TARGET_COL}' found in features — must be excluded"
 
     def test_suspicious_feature_patterns(self, marts_df: pd.DataFrame, feature_cols: list[str]) -> None:
         """Flag features whose names suggest they might use current target value."""

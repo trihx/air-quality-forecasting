@@ -8,6 +8,8 @@ Provides a chat interface with:
   - Secure API key management via session state
 """
 
+import contextlib
+
 import streamlit as st
 
 from src.chatbot.provider_config import (
@@ -76,10 +78,8 @@ def _ensure_index(kb) -> int:
     if needs_reindex:
         with st.spinner("🔄 Cập nhật kiến thức mới từ nội dung đã chỉnh sửa..."):
             count = kb.build_index(force=True)
-        try:
+        with contextlib.suppress(FileNotFoundError):
             REINDEX_FLAG_PATH.unlink()
-        except FileNotFoundError:
-            pass
         st.toast("✅ Kiến thức chatbot đã được cập nhật!", icon="🧠")
         return count
 
@@ -232,7 +232,7 @@ def page_ai_assistant(results):
         💬 Trợ Lý AI — Hỏi Đáp Dự Án
     </h1>
     <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 1rem;">
-        Hỏi bất kỳ câu hỏi nào về dự án • Hỗ trợ chuẩn bị phản biện luận văn
+        Hỏi bất kỳ câu hỏi nào về dự án • Hỗ trợ chuẩn bị phản biện đề án
     </p>
     """,
         unsafe_allow_html=True,
@@ -336,19 +336,20 @@ def page_ai_assistant(results):
         if prompt:
             # ── Guardrails Validation ──
             from src.chatbot.guardrails import ChatGuardrails
+
             is_valid, block_reason = ChatGuardrails.validate_prompt(prompt)
-            
+
             if not is_valid:
                 # Add user message
                 st.session_state.chat_messages.append({"role": "user", "content": prompt})
                 with st.chat_message("user"):
                     st.markdown(prompt)
-                
+
                 # Add guardrail block message
                 st.session_state.chat_messages.append({"role": "assistant", "content": block_reason})
                 with st.chat_message("assistant"):
                     st.markdown(block_reason)
-                
+
                 # Stop processing
                 st.rerun()
 

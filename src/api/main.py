@@ -12,6 +12,16 @@ Usage:
 
 from __future__ import annotations
 
+import os
+
+# Prevent OpenMP multi-runtime crash (PyTorch vs Homebrew LightGBM on macOS)
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path

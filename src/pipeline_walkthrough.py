@@ -71,7 +71,7 @@ def _get_pipeline_metrics() -> dict:
             resolutions[label] = {"rows": rows, "cols": cols}
             if label == "1h":
                 features_count = cols
-        except Exception:
+        except Exception:  # noqa: S112
             continue
     return {"resolutions": resolutions, "features_count": features_count}
 
@@ -80,7 +80,7 @@ def _render_custom_metric(label, value, icon=""):
     """Render a custom metric card that prevents truncation and supports wrapping."""
     st.markdown(
         f"""
-        <div style="display: flex; flex-direction: column; background: var(--secondary-background-color); 
+        <div style="display: flex; flex-direction: column; background: var(--secondary-background-color);
                     border: 1px solid rgba(128,128,128,0.2); border-radius: 8px; padding: 1rem; height: 100%;">
             <span style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 0.3rem;">{icon} {label}</span>
             <span style="font-size: 1.25rem; font-weight: 600; line-height: 1.4; word-break: break-word; white-space: normal;">{value}</span>
@@ -121,7 +121,11 @@ def _step_data_collection():
     # Overview Pipeline Figure (Hinh 1.1)
     fig_1_1 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_1.1_Overview_Pipeline.png"
     if fig_1_1.exists():
-        st.image(str(fig_1_1), caption="Hình 1.1: Quy trình nghiên cứu tổng quan (Data Pipeline v9)", use_container_width=True)
+        st.image(
+            str(fig_1_1),
+            caption="Hình 1.1: Quy trình nghiên cứu tổng quan (Data Pipeline v9)",
+            use_container_width=True,
+        )
 
     st.markdown("#### 📋 Mô tả biến")
     var_data = {
@@ -280,7 +284,7 @@ def _step_feature_engineering():
             Từ 5 biến gốc → 119 Features ({f_count} tổng số cột - 1 Target - 1 Metadata)
         </div>
     </div>
-    
+
     <div style="background: rgba(245,158,11,0.05); padding: 1rem; border-left: 3px solid #F59E0B; border-radius: 4px; margin-bottom: 1.5rem;">
         <span style="font-size: 0.95em;">💡 <b>Lưu ý học thuật:</b> {feat_explanation}</span>
     </div>
@@ -490,11 +494,11 @@ def _step_modeling():
         """
         <div style="background: rgba(16,185,129,0.05); padding: 1rem; border-left: 3px solid #10B981; border-radius: 4px; margin-top: 1.5rem; margin-bottom: 1.5rem;">
             <div style="font-size: 0.95em; line-height: 1.6;">
-                <b>💡 Lý do chọn mô hình:</b> Hệ thống áp dụng 5 phân lớp mô hình để kiểm chứng chéo giả thuyết (Cross-Hypothesis Testing): 
-                <b>(1) Baseline</b> cung cấp mức sàn tối thiểu; 
-                <b>(2) Statistical</b> xử lý tuyến tính và xu hướng vĩ mô; 
-                <b>(3) Tree-based ML</b> giải quyết tốt dữ liệu dạng bảng (tabular) với nhiều features; 
-                <b>(4) Deep Learning</b> (đặc biệt RNN/Attention) bắt sóng chuỗi thời gian phi tuyến tính; và 
+                <b>💡 Lý do chọn mô hình:</b> Hệ thống áp dụng 5 phân lớp mô hình để kiểm chứng chéo giả thuyết (Cross-Hypothesis Testing):
+                <b>(1) Baseline</b> cung cấp mức sàn tối thiểu;
+                <b>(2) Statistical</b> xử lý tuyến tính và xu hướng vĩ mô;
+                <b>(3) Tree-based ML</b> giải quyết tốt dữ liệu dạng bảng (tabular) với nhiều features;
+                <b>(4) Deep Learning</b> (đặc biệt RNN/Attention) bắt sóng chuỗi thời gian phi tuyến tính; và
                 <b>(5) Ensemble</b> triệt tiêu sai số phương sai (variance) bằng cách hợp nhất sức mạnh của tất cả các họ trên.
             </div>
         </div>
@@ -507,7 +511,11 @@ def _step_modeling():
     # Architecture Overview (Hinh 3.1)
     fig_3_1 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_3.1_System_Architecture.png"
     if fig_3_1.exists():
-        st.image(str(fig_3_1), caption="Hình 3.1: Kiến trúc tổng thể hệ thống dự báo nồng độ bụi mịn PM2.5 đa phân giải v9", use_container_width=True)
+        st.image(
+            str(fig_3_1),
+            caption="Hình 3.1: Kiến trúc tổng thể hệ thống dự báo nồng độ bụi mịn PM2.5 đa phân giải v9",
+            use_container_width=True,
+        )
 
     # Results table from pre-computed data
     metrics = _load_standardized_metrics()
@@ -685,7 +693,7 @@ def _step_results():
             fig.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(family="Inter, Arial, sans-serif", size=10),
+                font={"family": "Inter, Arial, sans-serif", "size": 10},
                 height=450,
             )
             _render_chart(fig, filename="pipeline_mase_comparison")
@@ -696,10 +704,18 @@ def _step_results():
     fig_pl2 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_PL.2_Bootstrap_CI.png"
     with c_pl1:
         if fig_pl1.exists():
-            st.image(str(fig_pl1), caption="Hình PL.1: Động thái suy giảm chỉ số MASE theo tầm nhìn dự báo (1h - 24h)", use_container_width=True)
+            st.image(
+                str(fig_pl1),
+                caption="Hình PL.1: Động thái suy giảm chỉ số MASE theo tầm nhìn dự báo (1h - 24h)",
+                use_container_width=True,
+            )
     with c_pl2:
         if fig_pl2.exists():
-            st.image(str(fig_pl2), caption="Hình PL.2: Khoảng tin cậy Bootstrap 95% cho MASE giữa các mô hình", use_container_width=True)
+            st.image(
+                str(fig_pl2),
+                caption="Hình PL.2: Khoảng tin cậy Bootstrap 95% cho MASE giữa các mô hình",
+                use_container_width=True,
+            )
 
     # Lessons learned
     st.markdown("#### 📝 Bài học kinh nghiệm")
@@ -758,7 +774,7 @@ def page_pipeline_walkthrough(results):
 
     # Step selector
     cols = st.columns(len(steps))
-    for i, (col, step) in enumerate(zip(cols, steps)):
+    for _i, (col, step) in enumerate(zip(cols, steps, strict=False)):
         with col:
             st.markdown(
                 f"""

@@ -123,3 +123,9 @@ desktop.ini
 # Global Skills & Bundles symlinks
 .agents/skills
 .agents/bundles
+
+# Universal Agent symlinks
+CLAUDE.md
+.cursorrules
+.github/prompts
+.github/copilot-instructions.md

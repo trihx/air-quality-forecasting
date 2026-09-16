@@ -425,13 +425,13 @@ def _apply_knn_imputation(
 
     n_filled = 0
     n_skipped_gaps = 0
-    target_col_idx = list(knn_data.columns).index(TARGET_COL)
+    list(knn_data.columns).index(TARGET_COL)
 
     # Process each gap segment individually — PAST-ONLY neighbors
-    for gap_idx, gap in gap_info.iterrows():
+    for _gap_idx, gap in gap_info.iterrows():
         gap_start = gap["start_idx"]
         gap_end = gap["end_idx"]
-        gap_len = gap["length"]
+        gap["length"]
 
         # Get ONLY complete rows BEFORE this gap as donors
         past_data = knn_data.iloc[:gap_start]

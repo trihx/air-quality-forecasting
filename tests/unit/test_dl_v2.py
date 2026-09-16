@@ -2,7 +2,6 @@
 
 import numpy as np
 import pandas as pd
-import pytest
 
 # ── Test CV Features ──
 
@@ -123,20 +122,20 @@ class TestDLFeatureSelection:
     def test_excludes_target_and_imputed(self):
         """Feature selection should exclude target, is_imputed."""
         idx = pd.date_range("2024-01-01", periods=10, freq="1h")
-        df = pd.DataFrame({
-            "pm25": np.random.rand(10),
-            "is_imputed": [True] * 5 + [False] * 5,
-            "nhiet_do": np.random.rand(10),
-            "pm25_lag_1h": np.random.rand(10),
-            "fourier_daily_sin_1": np.random.rand(10),
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "pm25": np.random.rand(10),
+                "is_imputed": [True] * 5 + [False] * 5,
+                "nhiet_do": np.random.rand(10),
+                "pm25_lag_1h": np.random.rand(10),
+                "fourier_daily_sin_1": np.random.rand(10),
+            },
+            index=idx,
+        )
 
         exclude = {"is_imputed", "pm25"}
         exclude.update(c for c in df.columns if c.startswith("target_"))
-        feature_cols = [
-            c for c in df.columns
-            if c not in exclude and df[c].dtype in ("float64", "float32", "int64")
-        ]
+        feature_cols = [c for c in df.columns if c not in exclude and df[c].dtype in ("float64", "float32", "int64")]
 
         assert "pm25" not in feature_cols
         assert "is_imputed" not in feature_cols

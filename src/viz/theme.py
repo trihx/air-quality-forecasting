@@ -16,6 +16,7 @@ Author: trihx
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Design Tokens (theme-neutral)
@@ -221,12 +222,14 @@ def get_plotly_annotation_style(mode: str = "light", overrides: dict | None = No
         Dict suitable for unpacking into fig.add_annotation(**kwargs).
     """
     theme = get_theme(mode)
-    base_style = {
+    font_size = int(str(TOKENS["font_size_annotation"])) + 1
+    font_style: dict[str, Any] = {
+        "size": font_size,
+        "color": "#111111" if mode == "light" else theme["text_color"],
+    }
+    base_style: dict[str, Any] = {
         "showarrow": False,
-        "font": dict(
-            size=TOKENS["font_size_annotation"] + 1,  # +1 for slightly better readability
-            color="#111111" if mode == "light" else theme["text_color"],
-        ),
+        "font": font_style,
         "bgcolor": "rgba(255, 255, 255, 0.9)" if mode == "light" else "rgba(26, 29, 35, 0.9)",
         "bordercolor": "rgba(0, 0, 0, 0.2)" if mode == "light" else "rgba(255, 255, 255, 0.2)",
         "borderwidth": 1,
@@ -237,7 +240,7 @@ def get_plotly_annotation_style(mode: str = "light", overrides: dict | None = No
         # Deep update for nested dicts like font
         for k, v in overrides.items():
             if k == "font" and isinstance(v, dict):
-                base_style["font"].update(v)
+                font_style.update(v)
             else:
                 base_style[k] = v
 
@@ -311,7 +314,7 @@ def detect_streamlit_mode() -> str:
         base = st.get_option("theme.base")
         if base == "light":
             return "light"
-    except Exception:
+    except Exception:  # noqa: S110
         pass
     return "dark"
 
@@ -326,12 +329,12 @@ def apply_plotly_style(fig, height=450):
     _template = get_plotly_template(mode)
     fig.update_layout(
         **_template["layout"],
-        margin=dict(l=20, r=20, t=50, b=80),
+        margin={"l": 20, "r": 20, "t": 50, "b": 80},
         height=height,
     )
     # Force text annotations on traces to use the main text color instead of inheriting trace color
-    theme = get_theme(mode)
+    get_theme(mode)
     # fig.update_traces(textfont_color="var(--text-color)")
-    fig.update_traces(outsidetextfont_color="#71717A", insidetextfont_color="#71717A", selector=dict(type="bar"))
-    fig.update_traces(outsidetextfont_color="#71717A", insidetextfont_color="#71717A", selector=dict(type="pie"))
+    fig.update_traces(outsidetextfont_color="#71717A", insidetextfont_color="#71717A", selector={"type": "bar"})
+    fig.update_traces(outsidetextfont_color="#71717A", insidetextfont_color="#71717A", selector={"type": "pie"})
     return fig

@@ -60,7 +60,7 @@ _MODEBAR_BUTTONS = [
 ]
 
 # Standard margins (pixels) — generous enough for Vietnamese axis labels
-_MARGINS = dict(l=60, r=30, t=60, b=80)
+_MARGINS = {"l": 60, "r": 30, "t": 60, "b": 80}
 
 # Muted text color for annotations that work in both light & dark
 _MUTED_TEXT = "#71717A"  # Zinc 500
@@ -119,37 +119,37 @@ def chart(
         # Background
         "paper_bgcolor": "rgba(0,0,0,0)",
         "plot_bgcolor": "rgba(0,0,0,0)",
-        "font": dict(
-            family=_FONT_WEB,
-            size=TOKENS["font_size_base"],
-        ),
+        "font": {
+            "family": _FONT_WEB,
+            "size": TOKENS["font_size_base"],
+        },
         # Title — suppressed per QĐ 1799 Phụ lục 8
         # Caption goes below chart via figure_caption().
         # Axes
-        "xaxis": dict(
-            title=dict(text=xaxis_title, font=dict(size=TOKENS["font_size_label"])),
-            gridcolor=theme["grid_color"],
-            zerolinecolor=theme["grid_color"],
-            tickfont=dict(size=TOKENS["font_size_tick"]),
-            showgrid=True,
-        ),
-        "yaxis": dict(
-            title=dict(text=yaxis_title, font=dict(size=TOKENS["font_size_label"])),
-            gridcolor=theme["grid_color"],
-            zerolinecolor=theme["grid_color"],
-            tickfont=dict(size=TOKENS["font_size_tick"]),
-            showgrid=True,
-        ),
+        "xaxis": {
+            "title": {"text": xaxis_title, "font": {"size": TOKENS["font_size_label"]}},
+            "gridcolor": theme["grid_color"],
+            "zerolinecolor": theme["grid_color"],
+            "tickfont": {"size": TOKENS["font_size_tick"]},
+            "showgrid": True,
+        },
+        "yaxis": {
+            "title": {"text": yaxis_title, "font": {"size": TOKENS["font_size_label"]}},
+            "gridcolor": theme["grid_color"],
+            "zerolinecolor": theme["grid_color"],
+            "tickfont": {"size": TOKENS["font_size_tick"]},
+            "showgrid": True,
+        },
         # Legend (IEEE standard: bottom-center, horizontal)
-        "legend": dict(
-            bgcolor="rgba(0,0,0,0)",
-            orientation="h",
-            yanchor="top",
-            y=-0.18,
-            xanchor="center",
-            x=0.5,
-            font=dict(size=TOKENS["font_size_legend"]),
-        ),
+        "legend": {
+            "bgcolor": "rgba(0,0,0,0)",
+            "orientation": "h",
+            "yanchor": "top",
+            "y": -0.18,
+            "xanchor": "center",
+            "x": 0.5,
+            "font": {"size": TOKENS["font_size_legend"]},
+        },
         "showlegend": showlegend,
         # Hover
         "hovermode": hovermode,
@@ -220,14 +220,14 @@ def render_chart(
             t_margin = t_margin[0]
         if isinstance(t_margin, (int, float)) and t_margin >= 50:
             fig.update_layout(margin_t=20)
-    except Exception:
+    except Exception:  # noqa: S110
         pass
 
     # ── Print Mode: auto-convert to B&W if toggled in sidebar ──
     try:
         if st.session_state.get("print_mode", False):
             fig = to_bw(fig)
-    except Exception:
+    except Exception:  # noqa: S110
         pass  # Graceful fallback if to_bw fails
 
     st.plotly_chart(
@@ -322,13 +322,13 @@ def styled_line(
         "x": x,
         "y": y,
         "mode": mode,
-        "line": dict(color=style["color"], width=width, dash=style["dash"]),
-        "marker": dict(
-            color=style["color"],
-            size=marker_size,
-            symbol=style["symbol"],
-            line=dict(width=1, color="white"),
-        ),
+        "line": {"color": style["color"], "width": width, "dash": style["dash"]},
+        "marker": {
+            "color": style["color"],
+            "size": marker_size,
+            "symbol": style["symbol"],
+            "line": {"width": 1, "color": "white"},
+        },
     }
     if text is not None:
         trace_kwargs["text"] = text
@@ -524,12 +524,12 @@ def add_simple_bar_labels(
         if x_vals is None or y_vals is None:
             continue
 
-        offset = 0
+        offset: float = 0.0
         if is_grouped and n_traces > 1:
             bar_width = 0.8 / n_traces
             offset = (trace_idx - (n_traces - 1) / 2) * bar_width
 
-        for i, (x_raw, y_raw) in enumerate(zip(x_vals, y_vals)):
+        for i, (x_raw, y_raw) in enumerate(zip(x_vals, y_vals, strict=False)):
             # Determine text to display
             if hasattr(texts, "__iter__") and not isinstance(texts, str) and i < len(texts):
                 label = texts[i]
@@ -611,37 +611,37 @@ def to_bw(fig: go.Figure) -> go.Figure:
     bw.update_layout(
         paper_bgcolor="white",
         plot_bgcolor="white",
-        font=dict(
-            family=_FONT_PRINT,
-            color="black",
-            size=TOKENS["font_size_base"],
-        ),
-        xaxis=dict(
-            gridcolor="rgba(0,0,0,0.12)",
-            zerolinecolor="rgba(0,0,0,0.25)",
-            linecolor="black",
-            linewidth=1,
-            tickfont=dict(color="black"),
-            title=dict(font=dict(color="black")),
-            showline=True,
-            mirror=True,
-        ),
-        yaxis=dict(
-            gridcolor="rgba(0,0,0,0.12)",
-            zerolinecolor="rgba(0,0,0,0.25)",
-            linecolor="black",
-            linewidth=1,
-            tickfont=dict(color="black"),
-            title=dict(font=dict(color="black")),
-            showline=True,
-            mirror=True,
-        ),
-        legend=dict(
-            bgcolor="white",
-            bordercolor="black",
-            borderwidth=1,
-            font=dict(color="black"),
-        ),
+        font={
+            "family": _FONT_PRINT,
+            "color": "black",
+            "size": TOKENS["font_size_base"],
+        },
+        xaxis={
+            "gridcolor": "rgba(0,0,0,0.12)",
+            "zerolinecolor": "rgba(0,0,0,0.25)",
+            "linecolor": "black",
+            "linewidth": 1,
+            "tickfont": {"color": "black"},
+            "title": {"font": {"color": "black"}},
+            "showline": True,
+            "mirror": True,
+        },
+        yaxis={
+            "gridcolor": "rgba(0,0,0,0.12)",
+            "zerolinecolor": "rgba(0,0,0,0.25)",
+            "linecolor": "black",
+            "linewidth": 1,
+            "tickfont": {"color": "black"},
+            "title": {"font": {"color": "black"}},
+            "showline": True,
+            "mirror": True,
+        },
+        legend={
+            "bgcolor": "white",
+            "bordercolor": "black",
+            "borderwidth": 1,
+            "font": {"color": "black"},
+        },
     )
 
     # ── Traces: apply grayscale styling ──
@@ -656,16 +656,16 @@ def to_bw(fig: go.Figure) -> go.Figure:
             hatch = _BW_HATCHES[bar_idx % len(_BW_HATCHES)]
 
             trace.marker.color = gray
-            trace.marker.line = dict(color="black", width=1)
+            trace.marker.line = {"color": "black", "width": 1}
 
             if hatch:
-                trace.marker.pattern = dict(
-                    shape=hatch,
-                    bgcolor="white",
-                    fgcolor="black",
-                    size=6,
-                    solidity=0.5,
-                )
+                trace.marker.pattern = {
+                    "shape": hatch,
+                    "bgcolor": "white",
+                    "fgcolor": "black",
+                    "size": 6,
+                    "solidity": 0.5,
+                }
             bar_idx += 1
 
         elif trace_type in ("scatter", "scattergl"):
@@ -682,7 +682,7 @@ def to_bw(fig: go.Figure) -> go.Figure:
                 trace.marker.color = gray
                 trace.marker.symbol = symbol
                 trace.marker.size = 7
-                trace.marker.line = dict(color="black", width=1)
+                trace.marker.line = {"color": "black", "width": 1}
 
             # Show markers for line charts in B&W
             if trace.mode in (None, "lines"):
@@ -693,7 +693,7 @@ def to_bw(fig: go.Figure) -> go.Figure:
         elif trace_type == "heatmap":
             trace.colorscale = "Greys"
             if hasattr(trace, "colorbar") and trace.colorbar is not None:
-                trace.colorbar.tickfont = dict(color="black")
+                trace.colorbar.tickfont = {"color": "black"}
 
     # ── Annotations: black text on white background box, outside elements ──
     if bw.layout.annotations:
@@ -701,11 +701,11 @@ def to_bw(fig: go.Figure) -> go.Figure:
         for ann in bw.layout.annotations:
             ann_dict = ann.to_plotly_json()
             font_size = ann_dict.get("font", {}).get("size", TOKENS["font_size_annotation"])
-            ann_dict["font"] = dict(
-                color="black",
-                family=_FONT_PRINT,
-                size=font_size,
-            )
+            ann_dict["font"] = {
+                "color": "black",
+                "family": _FONT_PRINT,
+                "size": font_size,
+            }
             # White background box behind text → readable over any element
             ann_dict["bgcolor"] = "rgba(255,255,255,0.92)"
             ann_dict["bordercolor"] = "rgba(0,0,0,0.3)"

@@ -2,16 +2,18 @@
 
 Designed for academic presentation per CTU-QD1799 standards.
 Sections:
-    1. Research Summary (achievements timeline)
-    2. Key Findings (quantitative)
-    3. Limitations
-    4. Future Directions (with feasibility & impact matrix)
+    1. 5.1 Kết luận chính của Đề án
+    2. 5.2 Khả năng ứng dụng thực tế
+    3. 5.3 Hạn chế của nghiên cứu
+    4. 5.4 Hướng phát triển (với ma trận khả thi & tác động)
 """
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 from src.frontend.citations import cite, render_references_section
@@ -29,17 +31,18 @@ def page_conclusion(results: dict):
         📝 Kết Luận & Hướng Phát Triển
     </h1>
     <p style="text-align:center; opacity:0.6; font-size:0.95rem; margin-bottom:2rem;">
-        Tổng hợp kết quả nghiên cứu và đề xuất hướng phát triển — Chương 5 Luận văn Thạc sĩ
+        Tổng hợp kết quả nghiên cứu và đề xuất hướng phát triển — Chương 5 Đề án Thạc sĩ
     </p>
     """,
         unsafe_allow_html=True,
     )
 
-    tab1, tab2, tab3 = st.tabs(
+    tab1, tab2, tab3, tab4 = st.tabs(
         [
-            "1. Tổng Hợp Kết Quả",
-            "2. Hạn Chế",
-            "3. Hướng Phát Triển",
+            "1. 5.1 Kết Luận Chính",
+            "2. 5.2 Ứng Dụng Thực Tế",
+            "3. 5.3 Hạn Chế",
+            "4. 5.4 Hướng Phát Triển",
         ]
     )
 
@@ -47,9 +50,12 @@ def page_conclusion(results: dict):
         _render_summary(section_header, insight_card)
 
     with tab2:
-        _render_limitations(section_header, insight_card)
+        _render_practical_applications(section_header, insight_card)
 
     with tab3:
+        _render_limitations(section_header, insight_card)
+
+    with tab4:
         _render_future_work(section_header, insight_card)
 
     # ── References section ──
@@ -57,73 +63,99 @@ def page_conclusion(results: dict):
 
 
 # ──────────────────────────────────────────────────────────────
-# Tab 1: Tổng Hợp Kết Quả
+# Tab 1: 5.1 Kết Luận Chính Của Đề Án
 # ──────────────────────────────────────────────────────────────
 
 
 def _render_summary(section_header, insight_card):
-    """Research summary — what was accomplished."""
-    section_header("🎯", "Tóm Tắt Kết Quả Nghiên Cứu")
+    """Research summary — what was accomplished per Section 5.1."""
+    section_header("🎯", "5.1 Kết Luận Chính Của Đề Án")
 
     st.markdown(
-        """
+        f"""
     <div style="background: var(--secondary-background-color); border-radius: 12px;
                 padding: 1.5rem; border-left: 4px solid #00D4AA; margin-bottom: 1.5rem;">
         <div style="font-size: 0.95rem; line-height: 1.7;">
-            Nghiên cứu đã xây dựng thành công hệ thống dự báo nồng độ bụi mịn PM2.5
-            sử dụng dữ liệu cảm biến IoT tại Sa Đéc, Đồng Tháp — khu vực
-            <b>chưa có nghiên cứu tiền lệ</b> về giám sát chất lượng không khí bằng
-            Machine Learning. Pipeline trải qua <b>9 phiên bản</b> cải tiến liên tục,
-            đánh giá <b>30+ mô hình</b> trên 3 độ phân giải × 3 tầm dự báo.
+            Đề án đã hoàn thành các mục tiêu đề ra với những kết quả khoa học và kỹ thuật nổi bật
+            sử dụng dữ liệu cảm biến IoT tại Sa Đéc, Đồng Tháp — khu vực <b>chưa có nghiên cứu tiền lệ</b>
+            về giám sát chất lượng không khí bằng Machine Learning. Pipeline trải qua <b>9 phiên bản</b>
+            cải tiến liên tục, đánh giá <b>41 cấu hình mô hình thực nghiệm</b> trên 3 độ phân giải
+            (15 phút, 30 phút, 1 giờ) × 3 tầm dự báo (1 giờ, 6 giờ, 24 giờ) {cite("tashman2000")}.
         </div>
     </div>
     """,
         unsafe_allow_html=True,
     )
 
-    # Key quantitative findings
-    section_header("📊", "Các Phát Hiện Chính")
+    # 6 Quantitative Findings matching Chapter 5.1 verbatim
+    section_header("📊", "6 Luận Điểm Khoa Học & Kỹ Thuật Cốt Lõi")
 
     findings = [
         {
-            "title": "1. Độ phân giải 30 phút là tối ưu",
+            "num": "1",
+            "title": "Thiết lập quy trình kỹ nghệ dữ liệu chống rò rỉ (Anti-Leakage Pipeline)",
+            "badge": "Chuẩn 193 Tests",
             "detail": (
-                f"Thí nghiệm Multi-Resolution Ablation (15m vs 30m vs 1h) chứng minh "
-                f"30 phút là điểm cân bằng tối ưu giữa nhiễu vi mô (15m) và "
-                f"bẫy autocorrelation (1h) {cite('hyndman2021')}. Ensemble_Weighted_30m đạt "
-                f"<b>MASE = 0.382 (6h)</b> {cite('hyndman2006')} và <b>MASE = 0.469 (24h)</b>."
+                f"Xây dựng pipeline 7 bước tiền xử lý đạt chuẩn kiểm thử <b>193 bài kiểm thử tự động</b> "
+                f"(unit & integration tests). Việc áp dụng nghiêm ngặt phép trễ <code>shift(1)</code> giúp "
+                f"triệt tiêu hoàn toàn rò rỉ dữ liệu, đưa chỉ số đánh giá về giá trị thực nghiệm trung thực "
+                f"(<b>R² đạt 0,11–0,27</b>), loại bỏ triệt để hiện tượng R² ảo xấp xỉ 1,0 do nhìn trộm tương lai {cite('hyndman2021')}."
             ),
         },
         {
-            "title": "2. Không có mô hình duy nhất tốt nhất",
+            "num": "2",
+            "title": "Triển khai chiến lược nội suy phân tầng hiệu quả (Tiered Imputation)",
+            "badge": "PCHIP + KNN + Drop",
             "detail": (
-                f"Autocorrelation giảm dần: 0.99 (1h) → 0.85 (6h) → 0.45 (24h) {cite('joseph2022')}. "
-                f"Ở 1h, Persistence gần như bất khả chiến bại (chỉ GRU_15m phá vỡ, "
-                f"MASE=0.667) {cite('hyndman2006')}. Ở 6h-24h, Ensemble và ML vượt trội {cite('peixeiro2022')}."
+                f"Kết hợp <b>Cubic Spline (≤ 6h)</b>, <b>KNN (6 – 24h)</b> {cite('troyanskaya2001')} "
+                f"và loại bỏ khoảng trống mất tín hiệu dài (<b>gap > 24h</b>) kèm đánh số <code>segment_id</code> "
+                f"{cite('moritz2015')}. Chiến lược này phục hồi tối đa tín hiệu vật lý mà không làm méo mó "
+                f"phân phối chuỗi thời gian nồng độ bụi."
             ),
         },
         {
-            "title": "3. Fair Pipeline > Expert Pipeline cho IoT data",
+            "num": "3",
+            "title": "Xác lập điểm ngọt độ phân giải 30 phút (Sweet Spot Resolution)",
+            "badge": ">80% Top Cases",
             "detail": (
-                f"Deep Learning sử dụng 119 tabular features (Fair) cho kết quả "
-                f"tốt hơn DL tự trích xuất từ raw data (Expert) {cite('hyndman2021')}. "
-                f"Feature Engineering có giá trị thực tế cho dữ liệu IoT thưa."
+                "Chứng minh bằng thực nghiệm: độ phân giải <b>30 phút</b> đạt hiệu năng dự báo tối ưu "
+                "trên <b>> 80% các trường hợp đánh giá</b> ở mốc 6 giờ và 24 giờ. Tần suất 30 phút mang lại "
+                "tỷ lệ tín hiệu trên nhiễu (SNR) lý tưởng, loại bỏ nhiễu ngẫu nhiên vi mô của chuỗi 15 phút, "
+                "vượt thoát bẫy tự tương quan của chuỗi 1 giờ, đồng thời tiết kiệm 50% chi phí tính toán."
             ),
         },
         {
-            "title": "4. SHAP giải mã thành công cơ chế dự báo",
+            "num": "4",
+            "title": "Nâng cao độ chính xác dự báo bằng Ensemble (Ensemble Weighted v9)",
+            "badge": "MASE = 0,382 (6h)",
             "detail": (
-                f"<code>pm25_lag_1</code> chi phối ở horizon 1h (autocorrelation) {cite('lundberg2017')}. "
-                f"Fourier features nổi bật ở 24h (chu kỳ ngày/đêm). "
-                f"Các biến khí tượng (nhiệt độ, độ ẩm) đóng vai trò phụ trợ {cite('zhang2017')}."
+                f"Mô hình <b>Ensemble_Weighted_v9_30m</b> đạt <b>MASE = 0,382</b> tại 6 giờ "
+                f"(<b>giảm 49,6% MAE</b> so với mô hình cơ sở quán tính Persistence: 3,493 vs 6,932 µg/m³) "
+                f"và <b>MASE = 0,469</b> tại 24 giờ {cite('hyndman2006')}. Sự vượt trội có ý nghĩa thống kê "
+                f"rõ rệt theo kiểm định Diebold-Mariano (<b>p < 0,001</b>) {cite('diebold1995')}."
             ),
         },
         {
-            "title": "5. Anti-Leakage Pipeline đảm bảo tính toàn vẹn",
+            "num": "5",
+            "title": "Cung cấp khoảng tin cậy và cảnh báo vượt ngưỡng tin cậy",
+            "badge": "F1-Score = 0,782",
             "detail": (
-                f"Phát hiện và xử lý 4 nguồn rò rỉ dữ liệu (diff, pct_change, "
-                f"ratio, domain knowledge features) {cite('hyndman2021')}. 188+ automated tests. "
-                f"Test-on-Real-Only policy (is_imputed == 0) {cite('tashman2000')}."
+                f"Phương pháp <b>Conformal Quantile Regression (CQR)</b> {cite('romano2019')} kết hợp hiệu chuẩn "
+                f"thích ứng <b>ACI</b> {cite('gibbs2021')} cung cấp khoảng tin cậy 90% hợp lệ dưới biến động phân phối (concept drift). "
+                f"Mô hình đạt <b>F1-Score = 0,782</b> (Precision = 0,812; Recall = 0,754) trong nhiệm vụ "
+                f"cảnh báo sớm trước 6 giờ các đợt ô nhiễm vượt ngưỡng khuyến nghị WHO (45 µg/m³) {cite('who2021')}."
+            ),
+        },
+        {
+            "num": "6",
+            "title": "Diễn giải cơ chế vật lý bằng XAI & Ngưỡng bùng phát",
+            "badge": "Tipping Point 14–17 µg/m³",
+            "detail": (
+                f"Lượng hóa thành công cơ chế 2 cấp độ nồng độ nền gồm: <b>ngưỡng chuyển pha 14–17 µg/m³</b> "
+                f"(trùng khớp khuyến nghị 24h của WHO 15 µg/m³) và <b>ngưỡng kích hoạt bùng phát khi vượt 17 µg/m³</b> "
+                f"thông qua phân tích SHAP Dependence Plot {cite('lundberg2017')}. Xác lập tầm quan trọng biến số dựa trên "
+                f"nền tảng lý thuyết Permutation Feature Importance của Fisher et al. (2019) {cite('fisher2019')}, "
+                f"phù hợp với các nghiên cứu giải thích máy học ô nhiễm không khí gần đây {cite('gu2021')}."
             ),
         },
     ]
@@ -132,12 +164,20 @@ def _render_summary(section_header, insight_card):
         st.markdown(
             f"""
         <div style="background: var(--secondary-background-color); border-radius: 10px;
-                    padding: 1rem 1.2rem; margin-bottom: 0.8rem;
-                    border-left: 3px solid #00D4AA;">
-            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem;">
-                {f["title"]}
+                    padding: 1.1rem 1.3rem; margin-bottom: 0.9rem;
+                    border-left: 4px solid #00D4AA;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <div style="font-weight: 700; font-size: 1rem; color: var(--text-color);">
+                    <span style="background: rgba(0,212,170,0.15); color: #00D4AA; padding: 0.15rem 0.55rem;
+                                 border-radius: 4px; margin-right: 0.5rem;">{f["num"]}</span>
+                    {f["title"]}
+                </div>
+                <span style="background: rgba(0,212,170,0.12); color: #00D4AA; font-size: 0.78rem;
+                             font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 6px;">
+                    {f["badge"]}
+                </span>
             </div>
-            <div style="font-size: 0.88rem; opacity: 0.85; line-height: 1.6;">
+            <div style="font-size: 0.88rem; opacity: 0.88; line-height: 1.65; color: var(--text-color);">
                 {f["detail"]}
             </div>
         </div>
@@ -146,26 +186,41 @@ def _render_summary(section_header, insight_card):
         )
 
     # Contribution summary
-    section_header("🏆", "Đóng Góp Của Nghiên Cứu")
+    section_header("🏆", "Đóng Góp Cốt Lõi Của Đề Án")
 
     c1, c2, c3 = st.columns(3)
     contributions = [
-        ("🔬", "Khoa học", "Phương pháp luận Multi-Resolution × Multi-Horizon đầu tiên cho IoT PM2.5 tại ĐBSCL"),
-        ("🛡️", "Kỹ thuật", "Pipeline Anti-Leakage 4 tầng + Tiered Imputation + Test-on-Real-Only"),
-        ("🖥️", "Ứng dụng", "Dashboard toàn diện: EDA → Train → Evaluate → Explain → Forecast"),
+        (
+            "🔬",
+            "Đóng Góp Khoa Học",
+            "Phương pháp luận Multi-Resolution × Multi-Horizon đầu tiên cho bụi mịn PM2.5 IoT tại ĐBSCL. "
+            "Chứng minh thực nghiệm điểm ngọt 30 phút và cơ chế vượt bẫy tự tương quan.",
+        ),
+        (
+            "🛡️",
+            "Đóng Góp Kỹ Thuật",
+            "Pipeline kỹ nghệ dữ liệu chống rò rỉ nghiêm ngặt 7 bước (shift-1, tiered imputation, test-on-real-only), "
+            "được bảo vệ bởi 193 bài kiểm thử tự động đạt độ tin cậy tái lập 100%.",
+        ),
+        (
+            "🏛️",
+            "Đóng Góp Thực Tiễn",
+            "Xác lập cơ chế 2 cấp độ nồng độ nền (14–17 µg/m³ & >17 µg/m³) và kiến trúc phần mềm 3 tầng "
+            "đóng gói Docker sẵn sàng tích hợp các trung tâm điều hành đô thị thông minh (IOC).",
+        ),
     ]
-    for col, (icon, label, desc) in zip([c1, c2, c3], contributions):
+    for col, (icon, label, desc) in zip([c1, c2, c3], contributions, strict=False):
         with col:
             st.markdown(
                 f"""
             <div style="background: var(--secondary-background-color); border-radius: 12px;
-                        padding: 1.2rem; text-align: center; min-height: 180px;
-                        border: 1px solid rgba(0,212,170,0.15);">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">{icon}</div>
-                <div style="font-weight: 700; color: #00D4AA; margin-bottom: 0.5rem;">
+                        padding: 1.3rem; text-align: center; min-height: 200px;
+                        border: 1px solid rgba(0,212,170,0.25);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">{icon}</div>
+                <div style="font-weight: 700; color: #00D4AA; font-size: 1.02rem; margin-bottom: 0.6rem;">
                     {label}
                 </div>
-                <div style="font-size: 0.85rem; opacity: 0.8; line-height: 1.5;">
+                <div style="font-size: 0.85rem; opacity: 0.85; line-height: 1.6; color: var(--text-color);">
                     {desc}
                 </div>
             </div>
@@ -175,70 +230,244 @@ def _render_summary(section_header, insight_card):
 
 
 # ──────────────────────────────────────────────────────────────
-# Tab 2: Hạn Chế
+# Tab 2: 5.2 Khả Năng Ứng Dụng Thực Tế
+# ──────────────────────────────────────────────────────────────
+
+
+def _render_practical_applications(section_header, insight_card):
+    """Practical operational applications per Section 5.2 of the thesis."""
+    section_header("🏛️", "5.2 Khả Năng Ứng Dụng Thực Tế")
+
+    st.markdown(
+        """
+    <div style="background: var(--secondary-background-color); border-radius: 12px;
+                padding: 1.3rem 1.5rem; margin-bottom: 1.5rem;
+                border-left: 4px solid #00D4AA; font-size: 0.92rem; line-height: 1.65;">
+        Kết quả nghiên cứu của Đề án không chỉ dừng lại ở mô hình lý thuyết mà được định hình ngay từ đầu
+        cho <b>3 kịch bản vận hành thực tế</b> phục vụ công tác quản lý chất lượng không khí,
+        bảo vệ sức khỏe cộng đồng và tích hợp đô thị thông minh tại khu vực Đồng bằng sông Cửu Long.
+    </div>
+    """,
+        unsafe_allow_html=True,
+    )
+
+    app_columns = st.columns(3)
+
+    with app_columns[0]:
+        st.markdown(
+            f"""
+        <div style="background: var(--secondary-background-color); border-radius: 12px;
+                    padding: 1.4rem; border: 1px solid rgba(0,212,170,0.25); height: 100%;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏱️</div>
+            <div style="font-weight: 700; font-size: 1.05rem; color: #00D4AA; margin-bottom: 0.6rem;">
+                1. Cảnh Báo Sớm 6h – 24h
+            </div>
+            <div style="font-size: 0.87rem; line-height: 1.6; opacity: 0.9; color: var(--text-color);">
+                <b>Đối tượng hưởng lợi:</b> Chi cục Bảo vệ Môi trường, Sở Nông nghiệp & Môi trường,
+                các cơ quan y tế dự phòng tại Đồng Tháp và ĐBSCL.<br><br>
+                <b>Giá trị nghiệp vụ:</b> Cung cấp dự báo nồng độ bụi trước 6 đến 24 giờ với
+                <b>F1-Score = 0,782</b>, giúp chính quyền chuyển dịch từ trạng thái <i>"ứng phó thụ động"</i>
+                khi ô nhiễm đã xảy ra sang <i>"chủ động phát đi thông điệp khuyến cáo"</i> cho người dân {cite("who2021")}.
+            </div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    with app_columns[1]:
+        st.markdown(
+            """
+        <div style="background: var(--secondary-background-color); border-radius: 12px;
+                    padding: 1.4rem; border: 1px solid rgba(0,212,170,0.25); height: 100%;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚨</div>
+            <div style="font-weight: 700; font-size: 1.05rem; color: #00D4AA; margin-bottom: 0.6rem;">
+                2. Cơ Chế 2 Cấp Độ Nền
+            </div>
+            <div style="font-size: 0.87rem; line-height: 1.6; opacity: 0.9; color: var(--text-color);">
+                <b>Chỉ báo ra quyết định điều hành:</b><br>
+                • <b>Ngưỡng chuyển pha 14–17 µg/m³:</b> Làm chỉ báo cảnh báo sớm (Early Warning)
+                cho các nhóm dân cư nhạy cảm (trẻ em, người già, người mắc bệnh hô hấp).<br><br>
+                • <b>Ngưỡng kích hoạt > 17 µg/m³:</b> Làm chỉ báo can thiệp khẩn cấp (Emergency Intervention)
+                phục vụ kiểm soát nguồn phát thải (đốt phụ phẩm nông nghiệp) và điều phối phân luồng giao thông đô thị.
+            </div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    with app_columns[2]:
+        st.markdown(
+            """
+        <div style="background: var(--secondary-background-color); border-radius: 12px;
+                    padding: 1.4rem; border: 1px solid rgba(0,212,170,0.25); height: 100%;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏙️</div>
+            <div style="font-weight: 700; font-size: 1.05rem; color: #00D4AA; margin-bottom: 0.6rem;">
+                3. Tích Hợp Smart City IOC
+            </div>
+            <div style="font-size: 0.87rem; line-height: 1.6; opacity: 0.9; color: var(--text-color);">
+                <b>Kiến trúc phần mềm chuẩn hóa:</b><br>
+                Hệ thống phần mềm 3 tầng (FastAPI Backend + Streamlit Dashboard + Supabase/PostgreSQL)
+                đã được <b>đóng gói hoàn chỉnh bằng Docker Compose</b>.<br><br>
+                Sẵn sàng kết nối qua RESTful API tiêu chuẩn để tích hợp dữ liệu vào
+                <b>Trung tâm Điều hành Đô thị Thông minh (IOC)</b> của tỉnh Đồng Tháp và các đô thị trong vùng.
+            </div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    # Decision Matrix Table
+    section_header("📋", "Ma Trận Hành Động Ứng Phó Dựa Trên Ngưỡng Nồng Độ Nền")
+
+    st.markdown(
+        """
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.5rem;">
+        <thead>
+            <tr style="border-bottom: 2px solid rgba(0,212,170,0.3);">
+                <th style="text-align: left; padding: 0.7rem;">Cấp độ Nồng độ</th>
+                <th style="text-align: center; padding: 0.7rem;">Khoảng PM2.5</th>
+                <th style="text-align: left; padding: 0.7rem;">Trạng thái Khí quyển</th>
+                <th style="text-align: left; padding: 0.7rem;">Khuyến nghị Y tế Cộng đồng</th>
+                <th style="text-align: left; padding: 0.7rem;">Hành động Quản lý Đô thị</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 0.6rem; font-weight: 600; color: #10B981;">🟢 Cấp 1: An toàn</td>
+                <td style="text-align: center; font-family: monospace;">&lt; 14 µg/m³</td>
+                <td style="padding: 0.6rem;">Khí quyển tự làm sạch hiệu quả (SHAP &lt; 0)</td>
+                <td style="padding: 0.6rem;">Hoạt động ngoài trời bình thường</td>
+                <td style="padding: 0.6rem;">Duy trì giám sát thường quy</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(245,158,11,0.05);">
+                <td style="padding: 0.6rem; font-weight: 600; color: #F59E0B;">🟡 Cấp 2: Cảnh báo sớm</td>
+                <td style="text-align: center; font-family: monospace;">14 – 17 µg/m³</td>
+                <td style="padding: 0.6rem;">Vùng chuyển pha (Tipping Point), SHAP đảo chiều</td>
+                <td style="padding: 0.6rem;">Nhóm nhạy cảm hạn chế thể thao ngoài trời</td>
+                <td style="padding: 0.6rem;">Phát cảnh báo sớm trên app đô thị / đài truyền thanh</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(239,68,68,0.05);">
+                <td style="padding: 0.6rem; font-weight: 600; color: #EF4444;">🔴 Cấp 3: Can thiệp khẩn</td>
+                <td style="text-align: center; font-family: monospace;">&gt; 17 µg/m³</td>
+                <td style="padding: 0.6rem;">Bùng phát tích tụ phi tuyến, gia tốc khi độ ẩm thấp</td>
+                <td style="padding: 0.6rem;">Toàn dân đeo khẩu trang lọc bụi khi ra ngoài</td>
+                <td style="padding: 0.6rem;">Kiểm soát đốt rơm rạ, phân luồng xe tải giờ cao điểm</td>
+            </tr>
+        </tbody>
+    </table>
+    """,
+        unsafe_allow_html=True,
+    )
+
+    insight_card(
+        "💡 Tính Thực Tiễn Của Khung Dự Báo",
+        "Việc tích hợp đồng thời <b>dự báo điểm</b> (Point Forecast) từ mô hình Ensemble v9, "
+        "<b>khoảng tin cậy thích ứng</b> (ACI 90%) và <b>cơ chế phân cấp nồng độ nền</b> "
+        "giúp lãnh đạo đô thị có đầy đủ thông tin cả về giá trị dự kiến lẫn mức độ bất định, "
+        "tránh hiện tượng báo động giả và nâng cao hiệu quả các quyết định can thiệp môi trường.",
+        card_type="info",
+    )
+
+
+# ──────────────────────────────────────────────────────────────
+# Tab 3: 5.3 Hạn Chế Của Nghiên Cứu
 # ──────────────────────────────────────────────────────────────
 
 
 def _render_limitations(section_header, insight_card):
-    """Research limitations — honest scientific assessment."""
-    section_header("⚠️", "Hạn Chế Của Nghiên Cứu")
+    """Research limitations — honest scientific assessment per Section 5.3."""
+    section_header("⚠️", "5.3 Hạn Chế Của Nghiên Cứu")
 
-    limitations = [
+    st.markdown(
+        """
+    <div style="background: var(--secondary-background-color); border-radius: 12px;
+                padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
+                border-left: 4px solid #EF4444; font-size: 0.92rem; line-height: 1.65;">
+        Nhằm đảm bảo tính trung thực khoa học theo chuẩn mực học thuật quốc tế,
+        Đề án ghi nhận <b>5 hạn chế kỹ thuật khách quan</b> trong quá trình thực nghiệm:
+    </div>
+    """,
+        unsafe_allow_html=True,
+    )
+
+    # 5 Official limitations matching thesis page 61 verbatim
+    official_limitations = [
         {
-            "cat": "Dữ liệu & Tiền xử lý",
-            "icon": "📉",
-            "items": [
-                "Data Sparsity: 89 ngày/năm bị 'mù' hoàn toàn (Tháng 2 & 9), giảm khả năng học chu kỳ mùa",
-                "Phạm vi quan trắc: Nghiên cứu thực nghiệm trên trạm cảm biến IoT ngoài trời tại Sa Đéc (Đồng Tháp), cần mở rộng mạng lưới đa trạm trên toàn vùng ĐBSCL để phát triển mô hình không - thời gian (Spatio-Temporal)",
-                "4 biến phụ giới hạn: Thiếu biến khí tượng nâng cao (tốc độ gió, áp suất khí quyển, lượng mưa)",
-                "Outlier Removal Trap: Áp dụng phương pháp loại nhiễu thống kê thuần túy (IQR) cho PM2.5 đã vô tình xóa bỏ các đỉnh ô nhiễm thật (fat-tailed). Bắt buộc sử dụng Domain Bounds (0 - 500 µg/m³) thay thế để giữ nguyên cảnh báo.",
-            ],
+            "id": "1",
+            "icon": "📅",
+            "title": "Gián đoạn dữ liệu quan trắc do đặc thù thiết bị IoT",
+            "desc": (
+                "Dữ liệu quan trắc bị gián đoạn trung bình <b>89 ngày/năm</b> do sự cố mất điện, lỗi đường truyền kết nối "
+                "và bảo trì thiết bị cảm biến ngoài trời, đặc biệt tập trung tại <b>tháng 02 và tháng 09</b>. "
+                "Sự gián đoạn này làm hạn chế khả năng học chu kỳ mùa vụ dài hạn của các mô hình học sâu."
+            ),
         },
         {
-            "cat": "Mô hình",
-            "icon": "🤖",
-            "items": [
-                "Bẫy tự tương quan ở 1h: Chuỗi giờ có r ≈ 0,86 khiến Persistence baseline rất mạnh (MASE > 1,0); mô hình GRU 15m đa phân giải đã phá vỡ giới hạn này với MASE = 0,667 (< 1,0)",
-                "TFT_1h thất bại: Kiến trúc Transformer không phù hợp dữ liệu autocorrelation cực cao",
-                "Chu kỳ vận hành batch: Hệ thống chạy theo chu kỳ batch (15m/1h) trên kiến trúc 3-Tier (FastAPI + Render + Supabase) với 193 automated tests bảo vệ chống rò rỉ dữ liệu",
-            ],
+            "id": "2",
+            "icon": "📍",
+            "title": "Phạm vi thực nghiệm trên một trạm quan trắc đơn lẻ",
+            "desc": (
+                "Nghiên cứu mới thực nghiệm trên <b>một trạm quan trắc đơn lẻ tại Sa Đéc</b>. "
+                "Cần mở rộng kiểm chứng khả năng tổng quát hóa (generalization) sang các khu vực lân cận "
+                "và các tiểu vùng sinh thái khác nhau của ĐBSCL."
+            ),
         },
         {
-            "cat": "Hạ tầng",
-            "icon": "🔧",
-            "items": [
-                "Apple Silicon (MPS): Một số PyTorch ops chưa hỗ trợ đầy đủ, phải fallback CPU",
-                "Thời gian huấn luyện: 30+ models × 3 resolutions × 3 horizons yêu cầu tài nguyên lớn",
-            ],
+            "id": "3",
+            "icon": "🔬",
+            "title": "Sai số phần cứng nội tại của cảm biến chi phí thấp",
+            "desc": (
+                "Cảm biến chi phí thấp có sai số phần cứng nội tại khoảng <b>±3 µg/m³</b> "
+                "so với thiết bị quan trắc chuẩn tham chiếu (BAM-1020). Điều này tạo ra một "
+                "<b>giới hạn sai số tối thiểu (error floor)</b> tự nhiên mà không một thuật toán học máy nào có thể vượt qua."
+            ),
+        },
+        {
+            "id": "4",
+            "icon": "💨",
+            "title": "Chưa tích hợp biến gió và áp suất khí quyển",
+            "desc": (
+                "Chưa tích hợp trực tiếp các biến <b>hướng gió, tốc độ gió và áp suất khí quyển</b> "
+                "do trạm quan trắc hiện tại chưa trang bị các module cảm biến này. Đây là các biến số động học "
+                "khí quyển có ảnh hưởng mạnh tới cơ chế khuếch tán ô nhiễm theo không gian."
+            ),
+        },
+        {
+            "id": "5",
+            "icon": "⚖️",
+            "title": "Độ lệch dự báo nhẹ của mô hình Ensemble",
+            "desc": (
+                "Mô hình Ensemble có độ lệch dự báo nhẹ (<b>Forecast Bias = +1,30 µg/m³ tại 6 giờ</b>), "
+                "có xu hướng thiên về dự báo an toàn (hơi cao hơn thực tế nhằm tránh bỏ sót đỉnh ô nhiễm nguy hại). "
+                "Cần bổ sung mô-đun hiệu chỉnh bias động (dynamic bias correction) trong tương lai."
+            ),
         },
     ]
 
-    for lim in limitations:
-        items_html = "".join(f'<li style="margin-bottom: 0.4rem;">{item}</li>' for item in lim["items"])
+    for lim in official_limitations:
         st.markdown(
             f"""
         <div style="background: var(--secondary-background-color); border-radius: 10px;
-                    padding: 1.2rem; margin-bottom: 1rem;
+                    padding: 1.1rem 1.3rem; margin-bottom: 0.9rem;
                     border-left: 4px solid #EF4444;">
-            <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem;">
-                {lim["icon"]} {lim["cat"]}
+            <div style="font-weight: 700; font-size: 0.98rem; margin-bottom: 0.35rem; color: var(--text-color);">
+                <span style="font-size: 1.1rem; margin-right: 0.4rem;">{lim["icon"]}</span>
+                <span style="background: rgba(239,68,68,0.15); color: #EF4444; padding: 0.15rem 0.5rem;
+                             border-radius: 4px; font-size: 0.85rem; margin-right: 0.5rem;">Hạn chế #{lim["id"]}</span>
+                {lim["title"]}
             </div>
-            <ul style="font-size: 0.88rem; line-height: 1.6; margin: 0; padding-left: 1.2rem; opacity: 0.9;">
-                {items_html}
-            </ul>
+            <div style="font-size: 0.88rem; line-height: 1.6; opacity: 0.88; color: var(--text-color); padding-left: 1.8rem;">
+                {lim["desc"]}
+            </div>
         </div>
         """,
             unsafe_allow_html=True,
         )
 
     # Ablation Study: Outlier Removal Trap
-    section_header("🧪", "Ablation Study: Bẫy Outlier Removal")
+    section_header("🧪", "Ablation Study: Bẫy Loại Bỏ Ngoại Lai (Hình 4.12)")
 
     try:
-        import json
-
-        import pandas as pd
-
         comp_path = PROJECT_ROOT / "research" / "experiments" / "v10_ablation" / "comparison_table.json"
         if comp_path.exists():
             with open(comp_path, encoding="utf-8") as f:
@@ -247,7 +476,7 @@ def _render_limitations(section_header, insight_card):
             st.markdown(
                 """
                 <div style="background: rgba(239, 68, 68, 0.05); padding: 1rem; border-left: 3px solid #EF4444; border-radius: 4px; margin-bottom: 1rem;">
-                    <span style="font-size: 0.95em;"><b>"False Sense of Accuracy" (Ảo giác chính xác):</b> Thí nghiệm v10 (Ablation) cố tình dùng thuật toán IQR thay cho Domain Bounds. Kết quả: IQR đã cắt mất 66 đợt ô nhiễm nghiêm trọng (> 54 µg/m³). Mô hình v10 trông <b>chính xác hơn (MASE thấp hơn)</b> ở các horizon ngắn, nhưng thực chất đã bị "mù" trước các đợt bùng phát ô nhiễm thật sự.</span>
+                    <span style="font-size: 0.95em;"><b>"False Sense of Accuracy" (Ảo giác chính xác):</b> Thí nghiệm Ablation cố tình dùng thuật toán IQR thay cho Domain Bounds. Kết quả: IQR đã cắt mất 66 đợt ô nhiễm nghiêm trọng (> 54 µg/m³). Mô hình trông <b>chính xác hơn (MASE thấp hơn)</b> ở các horizon ngắn, nhưng thực chất đã bị "mù" trước các đợt bùng phát ô nhiễm thật sự.</span>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -259,10 +488,7 @@ def _render_limitations(section_header, insight_card):
                     if "v9_mase" in metrics:
                         delta = metrics["delta_mase"]
                         note = metrics.get("note", "")
-                        if note == "FALSE ACCURACY":
-                            status = "🚨 Ảo giác (MASE giảm ảo)"
-                        else:
-                            status = "✅ Domain tốt hơn"
+                        status = "🚨 Ảo giác (MASE giảm ảo)" if note == "FALSE ACCURACY" else "✅ Domain tốt hơn"
 
                         rows.append(
                             {
@@ -283,7 +509,7 @@ def _render_limitations(section_header, insight_card):
             if fig_path.exists():
                 st.image(
                     str(fig_path),
-                    caption="Hình 4.12: Đánh giá mức độ ảnh hưởng của loại bỏ ngoại lai đến hiệu năng mô hình (Ablation)",
+                    caption="Hình 4.12: Đánh giá mức độ ảnh hưởng của loại bỏ ngoại lai đến hiệu năng mô hình (Ablation Study)",
                     use_container_width=True,
                 )
 
@@ -291,7 +517,7 @@ def _render_limitations(section_header, insight_card):
         st.info("💡 Chạy script `v10_ablation_compare.py` để xem kết quả Ablation Study.")
 
     # External data analysis
-    section_header("🌍", "Phân Tích Dữ Liệu Ngoại Lai (Open-Meteo)")
+    section_header("🌍", "Phân Tích Dữ Liệu Ngoại Lai (Open-Meteo & CAMS)")
 
     insight_card(
         "📋 Kết quả thử nghiệm thu thập dữ liệu ngoại lai",
@@ -301,31 +527,28 @@ def _render_limitations(section_header, insight_card):
         "• Nhiệt độ: IoT ~29°C vs Open-Meteo ~27°C (bias ~2°C — do đo indoor vs outdoor)<br>"
         "• Độ ẩm: IoT ~75.6% vs Open-Meteo ~80.8% (bias ~5%)<br>"
         "• PM2.5: IoT ~13.7 vs CAMS ~22.2 µg/m³ (<b>bias ~62%</b> — cảm biến vs mô phỏng vệ tinh)<br><br>"
-        "**Quyết định:** Không merge vào pipeline chính để tránh distribution shift. "
-        "Lưu trữ tại <code>dataset/external/</code> làm tài liệu tham khảo cho nghiên cứu tiếp theo.",
+        "**Quyết định:** Không merge trực tiếp vào pipeline chính để tránh hiện tượng phân phối bị dịch chuyển (distribution shift). "
+        "Lưu trữ tại <code>dataset/external/</code> làm tài liệu tham khảo cho các nghiên cứu tiếp theo.",
         card_type="warning",
     )
 
     # Sensitivity Analysis Block
-    section_header("🔍", "Kiểm Định Nhạy Thực Nghiệm (Sensitivity Analysis)")
+    section_header("🔍", "Kiểm Định Độ Nhạy Thực Nghiệm (Sensitivity Analysis)")
     try:
         sens_path = PROJECT_ROOT / "research" / "diagnostics" / "sensitivity_analysis.json"
         if sens_path.exists():
-            import json as _json2
-
-            sens_d = _json2.load(open(sens_path, encoding="utf-8"))
+            with open(sens_path, encoding="utf-8") as f:
+                sens_d = json.load(f)
             knn_k = sens_d.get("knn_k_sensitivity", {})
             aci_g = sens_d.get("aci_gamma_sensitivity", {})
 
             col_k, col_g = st.columns(2)
             with col_k:
-                st.markdown(f"**KNN Imputation $k$-value {cite('troyanskaya2001')}**")
+                st.markdown(f"**KNN Imputation $k$-value {cite('troyanskaya2001')}**", unsafe_allow_html=True)
                 rows1 = [{"k": k.replace("k_", "k="), "MAE": v["mae"], "RMSE": v["rmse"]} for k, v in knn_k.items()]
-                import pandas as _pd
-
-                st.dataframe(_pd.DataFrame(rows1), use_container_width=True, hide_index=True)
+                st.dataframe(pd.DataFrame(rows1), use_container_width=True, hide_index=True)
             with col_g:
-                st.markdown(f"**ACI Adaptation Rate $\\gamma$ {cite('gibbs2021')}**")
+                st.markdown(f"**ACI Adaptation Rate $\\gamma$ {cite('gibbs2021')}**", unsafe_allow_html=True)
                 rows2 = [
                     {
                         "Gamma (γ)": v["gamma"],
@@ -334,161 +557,195 @@ def _render_limitations(section_header, insight_card):
                     }
                     for k, v in aci_g.items()
                 ]
-                st.dataframe(_pd.DataFrame(rows2), use_container_width=True, hide_index=True)
+                st.dataframe(pd.DataFrame(rows2), use_container_width=True, hide_index=True)
 
             insight_card(
                 "💡 Kết luận kiểm định độ nhạy",
-                f"Thử nghiệm quét siêu tham số trên `scripts/analysis/knn_k_sensitivity.py` xác nhận: "
+                f"Thử nghiệm quét siêu tham số xác nhận: "
                 f"(1) $k=5$ (KNN) cho sai số MAE tối ưu ($32,25\\,\\mu\\text{{g/m}}^3$) {cite('troyanskaya2001')}. "
                 f"(2) $\\gamma=0,005$ (ACI) duy trì độ phủ $91,0\\%$ (mục tiêu $90\\%$) với chỉ số ổn định cao nhất ($0,988$) {cite('gibbs2021')}.",
                 card_type="info",
             )
-    except Exception:
+    except Exception:  # noqa: S110
         pass
 
 
 # ──────────────────────────────────────────────────────────────
-# Tab 3: Hướng Phát Triển
+# Tab 4: 5.4 Hướng Phát Triển
 # ──────────────────────────────────────────────────────────────
 
 
 def _render_future_work(section_header, insight_card):
-    """Future research directions with feasibility assessment."""
-    section_header("🚀", "Đề Xuất Hướng Phát Triển")
+    """Future research directions with feasibility assessment per Section 5.4."""
+    section_header("🚀", "5.4 Hướng Phát Triển")
 
     st.markdown(
         """
     <div style="background: var(--secondary-background-color); border-radius: 12px;
-                padding: 1rem 1.2rem; margin-bottom: 1.5rem;
-                border-left: 4px solid #00D4AA; font-size: 0.9rem; line-height: 1.6;">
-        Các hướng phát triển được đề xuất dựa trên kết quả thực nghiệm và hạn chế
-        đã xác định. Mỗi hướng được đánh giá theo <b>Mức độ khả thi</b> (dựa trên
-        hạ tầng hiện có) và <b>Tác động kỳ vọng</b> (dựa trên literature review).
+                padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
+                border-left: 4px solid #00D4AA; font-size: 0.92rem; line-height: 1.65;">
+        Dựa trên các kết quả thực nghiệm và những hạn chế kỹ thuật đã xác định, Đề án đề xuất
+        <b>4 hướng chiến lược trọng tâm</b> (Chương 5.4 Đề án) kết hợp bảng đánh giá tính khả thi và tác động:
     </div>
     """,
         unsafe_allow_html=True,
     )
 
+    # 4 Core Directions matching Chapter 5.4 verbatim
+    core_directions = [
+        {
+            "id": "FW-1",
+            "icon": "🛰️",
+            "title": "Mô Hình Dự Báo Không - Thời Gian (Spatiotemporal Forecasting) Đa Điểm & Vệ Tinh CAMS",
+            "desc": (
+                "Mở rộng mạng lưới quan trắc đa điểm trên địa bàn tỉnh Đồng Tháp và khu vực ĐBSCL. "
+                "Tích hợp dữ liệu ảnh viễn thám vệ tinh CAMS (Copernicus Atmosphere Monitoring Service) "
+                "kết hợp các thuật toán học sâu không gian - thời gian tiên tiến (Spatiotemporal GNN, ConvLSTM) "
+                "để xây dựng mô hình dự báo diện rộng có độ phân giải không gian cao."
+            ),
+            "priority": "P1 (Chiến lược)",
+        },
+        {
+            "id": "FW-2",
+            "icon": "💨",
+            "title": "Bổ Sung Trạm Đo Gió Tự Động & Trường Vận Tốc Gió Vào Mô Hình",
+            "desc": (
+                "Bổ sung trạm quan trắc hướng gió và tốc độ gió tự động nhằm đưa trường vận tốc gió "
+                "(wind velocity vector field) vào mô hình lan truyền và phân tán ô nhiễm khí quyển. "
+                "Điều này giúp lượng hóa chính xác dòng bụi dịch chuyển từ các nguồn phát thải lân cận."
+            ),
+            "priority": "P1 (Thực thi ngay)",
+        },
+        {
+            "id": "FW-3",
+            "icon": "⚡",
+            "title": "Thử Nghiệm Các Kiến Trúc Transformer Mới (PatchTST & iTransformer)",
+            "desc": (
+                "Thử nghiệm và tối ưu hóa các kiến trúc Transformer thế hệ mới chuyên biệt cho chuỗi thời gian "
+                "như PatchTST (Patch Time Series Transformer) và iTransformer (Inverted Transformer) "
+                "trên tập dữ liệu đa trạm có độ dài chuỗi lớn hơn."
+            ),
+            "priority": "P2 (Nghiên cứu sâu)",
+        },
+        {
+            "id": "FW-4",
+            "icon": "🔄",
+            "title": "Triển Khai Học Thích Ứng Trực Tuyến (Online Learning) Trên Thiết Bị Biên (Edge Computing)",
+            "desc": (
+                "Triển khai mô hình học thích ứng trực tuyến (Online/Incremental Learning) trực tiếp trên "
+                "thiết bị biên (Edge Computing) nhằm tự động cập nhật trọng số mô hình khi luồng dữ liệu mới "
+                "liên tục đổ về, tự động phát hiện và thích ứng với hiện tượng trôi dạt khái niệm (Concept Drift)."
+            ),
+            "priority": "P2 (Kỹ thuật biên)",
+        },
+    ]
+
+    for cd in core_directions:
+        st.markdown(
+            f"""
+        <div style="background: var(--secondary-background-color); border-radius: 10px;
+                    padding: 1.2rem 1.4rem; margin-bottom: 1rem;
+                    border-left: 4px solid #00D4AA;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <div style="font-weight: 700; font-size: 1.02rem; color: var(--text-color);">
+                    <span style="font-size: 1.15rem; margin-right: 0.4rem;">{cd["icon"]}</span>
+                    {cd["title"]}
+                </div>
+                <span style="background: rgba(0,212,170,0.15); color: #00D4AA; font-size: 0.8rem;
+                             font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px;">
+                    {cd["priority"]}
+                </span>
+            </div>
+            <div style="font-size: 0.88rem; line-height: 1.65; opacity: 0.88; color: var(--text-color); padding-left: 1.8rem;">
+                {cd["desc"]}
+            </div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    # Priority matrix
+    section_header("📋", "Ma Trận Đánh Giá Tính Khả Thi & Tác Động (Priority Matrix)")
+
     future_directions = [
         {
             "id": "FD-1",
-            "title": "Tích hợp dữ liệu ngoại lai (External Data Fusion)",
-            "icon": "🌐",
-            "feasibility": "Trung bình",
-            "impact": "Cao",
-            "f_score": 3,
-            "i_score": 5,
-            "desc": (
-                "Sử dụng kỹ thuật Domain Adaptation hoặc Bias Correction "
-                "để hiệu chỉnh phân phối giữa dữ liệu IoT cục bộ và "
-                "dữ liệu reanalysis (Open-Meteo ERA5). Xây dựng mô hình "
-                "hồi quy trung gian để map Open-Meteo → IoT scale trước khi merge."
-            ),
-            "prereq": "Đã có: dataset/external/open_meteo_missing_periods.csv (20,520 rows)",
-        },
-        {
-            "id": "FD-2",
-            "title": "Multi-Station Network",
-            "icon": "📡",
-            "feasibility": "Thấp",
-            "impact": "Rất cao",
-            "f_score": 2,
-            "i_score": 5,
-            "desc": (
-                "Mở rộng mạng lưới cảm biến IoT ra nhiều vị trí trong ĐBSCL "
-                "(Cần Thơ, Long Xuyên, Vĩnh Long). Áp dụng Spatial-Temporal GNN "
-                "hoặc ConvLSTM để học tương quan không gian giữa các trạm."
-            ),
-            "prereq": "Cần: Phần cứng IoT bổ sung + triển khai thực địa",
-        },
-        {
-            "id": "FD-3",
-            "title": "Online Learning & Model Update",
+            "title": "Online Learning trên Edge Computing",
             "icon": "🔄",
             "feasibility": "Cao",
             "impact": "Cao",
             "f_score": 4,
             "i_score": 4,
-            "desc": (
-                "Chuyển từ batch processing sang online/incremental learning. "
-                "Mô hình tự cập nhật khi nhận data mới từ cảm biến, phát hiện "
-                "concept drift và retrain tự động. Phù hợp cho triển khai production."
-            ),
+            "desc": "Tự động cập nhật trọng số mô hình khi có dữ liệu mới, bù đắp concept drift.",
             "prereq": "Đã có: Pipeline v9 + Docker architecture + streaming data",
         },
         {
-            "id": "FD-4",
-            "title": "Kiến trúc CNN-BiLSTM-Attention",
-            "icon": "🧠",
+            "id": "FD-2",
+            "title": "Bổ sung trạm đo gió tự động",
+            "icon": "💨",
+            "feasibility": "Rất cao",
+            "impact": "Cao",
+            "f_score": 5,
+            "i_score": 4,
+            "desc": "Bổ sung sensor tốc độ & hướng gió để đưa trường vector gió vào phân tán bụi.",
+            "prereq": "Cần: Module anemometer chi phí thấp tích hợp IoT trạm hiện tại",
+        },
+        {
+            "id": "FD-3",
+            "title": "Kiến trúc PatchTST & iTransformer",
+            "icon": "⚡",
             "feasibility": "Cao",
             "impact": "Trung bình",
             "f_score": 4,
             "i_score": 3,
-            "desc": (
-                "Kết hợp CNN (trích xuất local patterns) + Bidirectional LSTM "
-                "(bối cảnh hai chiều) + Attention (tập trung vào timesteps quan trọng). "
-                "Literature cho thấy CNN-BiLSTM-Attn đạt R²=0.96 trên dữ liệu tương tự "
-                "(Patel et al., 2025)."
-            ),
-            "prereq": "Đã có: Fair Pipeline features + training infrastructure",
+            "desc": "PatchTST chia subseries thành các patch nhỏ, giảm độ phức tạp O(L²) và bắt chu kỳ tốt hơn.",
+            "prereq": "Đã có: Tabular pipeline + GPU server/hạ tầng huấn luyện",
+        },
+        {
+            "id": "FD-4",
+            "title": "Đồng hóa dữ liệu viễn thám vệ tinh CAMS",
+            "icon": "🛰️",
+            "feasibility": "Trung bình",
+            "impact": "Rất cao",
+            "f_score": 3,
+            "i_score": 5,
+            "desc": "Sử dụng Domain Adaptation để kết hợp dữ liệu toàn cầu CAMS với cảm biến mặt đất Sa Đéc.",
+            "prereq": "Đã có: Dataset external CAMS + hiểu rõ bias hệ thống ~62%",
         },
         {
             "id": "FD-5",
-            "title": "Transfer Learning từ Dữ liệu Vệ tinh",
-            "icon": "🛰️",
-            "feasibility": "Trung bình",
-            "impact": "Cao",
-            "f_score": 3,
-            "i_score": 4,
-            "desc": (
-                "Pre-train mô hình trên dữ liệu PM2.5 quy mô lớn (CAMS Global, "
-                "Copernicus Atmosphere), sau đó fine-tune trên dữ liệu IoT cục bộ. "
-                "Giải quyết bài toán thiếu hụt data mà không gây bias trực tiếp."
-            ),
-            "prereq": "Đã có: Phân tích bias Open-Meteo vs IoT → biết rõ domain gap",
-        },
-        {
-            "id": "FD-6",
-            "title": "Tích hợp biến khí tượng mở rộng",
-            "icon": "🌦️",
-            "feasibility": "Cao",
-            "impact": "Trung bình",
-            "f_score": 5,
-            "i_score": 3,
-            "desc": (
-                "Bổ sung các biến: tốc độ gió, hướng gió, áp suất khí quyển, "
-                "lượng mưa, bức xạ mặt trời từ trạm khí tượng Đồng Tháp. "
-                "Granger causality test đã xác nhận ảnh hưởng của khí tượng lên PM2.5."
-            ),
-            "prereq": "Cần: Liên hệ Đài Khí tượng Thủy văn Đồng Tháp",
+            "title": "Mạng lưới quan trắc đa điểm ĐBSCL",
+            "icon": "📡",
+            "feasibility": "Thấp",
+            "impact": "Rất cao",
+            "f_score": 2,
+            "i_score": 5,
+            "desc": "Mở rộng ra Cần Thơ, Cao Lãnh, Long Xuyên; phát triển Spatiotemporal GNN.",
+            "prereq": "Cần: Nguồn lực mở rộng phần cứng thực địa đa địa phương",
         },
     ]
 
-    # Render as cards
     for fd in future_directions:
         f_bar = "█" * fd["f_score"] + "░" * (5 - fd["f_score"])
         i_bar = "█" * fd["i_score"] + "░" * (5 - fd["i_score"])
-
-        # Color based on feasibility
         border_color = "#00D4AA" if fd["f_score"] >= 4 else "#F59E0B" if fd["f_score"] >= 3 else "#EF4444"
 
         st.markdown(
             f"""
         <div style="background: var(--secondary-background-color); border-radius: 12px;
-                    padding: 1.2rem 1.5rem; margin-bottom: 1rem;
+                    padding: 1.1rem 1.3rem; margin-bottom: 0.9rem;
                     border-left: 4px solid {border_color};">
             <div style="display: flex; justify-content: space-between; align-items: center;
-                        margin-bottom: 0.5rem;">
-                <div style="font-weight: 700; font-size: 1rem;">
+                        margin-bottom: 0.4rem;">
+                <div style="font-weight: 700; font-size: 0.95rem;">
                     {fd["icon"]} {fd["id"]}: {fd["title"]}
                 </div>
             </div>
-            <div style="font-size: 0.88rem; line-height: 1.6; opacity: 0.9;
-                        margin-bottom: 0.8rem;">
+            <div style="font-size: 0.86rem; line-height: 1.55; opacity: 0.88; margin-bottom: 0.6rem;">
                 {fd["desc"]}
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem;
-                        font-size: 0.82rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 0.8rem;
+                        font-size: 0.8rem;">
                 <div>
                     <span style="opacity: 0.6;">Khả thi:</span>
                     <span style="font-family: monospace; color: {border_color};"> {f_bar}</span>
@@ -509,9 +766,6 @@ def _render_future_work(section_header, insight_card):
             unsafe_allow_html=True,
         )
 
-    # Priority matrix
-    section_header("📋", "Ma Trận Ưu Tiên")
-
     st.markdown(
         """
     <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.5rem;">
@@ -526,48 +780,40 @@ def _render_future_work(section_header, insight_card):
         </thead>
         <tbody>
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <td style="padding: 0.5rem;">FD-3</td>
-                <td style="padding: 0.5rem;">Online Learning</td>
+                <td style="padding: 0.5rem;">FD-2</td>
+                <td style="padding: 0.5rem;">Bổ sung trạm đo gió tự động</td>
+                <td style="text-align: center; color: #00D4AA;">★★★★★</td>
                 <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
-                <td style="text-align: center;"><span style="background: #00D4AA; color: #0E1117;
-                    padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P1</span></td>
-            </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <td style="padding: 0.5rem;">FD-4</td>
-                <td style="padding: 0.5rem;">CNN-BiLSTM-Attention</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
-                <td style="text-align: center; color: #F59E0B;">★★★☆☆</td>
                 <td style="text-align: center;"><span style="background: #00D4AA; color: #0E1117;
                     padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P1</span></td>
             </tr>
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
                 <td style="padding: 0.5rem;">FD-1</td>
-                <td style="padding: 0.5rem;">External Data Fusion</td>
-                <td style="text-align: center; color: #F59E0B;">★★★☆☆</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★★</td>
-                <td style="text-align: center;"><span style="background: #F59E0B; color: #0E1117;
-                    padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P2</span></td>
-            </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <td style="padding: 0.5rem;">FD-5</td>
-                <td style="padding: 0.5rem;">Transfer Learning</td>
-                <td style="text-align: center; color: #F59E0B;">★★★☆☆</td>
+                <td style="padding: 0.5rem;">Online Learning trên Edge Computing</td>
                 <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
-                <td style="text-align: center;"><span style="background: #F59E0B; color: #0E1117;
+                <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
+                <td style="text-align: center;"><span style="background: #00D4AA; color: #0E1117;
+                    padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P1</span></td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <td style="padding: 0.5rem;">FD-3</td>
+                <td style="padding: 0.5rem;">Kiến trúc PatchTST & iTransformer</td>
+                <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
+                <td style="text-align: center; color: #F59E0B;">★★★☆☆</td>
+                <td style="text-align: center;"><span style="background: #00D4AA; color: #0E1117;
                     padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P2</span></td>
             </tr>
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <td style="padding: 0.5rem;">FD-6</td>
-                <td style="padding: 0.5rem;">Biến khí tượng mở rộng</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★★</td>
+                <td style="padding: 0.5rem;">FD-4</td>
+                <td style="padding: 0.5rem;">Đồng hóa dữ liệu viễn thám vệ tinh CAMS</td>
                 <td style="text-align: center; color: #F59E0B;">★★★☆☆</td>
+                <td style="text-align: center; color: #00D4AA;">★★★★★</td>
                 <td style="text-align: center;"><span style="background: #F59E0B; color: #0E1117;
                     padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P2</span></td>
             </tr>
             <tr>
-                <td style="padding: 0.5rem;">FD-2</td>
-                <td style="padding: 0.5rem;">Multi-Station Network</td>
+                <td style="padding: 0.5rem;">FD-5</td>
+                <td style="padding: 0.5rem;">Mạng lưới quan trắc đa điểm ĐBSCL</td>
                 <td style="text-align: center; color: #EF4444;">★★☆☆☆</td>
                 <td style="text-align: center; color: #00D4AA;">★★★★★</td>
                 <td style="text-align: center;"><span style="background: #71717A; color: #FAFAFA;
@@ -579,4 +825,4 @@ def _render_future_work(section_header, insight_card):
         unsafe_allow_html=True,
     )
 
-    st.caption("*P1 = Ưu tiên cao (có thể thực hiện ngay), P2 = Ưu tiên trung bình, P3 = Dài hạn*")
+    st.caption("*P1 = Ưu tiên cao (thực hiện ngay), P2 = Ưu tiên trung hạn, P3 = Chiến lược dài hạn*")

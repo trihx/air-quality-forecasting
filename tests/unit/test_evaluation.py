@@ -59,7 +59,6 @@ class TestPollutionEventF1:
         assert f1 == 1.0
 
 
-
 class TestMAE:
     def test_perfect_predictions(self):
 

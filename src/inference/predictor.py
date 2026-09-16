@@ -11,8 +11,19 @@ Usage:
 
 from __future__ import annotations
 
+import os
+
+# Prevent OpenMP multi-runtime crash (PyTorch vs Homebrew LightGBM on macOS)
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 import contextlib
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -253,15 +264,24 @@ class LightGBMPredictor:
         Returns:
             Dict with predicted_pm25, model, horizon, timestamp.
         """
+        df = feature_row.copy()
+
         if self.feature_names:
-            available = [c for c in self.feature_names if c in feature_row.columns]
+            # Map between multi-resolution '_s' (steps) and legacy '_h' (hours)
+            for feat in self.feature_names:
+                if feat not in df.columns:
+                    alt_feat = re.sub(r"(\d+)h", r"\1s", feat) if "h" in feat else re.sub(r"(\d+)s", r"\1h", feat)
+                    if alt_feat in df.columns:
+                        df[feat] = df[alt_feat]
+
+            available = [c for c in self.feature_names if c in df.columns]
             if len(available) < len(self.feature_names) * 0.8:
                 raise ValueError(f"Too few matching features: {len(available)}/{len(self.feature_names)}")
-            row = feature_row[available].tail(1).values
+            row = df[available].tail(1).values
         else:
-            row = feature_row.tail(1).values
+            row = df.tail(1).values
 
-        pred = self.model.predict(row)[0]
+        pred = self.model.predict(row, num_threads=1)[0]
 
         return {
             "predicted_pm25": round(float(pred), 2),
@@ -272,10 +292,11 @@ class LightGBMPredictor:
         }
 
 
-def get_latest_data(n_rows: int = LOOKBACK) -> pd.DataFrame:
+def get_latest_data(n_rows: int = 200) -> pd.DataFrame:
     """Load the latest N rows from the processed hybrid dataset.
 
     Returns a DataFrame ready for GRU prediction (raw features).
+    Defaults to 200 rows to support feature engineering warmup (168h).
     """
     from src.data.cleaner import (
         _clip_physical_bounds,

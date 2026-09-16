@@ -4,6 +4,8 @@ Implements SKILL.md §9 metrics: MAE, RMSE, MAPE, MASE, R².
 Plus sMAPE for near-zero safety (evaluation-metrics.md §4).
 """
 
+from typing import Any
+
 import numpy as np
 from loguru import logger
 
@@ -351,12 +353,14 @@ def evaluate_forecast_full(
         thresholds = [25.0, 35.0, 50.0]
 
     # Regression metrics
-    results = evaluate_forecast(
-        y_true=y_true,
-        y_pred=y_pred,
-        y_naive=y_naive,
-        model_name=model_name,
-        horizon=horizon,
+    results: dict[str, Any] = dict(
+        evaluate_forecast(
+            y_true=y_true,
+            y_pred=y_pred,
+            y_naive=y_naive,
+            model_name=model_name,
+            horizon=horizon,
+        )
     )
 
     # Classification metrics per threshold

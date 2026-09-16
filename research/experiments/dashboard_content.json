@@ -168,39 +168,311 @@
       },
       "dm_test": [
         {
-          "So sánh": "TFT_1h vs Persistence (6h)",
-          "DM Statistic": -3.05,
-          "p-value": "0.002",
-          "Δ vs Persistence": "-15.7%",
-          "Kết luận": "✅ Significant"
-        },
-        {
-          "So sánh": "Ensemble_GRU vs Persistence (6h)",
-          "DM Statistic": -4.21,
+          "Cặp so sánh": "GRU_15m so với Persistence",
+          "Horizon": "1 giờ",
+          "Thống kê DM": "+13.729",
           "p-value": "< 0.001",
-          "Δ vs Persistence": "-25.0%",
-          "Kết luận": "✅ Significant"
+          "Kết luận": "Persistence tốt hơn ở 1h tần suất gốc"
         },
         {
-          "So sánh": "Ensemble_Stack vs Persistence (24h)",
-          "DM Statistic": -3.89,
+          "Cặp so sánh": "Ensemble_30m so với Persistence",
+          "Horizon": "6 giờ",
+          "Thống kê DM": "-8.452",
           "p-value": "< 0.001",
-          "Δ vs Persistence": "-30.4%",
-          "Kết luận": "✅ Significant"
+          "Kết luận": "✅ Ensemble vượt trội có ý nghĩa thống kê"
         },
         {
-          "So sánh": "LightGBM vs Persistence (6h)",
-          "DM Statistic": -3.57,
+          "Cặp so sánh": "Ensemble_30m so với Persistence",
+          "Horizon": "24 giờ",
+          "Thống kê DM": "-5.891",
           "p-value": "< 0.001",
-          "Δ vs Persistence": "-20.0%",
-          "Kết luận": "✅ Significant"
+          "Kết luận": "✅ Ensemble vượt trội có ý nghĩa thống kê"
         },
         {
-          "So sánh": "GRU vs Persistence (24h)",
-          "DM Statistic": -2.45,
-          "p-value": "0.014",
-          "Δ vs Persistence": "-27.3%",
-          "Kết luận": "✅ Significant"
+          "Cặp so sánh": "Ensemble_30m so với LSTM_30m",
+          "Horizon": "6 giờ",
+          "Thống kê DM": "-2.134",
+          "p-value": "0.033",
+          "Kết luận": "✅ Ensemble tốt hơn LSTM có ý nghĩa"
+        }
+      ],
+      "who_threshold_alert": [
+        {
+          "Mô hình": "Ensemble_30m",
+          "Horizon": "6 giờ",
+          "Precision": 0.812,
+          "Recall": 0.754,
+          "F1-Score": 0.782,
+          "Số đợt ô nhiễm": 57
+        },
+        {
+          "Mô hình": "LightGBM_30m",
+          "Horizon": "6 giờ",
+          "Precision": 0.789,
+          "Recall": 0.721,
+          "F1-Score": 0.753,
+          "Số đợt ô nhiễm": 57
+        },
+        {
+          "Mô hình": "GRU_30m",
+          "Horizon": "6 giờ",
+          "Precision": 0.756,
+          "Recall": 0.698,
+          "F1-Score": 0.726,
+          "Số đợt ô nhiễm": 57
+        },
+        {
+          "Mô hình": "Ensemble_30m",
+          "Horizon": "24 giờ",
+          "Precision": 0.723,
+          "Recall": 0.681,
+          "F1-Score": 0.701,
+          "Số đợt ô nhiễm": 57
+        }
+      ],
+      "anchor_test_summary": [
+        {
+          "Horizon": "1 giờ",
+          "Độ phân giải": "1 giờ",
+          "Mô hình": "Persistence_1h (Baseline)",
+          "MAE": 2.596,
+          "RMSE": 4.247,
+          "MASE": 1.000,
+          "R2": 0.586,
+          "DA": "—"
+        },
+        {
+          "Horizon": "1 giờ",
+          "Độ phân giải": "15 phút",
+          "Mô hình": "GRU_v9_15m",
+          "MAE": 2.944,
+          "RMSE": 4.690,
+          "MASE": 0.667,
+          "R2": 0.267,
+          "DA": "49.3%"
+        },
+        {
+          "Horizon": "1 giờ",
+          "Độ phân giải": "30 phút",
+          "Mô hình": "GRU_v9_30m",
+          "MAE": 3.007,
+          "RMSE": 4.245,
+          "MASE": 0.733,
+          "R2": 0.266,
+          "DA": "48.7%"
+        },
+        {
+          "Horizon": "1 giờ",
+          "Độ phân giải": "1 giờ",
+          "Mô hình": "TFT_1h",
+          "MAE": 2.753,
+          "RMSE": 6.261,
+          "MASE": 0.812,
+          "R2": -0.034,
+          "DA": "—"
+        },
+        {
+          "Horizon": "6 giờ",
+          "Độ phân giải": "1 giờ",
+          "Mô hình": "Persistence_1h (Baseline)",
+          "MAE": 6.932,
+          "RMSE": 9.470,
+          "MASE": 1.000,
+          "R2": -0.774,
+          "DA": "—"
+        },
+        {
+          "Horizon": "6 giờ",
+          "Độ phân giải": "15 phút",
+          "Mô hình": "GRU_v9_15m",
+          "MAE": 3.871,
+          "RMSE": 5.842,
+          "MASE": 0.426,
+          "R2": -0.133,
+          "DA": "49.2%"
+        },
+        {
+          "Horizon": "6 giờ",
+          "Độ phân giải": "30 phút",
+          "Mô hình": "Ensemble_Weighted_v9_30m",
+          "MAE": 3.493,
+          "RMSE": 5.079,
+          "MASE": 0.382,
+          "R2": -0.044,
+          "DA": "56.7%"
+        },
+        {
+          "Horizon": "6 giờ",
+          "Độ phân giải": "1 giờ",
+          "Mô hình": "RandomForest_1h",
+          "MAE": 4.930,
+          "RMSE": 5.397,
+          "MASE": 0.598,
+          "R2": -0.135,
+          "DA": "—"
+        },
+        {
+          "Horizon": "24 giờ",
+          "Độ phân giải": "1 giờ",
+          "Mô hình": "Persistence_1h (Baseline)",
+          "MAE": 6.327,
+          "RMSE": 8.967,
+          "MASE": 1.000,
+          "R2": -0.759,
+          "DA": "—"
+        },
+        {
+          "Horizon": "24 giờ",
+          "Độ phân giải": "15 phút",
+          "Mô hình": "LSTM_v9_15m",
+          "MAE": 3.730,
+          "RMSE": 5.645,
+          "MASE": 0.497,
+          "R2": -0.187,
+          "DA": "48.7%"
+        },
+        {
+          "Horizon": "24 giờ",
+          "Độ phân giải": "30 phút",
+          "Mô hình": "Ensemble_Weighted_v9_30m",
+          "MAE": 3.417,
+          "RMSE": 4.872,
+          "MASE": 0.469,
+          "R2": 0.070,
+          "DA": "54.8%"
+        },
+        {
+          "Horizon": "24 giờ",
+          "Độ phân giải": "1 giờ",
+          "Mô hình": "LSTM_v2_log_1h",
+          "MAE": 4.849,
+          "RMSE": 5.862,
+          "MASE": 0.747,
+          "R2": 0.004,
+          "DA": "—"
+        }
+      ],
+      "residual_diagnostics": [
+        {
+          "Mô hình": "GRU",
+          "Horizon": "1 giờ",
+          "Mean": -2.350,
+          "Std": 5.749,
+          "Skewness": 1.476,
+          "Ljung-Box lag=6 (p-val)": "p < 0.001"
+        },
+        {
+          "Mô hình": "LightGBM",
+          "Horizon": "1 giờ",
+          "Mean": -1.357,
+          "Std": 4.749,
+          "Skewness": 1.552,
+          "Ljung-Box lag=6 (p-val)": "p < 0.001"
+        },
+        {
+          "Mô hình": "GRU",
+          "Horizon": "6 giờ",
+          "Mean": -1.822,
+          "Std": 5.747,
+          "Skewness": 1.273,
+          "Ljung-Box lag=6 (p-val)": "p < 0.001"
+        },
+        {
+          "Mô hình": "LightGBM",
+          "Horizon": "6 giờ",
+          "Mean": -1.656,
+          "Std": 5.296,
+          "Skewness": 1.399,
+          "Ljung-Box lag=6 (p-val)": "p < 0.001"
+        },
+        {
+          "Mô hình": "GRU",
+          "Horizon": "24 giờ",
+          "Mean": -1.209,
+          "Std": 5.860,
+          "Skewness": 1.173,
+          "Ljung-Box lag=6 (p-val)": "p = 0.002"
+        },
+        {
+          "Mô hình": "LightGBM",
+          "Horizon": "24 giờ",
+          "Mean": -0.329,
+          "Std": 5.302,
+          "Skewness": 1.364,
+          "Ljung-Box lag=6 (p-val)": "p = 0.014"
+        },
+        {
+          "Mô hình": "Persistence",
+          "Horizon": "6 giờ",
+          "Mean": 0.029,
+          "Std": 8.272,
+          "Skewness": 0.424,
+          "Ljung-Box lag=6 (p-val)": "p < 0.001"
+        }
+      ],
+      "conformal_prediction": [
+        {
+          "Horizon": "1 giờ",
+          "Phương pháp": "Quantile Regression gốc",
+          "Coverage": "86.2%",
+          "NMPIW": 0.32,
+          "Winkler Score": 5.14
+        },
+        {
+          "Horizon": "1 giờ",
+          "Phương pháp": "Conformal Prediction (CQR)",
+          "Coverage": "80.5%",
+          "NMPIW": 0.28,
+          "Winkler Score": 4.87
+        },
+        {
+          "Horizon": "1 giờ",
+          "Phương pháp": "Adaptive Conformal (ACI, γ=0.01)",
+          "Coverage": "89.5%",
+          "NMPIW": 0.20,
+          "Winkler Score": 4.12
+        },
+        {
+          "Horizon": "6 giờ",
+          "Phương pháp": "Quantile Regression gốc",
+          "Coverage": "83.2%",
+          "NMPIW": 0.48,
+          "Winkler Score": 8.92
+        },
+        {
+          "Horizon": "6 giờ",
+          "Phương pháp": "Conformal Prediction (CQR)",
+          "Coverage": "76.0%",
+          "NMPIW": 0.41,
+          "Winkler Score": 8.15
+        },
+        {
+          "Horizon": "6 giờ",
+          "Phương pháp": "Adaptive Conformal (ACI, γ=0.01)",
+          "Coverage": "89.6%",
+          "NMPIW": 0.35,
+          "Winkler Score": 7.30
+        },
+        {
+          "Horizon": "24 giờ",
+          "Phương pháp": "Quantile Regression gốc",
+          "Coverage": "79.1%",
+          "NMPIW": 0.62,
+          "Winkler Score": 12.35
+        },
+        {
+          "Horizon": "24 giờ",
+          "Phương pháp": "Conformal Prediction (CQR)",
+          "Coverage": "77.8%",
+          "NMPIW": 0.55,
+          "Winkler Score": 11.47
+        },
+        {
+          "Horizon": "24 giờ",
+          "Phương pháp": "Adaptive Conformal (ACI, γ=0.01)",
+          "Coverage": "89.4%",
+          "NMPIW": 0.30,
+          "Winkler Score": 9.85
         }
       ],
       "literature_intl": [

@@ -91,9 +91,7 @@ class TestLagFeatures:
 
     def test_segment_aware_lag(self, segmented_df):
         """Segment-aware lag should NOT leak across segment boundaries."""
-        result = create_lag_features(
-            segmented_df, lags=[1], include_features=False, segment_col="segment_id"
-        )
+        result = create_lag_features(segmented_df, lags=[1], include_features=False, segment_col="segment_id")
         # First row of segment 2 (index 100) should have NaN lag, not value from segment 1
         assert pd.isna(result["pm25_lag_1s"].iloc[100])
         # Second row of segment 2 should have value from first row of segment 2
@@ -135,9 +133,7 @@ class TestRollingFeatures:
 
     def test_segment_aware_rolling(self, segmented_df):
         """Rolling should reset at segment boundaries."""
-        result = create_rolling_features(
-            segmented_df, windows=[3], funcs=["mean"], segment_col="segment_id"
-        )
+        result = create_rolling_features(segmented_df, windows=[3], funcs=["mean"], segment_col="segment_id")
         # First row of segment 2 should have NaN or limited rolling
         # (shift within segment produces NaN at boundary)
         assert pd.isna(result["pm25_roll_3s_mean"].iloc[100])

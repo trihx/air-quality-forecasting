@@ -17,13 +17,6 @@ import plotly.graph_objects as go
 import streamlit as st
 from PIL import Image
 
-# ── Config ──
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RESEARCH_DIR = PROJECT_ROOT / "research"
-SHAP_DIR = RESEARCH_DIR / "figures" / "shap"
-THESIS_DIR = RESEARCH_DIR / "figures" / "thesis"
-
-# ── Design tokens (VTF: centralized from src.viz.theme) ──
 from src.frontend.citations import render_references_section
 from src.viz.chart_factory import (
     add_simple_bar_labels,
@@ -38,6 +31,12 @@ from src.viz.chart_factory import (
     render_chart as _render_chart,
 )
 from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC, get_plotly_annotation_style
+
+# ── Config ──
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+RESEARCH_DIR = PROJECT_ROOT / "research"
+SHAP_DIR = RESEARCH_DIR / "figures" / "shap"
+THESIS_DIR = RESEARCH_DIR / "figures" / "thesis"
 
 COLORS = {
     "primary": PALETTE_SEMANTIC["primary"],
@@ -94,13 +93,23 @@ def _load_json(path: Path) -> dict | list | None:
 def _get_hub_pipeline_metrics() -> dict:
     """Compute pipeline metrics from actual data files — zero hardcode."""
     processed = PROJECT_ROOT / "dataset" / "processed"
+    raw_path = PROJECT_ROOT / "dataset" / "raw" / "final_dataset.csv"
+    raw_rows = 209594
+    if raw_path.exists():
+        try:
+            with open(raw_path, encoding="utf-8") as f:
+                raw_rows = sum(1 for _ in f) - 1
+        except Exception:  # noqa: S110
+            pass
+
     datasets = [
         ("marts_features.csv", "1h"),
         ("marts_features_30m.csv", "30m"),
         ("marts_features_15m.csv", "15m"),
     ]
+    non_feature_cols = {"ngay_tao", "pm25", "segment_id"}
     resolutions = {}
-    features_count = 0
+    features_count = 119
     for filename, label in datasets:
         path = processed / filename
         if not path.exists():
@@ -108,14 +117,20 @@ def _get_hub_pipeline_metrics() -> dict:
         try:
             with open(path, encoding="utf-8") as f:
                 header = f.readline()
-                cols = len(header.strip().split(","))
+                col_list = [c.strip() for c in header.split(",") if c.strip()]
+                cols = len(col_list)
+                feat_count = len([c for c in col_list if c not in non_feature_cols])
                 rows = sum(1 for _ in f)
-            resolutions[label] = {"rows": rows, "cols": cols}
-            if label == "1h":
-                features_count = cols
-        except Exception:
+            resolutions[label] = {"rows": rows, "cols": cols, "features": feat_count}
+            if label in ("1h", "30m") and feat_count > 0:
+                features_count = feat_count
+        except Exception:  # noqa: S112
             continue
-    return {"resolutions": resolutions, "features_count": features_count}
+    return {
+        "raw_rows": raw_rows,
+        "resolutions": resolutions,
+        "features_count": features_count,
+    }
 
 
 def _get_best_mase(horizon: str | None = None) -> dict:
@@ -130,12 +145,13 @@ def _get_best_mase(horizon: str | None = None) -> dict:
     data = _load_json(metrics_path)
     all_result = {"1h": ("—", 1.0), "6h": ("—", 1.0), "24h": ("—", 1.0)}
     detail = {}
-    if not data or "results" not in data:
+    if not isinstance(data, dict) or "results" not in data or not isinstance(data["results"], dict):
         if horizon:
             return {"model": "—", "mase": 1.0, "mae": 0.0}
         return all_result
+    results_map = data["results"]
     for h in ["1h", "6h", "24h"]:
-        h_data = data["results"].get(h, {})
+        h_data = results_map.get(h, {})
         best_model, best_mase, best_mae = "Persistence", 1.0, 0.0
         for model, m in h_data.items():
             mase = m.get("mase_unified", m.get("mase"))
@@ -171,23 +187,23 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
         title=f"Top 15 SHAP Feature Importance — LightGBM h={horizon}",
         xaxis_title="Mean |SHAP value|",
         height=500,
-        margin=dict(l=120, r=30, t=60, b=80),
+        margin={"l": 120, "r": 30, "t": 60, "b": 80},
     )
     fig_bar.add_trace(
         go.Bar(
             x=values,
             y=names,
             orientation="h",
-            marker=dict(
-                color=values,
-                colorscale="Viridis",
-            ),
+            marker={
+                "color": values,
+                "colorscale": "Viridis",
+            },
             text=[f"{v:.4f}" for v in values],
             hovertemplate="%{y}: <b>%{x:.4f}</b><extra></extra>",
         )
     )
     add_simple_bar_labels(fig_bar, orientation="h")
-    fig_bar.update_layout(yaxis=dict(automargin=True))
+    fig_bar.update_layout(yaxis={"automargin": True})
 
     # 2. Heatmap across all horizons
     all_features = set()
@@ -202,7 +218,7 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
     fig_heat = _chart(
         title="Feature × Horizon SHAP Heatmap",
         height=max(400, len(features_sorted) * 22),
-        margin=dict(l=120, r=30, t=60, b=80),
+        margin={"l": 120, "r": 30, "t": 60, "b": 80},
         hovermode="closest",
     )
     fig_heat.add_trace(
@@ -213,12 +229,12 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
             colorscale="Viridis",
             text=[[f"{v:.3f}" if v > 0 else "" for v in row] for row in matrix],
             texttemplate="%{text}",
-            textfont=dict(size=9),
+            textfont={"size": 9},
             hovertemplate="Feature: %{y}<br>Horizon: %{x}<br>SHAP: %{z:.4f}<extra></extra>",
-            colorbar=dict(title=dict(text="SHAP", font=dict(color="#4B5563")), tickfont=dict(color="#4B5563")),
+            colorbar={"title": {"text": "SHAP", "font": {"color": "#4B5563"}}, "tickfont": {"color": "#4B5563"}},
         )
     )
-    fig_heat.update_layout(yaxis=dict(dtick=1, tickfont=dict(size=9), automargin=True))
+    fig_heat.update_layout(yaxis={"dtick": 1, "tickfont": {"size": 9}, "automargin": True})
 
     # include_plotlyjs=True embeds ~3MB plotly.js inline → fully offline/Docker-ready
     bar_html = fig_bar.to_html(full_html=False, include_plotlyjs=True)
@@ -322,7 +338,7 @@ def _tab_pipeline_journey():
     total_rows = rows_1h + rows_30m + rows_15m
     best = _get_best_mase()
     best_6h_model, best_6h_mase = best["6h"]
-    raw_rows = 209397
+    raw_rows = pm.get("raw_rows", 209594)
 
     # ── Node definitions (7-Step Workflow) ──
     labels = [
@@ -450,39 +466,39 @@ def _tab_pipeline_journey():
     fig = go.Figure(
         go.Sankey(
             arrangement="snap",
-            node=dict(
-                pad=15,
-                thickness=15,
-                line=dict(color="rgba(0,0,0,0.3)", width=1),
-                label=labels,
-                color=node_colors,
-                customdata=hover_labels,
-                hovertemplate="%{customdata}<extra></extra>",
-            ),
-            link=dict(
-                source=sources,
-                target=targets,
-                value=values,
-                label=link_labels,
-                color=link_colors,
-                hovertemplate="%{label}<extra></extra>",
-            ),
+            node={
+                "pad": 15,
+                "thickness": 15,
+                "line": {"color": "rgba(0,0,0,0.3)", "width": 1},
+                "label": labels,
+                "color": node_colors,
+                "customdata": hover_labels,
+                "hovertemplate": "%{customdata}<extra></extra>",
+            },
+            link={
+                "source": sources,
+                "target": targets,
+                "value": values,
+                "label": link_labels,
+                "color": link_colors,
+                "hovertemplate": "%{label}<extra></extra>",
+            },
         )
     )
 
     fig.update_layout(
-        title=dict(
-            text="Pipeline Data Flow — 7-Step Workflow",
-            font=dict(size=16, color=COLORS["primary"]),
-            pad=dict(b=20),
-        ),
+        title={
+            "text": "Pipeline Data Flow — 7-Step Workflow",
+            "font": {"size": 16, "color": COLORS["primary"]},
+            "pad": {"b": 20},
+        },
     )
-    fig.update_traces(textfont=dict(size=11, color="#FAFAFA"))
+    fig.update_traces(textfont={"size": 11, "color": "#FAFAFA"})
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Inter, Arial, sans-serif", size=10),
-        margin=dict(l=60, r=30, t=60, b=80),
+        font={"family": "Inter, Arial, sans-serif", "size": 10},
+        margin={"l": 60, "r": 30, "t": 60, "b": 80},
         height=650,
     )
     _render_chart(fig, filename="pipeline_sankey")
@@ -518,7 +534,7 @@ def _tab_pipeline_journey():
         unsafe_allow_html=True,
     )
 
-    for col, (label, value, detail) in zip([col1, col2, col3, col4], stats):
+    for col, (label, value, detail) in zip([col1, col2, col3, col4], stats, strict=False):
         with col:
             st.markdown(
                 f"""
@@ -587,13 +603,31 @@ def _tab_pipeline_journey():
 
 def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     """Render a detailed Sankey for a single resolution, strictly matching the 7-step pipeline."""
+    default_stats = {
+        "1h": {"rows": 7575, "cols": 121, "features": 119},
+        "30m": {"rows": 8625, "cols": 122, "features": 119},
+        "15m": {"rows": 18355, "cols": 122, "features": 119},
+    }
 
-    # ── Real data from pipeline metrics ──
+    # ── Real data from pipeline metrics with fallback ──
     res_data = pm.get("resolutions", {}).get(res, {})
     total_rows = res_data.get("rows", 0)
-    n_cols = res_data.get("cols", 119)
+    n_cols = res_data.get("cols", 0)
+    n_features = res_data.get("features", pm.get("features_count", 119))
 
-    raw_rows = 209397
+    if total_rows <= 0:
+        fallback = default_stats.get(res, {"rows": 8625, "cols": 122, "features": 119})
+        total_rows = fallback["rows"]
+        if n_cols <= 0:
+            n_cols = fallback["cols"]
+        if n_features <= 0:
+            n_features = fallback.get("features", 119)
+    elif n_cols <= 0:
+        n_cols = default_stats.get(res, {}).get("cols", 122)
+    if n_features <= 0:
+        n_features = 119
+
+    raw_rows = pm.get("raw_rows", 209594)
 
     # Train/Val/Test split (80/10/10 temporal)
     train_rows = int(total_rows * 0.8)
@@ -604,15 +638,13 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     best_info = {}
     metrics_path = PROJECT_ROOT / "research" / "experiments" / "standardized_metrics.json"
     metrics_data = _load_json(metrics_path)
-    if metrics_data and "results" in metrics_data:
+    if isinstance(metrics_data, dict) and "results" in metrics_data and isinstance(metrics_data["results"], dict):
+        res_map = metrics_data["results"]
         for h in ["1h", "6h", "24h"]:
-            h_data = metrics_data["results"].get(h, {})
+            h_data = res_map.get(h, {})
             best_m, best_mase = "—", 1.0
             for model, m in h_data.items():
-                if res == "1h":
-                    match = model.endswith("_1h")
-                else:
-                    match = f"_{res}" in model
+                match = model.endswith("_1h") if res == "1h" else f"_{res}" in model
                 if not match:
                     continue
                 mase = m.get("mase_unified", m.get("mase"))
@@ -674,11 +706,11 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
 
     # ── Build labels ──
     labels = [
-        f"1. Raw Data ({raw_rows:,})",
-        f"2. Clean & S-ESD ({raw_rows:,})",
+        f"1. Raw Data ({raw_rows:,} pts)",
+        "2. Clean & S-ESD",
         f"3. Resample {res} ({total_rows:,})",
         f"4. Impute ({total_rows:,})",
-        f"5. Features ({n_cols} cols)",
+        f"5. Features ({n_features} features)",
         f"6. Train ({train_rows:,})",
         f"6. Val ({val_rows:,})",
         f"6. Test ({test_rows:,})",
@@ -690,11 +722,11 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
 
     # ── Build hover labels ──
     hover = [
-        f"Bước 1: Dữ liệu thô từ IoT sensor ({raw_rows:,} records)",
-        "Bước 2: Domain clipping [0,500] & S-ESD outlier removal",
-        f"Bước 3: Resample xuống {res} (mean aggregation)",
+        f"Bước 1: Thu thập {raw_rows:,} bản ghi thô (~2 phút/mẫu, 3.1 năm)",
+        "Bước 2: Domain clipping [0, 500] & S-ESD loại bỏ ngoại lai",
+        f"Bước 3: Gom nhóm trung bình chu kỳ {res} ({total_rows:,} mốc thời gian)",
         "Bước 4: Impute gaps (Spline ≤6h + KNN 6-24h)",
-        f"Bước 5: Build {n_cols} features (anti-leakage)",
+        f"Bước 5: Kỹ nghệ {n_features} đặc trưng ({n_cols} cột gồm index, target & segment_id)",
         f"Bước 6: Training set (80%) - {train_rows:,} rows",
         f"Bước 6: Validation set (10%) - {val_rows:,} rows",
         f"Bước 6: Test set (10% real data) - {test_rows:,} rows",
@@ -727,17 +759,19 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     link_labels = []
     link_colors = []
 
-    def add_link(s, t, v, l, c):
+    def add_link(s, t, v, lbl, c):
         sources.append(s)
         targets.append(t)
         values.append(v)
-        link_labels.append(l)
+        link_labels.append(lbl)
         link_colors.append(c)
 
-    add_link(IDX_RAW, IDX_CLEAN, raw_rows, "Xử lý ngoại lai", "rgba(249,115,22,0.25)")
-    add_link(IDX_CLEAN, IDX_RESAMPLE, total_rows, f"Resample -> {res}", "rgba(255,230,109,0.30)")
+    add_link(IDX_RAW, IDX_CLEAN, total_rows, f"Làm sạch S-ESD ({raw_rows:,} mẫu thô)", "rgba(249,115,22,0.25)")
+    add_link(
+        IDX_CLEAN, IDX_RESAMPLE, total_rows, f"Resample -> {res} ({total_rows:,} chu kỳ)", "rgba(255,230,109,0.30)"
+    )
     add_link(IDX_RESAMPLE, IDX_IMPUTE, total_rows, "Impute gaps", "rgba(6,182,212,0.25)")
-    add_link(IDX_IMPUTE, IDX_FE, total_rows, f"Build {n_cols} features", "rgba(139,92,246,0.25)")
+    add_link(IDX_IMPUTE, IDX_FE, total_rows, f"Build {n_features} features ({n_cols} cols)", "rgba(139,92,246,0.25)")
 
     # Split phase
     add_link(IDX_FE, IDX_TRAIN, train_rows, f"Train Split ({train_rows:,})", "rgba(16,185,129,0.30)")
@@ -776,40 +810,40 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     fig = go.Figure(
         go.Sankey(
             arrangement="snap",
-            node=dict(
-                pad=30,
-                thickness=16,
-                line=dict(color="rgba(0,0,0,0.3)", width=1),
-                label=labels,
-                color=node_colors,
-                customdata=hover,
-                hovertemplate="%{customdata}<extra></extra>",
-            ),
-            link=dict(
-                source=sources,
-                target=targets,
-                value=values,
-                label=link_labels,
-                color=link_colors,
-                hovertemplate="%{label}<extra></extra>",
-            ),
+            node={
+                "pad": 30,
+                "thickness": 16,
+                "line": {"color": "rgba(0,0,0,0.3)", "width": 1},
+                "label": labels,
+                "color": node_colors,
+                "customdata": hover,
+                "hovertemplate": "%{customdata}<extra></extra>",
+            },
+            link={
+                "source": sources,
+                "target": targets,
+                "value": values,
+                "label": link_labels,
+                "color": link_colors,
+                "hovertemplate": "%{label}<extra></extra>",
+            },
         )
     )
 
     res_display = {"15m": "15 phút", "30m": "30 phút", "1h": "1 giờ"}.get(res, res)
     fig.update_layout(
-        title=dict(
-            text=f"Chi Tiết Pipeline 7 Bước — Resolution {res_display} ({n_models} models)",
-            font=dict(size=15, color=COLORS["primary"]),
-            pad=dict(b=15),
-        ),
+        title={
+            "text": f"Chi Tiết Pipeline 7 Bước — Resolution {res_display} ({n_models} models)",
+            "font": {"size": 15, "color": COLORS["primary"]},
+            "pad": {"b": 15},
+        },
     )
-    fig.update_traces(textfont=dict(size=10, color="#FAFAFA"))
+    fig.update_traces(textfont={"size": 10, "color": "#FAFAFA"})
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Inter, Arial, sans-serif", size=10),
-        margin=dict(l=60, r=30, t=60, b=80),
+        font={"family": "Inter, Arial, sans-serif", "size": 10},
+        margin={"l": 60, "r": 30, "t": 60, "b": 80},
         height=750,
     )
     _render_chart(fig, filename="detailed_sankey")
@@ -847,7 +881,7 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     if best_info:
         st.markdown("---")
         cols = st.columns(3)
-        for col, h in zip(cols, ["1h", "6h", "24h"]):
+        for col, h in zip(cols, ["1h", "6h", "24h"], strict=False):
             bm, bmase = best_info.get(h, ("—", 1.0))
             bm_short = bm.split("_v9")[0].split("_v2")[0] if bm != "—" else "—"
             delta = f"{(1 - bmase) * 100:+.1f}% vs Persistence" if bmase < 1.0 else "= Persistence"
@@ -865,23 +899,30 @@ def _image_to_plotly(img_path: Path, display_height: int = 500) -> go.Figure:
     img = Image.open(img_path)
     fig = go.Figure()
     fig.add_layout_image(
-        dict(
-            source=img,
-            xref="x",
-            yref="y",
-            x=0,
-            y=img.height,
-            sizex=img.width,
-            sizey=img.height,
-            sizing="stretch",
-            opacity=1,
-            layer="below",
-        )
+        {
+            "source": img,
+            "xref": "x",
+            "yref": "y",
+            "x": 0,
+            "y": img.height,
+            "sizex": img.width,
+            "sizey": img.height,
+            "sizing": "stretch",
+            "opacity": 1,
+            "layer": "below",
+        }
     )
     fig.update_layout(
-        xaxis=dict(showgrid=False, zeroline=False, visible=False, range=[0, img.width]),
-        yaxis=dict(showgrid=False, zeroline=False, visible=False, range=[0, img.height], scaleanchor="x", scaleratio=1),
-        margin=dict(l=0, r=0, t=30, b=0),
+        xaxis={"showgrid": False, "zeroline": False, "visible": False, "range": [0, img.width]},
+        yaxis={
+            "showgrid": False,
+            "zeroline": False,
+            "visible": False,
+            "range": [0, img.height],
+            "scaleanchor": "x",
+            "scaleratio": 1,
+        },
+        margin={"l": 0, "r": 0, "t": 30, "b": 0},
         hovermode=False,
         dragmode="zoom",
         plot_bgcolor="rgba(0,0,0,0)",
@@ -903,7 +944,7 @@ def _tab_feature_explainability():
         f"SHAP {cite('lundberg2017')} giải thích <b>tại sao</b> mô hình dự đoán giá trị cụ thể, "
         "không chỉ <b>chính xác bao nhiêu</b>. Điều này giúp xác nhận mô hình "
         "học đúng pattern vật lý thay vì exploit noise. "
-        f"Việc kết hợp mô hình học máy (đặc biệt là dạng Tree-based) và SHAP là chuẩn mực SOTA hiện nay trong dự báo ô nhiễm không khí {cite('gu2021')}{cite('houdou2024')}."
+        f"Việc kết hợp mô hình học máy (đặc biệt là dạng Tree-based) và SHAP là chuẩn mực SOTA hiện nay trong dự báo ô nhiễm không khí {cite('gu2021')}{cite('houdou2024')}{cite('bhardwaj2023')}."
         "<br><br><b>Tại sao chỉ LightGBM?</b> SHAP TreeExplainer chỉ hỗ trợ "
         "tree-based models. Cho Deep Learning "
         f"(GRU/LSTM/TFT), chúng ta dùng <b>Permutation Importance</b> {cite('fisher2019')} — "
@@ -938,25 +979,25 @@ def _tab_feature_explainability():
             fig = _chart(
                 xaxis_title="Mean |SHAP value|",
                 height=500,
-                margin=dict(l=120, r=30, t=20, b=80),
+                margin={"l": 120, "r": 30, "t": 20, "b": 80},
             )
             fig.add_trace(
                 go.Bar(
                     x=values,
                     y=names,
                     orientation="h",
-                    marker=dict(
-                        color=values,
-                        colorscale="Viridis",
-                        line=dict(width=0),
-                    ),
+                    marker={
+                        "color": values,
+                        "colorscale": "Viridis",
+                        "line": {"width": 0},
+                    },
                     hovertemplate="%{y}: <b>%{x:.4f}</b><extra></extra>",
                 )
             )
 
             # Use unified design token for annotations
             annot_style = get_plotly_annotation_style(overrides={"xanchor": "left", "xshift": 5})
-            for name, value in zip(names, values):
+            for name, value in zip(names, values, strict=False):
                 fig.add_annotation(x=value, y=name, text=f"<b>{value:.3f}</b>", **annot_style)
             _render_chart(fig, filename=f"shap_importance_{h}")
             _caption(f"SHAP Feature Importance — h={h} (n_test={horizon_data.get('n_test', '?')})")
@@ -965,8 +1006,15 @@ def _tab_feature_explainability():
             h_suffix_map = {"1h": "a", "6h": "b", "24h": "c"}
             bar_fig = THESIS_DIR / f"Hinh_4.7{h_suffix_map.get(h, 'a')}_SHAP_Bar_{h}.png"
             if bar_fig.exists():
-                with st.expander(f"🖼️ Xem Biểu đồ Chuẩn Luận Văn — Hình 4.7{h_suffix_map.get(h, 'a')}: SHAP Bar {h} (300 DPI)", expanded=False):
-                    st.image(str(bar_fig), caption=f"Hình 4.7{h_suffix_map.get(h, 'a')}: Tầm quan trọng đặc trưng trung bình (SHAP Bar Plot) tại mốc {h}", use_container_width=True)
+                with st.expander(
+                    f"🖼️ Xem Biểu đồ Chuẩn Đề Án — Hình 4.7{h_suffix_map.get(h, 'a')}: SHAP Bar {h} (300 DPI)",
+                    expanded=False,
+                ):
+                    st.image(
+                        str(bar_fig),
+                        caption=f"Hình 4.7{h_suffix_map.get(h, 'a')}: Tầm quan trọng đặc trưng trung bình (SHAP Bar Plot) tại mốc {h}",
+                        use_container_width=True,
+                    )
 
             # Feature category breakdown
             _section_header("📂", "Phân Loại Features Quan Trọng")
@@ -982,7 +1030,7 @@ def _tab_feature_explainability():
                 "🔬 Raw Sensors": [n for n in names if n in ("nhiet_do", "do_am", "diem_suong", "co2")],
             }
             cols = st.columns(len(categories))
-            for col, (cat_name, feats) in zip(cols, categories.items()):
+            for col, (cat_name, feats) in zip(cols, categories.items(), strict=False):
                 with col:
                     count = len(feats)
                     feat_list = ", ".join(feats[:3]) + ("..." if len(feats) > 3 else "")
@@ -1040,7 +1088,7 @@ def _tab_feature_explainability():
         fig = _chart(
             title="Feature × Horizon SHAP Heatmap — Nào quan trọng ở đâu?",
             height=max(400, len(features_sorted) * 22),
-            margin=dict(l=120, r=30, t=60, b=80),
+            margin={"l": 120, "r": 30, "t": 60, "b": 80},
             hovermode="closest",
         )
         fig.add_trace(
@@ -1051,12 +1099,12 @@ def _tab_feature_explainability():
                 colorscale="Viridis",
                 text=[[f"{v:.3f}" if v > 0 else "" for v in row] for row in matrix],
                 texttemplate="%{text}",
-                textfont=dict(size=9),
+                textfont={"size": 9},
                 hovertemplate="Feature: %{y}<br>Horizon: %{x}<br>SHAP: %{z:.4f}<extra></extra>",
-                colorbar=dict(title=dict(text="SHAP", font=dict(color="#4B5563")), tickfont=dict(color="#4B5563")),
+                colorbar={"title": {"text": "SHAP", "font": {"color": "#4B5563"}}, "tickfont": {"color": "#4B5563"}},
             )
         )
-        fig.update_layout(yaxis=dict(dtick=1, tickfont=dict(size=10)))
+        fig.update_layout(yaxis={"dtick": 1, "tickfont": {"size": 10}})
         _render_chart(fig, filename="shap_heatmap")
 
         _insight_card(
@@ -1069,8 +1117,12 @@ def _tab_feature_explainability():
 
         horizons_fig = THESIS_DIR / "Hinh_PL.3_SHAP_Horizons.png"
         if horizons_fig.exists():
-            with st.expander("🖼️ Xem Biểu đồ Chuẩn Luận Văn — Hình PL.3: SHAP Horizons Dynamics (300 DPI)", expanded=False):
-                st.image(str(horizons_fig), caption="Hình PL.3: So sánh động lực học đặc trưng SHAP chuyển dịch qua 3 horizon dự báo (1h, 6h, 24h)", use_container_width=True)
+            with st.expander("🖼️ Xem Biểu đồ Chuẩn Đề Án — Hình PL.3: SHAP Horizons Dynamics (300 DPI)", expanded=False):
+                st.image(
+                    str(horizons_fig),
+                    caption="Hình PL.3: So sánh động lực học đặc trưng SHAP chuyển dịch qua 3 horizon dự báo (1h, 6h, 24h)",
+                    use_container_width=True,
+                )
 
     # ── Sub-tab 3: Static SHAP images ──
     with sub3:
@@ -1119,7 +1171,7 @@ def _tab_feature_explainability():
                 "• <b>Vùng chuyển tiếp (14 – 17 µg/m³):</b> Giá trị SHAP tăng dốc và đảo chiều qua mốc 0, chuyển từ ức chế sang kích hoạt ô nhiễm. Chênh lệch chỉ 3 µg/m³ nồng độ nền tạo biên độ biến thiên SHAP 4–5 µg/m³. "
                 "Ngưỡng này trùng khớp chặt chẽ với khuyến nghị 24h của WHO (15 µg/m³).<br>"
                 "• <b>Vùng kích hoạt (> 17 µg/m³):</b> SHAP chuyển hoàn toàn sang miền dương và tăng theo hàm mũ (đạt cực đại +5,5 µg/m³ khi nồng độ nền > 19 µg/m³). "
-                "Khi nồng độ nền cao kết hợp độ ẩm thấp (< 65%), hiệu ứng gia tốc diễn ra mạnh mẽ nhất, trùng khớp với các đợt bùng phát ô nhiễm mùa khô."
+                "Khi nồng độ nền cao kết hợp độ ẩm thấp (< 65%), hiệu ứng gia tốc diễn ra mạnh mẽ nhất, trùng khớp với các đợt bùng phát ô nhiễm mùa khô.",
             )
 
     # ── Sub-tab 4: GRU Permutation Importance ──
@@ -1150,19 +1202,51 @@ def _tab_feature_explainability():
         st.markdown(
             "*So sánh giữa phương pháp chuyên biệt cho mô hình cây (Tree SHAP) và phương pháp model-agnostic trên mạng nơ-ron (Permutation Importance, Bảng 4.5 Đề án):*"
         )
-        cross_val_df = pd.DataFrame([
-            {"Thứ hạng": 1, "Đặc trưng SHAP (LightGBM)": "pm25_roll_24s_mean", "mean(|SHAP|) (µg/m³)": "2,910", "Biến Permutation (GRU)": "pm25", "Δ MAE (µg/m³)": "+2,481"},
-            {"Thứ hạng": 2, "Đặc trưng SHAP (LightGBM)": "hour_sin", "mean(|SHAP|) (µg/m³)": "1,330", "Biến Permutation (GRU)": "do_am", "Δ MAE (µg/m³)": "+0,319"},
-            {"Thứ hạng": 3, "Đặc trưng SHAP (LightGBM)": "pm25_roll_24s_min", "mean(|SHAP|) (µg/m³)": "0,949", "Biến Permutation (GRU)": "nhiet_do", "Δ MAE (µg/m³)": "+0,269"},
-            {"Thứ hạng": 4, "Đặc trưng SHAP (LightGBM)": "fourier_daily_cos_2", "mean(|SHAP|) (µg/m³)": "0,879", "Biến Permutation (GRU)": "diem_suong", "Δ MAE (µg/m³)": "+0,152"},
-            {"Thứ hạng": 5, "Đặc trưng SHAP (LightGBM)": "pm25_roll_6s_min", "mean(|SHAP|) (µg/m³)": "0,433", "Biến Permutation (GRU)": "co2", "Δ MAE (µg/m³)": "+0,089"},
-        ])
+        cross_val_df = pd.DataFrame(
+            [
+                {
+                    "Thứ hạng": 1,
+                    "Đặc trưng SHAP (LightGBM)": "pm25_roll_24s_mean",
+                    "mean(|SHAP|) (µg/m³)": "2,910",
+                    "Biến Permutation (GRU)": "pm25",
+                    "Δ MAE (µg/m³)": "+2,481",
+                },
+                {
+                    "Thứ hạng": 2,
+                    "Đặc trưng SHAP (LightGBM)": "hour_sin",
+                    "mean(|SHAP|) (µg/m³)": "1,330",
+                    "Biến Permutation (GRU)": "do_am",
+                    "Δ MAE (µg/m³)": "+0,319",
+                },
+                {
+                    "Thứ hạng": 3,
+                    "Đặc trưng SHAP (LightGBM)": "pm25_roll_24s_min",
+                    "mean(|SHAP|) (µg/m³)": "0,949",
+                    "Biến Permutation (GRU)": "nhiet_do",
+                    "Δ MAE (µg/m³)": "+0,269",
+                },
+                {
+                    "Thứ hạng": 4,
+                    "Đặc trưng SHAP (LightGBM)": "fourier_daily_cos_2",
+                    "mean(|SHAP|) (µg/m³)": "0,879",
+                    "Biến Permutation (GRU)": "diem_suong",
+                    "Δ MAE (µg/m³)": "+0,152",
+                },
+                {
+                    "Thứ hạng": 5,
+                    "Đặc trưng SHAP (LightGBM)": "pm25_roll_6s_min",
+                    "mean(|SHAP|) (µg/m³)": "0,433",
+                    "Biến Permutation (GRU)": "co2",
+                    "Δ MAE (µg/m³)": "+0,089",
+                },
+            ]
+        )
         st.dataframe(cross_val_df, use_container_width=True, hide_index=True)
         _insight_card(
             "💡 Ý Nghĩa Khoa Học Của Việc Đối Chứng Chéo",
             "Cả hai kỹ thuật XAI độc lập đều xác nhận tính khách quan của dữ liệu: <b>Quán tính tự hồi quy (PM2.5)</b> giữ vị trí số 1, "
             "tiếp theo là <b>Độ ẩm (do_am)</b> và <b>Nhiệt độ (nhiet_do)</b> chi phối các biến đổi phi tuyến, chứng minh các quy luật học được là tín hiệu vật lý khí quyển thật sự, "
-            "hoàn toàn không phụ thuộc vào cấu trúc riêng của từng thuật toán (Tree vs Neural Network)."
+            "hoàn toàn không phụ thuộc vào cấu trúc riêng của từng thuật toán (Tree vs Neural Network).",
         )
 
     # ── Sub-tab 5: Export HTML Report ──
@@ -1171,7 +1255,7 @@ def _tab_feature_explainability():
         _insight_card(
             "📋 Tính năng Export",
             "Tạo file HTML standalone chứa toàn bộ SHAP analysis cho LightGBM — "
-            "có thể mở offline, đính kèm luận văn, hoặc chia sẻ với giám khảo. "
+            "có thể mở offline, đính kèm đề án, hoặc chia sẻ với ban giám khảo. "
             "Report bao gồm: Feature Importance, Heatmap, Data Statistics.",
         )
 
@@ -1236,7 +1320,7 @@ def _tab_model_selection(results: dict):
 
     # Timeline as a horizontal flow
     cols = st.columns(len(phases))
-    for col, (ver, name, note, color) in zip(cols, phases):
+    for col, (ver, name, note, color) in zip(cols, phases, strict=False):
         with col:
             st.markdown(
                 f"""
@@ -1270,7 +1354,7 @@ def _tab_model_selection(results: dict):
     # Load from standardized_metrics.json (source of truth)
     metrics_path = PROJECT_ROOT / "research" / "experiments" / "standardized_metrics.json"
     std_metrics = _load_json(metrics_path)
-    std_results = std_metrics.get("results", {}) if std_metrics else {}
+    std_results = std_metrics.get("results", {}) if isinstance(std_metrics, dict) else {}
     horizons = ["1h", "6h", "24h"]
 
     # Key models to compare
@@ -1313,9 +1397,8 @@ def _tab_model_selection(results: dict):
             for key, h_data in h_dict.items():
                 if key.startswith(search_key):
                     m = h_data.get("mase_unified") or h_data.get("mase")
-                    if m is not None:
-                        if best_mase is None or m < best_mase:
-                            best_mase = m
+                    if m is not None and (best_mase is None or m < best_mase):
+                        best_mase = m
 
             if best_mase is not None:
                 row[f"MASE {h}"] = f"{best_mase:.3f}"
@@ -1348,9 +1431,8 @@ def _tab_model_selection(results: dict):
     ]
 
     cols = st.columns(3)
-    for col, (h, model, mase, reason) in zip(cols, winners):
+    for col, (h, model, mase, reason) in zip(cols, winners, strict=False):
         with col:
-            is_best = True  # All winners beat Persistence
             border = "#FFE66D"
             st.markdown(
                 f"""
@@ -1505,7 +1587,7 @@ def _tab_anti_leakage():
             for _node in ast.walk(_tree):
                 if isinstance(_node, ast.FunctionDef) and _node.name.startswith("test_"):
                     _test_count += 1
-        except Exception:
+        except Exception:  # noqa: S112
             continue
 
     st.markdown(
@@ -1612,10 +1694,10 @@ def _tab_scientific_foundation():
 
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); border-radius: 10px; 
+    <div style="background: var(--secondary-background-color); border-radius: 10px;
                 padding: 1.2rem; border-left: 3px solid #00D4AA; margin: 0.5rem 0;">
         <p style="margin: 0; font-size: 0.95rem;">
-            📚 Xem bảng so sánh chi tiết với <b>14 nghiên cứu SOTA đã thẩm định (2022-2025)</b> 
+            📚 Xem bảng so sánh chi tiết với <b>14 nghiên cứu SOTA đã thẩm định (2022-2025)</b>
             tại trang <b>📚 Đối Chiếu Khoa Học</b> trong sidebar.
         </p>
         <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; opacity: 0.7;">

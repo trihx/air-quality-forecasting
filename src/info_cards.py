@@ -91,7 +91,7 @@ def render_version_badge(version: str):
         return
     v_data = get_version_data(version)
     n_models = len(v_data.get("models", []))
-    description = v_data.get("description", "")
+    v_data.get("description", "")
     timestamp = v_data.get("timestamp", "")[:10]
 
     st.markdown(

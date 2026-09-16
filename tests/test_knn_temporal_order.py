@@ -6,9 +6,7 @@ as KNN neighbors, preventing look-ahead bias.
 
 import numpy as np
 import pandas as pd
-import pytest
-
-from src.data.loader import TARGET_COL, FEATURE_COLS
+from src.data.loader import TARGET_COL
 
 
 def _create_test_series(n: int = 200, gap_start: int = 80, gap_len: int = 10) -> pd.DataFrame:
@@ -25,7 +23,7 @@ def _create_test_series(n: int = 200, gap_start: int = 80, gap_len: int = 10) ->
 
     # Target with known gap
     df[TARGET_COL] = 15 + 5 * np.sin(2 * np.pi * np.arange(n) / 24) + np.random.normal(0, 2, n)
-    df.loc[df.index[gap_start:gap_start + gap_len], TARGET_COL] = np.nan
+    df.loc[df.index[gap_start : gap_start + gap_len], TARGET_COL] = np.nan
 
     return df
 
@@ -56,22 +54,25 @@ class TestKNNTemporalOrder:
         # Target: past = 10, future = 100 (very different)
         df[TARGET_COL] = np.where(np.arange(n) < gap_start, 10.0, 100.0)
         # Make gap
-        df.loc[df.index[gap_start:gap_start + gap_len], TARGET_COL] = np.nan
+        df.loc[df.index[gap_start : gap_start + gap_len], TARGET_COL] = np.nan
 
         # Import and run imputation
-        from src.data.imputer import _build_knn_features, _identify_gaps, _apply_knn_imputation
+        from src.data.imputer import _apply_knn_imputation, _build_knn_features, _identify_gaps
 
         features = _build_knn_features(df)
         gap_info = _identify_gaps(df[TARGET_COL])
         medium_gaps = gap_info[(gap_info["length"] > 0) & (gap_info["length"] <= 24)]
 
         result = _apply_knn_imputation(
-            df, features, gap_info=medium_gaps,
-            n_neighbors=5, verbose=False,
+            df,
+            features,
+            gap_info=medium_gaps,
+            n_neighbors=5,
+            verbose=False,
         )
 
         # Imputed values MUST be close to 10 (past), NOT 100 (future)
-        imputed_vals = result.iloc[gap_start:gap_start + gap_len][TARGET_COL].values
+        imputed_vals = result.iloc[gap_start : gap_start + gap_len][TARGET_COL].values
         assert all(np.isfinite(imputed_vals)), "Not all gap values were imputed"
 
         for i, val in enumerate(imputed_vals):
@@ -98,15 +99,18 @@ class TestKNNTemporalOrder:
         # Gap at the very beginning — not enough past donors
         df.loc[df.index[1:6], TARGET_COL] = np.nan
 
-        from src.data.imputer import _build_knn_features, _identify_gaps, _apply_knn_imputation
+        from src.data.imputer import _apply_knn_imputation, _build_knn_features, _identify_gaps
 
         features = _build_knn_features(df)
         gap_info = _identify_gaps(df[TARGET_COL])
         medium_gaps = gap_info[(gap_info["length"] > 0) & (gap_info["length"] <= 24)]
 
         result = _apply_knn_imputation(
-            df, features, gap_info=medium_gaps,
-            n_neighbors=5, verbose=True,
+            df,
+            features,
+            gap_info=medium_gaps,
+            n_neighbors=5,
+            verbose=True,
         )
 
         # Gap should be skipped (only 1 past donor, need 5)

@@ -169,6 +169,8 @@ class PredictionResponse(BaseModel):
     pi_upper: float | None = None
     pi_width: float | None = None
 
+    model_config = {"extra": "ignore"}
+
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Audit Schemas
