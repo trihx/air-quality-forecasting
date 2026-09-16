@@ -86,6 +86,9 @@ htmlcov/
 # ── 7. DATASET — Giữ cấu trúc & raw data, loại bỏ cache trung gian ──
 dataset/processed/*
 !dataset/processed/.gitkeep
+!dataset/processed/marts_features.csv
+!dataset/processed/marts_features_30m.csv
+!dataset/processed/marts_features_15m.csv
 dataset/interim/*
 !dataset/interim/.gitkeep
 dataset/external/*

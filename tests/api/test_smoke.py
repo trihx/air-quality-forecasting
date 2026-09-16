@@ -293,3 +293,13 @@ class TestAudit:
         resp = client.get("/api/v1/audit/model-weights")
         assert resp.status_code == 200
         assert isinstance(resp.json(), list)
+
+    def test_audit_verify_integrity(self, client):
+        resp = client.get("/api/v1/audit/verify")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["total_files"] == 20
+        assert data["missing"] == 0
+        assert data["failed"] == 0
+        assert data["passed"] == 20
+        assert data["pass_rate"] == "100%"  # noqa: S105
