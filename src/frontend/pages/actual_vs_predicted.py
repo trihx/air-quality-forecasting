@@ -319,7 +319,7 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
                     f"""
                 <style>
                     .avp-tab-selected {{
-                        background: var(--text-color) !important;
+                        background: rgba(0, 212, 170, 0.15) !important;
                         border: 2px solid #00D4AA; border-radius: 10px; padding: 0.8rem; text-align: center;
                     }}
                 </style>
@@ -334,7 +334,7 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
                 <style>
                     .avp-tab-unselected {{
                         background: var(--secondary-background-color) !important;
-                        border: 1px solid rgba(128,128,128,0.3); border-radius: 10px; padding: 0.8rem; text-align: center;
+                        border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 0.8rem; text-align: center;
                     }}
                 </style>
                 <div class="avp-tab-unselected">
@@ -356,21 +356,22 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
                         f"""
                     <style>
                         .avp-model-card-{rank} {{
-                            background: var(--text-color) !important; border-radius: 8px;
-                            padding: 0.6rem 0.8rem; margin: 0.4rem 0;
+                            background: var(--secondary-background-color) !important; border-radius: 8px;
+                            padding: 0.7rem 0.9rem; margin: 0.4rem 0;
                             border-left: 3px solid {border_color};
-                            border-top: 1px solid rgba(128,128,128,0.2);
-                            border-right: 1px solid rgba(128,128,128,0.2);
-                            border-bottom: 1px solid rgba(128,128,128,0.2);
+                            border-top: 1px solid rgba(255, 255, 255, 0.06);
+                            border-right: 1px solid rgba(255, 255, 255, 0.06);
+                            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
                         }}
                     </style>
                     <div class="avp-model-card-{rank}">
-                        <div style="font-size: 0.75rem; color: var(--background-color); opacity: 0.8;">{medal} Top {rank + 1}</div>
-                        <div style="font-weight: 600; font-size: 0.95rem; color: var(--background-color);">{row["model"]}</div>
-                        <div style="font-size: 0.85rem; margin-top: 0.2rem; color: var(--background-color);">
+                        <div style="font-size: 0.75rem; color: var(--text-color); opacity: 0.7;">{medal} Top {rank + 1}</div>
+                        <div style="font-weight: 600; font-size: 0.95rem; color: var(--text-color); margin-top: 0.1rem;">{row["model"]}</div>
+                        <div style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--text-color);">
                             MAE: <b>{row["mae"]:.2f}</b> · MASE: <b style="color: {mase_color};">{row["mase"]:.2f}</b>
                         </div>
-                        <div style="font-size: 0.78rem; margin-top: 0.15rem; color: var(--background-color); opacity: 0.8;">
+                        <div style="font-size: 0.78rem; margin-top: 0.2rem; color: var(--text-color); opacity: 0.75;">
                             RMSE: <b>{rmse_display}</b> · R²: <b>{r2_display}</b> · DA: <b>{da_display}</b>
                         </div>
                     </div>""",
