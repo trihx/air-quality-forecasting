@@ -465,7 +465,7 @@ def _render_limitations(section_header, insight_card):
         )
 
     # Ablation Study: Outlier Removal Trap
-    section_header("🧪", "Ablation Study: Bẫy Loại Bỏ Ngoại Lai (Hình 4.12)")
+    section_header("🧪", "Thực Nghiệm Bóc Tách: Bẫy Cắt Lọc Ngoại Lai (Ablation Study - Hình 4.12)")
 
     try:
         comp_path = PROJECT_ROOT / "research" / "experiments" / "v10_ablation" / "comparison_table.json"
@@ -476,7 +476,7 @@ def _render_limitations(section_header, insight_card):
             st.markdown(
                 """
                 <div style="background: rgba(239, 68, 68, 0.05); padding: 1rem; border-left: 3px solid #EF4444; border-radius: 4px; margin-bottom: 1rem;">
-                    <span style="font-size: 0.95em;"><b>"False Sense of Accuracy" (Ảo giác chính xác):</b> Thí nghiệm Ablation cố tình dùng thuật toán IQR thay cho Domain Bounds. Kết quả: IQR đã cắt mất 66 đợt ô nhiễm nghiêm trọng (> 54 µg/m³). Mô hình trông <b>chính xác hơn (MASE thấp hơn)</b> ở các horizon ngắn, nhưng thực chất đã bị "mù" trước các đợt bùng phát ô nhiễm thật sự.</span>
+                    <span style="font-size: 0.95em;"><b>"False Sense of Accuracy" (Ảo giác chính xác):</b> Thực nghiệm bóc tách (Ablation Study) cố tình dùng thuật toán IQR thay cho Domain Bounds. Kết quả: IQR đã cắt mất 66 đợt ô nhiễm nghiêm trọng (> 54 µg/m³). Mô hình trông <b>chính xác hơn (MASE thấp hơn)</b> ở các horizon ngắn, nhưng thực chất đã bị "mù" trước các đợt bùng phát ô nhiễm thật sự.</span>
                 </div>
                 """,
                 unsafe_allow_html=True,

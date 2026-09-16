@@ -32,8 +32,8 @@ def page_multi_horizon(results: dict[str, Any]) -> None:
     """Render Multi-Horizon performance comparison page."""
     st.markdown(
         """
-    <h1 style="font-size: 2rem;">📊 Kết Quả Multi-Horizon</h1>
-    <p style="opacity: 0.7;">So sánh hiệu suất dự báo PM2.5 tại 3 horizons: 1h, 6h, 24h</p>
+    <h1 style="font-size: 2rem;">📈 Kết Quả Đa Tầm Dự Báo (Multi-Horizon)</h1>
+    <p style="opacity: 0.7;">So sánh hiệu năng dự báo PM2.5 tại 3 khung thời gian (horizons): 1 giờ, 6 giờ và 24 giờ</p>
     """,
         unsafe_allow_html=True,
     )
@@ -235,7 +235,7 @@ def page_multi_horizon(results: dict[str, Any]) -> None:
     <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem;
                 border-left: 4px solid #00D4AA; font-size: 0.88rem; line-height: 1.65;">
         Bảng đối chuẩn tổng hợp hiệu năng dự báo của các mô hình đại diện thuộc 5 họ thuật toán trên tập kiểm thử mỏ neo
-        (<b>Anchor Test Set</b> — 1.200 giờ cố định cuối chuỗi, 100% dữ liệu thực <code>is_imputed == 0</code>) {cite("tashman2000")}.
+        (<b>Anchor Test Set</b> — 10% mỏ neo: 669h ở chuỗi 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m, 100% dữ liệu thực <code>is_imputed == 0</code>) {cite("tashman2000")}.
     </div>
     """,
         unsafe_allow_html=True,

@@ -25,7 +25,7 @@
   },
   "eda_findings": {
     "title": "Phát hiện: Tác động của Độ phân giải (Resolution)",
-    "content": "**Phát hiện quan trọng về tần suất đo lường (15m vs 30m vs 1h):**\n\n- **Độ nhiễu (Noise level)**: Dữ liệu 15 phút (15m) chứa nhiều nhiễu vi mô và các đợt tăng đột biến ngắn hạn, trong khi dữ liệu 1 giờ (1h) lại quá mịn, vô tình làm mất đi các biến động cực đoan của nồng độ bụi.\n- **Tự tương quan (ACF)**: Ở chuỗi giờ 1h, ACF bậc 1 ≈ 0,86 (và ở chuỗi cảm biến 15m đạt ≈ 0,97) tạo bẫy tự tương quan. Khi khai thác đa phân giải 15m, mô hình học sâu GRU 15m có thể nhìn thấu vi biến động và phá vỡ bẫy tự tương quan (MASE = 0,667 < 1,0).\n- **Khoảng trống dữ liệu (Gaps)**: Chiến lược Tiered Imputation khôi phục 656 giờ gap ngắn ≤ 24h (3,2%) và loại bỏ 19.810 giờ gap dài > 24h (96,8%), bảo vệ 100% dữ liệu thực cho tập kiểm thử (Anchor Test Set 1.200h).",
+    "content": "**Phát hiện quan trọng về tần suất đo lường (15m vs 30m vs 1h):**\n\n- **Độ nhiễu (Noise level)**: Dữ liệu 15 phút (15m) chứa nhiều nhiễu vi mô và các đợt tăng đột biến ngắn hạn, trong khi dữ liệu 1 giờ (1h) lại quá mịn, vô tình làm mất đi các biến động cực đoan của nồng độ bụi.\n- **Tự tương quan (ACF)**: Ở chuỗi giờ 1h, ACF bậc 1 ≈ 0,86 (và ở chuỗi cảm biến 15m đạt ≈ 0,97) tạo bẫy tự tương quan. Khi khai thác đa phân giải 15m, mô hình học sâu GRU 15m có thể nhìn thấu vi biến động và phá vỡ bẫy tự tương quan (MASE = 0,667 < 1,0).\n- **Khoảng trống dữ liệu (Gaps)**: Chiến lược Tiered Imputation khôi phục 656 giờ gap ngắn ≤ 24h (3,2%) và loại bỏ 19.810 giờ gap dài > 24h (96,8%), bảo vệ 100% dữ liệu thực cho tập kiểm thử mỏ neo (Anchor Test Set 10% cuối: 669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m).",
     "page": "eda",
     "display_order": 2
   },
@@ -36,14 +36,14 @@
     "display_order": 3
   },
   "experiment_runs_guide": {
-    "title": "Hướng dẫn: Nhật ký Thí nghiệm (Experiment Tracking)",
+    "title": "Hướng dẫn: Nhật Ký Thực Nghiệm (Experiment Tracking)",
     "content": "Phân hệ lưu trữ toàn bộ lịch sử từ v1 đến v9:\n\n- **Phiên bản 1-4**: Thiết lập cơ sở, Feature Engineering.\n- **Phiên bản 5-7**: Xử lý rò rỉ (Anti-leakage), triển khai Học sâu (LSTM/GRU).\n- **Phiên bản 8**: Conformal Prediction và giải thích phân phối.\n- **Phiên bản 9 (Final)**: Đa độ phân giải (15m, 30m, 1h), Ablation Study (Expert vs Fair DL), MASE thống nhất và Ensemble Pipeline.",
     "page": "experiment_runs",
     "display_order": 1
   },
   "experiment_runs_lessons": {
-    "title": "Bài Học: Quản Lý Thí Nghiệm",
-    "content": "**Kinh nghiệm tích lũy từ 9 phiên bản thí nghiệm:**\n\n1. **Snapshot versioning**: Mỗi version lưu đầy đủ config + metrics + timestamp → Tái lập bất kỳ lúc nào.\n2. **Docker isolation**: Đóng gói toàn bộ environment (Python, libs, models) → Kết quả nhất quán trên mọi máy.\n3. **Reproducibility**: Set random seed (42) cho tất cả operations (numpy, torch, sklearn).\n4. **Version bump discipline**: Mỗi thay đổi kiến trúc lớn = 1 version mới. KHÔNG overwrite kết quả cũ.\n5. **Anti-regression**: So sánh metrics mới vs version trước — nếu tệ hơn, rollback và phân tích nguyên nhân.",
+    "title": "Bài Học: Quản Trị Thực Nghiệm (Experiment Management)",
+    "content": "**Kinh nghiệm tích lũy từ 9 phiên bản thực nghiệm:**\n\n1. **Snapshot versioning**: Mỗi version lưu đầy đủ config + metrics + timestamp → Tái lập bất kỳ lúc nào.\n2. **Docker isolation**: Đóng gói toàn bộ environment (Python, libs, models) → Kết quả nhất quán trên mọi máy.\n3. **Reproducibility**: Set random seed (42) cho tất cả operations (numpy, torch, sklearn).\n4. **Version bump discipline**: Mỗi thay đổi kiến trúc lớn = 1 version mới. KHÔNG overwrite kết quả cũ.\n5. **Anti-regression**: So sánh metrics mới vs version trước — nếu tệ hơn, rollback và phân tích nguyên nhân.",
     "page": "experiment_runs",
     "display_order": 2
   },
@@ -109,7 +109,7 @@
   },
   "overview_lessons": {
     "title": "Bài Học Kinh Nghiệm (Key Lessons v1-v9)",
-    "content": "Tổng hợp từ 9 phiên bản phát triển và hàng chục thí nghiệm, dưới đây là những bài học kinh nghiệm quan trọng nhất:\n\n1. **Đa độ phân giải (Multi-Resolution)**: Dữ liệu 15 phút (15m) cung cấp tín hiệu tốt nhất cho dự báo cực ngắn (1h), nhưng lại đưa thêm nhiễu vào dự báo trung và dài hạn (6h, 24h). Dữ liệu 30 phút là điểm cân bằng lý tưởng nhất.\n2. **Sức mạnh của Ensemble**: Việc kết hợp mô hình Học sâu (Deep Learning - LSTM) và Học máy (Machine Learning - LightGBM) giúp tận dụng khả năng nắm bắt xu hướng dài hạn của DL và phản ứng nhanh với thay đổi ngắn hạn của ML.\n3. **Kiểm soát rò rỉ dữ liệu (Data Leakage)**: Việc tính toán tỷ lệ thay đổi trực tiếp sẽ vô tình làm lộ thông tin tương lai. Khắc phục bằng cách sử dụng giá trị trễ (`shift`). Các dấu hiệu cảnh báo rò rỉ bao gồm MASE < 0.1 hoặc R² > 0.99.\n4. **Đặc trưng chu kỳ (Fourier) vs Khử mùa vụ (Deseasonalizing)**: Sử dụng đặc trưng toán học Fourier mang lại kết quả tốt hơn việc chủ động khử mùa vụ, do việc khử kép dễ gây thêm nhiễu tự nhiên.\n5. **Đồng bộ Tập kiểm thử (Test Set Alignment)**: Đánh giá thiên lệch có thể xảy ra nếu tập kiểm thử của mô hình Học sâu (không drop NaN) và Học máy (drop NaN) khác nhau. Giải pháp: Cắt đuôi (tail-alignment) để đánh giá trên cùng một bộ neo (anchor set).",
+    "content": "Tổng hợp từ 9 phiên bản phát triển và hàng chục đợt thực nghiệm, dưới đây là những bài học kinh nghiệm quan trọng nhất:\n\n1. **Đa độ phân giải (Multi-Resolution)**: Dữ liệu 15 phút (15m) cung cấp tín hiệu tốt nhất cho dự báo cực ngắn (1h), nhưng lại đưa thêm nhiễu vào dự báo trung và dài hạn (6h, 24h). Dữ liệu 30 phút là điểm cân bằng lý tưởng nhất.\n2. **Sức mạnh của Ensemble**: Việc kết hợp mô hình Học sâu (Deep Learning - LSTM) và Học máy (Machine Learning - LightGBM) giúp tận dụng khả năng nắm bắt xu hướng dài hạn của DL và phản ứng nhanh với thay đổi ngắn hạn của ML.\n3. **Kiểm soát rò rỉ dữ liệu (Data Leakage)**: Việc tính toán tỷ lệ thay đổi trực tiếp sẽ vô tình làm lộ thông tin tương lai. Khắc phục bằng cách sử dụng giá trị trễ (`shift`). Các dấu hiệu cảnh báo rò rỉ bao gồm MASE < 0.1 hoặc R² > 0.99.\n4. **Đặc trưng chu kỳ (Fourier) vs Khử mùa vụ (Deseasonalizing)**: Sử dụng đặc trưng toán học Fourier mang lại kết quả tốt hơn việc chủ động khử mùa vụ, do việc khử kép dễ gây thêm nhiễu tự nhiên.\n5. **Đồng bộ Tập kiểm thử (Test Set Alignment)**: Đánh giá thiên lệch có thể xảy ra nếu tập kiểm thử của mô hình Học sâu (không drop NaN) và Học máy (drop NaN) khác nhau. Giải pháp: Cắt đuôi (tail-alignment) để đánh giá trên cùng một bộ neo (anchor set).",
     "page": "overview",
     "display_order": 2
   },

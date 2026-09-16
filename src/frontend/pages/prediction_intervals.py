@@ -38,7 +38,7 @@ def page_prediction_intervals(results: dict[str, Any]) -> None:
     """Render prediction intervals and uncertainty quantification (UQ) page."""
     st.markdown(
         """
-    <h1 style="font-size: 2rem;">📈 Prediction Intervals</h1>
+    <h1 style="font-size: 2rem;">📈 Khoảng Dự Báo Bất Định (Prediction Intervals)</h1>
     <p style="opacity: 0.7;">Khoảng dự báo 90% — Adaptive Conformal Inference (ACI) vs Conformalized Quantile Regression (CQR)</p>
     """,
         unsafe_allow_html=True,
@@ -116,7 +116,7 @@ def page_prediction_intervals(results: dict[str, Any]) -> None:
                 _render_chart(fig_uq1, filename="coverage_pi")
 
             with col_uq2:
-                section_header("📏", "Độ Rộng Khoảng Tin Cậy (µg/m³)")
+                section_header("📏", "Độ Rộng Khoảng Dự Báo (µg/m³)")
                 fig_uq2 = _chart(
                     yaxis_title="Avg Width (µg/m³)",
                     height=380,
@@ -144,7 +144,7 @@ def page_prediction_intervals(results: dict[str, Any]) -> None:
 
             section_header(
                 "📋",
-                "Bảng 4.6: Kết Quả Đánh Giá Khoảng Tin Cậy Dự Báo 90% (Quantile Regression, CQR và ACI)",
+                "Bảng 4.6: Kết Quả Đánh Giá Khoảng Dự Báo 90% (Quantile Regression, CQR và ACI)",
             )
             if conformal_table:
                 st.dataframe(

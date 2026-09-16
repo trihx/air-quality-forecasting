@@ -1720,7 +1720,7 @@ def page_explainability_hub(results: dict):
     st.markdown(
         """
     <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
-        🧠 Giải Thích Trực Quan — Model Explainability Hub
+        🧠 Khả Năng Giải Thích Mô Hình — Explainable AI (XAI Hub)
     </h1>
     <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 1.5rem;">
         Tổng hợp toàn bộ pipeline thành narrative trực quan — lấy cảm hứng từ
@@ -1735,11 +1735,11 @@ def page_explainability_hub(results: dict):
     # ── Tabs ──
     tab1, tab2, tab3, tab4, tab5 = st.tabs(
         [
-            "🗺️ Pipeline Journey",
-            "🔬 Feature Explainability",
-            "🏆 Model Selection",
-            "🛡️ Anti-Leakage Audit",
-            "📚 Scientific Foundation",
+            "🗺️ Hành Trình Pipeline (Pipeline Journey)",
+            "🔬 Tầm Quan Trọng Đặc Trưng (Feature Importance / SHAP)",
+            "🏆 Tuyển Chọn Mô Hình (Model Selection)",
+            "🛡️ Kiểm Định Chống Rò Rỉ (Anti-Leakage Audit)",
+            "📚 Cơ Sở Khoa Học (Scientific Foundation)",
         ]
     )
 

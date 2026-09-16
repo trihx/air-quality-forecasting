@@ -311,19 +311,19 @@ def sidebar() -> str:
             # ── Phase 1: Giới thiệu & Khám phá ──
             "🏠 Tổng Quan",
             "📜 Quy Trình Pipeline",
-            "📊 EDA & Khám Phá Dữ Liệu",
+            "📊 Khám Phá & Dẫn Luận Dữ Liệu (EDA)",
             # ── Phase 2: Huấn luyện mô hình ──
-            "⚙️ Cấu Hình & Hyperparameters",
+            "⚙️ Cấu Hình Siêu Tham Số (Hyperparameters)",
             "🏋️ Huấn Luyện Mô Hình",
-            "📋 Lịch Sử Thí Nghiệm",
+            "📋 Nhật Ký Thực Nghiệm (Experiment Runs)",
             # ── Phase 3: Đánh giá & Giải thích ──
-            "📈 Kết Quả Multi-Horizon",
-            "📉 Actual vs Predicted",
-            "🧠 Giải Thích Trực Quan",
-            "📊 Khoảng Tin Cậy Dự Báo",
-            "📚 Đối Chiếu Khoa Học",
-            "📊 Thesis Figures",
-            "🔬 Scientific Audit",
+            "📈 Kết Quả Đa Tầm Dự Báo (Multi-Horizon)",
+            "📉 Thực Tế vs Dự Báo (Actual vs Predicted)",
+            "🧠 Khả Năng Giải Thích Mô Hình (XAI)",
+            "📊 Khoảng Dự Báo Bất Định (Prediction Intervals)",
+            "📚 Đối Chiếu Khoa Học (Scientific Benchmark)",
+            "📊 Hệ Thống Biểu Đồ Đề Án (Thesis Figures)",
+            "🔬 Kiểm Định Khoa Học (Scientific Audit)",
             # ── Phase 4: Ứng dụng & Kết luận ──
             "🔮 Dự Báo PM2.5",
             "📝 Kết Luận & Hướng Phát Triển",
@@ -384,13 +384,13 @@ def main() -> None:
         page_pipeline_walkthrough(results)
         return
 
-    if page == "📊 EDA & Khám Phá Dữ Liệu":
+    if page in ("📊 Khám Phá & Dẫn Luận Dữ Liệu (EDA)", "📊 EDA & Khám Phá Dữ Liệu"):
         from src.eda_page import page_eda
 
         page_eda(results)
         return
 
-    if page == "⚙️ Cấu Hình & Hyperparameters":
+    if page in ("⚙️ Cấu Hình Siêu Tham Số (Hyperparameters)", "⚙️ Cấu Hình & Hyperparameters"):
         from src.frontend.pages.hyperparams import page_hyperparams
 
         page_hyperparams(results)
@@ -402,19 +402,19 @@ def main() -> None:
         page_training(results)
         return
 
-    if page == "📋 Lịch Sử Thí Nghiệm":
+    if page in ("📋 Nhật Ký Thực Nghiệm (Experiment Runs)", "📋 Lịch Sử Thí Nghiệm"):
         from src.frontend.pages.experiment_runs import page_experiment_runs
 
         page_experiment_runs(results)
         return
 
-    if page == "📈 Kết Quả Multi-Horizon":
+    if page in ("📈 Kết Quả Đa Tầm Dự Báo (Multi-Horizon)", "📈 Kết Quả Multi-Horizon"):
         from src.frontend.pages.multi_horizon import page_multi_horizon
 
         page_multi_horizon(results)
         return
 
-    if page == "📉 Actual vs Predicted":
+    if page in ("📉 Thực Tế vs Dự Báo (Actual vs Predicted)", "📉 Actual vs Predicted"):
         from src.frontend.pages.actual_vs_predicted import (
             page_actual_vs_predicted,
         )
@@ -422,13 +422,13 @@ def main() -> None:
         page_actual_vs_predicted(results)
         return
 
-    if page == "🧠 Giải Thích Trực Quan":
+    if page in ("🧠 Khả Năng Giải Thích Mô Hình (XAI)", "🧠 Giải Thích Trực Quan"):
         from src.explainability_hub import page_explainability_hub
 
         page_explainability_hub(results)
         return
 
-    if page == "📊 Khoảng Tin Cậy Dự Báo":
+    if page in ("📊 Khoảng Dự Báo Bất Định (Prediction Intervals)", "📊 Khoảng Tin Cậy Dự Báo"):
         from src.frontend.pages.prediction_intervals import (
             page_prediction_intervals,
         )
@@ -436,19 +436,19 @@ def main() -> None:
         page_prediction_intervals(results)
         return
 
-    if page == "📚 Đối Chiếu Khoa Học":
+    if page in ("📚 Đối Chiếu Khoa Học (Scientific Benchmark)", "📚 Đối Chiếu Khoa Học"):
         from src.frontend.pages.benchmarks import page_scientific_benchmark
 
         page_scientific_benchmark(results)
         return
 
-    if page == "📊 Thesis Figures":
+    if page in ("📊 Hệ Thống Biểu Đồ Đề Án (Thesis Figures)", "📊 Thesis Figures"):
         from src.thesis_figures import page_thesis_figures
 
         page_thesis_figures(results)
         return
 
-    if page == "🔬 Scientific Audit":
+    if page in ("🔬 Kiểm Định Khoa Học (Scientific Audit)", "🔬 Scientific Audit"):
         from src.frontend.pages.audit import page_scientific_audit
 
         page_scientific_audit(results)

@@ -120,3 +120,7 @@ exclude_dirs = ["tests", ".venv"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --tb=short"
+filterwarnings = [
+    "ignore::DeprecationWarning:torch.jit.*",
+    "ignore::DeprecationWarning:torch._jit_internal",
+]

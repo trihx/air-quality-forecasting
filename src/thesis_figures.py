@@ -399,10 +399,10 @@ def page_thesis_figures(results):
     st.markdown(
         """
     <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
-        📊 Thesis Figures — Bộ Trực Quan Hóa Chuẩn Đề Án (38 Hình Chuẩn Thức)
+        📊 Hệ Thống Biểu Đồ Đề Án — Thesis Figures (38 Hình Chuẩn Thức)
     </h1>
     <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 2rem;">
-        Đồng bộ 100% với Báo cáo Đề án Thạc sĩ (QĐ 1799/ĐHCT) — Định dạng 300 DPI, bảo toàn Aspect Ratio, chuẩn in ấn B&W.
+        Đồng bộ 100% với Báo cáo Đề án Thạc sĩ — Định dạng 300 DPI, bảo toàn Aspect Ratio, chuẩn in ấn B&W.
     </p>
     """,
         unsafe_allow_html=True,
@@ -444,7 +444,7 @@ def page_thesis_figures(results):
             "📉 Khám Phá Dữ Liệu EDA (§4.1)",
             "🔬 Chẩn Đoán Thặng Dư (§4.5)",
             "🧠 Giải Thích XAI (§4.6)",
-            "📈 Khoảng Tin Cậy & Ablation (§4.7, §4.10)",
+            "📈 Khoảng Dự Báo & Ablation (§4.7, §4.10)",
             "📑 Phụ Lục Nghiên Cứu (Phụ Lục 3)",
         ]
     )
@@ -499,7 +499,7 @@ def page_thesis_figures(results):
             _render_image_card(
                 "Hinh_4.2a_EDA_Autocorrelation_Memory.png",
                 "Hình 4.2a: Bẫy tự tương quan — Suy giảm tự tương quan ACF/PACF theo độ trễ",
-                "Hệ số r=0,86 (chuỗi 1h) và r=0,97 (chuỗi thô 15m) lý giải ưu thế áp đảo của Persistence ở h=1.",
+                "Hệ số r=0,86 (chuỗi 1h) và r=0,97 (chuỗi thô 15m) lý giải hiệu năng vượt trội của Persistence ở h=1.",
             )
             _render_image_card(
                 "Hinh_4.2b_EDA_Horizon_Scatter_Dispersion.png",
@@ -713,11 +713,11 @@ def page_thesis_figures(results):
         )
         st.dataframe(cross_df, use_container_width=True, hide_index=True)
 
-    # ── Tab 5: Chương 4 §4.7 Khoảng Tin Cậy & §4.10 Ablation ──
+    # ── Tab 5: Chương 4 §4.7 Khoảng Dự Báo & §4.10 Ablation ──
     with tab_pi_abl:
-        section_header("📈", "Khoảng Tin Cậy Dự Báo & Nghiên Cứu Loại Trừ (Chương 4 §4.7 & §4.10)")
+        section_header("📈", "Khoảng Dự Báo Bất Định & Thực Nghiệm Bóc Tách (Chương 4 §4.7 & §4.10)")
 
-        st.markdown("#### 1. Chuỗi Thời Gian Khoảng Tin Cậy Conformal Prediction (Hình 4.11a-c)")
+        st.markdown("#### 1. Chuỗi Thời Gian Khoảng Dự Báo Conformal Prediction (Hình 4.11a-c)")
         _render_image_card("Hinh_4.11a_PI_Conformal_LightGBM_1h.png", "Hình 4.11a: Conformal Prediction (LightGBM 1h)")
         _render_image_card("Hinh_4.11b_PI_Conformal_LightGBM_6h.png", "Hình 4.11b: Conformal Prediction (LightGBM 6h)")
         _render_image_card(
@@ -725,10 +725,10 @@ def page_thesis_figures(results):
         )
 
         st.markdown("---")
-        st.markdown("#### 2. Ablation Study — Tác Động Của Xử Lý Ngoại Lai (Hình 4.12)")
+        st.markdown("#### 2. Thực Nghiệm Bóc Tách (Ablation Study) — Tác Động Của Xử Lý Ngoại Lai (Hình 4.12)")
         _render_image_card(
             "Hinh_4.12_Ablation_Outlier_Impact.png",
-            "Hình 4.12: Đánh giá mức độ ảnh hưởng của loại bỏ ngoại lai đến hiệu năng mô hình (Ablation)",
+            "Hình 4.12: Đánh giá mức độ ảnh hưởng của loại bỏ ngoại lai đến hiệu năng mô hình (Ablation Study)",
             "Loại bỏ ngoại lai bằng IQR mù quáng (v10) tạo ra ảo giác giảm sai số tại h=1 nhưng làm mất đỉnh ô nhiễm thực tế.",
         )
 

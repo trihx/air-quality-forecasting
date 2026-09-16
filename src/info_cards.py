@@ -275,7 +275,7 @@ def cards_experiment_runs(version: str):
     content = ContentManager()
 
     render_info_card(
-        "Hướng dẫn: Lịch Sử Thí Nghiệm",
+        "Hướng dẫn: Nhật Ký Thực Nghiệm (Experiment Tracking)",
         content.get_info_card_text("experiment_runs_guide", "Đang cập nhật...").format(len=len(snapshots)),
         icon="📖",
         collapsed=True,
@@ -378,7 +378,7 @@ def cards_prediction_intervals(version: str):
     content = ContentManager()
 
     render_info_card(
-        "Hướng dẫn: Khoảng Tin Cậy Dự Báo",
+        "Hướng dẫn: Khoảng Dự Báo Bất Định (Prediction Intervals)",
         content.get_info_card_text("pi_guide", "Đang cập nhật..."),
         icon="📖",
         collapsed=True,

@@ -48,8 +48,8 @@ def page_actual_vs_predicted(results: dict[str, Any]) -> None:
     """Render Actual vs Predicted performance overlay page."""
     st.markdown(
         """
-    <h1 style="font-size: 2rem;">📊 Actual vs Predicted</h1>
-    <p style="opacity: 0.7;">So sánh giá trị thực tế và dự đoán từ các mô hình trên tập test</p>
+    <h1 style="font-size: 2rem;">📉 Thực Tế vs Dự Báo (Actual vs Predicted)</h1>
+    <p style="opacity: 0.7;">Đối chuẩn so sánh giá trị thực tế và dự báo từ các mô hình trên tập kiểm thử mỏ neo</p>
     """,
         unsafe_allow_html=True,
     )
@@ -63,7 +63,7 @@ def page_actual_vs_predicted(results: dict[str, Any]) -> None:
     <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
                 border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
         <div style="font-size: 0.85rem; opacity: 0.85;">
-            📌 Đánh giá trên <b>Anchor Test Set</b> (1.200 giờ cuối cố định, 100% dữ liệu thực <code>is_imputed == 0</code>) {cite("tashman2000")}.
+            📌 Đánh giá trên <b>Anchor Test Set</b> (10% mỏ neo: 669h ở chuỗi 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m, 100% dữ liệu thực <code>is_imputed == 0</code>) {cite("tashman2000")}.
             Metrics chính: <b>MASE</b> {cite("hyndman2006")} (scale-independent), MAE {cite("willmott2005")},
             kiểm định Diebold-Mariano {cite("diebold1995")} và khoảng dự báo thích ứng ACI {cite("gibbs2021")}.
         </div>

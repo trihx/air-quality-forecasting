@@ -145,11 +145,11 @@ def _render_overview_current(rpt: ReportingEngine, content: ContentManager, ver:
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
         {step(1)} Raw Data → {step(2)} Clean {cite("rosner1983")} (Domain bounds 0–500 µg/m³ & S-ESD outlier, resample đa phân giải: 15m, 30m, 1h)<br>
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
-        {step(3)} Tiered Imputation (<span class="warn">Nội suy phân tầng</span>: PCHIP/Spline/KNN cho gap ≤ 24h [656h, 3,2%]; loại bỏ gap > 24h [19.810h, 96,8%]) → 15m: ~110K, 30m: ~55K, 1h: ~27K rows<br>
+        {step(3)} Tiered Imputation (<span class="warn">Nội suy phân tầng</span>: PCHIP/Spline/KNN cho gap ≤ 24h [656h, 3,2%]; loại bỏ gap > 24h [19.810h, 96,8%]) → 15m: 18.355, 30m: 8.625, 1h: 6.689 mẫu sạch<br>
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
         {step(4)} Features ({feature_cols} cols thuộc 7 nhóm: lags, rolling, ewm, diff, Fourier, interactions, CV — <span class="accent">shift(1) anti-leakage</span> {cite("hyndman2021")})<br>
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
-        {step(5)} Anchor Test Set {cite("tashman2000")} (1.200 giờ cuối cố định) → <span class="accent">TEST = 100% REAL DATA ONLY (is_imputed == 0)</span><br>
+        {step(5)} Anchor Test Set {cite("tashman2000")} (10% mỏ neo: 669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) → <span class="accent">TEST = 100% REAL DATA ONLY (is_imputed == 0)</span><br>
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
         {step(6)} Models (41 cấu hình): Persistence baseline → Ridge/RF → LightGBM/XGBoost → GRU/LSTM/TFT → Weighted Ensemble {cite("peixeiro2022")}<br>
         &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
@@ -174,10 +174,10 @@ def _render_overview_current(rpt: ReportingEngine, content: ContentManager, ver:
         if "key_insight" in exp:
             content_html += f"<b>🔑 Key Insight:</b> <i>{exp['key_insight']}</i><br>"
 
-        insight_card(exp.get("title", "🧪 Thí nghiệm"), content_html)
+        insight_card(exp.get("title", "🧪 Thực nghiệm"), content_html)
 
     # ── Rankings (dynamic from ReportingEngine) ──
-    section_header("🏆", f"Final Model Rankings — {rpt.version} (unified baseline)")
+    section_header("🏆", f"Bảng Xếp Hạng Mô Hình (Model Rankings) — {rpt.version} (unified baseline)")
     col_rank_sel, _ = st.columns([1, 2])
     with col_rank_sel:
         top_n_choice = st.selectbox(

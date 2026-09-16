@@ -32,8 +32,8 @@ def page_experiment_runs(results: dict[str, Any]) -> None:
     """Render experiment history and cross-version comparison page."""
     st.markdown(
         """
-    <h1 style="font-size: 2rem;">📋 Experiment Runs</h1>
-    <p style="opacity: 0.7;">Lịch sử thí nghiệm và so sánh giữa các phiên bản pipeline</p>
+    <h1 style="font-size: 2rem;">📋 Nhật Ký Thực Nghiệm (Experiment Runs)</h1>
+    <p style="opacity: 0.7;">Lịch sử các lượt thực nghiệm và đối chuẩn chéo giữa các phiên bản pipeline</p>
     """,
         unsafe_allow_html=True,
     )
@@ -56,7 +56,7 @@ def page_experiment_runs(results: dict[str, Any]) -> None:
         unsafe_allow_html=True,
     )
 
-    tab1, tab2 = st.tabs(["📊 So Sánh Phiên Bản", "📋 Tất Cả Experiment Runs"])
+    tab1, tab2 = st.tabs(["📊 So Sánh Phiên Bản", "📋 Tất Cả Lượt Thực Nghiệm (Runs)"])
 
     with tab1:
         _render_version_comparison()

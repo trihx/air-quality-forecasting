@@ -24,6 +24,7 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 import contextlib
 import json
 import re
+import warnings
 from datetime import datetime
 from pathlib import Path
 
@@ -57,7 +58,9 @@ class GRUPredictor:
         self.torch = torch
 
         # Default to CPU, can be overridden in predict()
-        self.model = torch.jit.load(str(self.model_path), map_location="cpu")
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+            self.model = torch.jit.load(str(self.model_path), map_location="cpu")
         self.model.eval()
 
         # Load scalers
@@ -157,7 +160,9 @@ class GRUQuantilePredictor:
         self.torch = torch
 
         # Load model on CPU (Docker-safe, TorchScript portable)
-        self.model = torch.jit.load(str(self.model_path), map_location="cpu")
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+            self.model = torch.jit.load(str(self.model_path), map_location="cpu")
         self.model.eval()
 
         # Load scalers + CQR config

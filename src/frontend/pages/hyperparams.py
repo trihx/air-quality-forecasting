@@ -26,8 +26,8 @@ def page_hyperparams(results: dict[str, Any]) -> None:
     """Render hyperparameter configurations and multi-resolution matrix page."""
     st.markdown(
         """
-    <h1 style="font-size: 2rem;">⚙️ Hyperparameter Configurations</h1>
-    <p style="opacity: 0.7;">Chi tiết cấu hình tối ưu cho từng mô hình và horizon</p>
+    <h1 style="font-size: 2rem;">⚙️ Cấu Hình Siêu Tham Số (Hyperparameters)</h1>
+    <p style="opacity: 0.7;">Chi tiết cấu hình tối ưu siêu tham số cho từng mô hình và khung thời gian dự báo (horizon)</p>
     """,
         unsafe_allow_html=True,
     )

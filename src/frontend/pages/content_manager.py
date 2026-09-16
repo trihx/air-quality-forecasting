@@ -79,16 +79,16 @@ def _tab_info_cards() -> None:
     ]
     page_name_map = {
         "overview": "🏠 Tổng Quan",
-        "eda": "📊 EDA & Khám Phá Dữ Liệu",
-        "hyperparams": "⚙️ Cấu Hình & Hyperparameters",
+        "eda": "📊 Khám Phá & Dẫn Luận Dữ Liệu (EDA)",
+        "hyperparams": "⚙️ Cấu Hình Siêu Tham Số (Hyperparameters)",
         "training": "🏋️ Huấn Luyện Mô Hình",
-        "experiment_runs": "📋 Lịch Sử Thí Nghiệm",
-        "multi_horizon": "📈 Kết Quả Multi-Horizon",
-        "actual_vs_predicted": "📉 Actual vs Predicted",
-        "shap": "🧠 Giải Thích Trực Quan",
-        "prediction_intervals": "📊 Khoảng Tin Cậy Dự Báo",
+        "experiment_runs": "📋 Nhật Ký Thực Nghiệm (Experiment Runs)",
+        "multi_horizon": "📈 Kết Quả Đa Tầm Dự Báo (Multi-Horizon)",
+        "actual_vs_predicted": "📉 Thực Tế vs Dự Báo (Actual vs Predicted)",
+        "shap": "🧠 Khả Năng Giải Thích Mô Hình (XAI)",
+        "prediction_intervals": "📊 Khoảng Dự Báo Bất Định (Prediction Intervals)",
         "forecast": "🔮 Dự Báo PM2.5",
-        "audit": "🔬 Scientific Audit",
+        "audit": "🔬 Kiểm Định Khoa Học (Scientific Audit)",
         "ai_assistant": "💬 Trợ Lý AI",
     }
 
@@ -249,7 +249,7 @@ def _tab_dashboard_json() -> None:
 
         elif section == "experiments":
             experiments = overview.get("experiments", [])
-            st.markdown(f"**{len(experiments)} thí nghiệm:**")
+            st.markdown(f"**{len(experiments)} lượt thực nghiệm:**")
 
             for idx, exp in enumerate(experiments):
                 with st.expander(

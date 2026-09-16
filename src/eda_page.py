@@ -98,7 +98,7 @@ def page_eda(results):
     """Render EDA & Data Storytelling page."""
     st.markdown(
         """
-    <h1 style="font-size: 2rem;">📉 Cốt Truyện Dữ Liệu (Data Storytelling)</h1>
+    <h1 style="font-size: 2rem;">📊 Khám Phá & Dẫn Luận Dữ Liệu (EDA & Data Storytelling)</h1>
     <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 0.5rem;">
         Hành trình khám phá dữ liệu IoT và cơ sở thực nghiệm nền tảng thiết kế Feature Engineering & Pipeline v9
     </p>
@@ -156,9 +156,9 @@ def page_eda(results):
                 <tr><td style="padding: 4px 0; opacity: 0.6;">🏭 Nguồn</td><td>Trạm cảm biến IoT quan trắc ngoài trời tại Sa Đéc, Đồng Tháp (phân tích dữ liệu môi trường cấp huyện)</td></tr>
                 <tr><td style="padding: 4px 0; opacity: 0.6;">📅 Giai đoạn</td><td><b>16/03/2022 — 11/05/2025</b> (38 tháng, ~3.1 năm liên tục)</td></tr>
                 <tr><td style="padding: 4px 0; opacity: 0.6;">⏱️ Tần suất gốc (Raw IoT)</td><td><b>~2 phút/lần</b> (209.594 bản ghi thô từ cảm biến)</td></tr>
-                <tr><td style="padding: 4px 0; opacity: 0.6;">📊 Tái lấy mẫu (Resample)</td><td><b>15 phút</b> (~110K) · <b>30 phút</b> (~55K) · <b>1 giờ</b> (~27K sạch)</td></tr>
+                <tr><td style="padding: 4px 0; opacity: 0.6;">📊 Tái lấy mẫu (Resample)</td><td><b>15 phút</b> (18.355 mẫu sạch) · <b>30 phút</b> (8.625 mẫu sạch) · <b>1 giờ</b> (6.689 mẫu sạch)</td></tr>
                 <tr><td style="padding: 4px 0; opacity: 0.6;">🧪 Features</td><td>119 đặc trưng thuộc 7 nhóm (anti-leakage, shift(1) strictly enforced)</td></tr>
-                <tr><td style="padding: 4px 0; opacity: 0.6;">✂️ Anchor Test Set</td><td>1.200 giờ cuối cố định — 100% dữ liệu thực không nội suy</td></tr>
+                <tr><td style="padding: 4px 0; opacity: 0.6;">✂️ Anchor Test Set</td><td>10% cuối cố định (669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) — 100% dữ liệu thực không nội suy</td></tr>
             </table>
         </div>
         """,
@@ -1014,7 +1014,7 @@ def page_eda(results):
             "các khoảng trống vượt 24 giờ phá vỡ tính liên tục của chu kỳ mùa, do đó bắt buộc phải loại bỏ thay vì nội suy "
             "nhằm tránh tạo ra dữ liệu giả (data leakage) gây sai lệch kết quả huấn luyện mô hình. "
             "Chiến lược phân tầng đã phục hồi 656 giờ (3,2% tổng missing) và cắt bỏ 19.810 giờ (96,8%), "
-            "bảo toàn 100% dữ liệu thực cho tập kiểm thử mỏ neo (Anchor Test Set 1.200 giờ cuối).",
+            "bảo toàn 100% dữ liệu thực cho tập kiểm thử mỏ neo (Anchor Test Set 10% cuối: 669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m).",
         )
 
         # Gap Length Distribution & Missing Barcode Interactive
@@ -1082,7 +1082,7 @@ def page_eda(results):
             "**1. Xử lý Gaps (Chiến lược Tiered Imputation):** Missing data chiếm 74,0% (110 gaps) do sấm sét và gián đoạn nguồn. "
             "Áp dụng phân tầng: Gaps ngắn ≤ 24h (656 giờ, 3,2%) khôi phục bằng PCHIP/Spline/KNN để giữ chu kỳ ngày; "
             "Gaps dài > 24h (19.810 giờ, 96,8%) bắt buộc cắt bỏ thành các chuỗi liên tục độc lập, "
-            "bảo toàn 100% dữ liệu thực cho Anchor Test Set (1.200 giờ cuối) không bị rò rỉ dữ liệu (Anti-Leakage)."
+            "bảo toàn 100% dữ liệu thực cho Anchor Test Set (10% cuối: 669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) không bị rò rỉ dữ liệu (Anti-Leakage)."
         )
         st.info(
             "**2. Xử lý Spikes (Phân phối Fat-Tailed, Skewness = 2,0046):** PM2.5 có các đỉnh đột biến (Max 138,5 µg/m³) tàn phá hàm mất mát MSE. "

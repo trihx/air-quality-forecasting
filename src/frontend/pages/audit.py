@@ -22,7 +22,7 @@ def page_scientific_audit(results: dict[str, Any]) -> None:
     st.markdown(
         """
     <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
-        🔬 Scientific Audit — Reproducibility Report
+        🔬 Kiểm Định Khoa Học — Scientific Audit (Reproducibility Report)
     </h1>
     <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 2rem;">
         Xác minh tính toàn vẹn dữ liệu và model weights theo chuẩn IEEE reproducibility.
