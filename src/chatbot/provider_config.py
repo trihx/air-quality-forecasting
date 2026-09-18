@@ -95,7 +95,7 @@ LOCAL_MODEL_RECOMMENDATIONS = [
         "vram": "6GB",
         "vietnamese": "✅ Rất tốt",
         "speed": "~20 tok/s",
-        "best_for": "Phân tích sâu, phản biện",
+        "best_for": "Phân tích kỹ thuật chuyên sâu",
         "recommended": False,
     },
     {

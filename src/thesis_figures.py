@@ -1,12 +1,12 @@
-"""Thesis Figures Dashboard Page — Đồng bộ 100% với Báo cáo Đề án Thạc sĩ (docs/pics & research/figures/thesis).
+"""Figures Dashboard Page — Thư viện biểu đồ và sơ đồ kỹ thuật chuẩn hóa của hệ thống.
 
 Hiển thị toàn diện 38 hình ảnh thực nghiệm chuẩn thức (300 DPI, bảo toàn Aspect Ratio):
-  - Chương 1 & 3: Sơ đồ Quy trình 7 bước (Hình 1.1) & Kiến trúc 3 tầng DevOps/SRE (Hình 3.1)
-  - Chương 4 (§4.1): Phân tích khám phá dữ liệu EDA (Hình 4.1a-e, 4.2a-b, 4.3a-b, 4.4a-b, 4.5a-b)
-  - Chương 4 (§4.5): Chẩn đoán thặng dư 7 mô hình/horizon (Hình 4.6a-g)
-  - Chương 4 (§4.6): Khả năng giải thích XAI (Hình 4.7a-c, Hình 4.8 Tipping Point, Hình 4.9a-c, Hình 4.10a-c)
-  - Chương 4 (§4.7, §4.10): Khoảng tin cậy dự báo (Hình 4.11a-c) & Ablation Study (Hình 4.12)
-  - Phụ lục: MASE Decay (Hình PL.1), Bootstrap 95% CI (Hình PL.2), SHAP Horizons (Hình PL.3)
+  - Kiến trúc & Quy trình: Sơ đồ Quy trình 7 bước (Hình 1.1) & Kiến trúc 3 tầng DevOps/SRE (Hình 3.1)
+  - Phân tích khám phá EDA: Hình 4.1a-e, 4.2a-b, 4.3a-b, 4.4a-b, 4.5a-b
+  - Chẩn đoán thặng dư: 7 mô hình/horizon (Hình 4.6a-g)
+  - Khả năng giải thích XAI: Hình 4.7a-c, Hình 4.8 Tipping Point, Hình 4.9a-c, Hình 4.10a-c
+  - Khoảng tin cậy dự báo & Ablation Study: Hình 4.11a-c & Hình 4.12
+  - Phụ lục mở rộng: MASE Decay (Hình PL.1), Bootstrap 95% CI (Hình PL.2), SHAP Horizons (Hình PL.3)
 
 Tích hợp biểu đồ tương tác Plotly chuẩn in ấn (B&W hatch patterns) và bộ xuất ZIP 38 hình 300 DPI.
 """
@@ -393,16 +393,16 @@ def _chart_train_time():
 
 
 def page_thesis_figures(results):
-    """Trình bày trọn vẹn 38 hình ảnh chuẩn thức của Đề án Thạc sĩ."""
+    """Trình bày trọn vẹn 38 biểu đồ và sơ đồ kỹ thuật chuẩn hóa của hệ thống."""
     from app import insight_card, kpi_card, section_header
 
     st.markdown(
         """
     <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
-        📊 Hệ Thống Biểu Đồ Đề Án — Thesis Figures (38 Hình Chuẩn Thức)
+        📊 Thư Viện Biểu Đồ Kỹ Thuật (System Figures — 38 Hình Chuẩn Thức)
     </h1>
     <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 2rem;">
-        Đồng bộ 100% với Báo cáo Đề án Thạc sĩ — Định dạng 300 DPI, bảo toàn Aspect Ratio, chuẩn in ấn B&W.
+        Thư viện biểu đồ trực quan chuẩn hóa 300 DPI, bảo toàn tỷ lệ khung hình và tối ưu cho in ấn tài liệu kỹ thuật.
     </p>
     """,
         unsafe_allow_html=True,
@@ -910,8 +910,8 @@ def page_thesis_figures(results):
     <div style="background: var(--secondary-background-color); border-radius: 10px;
                 padding: 1rem; border-left: 3px solid #00D4AA; margin-bottom: 1rem;
                 font-size: 0.9rem; opacity: 0.85;">
-        Tải toàn bộ 38 hình ảnh chuẩn thức của Đề án Thạc sĩ (300 DPI, bảo toàn tỷ lệ khung hình, định dạng PNG)
-        kèm file danh mục <b>README_PICS_MAP.md</b> đóng gói trong 1 file ZIP duy nhất — sẵn sàng chèn vào Word hoặc gửi Hội đồng.
+        Tải toàn bộ 38 hình ảnh kỹ thuật chuẩn hóa của hệ thống (300 DPI, bảo toàn tỷ lệ khung hình, định dạng PNG)
+        kèm file danh mục <b>README_PICS_MAP.md</b> đóng gói trong 1 file ZIP duy nhất — sẵn sàng phục vụ báo cáo kỹ thuật và tài liệu hệ thống.
     </div>
     """,
         unsafe_allow_html=True,

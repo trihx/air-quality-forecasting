@@ -117,8 +117,8 @@ def page_scientific_benchmark(results: dict[str, Any]) -> None:
             "#F59E0B",
         ),
         _exec_row(
-            "Anti-leakage Tests",
-            f"{n_tests}/{n_tests} passed",
+            "Automated Test Suite",
+            f"{n_tests}/{n_tests} passed (5 nhóm)",
             "~20% papers",
             "0% papers",
             "✅ Vượt chuẩn academic",

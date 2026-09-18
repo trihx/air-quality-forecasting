@@ -9,8 +9,209 @@
     "conclusion": "v9 (Domain Bounds) là chuẩn mực duy nhất cho Production. Không được sử dụng IQR để loại bỏ các điểm cực đoan của nồng độ PM2.5."
   },
   "results": {
-      "1h": {},
-      "6h": {},
-      "24h": {}
-  }
+    "1h": {
+      "Persistence_v10": {
+        "mae": 2.879,
+        "rmse": 4.3322,
+        "mase": 1.0,
+        "mase_unified": 1.0,
+        "r2": 0.4368,
+        "forecast_bias": -0.0041,
+        "source": "v10_ablation"
+      },
+      "ElasticNet_v10": {
+        "mae": 2.9808,
+        "rmse": 4.3603,
+        "mase": 1.0354,
+        "mase_unified": 1.0354,
+        "r2": 0.4295,
+        "forecast_bias": -0.0428,
+        "source": "v10_ablation"
+      },
+      "LightGBM_v10": {
+        "mae": 3.0941,
+        "rmse": 4.5643,
+        "mase": 1.0747,
+        "mase_unified": 1.0747,
+        "r2": 0.3748,
+        "forecast_bias": 0.0254,
+        "source": "v10_ablation"
+      },
+      "GRU_v10": {
+        "mae": 2.8809,
+        "rmse": 4.1882,
+        "mase": 1.0444,
+        "mase_unified": 1.0444,
+        "r2": 0.422,
+        "forecast_bias": 0.0468,
+        "source": "v10_ablation"
+      },
+      "LSTM_v10": {
+        "mae": 3.5331,
+        "rmse": 4.8433,
+        "mase": 1.2808,
+        "mase_unified": 1.2808,
+        "r2": 0.227,
+        "forecast_bias": 0.1816,
+        "source": "v10_ablation"
+      },
+      "TFT_v10": {
+        "mae": 4.3681,
+        "rmse": 5.6141,
+        "mase": 1.5835,
+        "mase_unified": 1.5835,
+        "r2": -0.0386,
+        "forecast_bias": 0.1438,
+        "source": "v10_ablation"
+      },
+      "Ensemble_v10": {
+        "mae": 3.5284,
+        "rmse": 4.7773,
+        "mase": 1.3151,
+        "mase_unified": 1.3151,
+        "r2": 0.2246,
+        "forecast_bias": 0.131,
+        "source": "v10_ablation"
+      }
+    },
+    "6h": {
+      "Persistence_v10": {
+        "mae": 5.4897,
+        "rmse": 7.8991,
+        "mase": 1.0,
+        "mase_unified": 1.0,
+        "r2": -0.8487,
+        "forecast_bias": -0.0036,
+        "source": "v10_ablation"
+      },
+      "ElasticNet_v10": {
+        "mae": 3.9893,
+        "rmse": 5.5269,
+        "mase": 0.7267,
+        "mase_unified": 0.7267,
+        "r2": 0.0949,
+        "forecast_bias": 0.006,
+        "source": "v10_ablation"
+      },
+      "LightGBM_v10": {
+        "mae": 4.1722,
+        "rmse": 5.8391,
+        "mase": 0.76,
+        "mase_unified": 0.76,
+        "r2": -0.0102,
+        "forecast_bias": 0.0188,
+        "source": "v10_ablation"
+      },
+      "GRU_v10": {
+        "mae": 4.8398,
+        "rmse": 6.8602,
+        "mase": 0.9041,
+        "mase_unified": 0.9041,
+        "r2": -0.5221,
+        "forecast_bias": 0.0237,
+        "source": "v10_ablation"
+      },
+      "LSTM_v10": {
+        "mae": 5.2333,
+        "rmse": 7.2912,
+        "mase": 0.9775,
+        "mase_unified": 0.9775,
+        "r2": -0.7194,
+        "forecast_bias": -0.1052,
+        "source": "v10_ablation"
+      },
+      "TFT_v10": {
+        "mae": 4.4837,
+        "rmse": 5.7406,
+        "mase": 0.8375,
+        "mase_unified": 0.8375,
+        "r2": -0.0658,
+        "forecast_bias": 0.1486,
+        "source": "v10_ablation"
+      },
+      "Ensemble_v10": {
+        "mae": 4.3748,
+        "rmse": 6.3431,
+        "mase": 0.821,
+        "mase_unified": 0.821,
+        "r2": -0.3262,
+        "forecast_bias": -0.0196,
+        "source": "v10_ablation"
+      }
+    },
+    "24h": {
+      "Persistence_v10": {
+        "mae": 4.2844,
+        "rmse": 6.2638,
+        "mase": 1.0,
+        "mase_unified": 1.0,
+        "r2": -0.5902,
+        "forecast_bias": 0.0912,
+        "source": "v10_ablation"
+      },
+      "ElasticNet_v10": {
+        "mae": 4.0417,
+        "rmse": 4.9772,
+        "mase": 0.9433,
+        "mase_unified": 0.9433,
+        "r2": -0.004,
+        "forecast_bias": 0.1748,
+        "source": "v10_ablation"
+      },
+      "LightGBM_v10": {
+        "mae": 4.5493,
+        "rmse": 5.7269,
+        "mase": 1.0618,
+        "mase_unified": 1.0618,
+        "r2": -0.3293,
+        "forecast_bias": 0.1967,
+        "source": "v10_ablation"
+      },
+      "GRU_v10": {
+        "mae": 4.3221,
+        "rmse": 6.2665,
+        "mase": 0.9328,
+        "mase_unified": 0.9328,
+        "r2": -0.1743,
+        "forecast_bias": -0.0381,
+        "source": "v10_ablation"
+      },
+      "LSTM_v10": {
+        "mae": 4.6515,
+        "rmse": 6.4141,
+        "mase": 1.0038,
+        "mase_unified": 1.0038,
+        "r2": -0.2302,
+        "forecast_bias": -0.0187,
+        "source": "v10_ablation"
+      },
+      "TFT_v10": {
+        "mae": 5.7789,
+        "rmse": 6.8501,
+        "mase": 1.2472,
+        "mase_unified": 1.2472,
+        "r2": -0.4032,
+        "forecast_bias": 0.3736,
+        "source": "v10_ablation"
+      },
+      "Ensemble_v10": {
+        "mae": 4.4212,
+        "rmse": 5.8061,
+        "mase": 0.9518,
+        "mase_unified": 0.9518,
+        "r2": -0.0848,
+        "forecast_bias": 0.094,
+        "source": "v10_ablation"
+      }
+    }
+  },
+  "models": [
+    "Persistence_v10",
+    "ElasticNet_v10",
+    "LightGBM_v10",
+    "GRU_v10",
+    "LSTM_v10",
+    "TFT_v10",
+    "Ensemble_v10"
+  ]
 }

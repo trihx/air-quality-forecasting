@@ -322,7 +322,7 @@ def sidebar() -> str:
             "🧠 Khả Năng Giải Thích Mô Hình (XAI)",
             "📊 Khoảng Dự Báo Bất Định (Prediction Intervals)",
             "📚 Đối Chiếu Khoa Học (Scientific Benchmark)",
-            "📊 Hệ Thống Biểu Đồ Đề Án (Thesis Figures)",
+            "📊 Thư Viện Biểu Đồ Kỹ Thuật (System Figures)",
             "🔬 Kiểm Định Khoa Học (Scientific Audit)",
             # ── Phase 4: Ứng dụng & Kết luận ──
             "🔮 Dự Báo PM2.5",
@@ -360,7 +360,7 @@ def sidebar() -> str:
     st.sidebar.checkbox(
         "🖨️ Print Mode (B&W)",
         value=st.session_state.get("print_mode", False),
-        help="Chuyển toàn bộ charts sang chế độ trắng đen, tối ưu cho in đề án",
+        help="Chuyển toàn bộ biểu đồ sang chế độ đen trắng (độ tương phản cao), tối ưu cho in ấn tài liệu kỹ thuật",
         key="print_mode",
     )
 
@@ -442,7 +442,12 @@ def main() -> None:
         page_scientific_benchmark(results)
         return
 
-    if page in ("📊 Hệ Thống Biểu Đồ Đề Án (Thesis Figures)", "📊 Thesis Figures"):
+    if page in (
+        "📊 Thư Viện Biểu Đồ Kỹ Thuật (System Figures)",
+        "📊 Hệ Thống Biểu Đồ Đề Án (Thesis Figures)",
+        "📊 Thesis Figures",
+        "📊 System Figures",
+    ):
         from src.thesis_figures import page_thesis_figures
 
         page_thesis_figures(results)

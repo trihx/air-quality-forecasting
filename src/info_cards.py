@@ -126,7 +126,10 @@ def cards_overview(version: str):
 
     render_info_card(
         "Hướng dẫn: Tổng Quan",
-        content.get_info_card_text("overview_guide", "Trang này trình bày bức tranh toàn cảnh..."),
+        content.get_info_card_text(
+            "overview_guide",
+            "Trang này cung cấp tổng quan về kiến trúc pipeline, tập dữ liệu IoT và các mốc cải tiến mô hình qua 9 phiên bản.",
+        ),
         icon="📖",
         collapsed=True,
     )

@@ -31,7 +31,7 @@ def page_conclusion(results: dict):
         📝 Kết Luận & Hướng Phát Triển
     </h1>
     <p style="text-align:center; opacity:0.6; font-size:0.95rem; margin-bottom:2rem;">
-        Tổng hợp kết quả nghiên cứu và đề xuất hướng phát triển — Chương 5 Đề án Thạc sĩ
+        Tổng hợp kết quả thực nghiệm và lộ trình triển khai hệ thống dự báo PM2.5 đa độ phân giải
     </p>
     """,
         unsafe_allow_html=True,
@@ -39,10 +39,10 @@ def page_conclusion(results: dict):
 
     tab1, tab2, tab3, tab4 = st.tabs(
         [
-            "1. 5.1 Kết Luận Chính",
-            "2. 5.2 Ứng Dụng Thực Tế",
-            "3. 5.3 Hạn Chế",
-            "4. 5.4 Hướng Phát Triển",
+            "1. 5.1 Kết Luận Kỹ Thuật",
+            "2. 5.2 Ứng Dụng Vận Hành",
+            "3. 5.3 Hạn Chế Hệ Thống",
+            "4. 5.4 Lộ Trình Nâng Cấp",
         ]
     )
 
@@ -63,23 +63,22 @@ def page_conclusion(results: dict):
 
 
 # ──────────────────────────────────────────────────────────────
-# Tab 1: 5.1 Kết Luận Chính Của Đề Án
+# Tab 1: 5.1 Kết Luận Kỹ Thuật Hệ Thống
 # ──────────────────────────────────────────────────────────────
 
 
 def _render_summary(section_header, insight_card):
-    """Research summary — what was accomplished per Section 5.1."""
-    section_header("🎯", "5.1 Kết Luận Chính Của Đề Án")
+    """Research summary — technical outcomes and verified performance."""
+    section_header("🎯", "5.1 Kết Luận Kỹ Thuật Hệ Thống")
 
     st.markdown(
         f"""
     <div style="background: var(--secondary-background-color); border-radius: 12px;
                 padding: 1.5rem; border-left: 4px solid #00D4AA; margin-bottom: 1.5rem;">
         <div style="font-size: 0.95rem; line-height: 1.7;">
-            Đề án đã hoàn thành các mục tiêu đề ra với những kết quả khoa học và kỹ thuật nổi bật
-            sử dụng dữ liệu cảm biến IoT tại Sa Đéc, Đồng Tháp — khu vực <b>chưa có nghiên cứu tiền lệ</b>
-            về giám sát chất lượng không khí bằng Machine Learning. Pipeline trải qua <b>9 phiên bản</b>
-            cải tiến liên tục, đánh giá <b>41 cấu hình mô hình thực nghiệm</b> trên 3 độ phân giải
+            Hệ thống dự báo nồng độ bụi mịn PM2.5 được xây dựng và kiểm chứng trên dữ liệu cảm biến IoT thực tế
+            tại Sa Đéc, Đồng Tháp. Quy trình hoàn thiện qua <b>9 phiên bản</b> cải tiến liên tục,
+            đánh giá <b>41 cấu hình mô hình thực nghiệm</b> trên 3 độ phân giải
             (15 phút, 30 phút, 1 giờ) × 3 tầm dự báo (1 giờ, 6 giờ, 24 giờ) {cite("tashman2000")}.
         </div>
     </div>
@@ -88,15 +87,15 @@ def _render_summary(section_header, insight_card):
     )
 
     # 6 Quantitative Findings matching Chapter 5.1 verbatim
-    section_header("📊", "6 Luận Điểm Khoa Học & Kỹ Thuật Cốt Lõi")
+    section_header("📊", "6 Phát Hiện & Kết Quả Kỹ Thuật Cốt Lõi")
 
     findings = [
         {
             "num": "1",
             "title": "Thiết lập quy trình kỹ nghệ dữ liệu chống rò rỉ (Anti-Leakage Pipeline)",
-            "badge": "Chuẩn 193 Tests",
+            "badge": "Chuẩn 250 Tests",
             "detail": (
-                f"Xây dựng pipeline 7 bước tiền xử lý đạt chuẩn kiểm thử <b>193 bài kiểm thử tự động</b> "
+                f"Xây dựng pipeline 7 bước tiền xử lý đạt chuẩn kiểm thử <b>250 bài kiểm thử tự động</b> "
                 f"(unit & integration tests). Việc áp dụng nghiêm ngặt phép trễ <code>shift(1)</code> giúp "
                 f"triệt tiêu hoàn toàn rò rỉ dữ liệu, đưa chỉ số đánh giá về giá trị thực nghiệm trung thực "
                 f"(<b>R² đạt 0,11–0,27</b>), loại bỏ triệt để hiện tượng R² ảo xấp xỉ 1,0 do nhìn trộm tương lai {cite('hyndman2021')}."
@@ -186,25 +185,25 @@ def _render_summary(section_header, insight_card):
         )
 
     # Contribution summary
-    section_header("🏆", "Đóng Góp Cốt Lõi Của Đề Án")
+    section_header("🏆", "Giá Trị Kỹ Thuật & Khả Năng Ứng Dụng")
 
     c1, c2, c3 = st.columns(3)
     contributions = [
         (
             "🔬",
-            "Đóng Góp Khoa Học",
+            "Giá Trị Nghiên Cứu",
             "Phương pháp luận Multi-Resolution × Multi-Horizon đầu tiên cho bụi mịn PM2.5 IoT tại ĐBSCL. "
             "Chứng minh thực nghiệm điểm ngọt 30 phút và cơ chế vượt bẫy tự tương quan.",
         ),
         (
             "🛡️",
-            "Đóng Góp Kỹ Thuật",
+            "Quy Trình & Kỹ Thuật Hệ Thống",
             "Pipeline kỹ nghệ dữ liệu chống rò rỉ nghiêm ngặt 7 bước (shift-1, tiered imputation, test-on-real-only), "
-            "được bảo vệ bởi 193 bài kiểm thử tự động đạt độ tin cậy tái lập 100%.",
+            "được bảo vệ bởi 250 bài kiểm thử tự động đạt độ tin cậy tái lập 100%.",
         ),
         (
             "🏛️",
-            "Đóng Góp Thực Tiễn",
+            "Ứng Dụng Vận Hành",
             "Xác lập cơ chế 2 cấp độ nồng độ nền (14–17 µg/m³ & >17 µg/m³) và kiến trúc phần mềm 3 tầng "
             "đóng gói Docker sẵn sàng tích hợp các trung tâm điều hành đô thị thông minh (IOC).",
         ),
@@ -230,22 +229,21 @@ def _render_summary(section_header, insight_card):
 
 
 # ──────────────────────────────────────────────────────────────
-# Tab 2: 5.2 Khả Năng Ứng Dụng Thực Tế
+# Tab 2: 5.2 Ứng Dụng Vận Hành
 # ──────────────────────────────────────────────────────────────
 
 
 def _render_practical_applications(section_header, insight_card):
-    """Practical operational applications per Section 5.2 of the thesis."""
-    section_header("🏛️", "5.2 Khả Năng Ứng Dụng Thực Tế")
+    """Practical operational applications per Section 5.2."""
+    section_header("🏛️", "5.2 Ứng Dụng Vận Hành")
 
     st.markdown(
         """
     <div style="background: var(--secondary-background-color); border-radius: 12px;
                 padding: 1.3rem 1.5rem; margin-bottom: 1.5rem;
                 border-left: 4px solid #00D4AA; font-size: 0.92rem; line-height: 1.65;">
-        Kết quả nghiên cứu của Đề án không chỉ dừng lại ở mô hình lý thuyết mà được định hình ngay từ đầu
-        cho <b>3 kịch bản vận hành thực tế</b> phục vụ công tác quản lý chất lượng không khí,
-        bảo vệ sức khỏe cộng đồng và tích hợp đô thị thông minh tại khu vực Đồng bằng sông Cửu Long.
+        Hệ thống được thiết kế hướng tới <b>3 kịch bản vận hành thực tế</b> phục vụ công tác giám sát chất lượng không khí,
+        bảo vệ sức khỏe cộng đồng và sẵn sàng tích hợp trung tâm điều hành đô thị thông minh tại khu vực Đồng bằng sông Cửu Long.
     </div>
     """,
         unsafe_allow_html=True,
@@ -370,21 +368,21 @@ def _render_practical_applications(section_header, insight_card):
 
 
 # ──────────────────────────────────────────────────────────────
-# Tab 3: 5.3 Hạn Chế Của Nghiên Cứu
+# Tab 3: 5.3 Hạn Chế Kỹ Thuật Hệ Thống
 # ──────────────────────────────────────────────────────────────
 
 
 def _render_limitations(section_header, insight_card):
-    """Research limitations — honest scientific assessment per Section 5.3."""
-    section_header("⚠️", "5.3 Hạn Chế Của Nghiên Cứu")
+    """System limitations — practical operational assessment per Section 5.3."""
+    section_header("⚠️", "5.3 Hạn Chế Kỹ Thuật Hệ Thống")
 
     st.markdown(
         """
     <div style="background: var(--secondary-background-color); border-radius: 12px;
                 padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
                 border-left: 4px solid #EF4444; font-size: 0.92rem; line-height: 1.65;">
-        Nhằm đảm bảo tính trung thực khoa học theo chuẩn mực học thuật quốc tế,
-        Đề án ghi nhận <b>5 hạn chế kỹ thuật khách quan</b> trong quá trình thực nghiệm:
+        Để phản ánh trung thực năng lực vận hành thực tế của hệ thống, ghi nhận <b>5 giới hạn kỹ thuật khách quan</b>
+        trong quá trình khai thác dữ liệu cảm biến IoT và triển khai mô hình:
     </div>
     """,
         unsafe_allow_html=True,
@@ -571,21 +569,21 @@ def _render_limitations(section_header, insight_card):
 
 
 # ──────────────────────────────────────────────────────────────
-# Tab 4: 5.4 Hướng Phát Triển
+# Tab 4: 5.4 Lộ Trình Nâng Cấp Hệ Thống
 # ──────────────────────────────────────────────────────────────
 
 
 def _render_future_work(section_header, insight_card):
-    """Future research directions with feasibility assessment per Section 5.4."""
-    section_header("🚀", "5.4 Hướng Phát Triển")
+    """Future technical roadmap with feasibility assessment per Section 5.4."""
+    section_header("🚀", "5.4 Lộ Trình Nâng Cấp Hệ Thống")
 
     st.markdown(
         """
     <div style="background: var(--secondary-background-color); border-radius: 12px;
                 padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
                 border-left: 4px solid #00D4AA; font-size: 0.92rem; line-height: 1.65;">
-        Dựa trên các kết quả thực nghiệm và những hạn chế kỹ thuật đã xác định, Đề án đề xuất
-        <b>4 hướng chiến lược trọng tâm</b> (Chương 5.4 Đề án) kết hợp bảng đánh giá tính khả thi và tác động:
+        Dựa trên các kết quả thực nghiệm và những giới hạn kỹ thuật đã ghi nhận, hệ thống đề xuất
+        <b>4 hướng nâng cấp trọng tâm</b> kết hợp đánh giá tính khả thi và tác động vận hành:
     </div>
     """,
         unsafe_allow_html=True,

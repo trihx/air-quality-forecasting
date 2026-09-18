@@ -14,6 +14,8 @@ Usage:
 
 from __future__ import annotations
 
+import re
+
 import pandas as pd
 
 # ── Model Type Registry (parameterized) ──────────────────────────────
@@ -538,8 +540,13 @@ class ReportingEngine:
             DataFrame with columns: Version, 1h_MASE, 6h_MASE, 24h_MASE,
                                      Best_1h, Best_6h, Best_24h
         """
+
+        def _ver_key(v: str) -> tuple[int, str]:
+            m = re.match(r"^v(\d+)", v)
+            return (int(m.group(1)), v) if m else (999, v)
+
         rows = []
-        for ver_name in sorted(snapshots.keys()):
+        for ver_name in sorted(snapshots.keys(), key=_ver_key):
             snap = snapshots[ver_name]
             rpt = ReportingEngine(snap)
             bests = rpt.get_best_models_all()

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 import pandas as pd
@@ -74,8 +75,12 @@ def _render_version_comparison() -> None:
         st.warning("Chưa có snapshot nào. Chạy `run_enhanced_pipeline.py` để tạo.")
         return
 
+    def _sort_key(p):
+        m = re.match(r"^v(\d+)", p.stem)
+        return (int(m.group(1)), p.stem) if m else (999, p.stem)
+
     snapshots: dict[str, dict[str, Any]] = {}
-    for jpath in sorted(runs_dir.glob("*.json")):
+    for jpath in sorted(runs_dir.glob("*.json"), key=_sort_key):
         try:
             with open(jpath, encoding="utf-8") as f:
                 data = json.load(f)

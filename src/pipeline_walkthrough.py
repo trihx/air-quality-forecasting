@@ -123,7 +123,7 @@ def _step_data_collection():
     if fig_1_1.exists():
         st.image(
             str(fig_1_1),
-            caption="Hình 1.1: Quy trình nghiên cứu tổng quan (Data Pipeline v9)",
+            caption="Hình 1.1: Sơ đồ dòng chảy dữ liệu quy trình nghiên cứu 7 bước (7-Step Workflow)",
             use_container_width=True,
         )
 

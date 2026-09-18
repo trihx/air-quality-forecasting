@@ -276,7 +276,7 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
 
 <div class="card">
   <h3>📋 Project Info</h3>
-  <p><b>Dự án:</b> PM2.5 Forecasting — Đề án Thạc sĩ ĐH Cần Thơ (QĐ 1799)<br>
+  <p><b>Dự án:</b> PM2.5 Forecasting — Hệ thống dự báo chất lượng không khí đa độ phân giải<br>
      <b>Tác giả:</b> trihx (Anh Trí)<br>
      <b>Dữ liệu:</b> IoT sensors, Sa Đéc, Đồng Tháp, Việt Nam (2022–2025)<br>
      <b>Model:</b> LightGBM (Optuna-tuned) · n_test = {horizon_data.get("n_test", "?")}</p>
@@ -366,9 +366,10 @@ def _tab_pipeline_journey():
         "7. Models (15m)",  # 14
         "7. Models (30m)",  # 15
         "7. Models (1h)",  # 16
-        # Final: Evaluation
-        "Unified Evaluation",  # 17
-        f"🏆 Best: {best_6h_model.split('_')[0]} ({best_6h_mase:.3f})",  # 18
+        # Final: Evaluation (17) - handled via annotation to prevent text overlay
+        "",
+        # Champion Model (18) - handled via annotation to prevent text overlay
+        "",
     ]
 
     hover_labels = [
@@ -500,6 +501,29 @@ def _tab_pipeline_journey():
         font={"family": "Inter, Arial, sans-serif", "size": 10},
         margin={"l": 60, "r": 30, "t": 60, "b": 80},
         height=650,
+    )
+    # Staggered annotations for Node 17 & 18 to prevent D3-Sankey text collision
+    fig.add_annotation(
+        x=0.88,
+        y=0.62,
+        xref="paper",
+        yref="paper",
+        text="<b>Unified Evaluation</b>",
+        showarrow=False,
+        align="left",
+        xanchor="left",
+        font={"family": "Inter, Arial, sans-serif", "size": 11, "color": "#FAFAFA"},
+    )
+    fig.add_annotation(
+        x=0.985,
+        y=0.38,
+        xref="paper",
+        yref="paper",
+        text=f"🏆 <b>Best: {best_6h_model.split('_')[0]}</b> ({best_6h_mase:.3f})",
+        showarrow=False,
+        align="right",
+        xanchor="right",
+        font={"family": "Inter, Arial, sans-serif", "size": 11, "color": "#FAFAFA"},
     )
     _render_chart(fig, filename="pipeline_sankey")
 

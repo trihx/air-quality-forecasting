@@ -165,3 +165,34 @@ class TestConclusionPageStructure:
         assert callable(_render_practical_applications)
         assert callable(_render_limitations)
         assert callable(_render_future_work)
+
+
+class TestFigure11Alignment:
+    """Verify Figure 1.1 caption and structure fidelity with official thesis report."""
+
+    def test_hinh_1_1_exists_and_matches_master_hash(self):
+        import hashlib
+
+        p1 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_1.1_Overview_Pipeline.png"
+        assert p1.exists(), f"Missing master figure: {p1}"
+
+        # Master SHA256 for cleanly rendered Figure 1.1 (zero text collision, 9-column invariant)
+        master_sha256 = "2ef841234340227aa2137cbac9fe4a8d410c6d751cd2240f13881d93c3a046a8"
+        current_sha256 = hashlib.sha256(p1.read_bytes()).hexdigest()
+        assert current_sha256 == master_sha256, (
+            f"Hinh_1.1 SHA256 mismatch! Expected {master_sha256}, got {current_sha256}. "
+            "Do not alter Figure 1.1 structure away from official thesis report."
+        )
+
+    def test_hinh_1_1_official_caption_in_walkthrough_and_figures(self):
+        expected_caption = "Hình 1.1: Sơ đồ dòng chảy dữ liệu quy trình nghiên cứu 7 bước (7-Step Workflow)"
+
+        # Check pipeline_walkthrough.py
+        walkthrough_py = PROJECT_ROOT / "src" / "pipeline_walkthrough.py"
+        content_wt = walkthrough_py.read_text(encoding="utf-8")
+        assert expected_caption in content_wt, f"Caption mismatch in {walkthrough_py}"
+
+        # Check thesis_figures.py
+        thesis_figures_py = PROJECT_ROOT / "src" / "thesis_figures.py"
+        content_tf = thesis_figures_py.read_text(encoding="utf-8")
+        assert expected_caption in content_tf, f"Caption mismatch in {thesis_figures_py}"

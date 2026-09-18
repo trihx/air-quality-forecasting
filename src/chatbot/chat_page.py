@@ -229,10 +229,10 @@ def page_ai_assistant(results):
     st.markdown(
         """
     <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
-        💬 Trợ Lý AI — Hỏi Đáp Dự Án
+        💬 Trợ Lý AI — Phân Tích Kỹ Thuật
     </h1>
     <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 1rem;">
-        Hỏi bất kỳ câu hỏi nào về dự án • Hỗ trợ chuẩn bị phản biện đề án
+        Trợ lý AI chuyên sâu • Tra cứu kiến trúc mô hình, quy trình tiền xử lý và kết quả thực nghiệm
     </p>
     """,
         unsafe_allow_html=True,
@@ -297,7 +297,7 @@ def page_ai_assistant(results):
             """
         <div style="font-size: 0.85rem; font-weight: 700;
                     margin-bottom: 0.75rem;">
-            🎓 Câu Hỏi Phản Biện Gợi Ý
+            💡 Câu Hỏi Kỹ Thuật Thường Gặp
         </div>
         """,
             unsafe_allow_html=True,
