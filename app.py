@@ -286,8 +286,8 @@ def sidebar() -> str:
             Ứng Dụng Business Intelligence Để Phân Tích Dữ Liệu Môi Trường Cho Một Huyện
         </div>
         <div style="font-size: 0.8rem; color: var(--text-color); opacity: 0.85; margin-top: 0.4rem; line-height: 1.45;">
-            <b>HV:</b> Hoàng Xuân Trí (M2522016)<br>
-            <b>CBHD:</b> TS. Nguyễn Minh Khiêm
+            <b>CBHD:</b> TS. Nguyễn Minh Khiêm<br>
+            <b>HVTH:</b> Hoàng Xuân Trí (M2522016)
         </div>
     </div>
     """,
