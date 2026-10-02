@@ -304,6 +304,160 @@ def _render_provider_config():
         st.sidebar.caption("🖥️ LM Studio: Fallback (auto-detect)")
 
 
+def _render_inline_quick_config(expanded: bool = False):
+    """Render inline quick configuration form directly on the main page for seamless UX."""
+    with st.expander(
+        "⚙️ Cấu Hình Nhanh AI Provider (Dán Link Kaggle hoặc Nhập API Key tại đây)",
+        expanded=expanded,
+    ):
+        tab_kaggle, tab_gemini, tab_other = st.tabs(
+            [
+                "🚀 Kaggle Ollama (Free GPU 32GB)",
+                "⚡ Google Gemini (Miễn phí 100%)",
+                "🌐 Groq / OpenAI",
+            ]
+        )
+
+        with tab_kaggle:
+            st.caption(PROVIDER_REGISTRY["kaggle_ollama"]["description"])
+            k_url = st.text_input(
+                "Cloudflare Tunnel URL",
+                key="main_kaggle_url",
+                placeholder="https://xxx.trycloudflare.com",
+                value=st.session_state.llm_provider_keys.get("kaggle_ollama", {}).get("base_url", ""),
+                help="Dán URL sinh ra từ Cell 4 của Kaggle Notebook",
+            )
+            k_model = st.text_input(
+                "Model (tùy chọn)",
+                key="main_kaggle_model",
+                placeholder=PROVIDER_REGISTRY["kaggle_ollama"]["default_model"],
+                value=st.session_state.llm_provider_keys.get("kaggle_ollama", {}).get("model", ""),
+            )
+            col_k_save, col_k_test = st.columns(2)
+            with col_k_save:
+                if st.button("💾 Lưu & Kích Hoạt Kaggle", key="main_save_kaggle", type="primary", use_container_width=True):
+                    if k_url:
+                        st.session_state.llm_provider_keys["kaggle_ollama"] = {
+                            "api_key": "ollama",
+                            "base_url": k_url,
+                            "model": k_model,
+                        }
+                        st.success("✅ Đã kích hoạt Kaggle Ollama thành công!")
+                        st.rerun()
+                    else:
+                        st.session_state.llm_provider_keys.pop("kaggle_ollama", None)
+                        st.info("Đã xóa cấu hình Kaggle")
+                        st.rerun()
+            with col_k_test:
+                if st.button("🔍 Kiểm Tra Kết Nối", key="main_test_kaggle", use_container_width=True):
+                    if k_url:
+                        provider = get_provider_from_registry(
+                            "kaggle_ollama", custom_base_url=k_url, custom_model=k_model
+                        )
+                        if provider:
+                            with st.spinner("Đang kết nối tới Kaggle Ollama..."):
+                                ok, msg = validate_provider_connection(provider)
+                            if ok:
+                                st.success(f"✅ {msg}")
+                            else:
+                                st.error(f"❌ {msg}")
+                    else:
+                        st.warning("Vui lòng nhập Tunnel URL trước")
+
+            from src.chatbot.kaggle_setup_guide import render_kaggle_setup_guide
+
+            render_kaggle_setup_guide()
+
+        with tab_gemini:
+            st.caption(PROVIDER_REGISTRY["gemini"]["description"])
+            st.markdown(
+                "👉 **[Nhận API Key Miễn Phí tại Google AI Studio](https://aistudio.google.com/app/apikey)** "
+                "*(Bấm Create API Key rồi copy dán vào ô dưới)*"
+            )
+            g_key = st.text_input(
+                "Gemini API Key",
+                type="password",
+                key="main_gemini_key",
+                placeholder="AIzaSy...",
+                value=st.session_state.llm_provider_keys.get("gemini", {}).get("api_key", ""),
+            )
+            g_model = st.text_input(
+                "Model (tùy chọn)",
+                key="main_gemini_model",
+                placeholder=PROVIDER_REGISTRY["gemini"]["default_model"],
+                value=st.session_state.llm_provider_keys.get("gemini", {}).get("model", ""),
+            )
+            col_g_save, col_g_test = st.columns(2)
+            with col_g_save:
+                if st.button("💾 Lưu & Kích Hoạt Gemini", key="main_save_gemini", type="primary", use_container_width=True):
+                    if g_key:
+                        st.session_state.llm_provider_keys["gemini"] = {
+                            "api_key": g_key,
+                            "model": g_model,
+                            "base_url": "",
+                        }
+                        st.success(f"✅ Đã lưu Google Gemini ({mask_api_key(g_key)})")
+                        st.rerun()
+                    else:
+                        st.session_state.llm_provider_keys.pop("gemini", None)
+                        st.info("Đã xóa Google Gemini")
+                        st.rerun()
+            with col_g_test:
+                if st.button("🔍 Kiểm Tra Kết Nối", key="main_test_gemini", use_container_width=True):
+                    if g_key:
+                        provider = get_provider_from_registry("gemini", api_key=g_key, custom_model=g_model)
+                        if provider:
+                            with st.spinner("Đang kết nối tới Google Gemini..."):
+                                ok, msg = validate_provider_connection(provider)
+                            if ok:
+                                st.success(f"✅ {msg}")
+                            else:
+                                st.error(f"❌ {msg}")
+                    else:
+                        st.warning("Vui lòng nhập Gemini API Key")
+
+        with tab_other:
+            for p_name in ("groq", "openai"):
+                reg = PROVIDER_REGISTRY[p_name]
+                st.markdown(f"**{reg['display_name']}** — *{reg['description']}*")
+                o_key = st.text_input(
+                    f"{reg['display_name']} API Key",
+                    type="password",
+                    key=f"main_key_{p_name}",
+                    placeholder="Nhập API key...",
+                    value=st.session_state.llm_provider_keys.get(p_name, {}).get("api_key", ""),
+                )
+                col_o_save, col_o_test = st.columns(2)
+                with col_o_save:
+                    if st.button(f"💾 Lưu {reg['display_name']}", key=f"main_save_{p_name}", use_container_width=True):
+                        if o_key:
+                            st.session_state.llm_provider_keys[p_name] = {
+                                "api_key": o_key,
+                                "model": "",
+                                "base_url": "",
+                            }
+                            st.success(f"✅ Đã lưu {reg['display_name']} ({mask_api_key(o_key)})")
+                            st.rerun()
+                        else:
+                            st.session_state.llm_provider_keys.pop(p_name, None)
+                            st.info(f"Đã xóa {reg['display_name']}")
+                            st.rerun()
+                with col_o_test:
+                    if st.button(f"🔍 Test {reg['display_name']}", key=f"main_test_{p_name}", use_container_width=True):
+                        if o_key:
+                            provider = get_provider_from_registry(p_name, api_key=o_key)
+                            if provider:
+                                with st.spinner("Đang kiểm tra..."):
+                                    ok, msg = validate_provider_connection(provider)
+                                if ok:
+                                    st.success(f"✅ {msg}")
+                                else:
+                                    st.error(f"❌ {msg}")
+                        else:
+                            st.warning("Chưa nhập API key")
+                st.divider()
+
+
 def page_ai_assistant(results):
     """Render AI Assistant chatbot page."""
 
@@ -349,22 +503,18 @@ def page_ai_assistant(results):
         else:
             if is_cloud_environment():
                 st.warning(
-                    "⚠️ Chưa kích hoạt AI Provider — Vui lòng dán Tunnel URL của Kaggle hoặc nhập Gemini API Key ở sidebar."
+                    "⚠️ Chưa kích hoạt AI Provider — Vui lòng cấu hình ở bảng bên dưới hoặc mở Sidebar (góc trên cùng bên trái >)."
                 )
-                with st.expander("ℹ️ Hướng dẫn kích hoạt nhanh AI (Miễn phí 100%)", expanded=False):
-                    st.markdown(
-                        "- **Cách 1 (Nhanh nhất):** Lấy Google Gemini API Key miễn phí tại "
-                        "[Google AI Studio](https://aistudio.google.com/) rồi dán vào sidebar.\n"
-                        "- **Cách 2 (Mạnh mẽ):** Dùng Free GPU 32GB VRAM qua Kaggle Ollama. "
-                        "Xem hướng dẫn chi tiết trong mục **Kaggle Ollama** ở sidebar."
-                    )
             else:
-                st.warning("⚠️ Chưa cấu hình AI — vào **⚙️ Cấu Hình AI Provider** ở sidebar")
+                st.warning("⚠️ Chưa cấu hình AI — vào **⚙️ Cấu Hình AI Provider** ở sidebar hoặc bảng bên dưới")
 
     with col_info:
         # Show fallback chain
         chain = " → ".join([p.display_name for p in providers]) or "Chưa cấu hình"
         st.caption(f"🔗 Fallback: {chain}")
+
+    # ── Inline Quick Config Form (Always accessible on page) ──
+    _render_inline_quick_config(expanded=(not cloud_providers and not local_providers))
 
     # ── Knowledge Base status ──
     kb_col, reindex_col = st.columns([3, 1])
