@@ -179,3 +179,46 @@ class TestKaggleModelRecommendations:
         """At least one model should be marked as recommended."""
         recommended = [m for m in KAGGLE_MODEL_RECOMMENDATIONS if m["recommended"]]
         assert len(recommended) >= 1
+
+
+class TestKaggleSetupGuideCells:
+    """Tests for Kaggle notebook setup cells (deadlock prevention & warm-up)."""
+
+    def test_kaggle_cell_2_prevents_pipe_buffer_deadlock(self):
+        """Cell 2 must write logs to file and avoid subprocess.PIPE to eliminate 64KB deadlock."""
+        from src.chatbot.kaggle_setup_guide import KAGGLE_CELL_2_START
+
+        assert 'open("ollama.log", "w")' in KAGGLE_CELL_2_START
+        assert "stderr=subprocess.STDOUT" in KAGGLE_CELL_2_START
+        assert "start_new_session=True" in KAGGLE_CELL_2_START
+        assert "stdout=subprocess.PIPE" not in KAGGLE_CELL_2_START
+        assert "stderr=subprocess.PIPE" not in KAGGLE_CELL_2_START
+
+    def test_kaggle_cell_2_configures_env_and_cleans_old_processes(self):
+        """Cell 2 must clean previous instance and configure keep-alive and host."""
+        from src.chatbot.kaggle_setup_guide import KAGGLE_CELL_2_START
+
+        assert 'subprocess.run(["pkill", "-f", "ollama serve"], check=False)' in KAGGLE_CELL_2_START
+        assert "OLLAMA_HOST" in KAGGLE_CELL_2_START
+        assert "0.0.0.0:11434" in KAGGLE_CELL_2_START
+        assert "OLLAMA_ORIGINS" in KAGGLE_CELL_2_START
+        assert "OLLAMA_KEEP_ALIVE" in KAGGLE_CELL_2_START
+        assert "24h" in KAGGLE_CELL_2_START
+
+    def test_kaggle_cell_2_includes_healthcheck_poll(self):
+        """Cell 2 must include healthcheck poll with urllib.request for 127.0.0.1:11434."""
+        from src.chatbot.kaggle_setup_guide import KAGGLE_CELL_2_START
+
+        assert "urllib.request" in KAGGLE_CELL_2_START
+        assert "http://127.0.0.1:11434" in KAGGLE_CELL_2_START
+        assert "server_ready" in KAGGLE_CELL_2_START
+        assert "Ollama server đã sẵn sàng" in KAGGLE_CELL_2_START
+
+    def test_kaggle_cell_3_includes_model_warmup(self):
+        """Cell 3 must warm up the model into GPU VRAM after pulling."""
+        from src.chatbot.kaggle_setup_guide import KAGGLE_CELL_3_MODEL
+
+        assert "!ollama pull qwen3:4b" in KAGGLE_CELL_3_MODEL
+        assert '!ollama run qwen3:4b "Xin chào"' in KAGGLE_CELL_3_MODEL
+        assert "warm-up" in KAGGLE_CELL_3_MODEL.lower()
+        assert "VRAM" in KAGGLE_CELL_3_MODEL

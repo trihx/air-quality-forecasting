@@ -7,10 +7,24 @@ Supports tiered fallback across multiple providers:
 All providers use OpenAI-compatible API — zero extra dependencies.
 """
 
+import contextlib
 import hashlib
 import logging
 from collections import OrderedDict
 from collections.abc import Generator
+
+try:
+    import httpx
+
+    DEFAULT_TIMEOUT: float | httpx.Timeout = httpx.Timeout(
+        connect=15.0,
+        read=90.0,
+        write=15.0,
+        pool=15.0,
+    )
+except ImportError:  # pragma: no cover
+    httpx = None  # type: ignore[assignment]
+    DEFAULT_TIMEOUT = 60.0
 
 from openai import OpenAI
 
@@ -66,22 +80,47 @@ Bạn là trợ lý AI phân tích kỹ thuật chuyên sâu về hệ thống \
 
 
 _MAX_CLIENT_CACHE_SIZE = 8
-_CLIENT_CACHE: OrderedDict[tuple[str, str, float], OpenAI] = OrderedDict()
+_TimeoutCacheKey = tuple[float | None, ...]
+_ClientCacheKey = tuple[str, str, _TimeoutCacheKey]
+_CLIENT_CACHE: OrderedDict[_ClientCacheKey, OpenAI] = OrderedDict()
+
+
+def _normalize_timeout_key(
+    timeout: float | httpx.Timeout | None,
+) -> _TimeoutCacheKey:
+    """Normalize timeout parameter into a hashable cache key."""
+    if httpx is not None and isinstance(timeout, httpx.Timeout):
+        return (timeout.connect, timeout.read, timeout.write, timeout.pool)
+    if isinstance(timeout, (int, float)):
+        return (float(timeout),)
+    if timeout is None:
+        return (None,)
+    return (str(timeout),)  # type: ignore[return-value]
 
 
 def clear_client_cache() -> None:
-    """Clear cached OpenAI client instances to reset connection pools."""
+    """Clear cached OpenAI client instances and cleanly close connection pools."""
+    for client in _CLIENT_CACHE.values():
+        with contextlib.suppress(Exception):
+            client.close()
     _CLIENT_CACHE.clear()
 
 
-def _build_client(provider: LLMProvider, timeout: float = 15.0) -> OpenAI | None:
+def _build_client(
+    provider: LLMProvider,
+    timeout: float | httpx.Timeout | None = None,
+) -> OpenAI | None:
     """Create or retrieve cached OpenAI-compatible client for any provider.
 
     Reuses existing client instances to preserve HTTP connection pools and prevent
     socket descriptor exhaustion. Uses hashed key and bounds cache size to 8 entries.
+    Defaults to granular timeout (connect=15s, read=90s, write=15s, pool=15s) to detect
+    dead tunnels fast while allowing sufficient time for long inference generation.
     """
+    effective_timeout = timeout if timeout is not None else DEFAULT_TIMEOUT
     key_hash = hashlib.sha256(provider.api_key.encode("utf-8")).hexdigest()[:16]
-    cache_key = (provider.base_url, key_hash, timeout)
+    timeout_key = _normalize_timeout_key(effective_timeout)
+    cache_key = (provider.base_url, key_hash, timeout_key)
 
     if cache_key in _CLIENT_CACHE:
         _CLIENT_CACHE.move_to_end(cache_key)
@@ -91,10 +130,12 @@ def _build_client(provider: LLMProvider, timeout: float = 15.0) -> OpenAI | None
         client = OpenAI(
             base_url=provider.base_url,
             api_key=provider.api_key,
-            timeout=timeout,
+            timeout=effective_timeout,
         )
         while len(_CLIENT_CACHE) >= _MAX_CLIENT_CACHE_SIZE:
-            _CLIENT_CACHE.popitem(last=False)
+            _, evicted_client = _CLIENT_CACHE.popitem(last=False)
+            with contextlib.suppress(Exception):
+                evicted_client.close()
         _CLIENT_CACHE[cache_key] = client
         return client
     except Exception as e:

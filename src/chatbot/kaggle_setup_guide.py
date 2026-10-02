@@ -14,19 +14,54 @@ print("✅ Ollama đã cài đặt xong!")
 """
 
 KAGGLE_CELL_2_START = """# Cell 2: Khởi động Ollama server
-import subprocess, time
+import os, subprocess, time, urllib.request
+
+# 1. Dọn dẹp tiến trình Ollama cũ nếu có để tránh xung đột port
+subprocess.run(["pkill", "-f", "ollama serve"], check=False)
+time.sleep(1)
+
+# 2. Cấu hình biến môi trường kết nối & duy trì model trong VRAM
+ollama_env = os.environ.copy()
+ollama_env["OLLAMA_HOST"] = "0.0.0.0:11434"
+ollama_env["OLLAMA_ORIGINS"] = "*"
+ollama_env["OLLAMA_KEEP_ALIVE"] = "24h"
+
+# 3. Khởi chạy ở chế độ nền ghi log ra file (triệt tiêu triệt để nguy cơ pipe buffer deadlock 64KB)
+ollama_log = open("ollama.log", "w")
 ollama_proc = subprocess.Popen(
     ["ollama", "serve"],
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
+    env=ollama_env,
+    stdout=ollama_log,
+    stderr=subprocess.STDOUT,
+    start_new_session=True,
 )
-time.sleep(5)
-print("✅ Ollama server đang chạy!")
+
+# 4. Kiểm tra sức khỏe (healthcheck poll) đến khi server sẵn sàng (tối đa 15s)
+print("⏳ Đang khởi động Ollama server...", end="", flush=True)
+server_ready = False
+for _ in range(15):
+    time.sleep(1)
+    print(".", end="", flush=True)
+    try:
+        with urllib.request.urlopen("http://127.0.0.1:11434", timeout=2) as resp:
+            if resp.status == 200:
+                server_ready = True
+                break
+    except Exception:
+        pass
+
+if server_ready:
+    print("\\n✅ Ollama server đã sẵn sàng (log ghi tại ollama.log)!")
+else:
+    print("\\n⚠️ Ollama server chưa phản hồi sau 15s. Kiểm tra log tại ollama.log")
 """
 
-KAGGLE_CELL_3_MODEL = """# Cell 3: Tải model (chọn 1 trong các lệnh dưới)
+KAGGLE_CELL_3_MODEL = """# Cell 3: Tải model & Warm-up vào GPU VRAM (32GB)
 # Khuyến nghị cho demo (nhanh, nhẹ, Tiếng Việt tốt):
 !ollama pull qwen3:4b
+print("🔥 Đang nạp model vào GPU VRAM (warm-up)...")
+!ollama run qwen3:4b "Xin chào"
+print("✅ Model đã sẵn sàng trong VRAM 32GB!")
 
 # Hoặc model mạnh hơn (cần thêm VRAM):
 # !ollama pull qwen3:8b

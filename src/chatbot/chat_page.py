@@ -335,7 +335,9 @@ def _render_inline_quick_config(expanded: bool = False):
             )
             col_k_save, col_k_test = st.columns(2)
             with col_k_save:
-                if st.button("💾 Lưu & Kích Hoạt Kaggle", key="main_save_kaggle", type="primary", use_container_width=True):
+                if st.button(
+                    "💾 Lưu & Kích Hoạt Kaggle", key="main_save_kaggle", type="primary", use_container_width=True
+                ):
                     if k_url:
                         st.session_state.llm_provider_keys["kaggle_ollama"] = {
                             "api_key": "ollama",
@@ -389,7 +391,9 @@ def _render_inline_quick_config(expanded: bool = False):
             )
             col_g_save, col_g_test = st.columns(2)
             with col_g_save:
-                if st.button("💾 Lưu & Kích Hoạt Gemini", key="main_save_gemini", type="primary", use_container_width=True):
+                if st.button(
+                    "💾 Lưu & Kích Hoạt Gemini", key="main_save_gemini", type="primary", use_container_width=True
+                ):
                     if g_key:
                         st.session_state.llm_provider_keys["gemini"] = {
                             "api_key": g_key,

@@ -6,11 +6,12 @@ Verifies:
 3. Cloud vs Local environment detection (`is_cloud_environment`).
 4. Provider detection behavior differences between Cloud and Local environments.
 5. Cloud-aware friendly guidance messages in chat_stream.
-6. Kaggle Ollama model auto-detection and 15s client timeout.
+6. Kaggle Ollama model auto-detection and granular client timeout (15s connect / 90s read).
 """
 
 from unittest.mock import MagicMock, patch
 
+import httpx
 import pytest
 from src.chatbot.chat_page import MAX_CHAT_HISTORY, PRESET_QUESTIONS, _trim_chat_history
 from src.chatbot.guardrails import ChatGuardrails
@@ -252,8 +253,8 @@ class TestProviderDetectionCloudVsLocal:
 class TestLLMClientTimeoutAndMessages:
     """Verify timeout configuration and cloud-specific streaming guidance."""
 
-    def test_client_timeout_is_15_seconds(self):
-        """Client timeout should be configured to 15.0s."""
+    def test_client_timeout_is_granular_httpx_timeout(self):
+        """Client timeout should default to granular httpx.Timeout (15s connect, 90s read)."""
         provider = LLMProvider(
             name="test_p",
             base_url="https://api.openai.com/v1",
@@ -263,7 +264,25 @@ class TestLLMClientTimeoutAndMessages:
             _build_client(provider)
             mock_openai.assert_called_once()
             call_kwargs = mock_openai.call_args.kwargs
-            assert call_kwargs.get("timeout") == 15.0
+            timeout = call_kwargs.get("timeout")
+            assert isinstance(timeout, httpx.Timeout)
+            assert timeout.connect == 15.0
+            assert timeout.read == 90.0
+            assert timeout.write == 15.0
+            assert timeout.pool == 15.0
+
+    def test_client_timeout_custom_override(self):
+        """Client should respect custom timeout override when provided."""
+        provider = LLMProvider(
+            name="test_p",
+            base_url="https://api.openai.com/v1",
+            api_key="test_key",
+        )
+        with patch("src.chatbot.llm_client.OpenAI") as mock_openai:
+            _build_client(provider, timeout=30.0)
+            mock_openai.assert_called_once()
+            call_kwargs = mock_openai.call_args.kwargs
+            assert call_kwargs.get("timeout") == 30.0
 
     def test_chat_stream_empty_providers_cloud_message(self, monkeypatch):
         """On cloud when no providers, guide to Kaggle/Gemini without mentioning local LM Studio."""
@@ -437,6 +456,62 @@ class TestConnectionPoolAndClientCache:
 
         # Cache size must never exceed _MAX_CLIENT_CACHE_SIZE
         assert len(_CLIENT_CACHE) == _MAX_CLIENT_CACHE_SIZE
+
+    def test_client_cache_calls_close_on_eviction(self):
+        """Evicted clients must have close() called to release sockets."""
+        clear_client_cache()
+        created_clients = []
+        with patch("src.chatbot.llm_client.OpenAI") as mock_openai_cls:
+
+            def make_mock(*args, **kwargs):
+                mock = MagicMock()
+                created_clients.append(mock)
+                return mock
+
+            mock_openai_cls.side_effect = make_mock
+
+            for i in range(9):
+                p = LLMProvider(
+                    name=f"p_{i}",
+                    base_url=f"https://api_{i}.com/v1",
+                    api_key=f"k_{i}",
+                )
+                _build_client(p)
+
+            assert len(created_clients) == 9
+            created_clients[0].close.assert_called_once()
+            for c in created_clients[1:]:
+                c.close.assert_not_called()
+
+    def test_clear_client_cache_calls_close_on_all_clients(self):
+        """clear_client_cache() must call close() on every cached client."""
+        clear_client_cache()
+        created_clients = []
+        with patch("src.chatbot.llm_client.OpenAI") as mock_openai_cls:
+
+            def make_mock(*args, **kwargs):
+                mock = MagicMock()
+                created_clients.append(mock)
+                return mock
+
+            mock_openai_cls.side_effect = make_mock
+
+            for i in range(3):
+                p = LLMProvider(
+                    name=f"p_{i}",
+                    base_url=f"https://api_{i}.com/v1",
+                    api_key=f"k_{i}",
+                )
+                _build_client(p)
+
+            assert len(created_clients) == 3
+            for c in created_clients:
+                c.close.assert_not_called()
+
+            clear_client_cache()
+            assert len(_CLIENT_CACHE) == 0
+            for c in created_clients:
+                c.close.assert_called_once()
 
     def test_build_client_sanitizes_logged_errors(self, caplog):
         sample_cred = "sk-secret-leak-sample-12345"  # noqa: S105
