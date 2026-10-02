@@ -34,6 +34,15 @@ class LLMProvider:
 # ── Provider Registry ──
 
 PROVIDER_REGISTRY: dict[str, dict] = {
+    "kaggle_ollama": {
+        "display_name": "Kaggle Ollama (Free GPU)",
+        "base_url": "",  # Dynamic — user pastes tunnel URL
+        "default_model": "qwen3:4b",
+        "env_key": "KAGGLE_OLLAMA_URL",
+        "priority": 0,  # Highest priority when configured
+        "is_local": False,
+        "description": "Free 32GB VRAM qua Kaggle + Ollama + Cloudflare Tunnel",
+    },
     "gemini": {
         "display_name": "Google Gemini",
         "base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",
@@ -108,6 +117,41 @@ LOCAL_MODEL_RECOMMENDATIONS = [
     },
 ]
 
+KAGGLE_MODEL_RECOMMENDATIONS = [
+    {
+        "name": "qwen3:4b",
+        "vram": "~4GB",
+        "vietnamese": "✅ Xuất sắc",
+        "speed": "~30 tok/s trên T4",
+        "best_for": "RAG Q&A, giải thích đề án, Tiếng Việt tốt",
+        "recommended": True,
+    },
+    {
+        "name": "gemma3:4b",
+        "vram": "~4GB",
+        "vietnamese": "✅ Tốt",
+        "speed": "~35 tok/s trên T4",
+        "best_for": "Tóm tắt, trích xuất nhanh",
+        "recommended": False,
+    },
+    {
+        "name": "qwen3:8b",
+        "vram": "~6GB",
+        "vietnamese": "✅ Rất tốt",
+        "speed": "~20 tok/s trên T4",
+        "best_for": "Phân tích kỹ thuật chuyên sâu",
+        "recommended": False,
+    },
+    {
+        "name": "hf.co/JonathanColetti/Qwen3.8-27B-Uncensored-GGUF:Q4_K_M",
+        "vram": "~20GB",
+        "vietnamese": "✅ Xuất sắc",
+        "speed": "~8 tok/s trên 2×T4",
+        "best_for": "Phân tích sâu, cần cả 2 GPU",
+        "recommended": False,
+    },
+]
+
 
 def mask_api_key(key: str) -> str:
     """Mask API key for safe display in logs/UI.
@@ -137,11 +181,22 @@ def get_provider_from_registry(
     resolved_key = api_key or os.getenv(reg["env_key"], "")
     if provider_name == "lm_studio" and not resolved_key:
         resolved_key = "lm-studio"  # LM Studio doesn't require real key
+    elif provider_name == "kaggle_ollama" and not resolved_key:
+        resolved_key = "ollama"  # Ollama doesn't require real key
+
+    # Ensure Ollama endpoints have /v1 suffix
+    final_base_url = custom_base_url or reg["base_url"]
+    if provider_name == "kaggle_ollama":
+        final_base_url = custom_base_url or os.getenv(reg["env_key"], "") or reg["base_url"]
+        if final_base_url:
+            final_base_url = final_base_url.rstrip("/")
+            if not final_base_url.endswith("/v1"):
+                final_base_url += "/v1"
 
     return LLMProvider(
         name=provider_name,
         display_name=reg["display_name"],
-        base_url=custom_base_url or reg["base_url"],
+        base_url=final_base_url,
         api_key=resolved_key,
         model=custom_model or reg["default_model"],
         priority=reg["priority"],
@@ -168,7 +223,25 @@ def detect_available_providers(
         session_cfg = session_keys.get(name, {})
         api_key = session_cfg.get("api_key", "") or os.getenv(reg["env_key"], "")
 
-        if name == "lm_studio":
+        if name == "kaggle_ollama":
+            # Kaggle Ollama uses tunnel URL instead of API key
+            tunnel_url = session_cfg.get("base_url", "") or os.getenv(reg["env_key"], "")
+            if tunnel_url:
+                # Ensure URL ends with /v1 for OpenAI compatibility
+                base = tunnel_url.rstrip("/")
+                if not base.endswith("/v1"):
+                    base += "/v1"
+                provider = LLMProvider(
+                    name=name,
+                    display_name=reg["display_name"],
+                    base_url=base,
+                    api_key="ollama",  # Ollama doesn't need real API key
+                    model=session_cfg.get("model", "") or reg["default_model"],
+                    priority=reg["priority"],
+                    is_local=False,
+                )
+                providers.append(provider)
+        elif name == "lm_studio":
             # LM Studio is always "available" as fallback — connection check at runtime
             base_url = session_cfg.get("base_url", "") or reg["base_url"]
             provider = LLMProvider(

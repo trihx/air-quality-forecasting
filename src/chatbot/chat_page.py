@@ -109,7 +109,7 @@ def _render_provider_config():
 
     # Provider selection tabs
     for provider_name, reg in PROVIDER_REGISTRY.items():
-        if provider_name == "lm_studio":
+        if provider_name in ("lm_studio", "kaggle_ollama"):
             continue  # Handle separately below
 
         with st.sidebar.expander(
@@ -164,6 +164,73 @@ def _render_provider_config():
                                 st.error(f"❌ {msg}")
                     else:
                         st.warning("Chưa nhập API key")
+
+    # ── Kaggle Ollama (Free GPU) ──
+    with st.sidebar.expander(
+        f"{'🟢' if st.session_state.llm_provider_keys.get('kaggle_ollama', {}).get('base_url') else '⚪'} "
+        "Kaggle Ollama (Free GPU)",
+        expanded=False,
+    ):
+        st.caption(PROVIDER_REGISTRY["kaggle_ollama"]["description"])
+
+        kaggle_url = st.text_input(
+            "Tunnel URL",
+            key="input_kaggle_ollama_url",
+            placeholder="https://xxx.trycloudflare.com",
+            value=st.session_state.llm_provider_keys.get("kaggle_ollama", {}).get("base_url", ""),
+        )
+
+        kaggle_model = st.text_input(
+            "Model (tùy chọn)",
+            key="input_kaggle_model",
+            placeholder=PROVIDER_REGISTRY["kaggle_ollama"]["default_model"],
+            value=st.session_state.llm_provider_keys.get("kaggle_ollama", {}).get("model", ""),
+        )
+
+        col_save_k, col_test_k = st.columns(2)
+        with col_save_k:
+            if st.button("💾 Lưu", key="save_kaggle_ollama", use_container_width=True):
+                if kaggle_url:
+                    st.session_state.llm_provider_keys["kaggle_ollama"] = {
+                        "api_key": "ollama",
+                        "base_url": kaggle_url,
+                        "model": kaggle_model,
+                    }
+                    st.success("✅ Đã lưu Kaggle Ollama")
+                else:
+                    st.session_state.llm_provider_keys.pop("kaggle_ollama", None)
+                    st.info("Đã xóa cấu hình Kaggle")
+
+        with col_test_k:
+            if st.button("🔍 Test", key="test_kaggle_ollama", use_container_width=True):
+                if kaggle_url:
+                    provider = get_provider_from_registry(
+                        "kaggle_ollama", custom_base_url=kaggle_url, custom_model=kaggle_model
+                    )
+                    if provider:
+                        with st.spinner("Đang kết nối Kaggle..."):
+                            ok, msg = validate_provider_connection(provider)
+                        if ok:
+                            st.success(f"✅ {msg}")
+                        else:
+                            st.error(f"❌ {msg}")
+                else:
+                    st.warning("Chưa nhập Tunnel URL")
+
+        # Model recommendations for Kaggle
+        from src.chatbot.provider_config import KAGGLE_MODEL_RECOMMENDATIONS
+
+        with st.expander("📋 Model khuyến nghị cho Kaggle", expanded=False):
+            for m in KAGGLE_MODEL_RECOMMENDATIONS:
+                star = " ⭐" if m["recommended"] else ""
+                st.markdown(
+                    f"**{m['name']}{star}**\n- VRAM: {m['vram']} | {m['vietnamese']}\n- {m['best_for']}",
+                )
+
+        # Setup guide
+        from src.chatbot.kaggle_setup_guide import render_kaggle_setup_guide
+
+        render_kaggle_setup_guide()
 
     # ── LM Studio (Local) ──
     with st.sidebar.expander("🖥️ LM Studio (Local)", expanded=False):

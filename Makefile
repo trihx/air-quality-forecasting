@@ -2,7 +2,7 @@
 # PM2.5 Forecasting — Project Automation Makefile
 # ═══════════════════════════════════════════
 
-.PHONY: help install dev test check seed update-memory map-skills graphify sync-figures clean
+.PHONY: help install dev test check verify guard seed update-memory map-skills graphify sync-figures clean
  
 help:
 	@echo "📌 Các lệnh tự động hóa dự án PM2.5 Forecasting:"
@@ -46,6 +46,10 @@ check:
 	uv run mypy src/ app.py pages.py
 	@echo "🧪 4. Chạy Pytest..."
 	uv run pytest tests/
+
+verify: check
+
+guard: check
 
 seed:
 	@echo "🌱 Đang nạp dữ liệu mẫu lên PostgreSQL..."

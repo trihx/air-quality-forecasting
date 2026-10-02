@@ -129,8 +129,8 @@ def _try_stream_provider(
         return None
 
     model = provider.model
-    if not model and provider.is_local:
-        # Auto-detect model for LM Studio
+    if not model and (provider.is_local or provider.name == "kaggle_ollama"):
+        # Auto-detect model for LM Studio / Kaggle Ollama
         try:
             models_list = client.models.list()
             if models_list.data:
