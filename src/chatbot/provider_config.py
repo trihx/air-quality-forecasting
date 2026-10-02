@@ -70,7 +70,7 @@ PROVIDER_REGISTRY: dict[str, dict] = {
     "groq": {
         "display_name": "Groq",
         "base_url": "https://api.groq.com/openai/v1",
-        "default_model": "llama-3.1-8b-instant",
+        "default_model": "openai/gpt-oss-20b",
         "env_key": "GROQ_API_KEY",
         "priority": 3,
         "is_local": False,
@@ -160,18 +160,23 @@ KAGGLE_MODEL_RECOMMENDATIONS = [
 
 GROQ_MODEL_RECOMMENDATIONS = [
     {
-        "name": "llama-3.1-8b-instant",
-        "description": "Siêu tốc (>800 tok/s), hạn mức cao (30,000 TPM, 30 RPM), tối ưu hỏi đáp",
+        "name": "openai/gpt-oss-20b",
+        "description": "Model chính thức thay thế Llama 3.1 8B trên Groq, tốc độ cực cao (>800 tok/s), hạn mức cao",
         "recommended": True,
     },
     {
-        "name": "llama-3.3-70b-versatile",
-        "description": "Mô hình 70B thông minh sâu sắc (hạn mức 6,000 TPM)",
+        "name": "openai/gpt-oss-120b",
+        "description": "Mô hình reasoning suy luận chuyên sâu thay thế Llama 3.3 70B",
         "recommended": False,
     },
     {
-        "name": "gemma2-9b-it",
-        "description": "Mô hình Google Gemma 2 tối ưu trên phần cứng LPU Groq",
+        "name": "qwen/qwen3.6-27b",
+        "description": "Mô hình Qwen đa ngôn ngữ và tiếng Việt vượt trội trên Groq LPU",
+        "recommended": False,
+    },
+    {
+        "name": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "description": "Thế hệ Llama 4 mới nhất tối ưu trên Groq LPU",
         "recommended": False,
     },
 ]
@@ -367,6 +372,10 @@ def sanitize_error_message(error_str: str) -> str:
 def validate_provider_connection(provider: LLMProvider) -> tuple[bool, str]:
     """Test if a provider is reachable with a lightweight API call.
 
+    Validates API authentication, inspects available models on server,
+    automatically detects active chat models if the configured model is deprecated,
+    and performs a lightweight chat probe to guarantee end-to-end readiness.
+
     Returns:
         (success, message) tuple.
     """
@@ -390,22 +399,113 @@ def validate_provider_connection(provider: LLMProvider) -> tuple[bool, str]:
             return False, "Rate limit — vui lòng thử lại sau"
         return False, f"Lỗi: {error[:100]}"
 
+    # Extract all model IDs from server
+    raw_model_ids = [m.id for m in models.data if getattr(m, "id", None)]
+
+    # Filter for probable chat/completion models (exclude whisper, audio, moderation, guardrails)
+    chat_model_ids = [
+        mid
+        for mid in raw_model_ids
+        if not any(
+            x in mid.lower()
+            for x in (
+                "whisper",
+                "tts",
+                "stt",
+                "embed",
+                "guard",
+                "safeguard",
+                "moderation",
+                "distil-whisper",
+            )
+        )
+    ]
+    candidate_pool = chat_model_ids if chat_model_ids else raw_model_ids
+
+    # Preferred models for Groq / OpenAI in priority order
+    preferred_order = (
+        "openai/gpt-oss-20b",
+        "openai/gpt-oss-120b",
+        "qwen/qwen3.6-27b",
+        "meta-llama/llama-4-scout-17b-16e-instruct",
+        "llama-3.3-70b-versatile",
+        "llama-3.1-8b-instant",
+        "gpt-4o-mini",
+        "gemini-2.0-flash",
+        "gemma2-9b-it",
+        "mixtral-8x7b-32768",
+    )
+
+    target_model = provider.model.strip() if provider.model else ""
+    switched_model = False
+
+    if target_model and target_model in raw_model_ids:
+        probe_model = target_model
+    elif candidate_pool:
+        # Target model is empty or not in server's active models list (e.g. deprecated)
+        chosen = None
+        for pref in preferred_order:
+            if pref in candidate_pool:
+                chosen = pref
+                break
+        if not chosen:
+            chosen = candidate_pool[0]
+
+        if target_model and target_model != chosen:
+            switched_model = True
+        probe_model = chosen
+        provider.model = chosen
+    else:
+        probe_model = target_model or "default"
+
     # Chat probe: verify model can actually complete chat requests
     try:
-        probe_model = provider.model or (models.data[0].id if models.data else "default")
         client.chat.completions.create(
             model=probe_model,
             messages=[{"role": "user", "content": "hi"}],
             max_tokens=2,
             timeout=5.0,
         )
-        return True, f"Kết nối & kiểm tra Chat thành công ({model_count} models)"
+        if switched_model:
+            return (
+                True,
+                f"Kết nối & kiểm tra Chat thành công ({model_count} models — Tự động chuyển sang model hoạt động: '{probe_model}')",
+            )
+        return True, f"Kết nối & kiểm tra Chat thành công ({model_count} models • Model: {probe_model})"
     except Exception as probe_err:
         err_str = sanitize_error_message(str(probe_err))
         if "429" in err_str or "rate limit" in err_str.lower():
             return False, f"Chạm giới hạn tốc độ (Rate Limit / TPM) trên {provider.display_name}: {err_str[:80]}"
-        if "404" in err_str or "model" in err_str.lower():
-            return False, f"Model '{probe_model}' không tồn tại hoặc không hỗ trợ chat"
+
+        # If probe failed with 404/not found/model error, try other available candidates
+        if ("404" in err_str or "model" in err_str.lower() or "not found" in err_str.lower()) and len(
+            candidate_pool
+        ) > 1:
+            for alt_model in candidate_pool:
+                if alt_model == probe_model:
+                    continue
+                try:
+                    client.chat.completions.create(
+                        model=alt_model,
+                        messages=[{"role": "user", "content": "hi"}],
+                        max_tokens=2,
+                        timeout=5.0,
+                    )
+                    provider.model = alt_model
+                    return (
+                        True,
+                        f"Kết nối thành công ({model_count} models — Đã chuyển sang model hoạt động: '{alt_model}')",
+                    )
+                except Exception as alt_err:
+                    logger.debug(f"Candidate model '{alt_model}' probe failed: {alt_err}")
+                    continue
+
+        models_preview = ", ".join(f"`{m}`" for m in candidate_pool[:5]) if candidate_pool else "Không tìm thấy"
+        if "404" in err_str or "model" in err_str.lower() or "not found" in err_str.lower():
+            return (
+                False,
+                f"Model '{probe_model}' không tồn tại hoặc không hỗ trợ chat. Các model hiện có trên tài khoản: {models_preview}",
+            )
         if "400" in err_str:
-            return False, f"Lỗi tham số chat: {err_str[:80]}"
-        return False, f"Lỗi chat probe: {err_str[:80]}"
+            return False, f"Lỗi tham số chat ({probe_model}): {err_str[:80]}"
+        return False, f"Lỗi chat probe ({probe_model}): {err_str[:80]}"

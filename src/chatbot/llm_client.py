@@ -313,27 +313,61 @@ def _try_stream_provider(
         else:
             provider._last_error = f"Lỗi gọi API: {error_msg[:120]}"
 
-        # If Kaggle Ollama failed due to model issue, retry with first available model if different
-        if provider.name == "kaggle_ollama" and ("not found" in error_msg.lower() or "404" in error_msg):
+        # Auto-recover if model is not found or deprecated: query server models and retry with active chat model
+        if "not found" in error_msg.lower() or "404" in error_msg or "model" in error_msg.lower():
             try:
                 models_list = client.models.list()
-                if models_list.data and models_list.data[0].id != model:
-                    fallback_model = models_list.data[0].id
-                    logger.info(f"Retrying Kaggle Ollama with detected model: {fallback_model}")
-                    provider.model = fallback_model
-                    retry_stream = client.chat.completions.create(
-                        model=fallback_model,
-                        messages=full_messages,  # type: ignore[arg-type]
-                        temperature=temperature,
-                        max_tokens=max_tokens,
-                        stream=True,
-                    )
+                if models_list.data:
+                    raw_ids = [m.id for m in models_list.data if getattr(m, "id", None)]
+                    chat_ids = [
+                        mid
+                        for mid in raw_ids
+                        if not any(
+                            x in mid.lower()
+                            for x in (
+                                "whisper",
+                                "tts",
+                                "stt",
+                                "embed",
+                                "guard",
+                                "safeguard",
+                                "moderation",
+                                "distil-whisper",
+                            )
+                        )
+                    ]
+                    candidates = chat_ids if chat_ids else raw_ids
+                    if provider.name == "groq":
+                        pref_order = (
+                            "openai/gpt-oss-20b",
+                            "openai/gpt-oss-120b",
+                            "qwen/qwen3.6-27b",
+                            "meta-llama/llama-4-scout-17b-16e-instruct",
+                            "llama-3.3-70b-versatile",
+                            "gemma2-9b-it",
+                            "mixtral-8x7b-32768",
+                        )
+                        candidates = sorted(
+                            candidates,
+                            key=lambda x: pref_order.index(x) if x in pref_order else 99,
+                        )
 
-                    return _create_guarded_generator(client, retry_stream, fallback_model)
+                    for fallback_model in candidates:
+                        if fallback_model != model:
+                            logger.info(f"Retrying {provider.display_name} with detected model: {fallback_model}")
+                            provider.model = fallback_model
+                            retry_stream = client.chat.completions.create(
+                                model=fallback_model,
+                                messages=full_messages,  # type: ignore[arg-type]
+                                temperature=temperature,
+                                max_tokens=max_tokens,
+                                stream=True,
+                            )
+                            return _create_guarded_generator(client, retry_stream, fallback_model)
             except Exception as retry_err:
                 sanitized_err = sanitize_error_message(str(retry_err))
-                logger.warning(f"Retry Kaggle Ollama failed: {sanitized_err}")
-                provider._last_error = f"Retry Kaggle thất bại: {sanitized_err[:120]}"
+                logger.warning(f"Auto-model recovery failed on {provider.display_name}: {sanitized_err}")
+                provider._last_error = f"Tự động phục hồi model thất bại: {sanitized_err[:120]}"
         return None
 
 
@@ -448,7 +482,7 @@ def chat_stream(
             yield f"• **{p_name}**: {p_err}\n"
         yield (
             "\n**Hướng dẫn khắc phục trên Cloud Server:**\n"
-            "1. **Groq**: Nếu chạm TPM limit (429), chuyển sang model `llama-3.1-8b-instant` (hạn mức 30,000 TPM) tại tab Groq hoặc sidebar\n"
+            "1. **Groq**: Nếu chạm TPM limit (429) hoặc model cũ, chuyển sang model `openai/gpt-oss-20b` tại tab Groq hoặc sidebar\n"
             "2. **Google Gemini**: Kiểm tra lại API key hoặc quota tại Google AI Studio (miễn phí 15 RPM)\n"
             "3. **Kaggle Ollama**: Kiểm tra Cloudflare Tunnel URL còn online không (Kaggle session có bị timeout không)\n"
             "4. Cập nhật cấu hình tại **⚙️ Cấu Hình AI Provider** ở sidebar hoặc bảng trên trang\n"
@@ -460,7 +494,7 @@ def chat_stream(
             yield f"• **{p_name}**: {p_err}\n"
         yield (
             "\n**Hướng dẫn khắc phục:**\n"
-            "1. **Groq / Cloud API**: Nếu chạm giới hạn TPM, đổi model sang `llama-3.1-8b-instant` hoặc kiểm tra kết nối internet / API key\n"
+            "1. **Groq / Cloud API**: Nếu chạm giới hạn TPM, đổi model sang `openai/gpt-oss-20b` hoặc kiểm tra kết nối internet / API key\n"
             "2. **LM Studio**: Mở LM Studio → Load model → Bật Server port 8888\n"
             "3. Kiểm tra API key còn hạn sử dụng\n"
             "4. Reload trang dashboard\n"

@@ -180,13 +180,20 @@ def _render_provider_config():
             with col_save:
                 if st.button("💾 Lưu", key=f"save_{provider_name}", use_container_width=True):
                     if key:
+                        provider = get_provider_from_registry(provider_name, api_key=key, custom_model=model)
+                        final_m = model
+                        if provider:
+                            with st.spinner("Đang kiểm tra & kích hoạt..."):
+                                ok, _ = validate_provider_connection(provider)
+                            if ok and provider.model:
+                                final_m = provider.model
                         st.session_state.llm_provider_keys[provider_name] = {
                             "api_key": key,
-                            "model": model,
+                            "model": final_m,
                             "base_url": "",
                         }
                         _persist_current_credentials()
-                        st.success(f"✅ Đã lưu ({mask_api_key(key)})")
+                        st.success(f"✅ Đã lưu ({mask_api_key(key)}) • Model: {final_m or reg['default_model']}")
                     else:
                         # Clear provider
                         st.session_state.llm_provider_keys.pop(provider_name, None)
@@ -201,6 +208,13 @@ def _render_provider_config():
                             with st.spinner("Đang kiểm tra..."):
                                 ok, msg = validate_provider_connection(provider)
                             if ok:
+                                if (
+                                    provider.model
+                                    and provider.model != model
+                                    and provider_name in st.session_state.llm_provider_keys
+                                ):
+                                    st.session_state.llm_provider_keys[provider_name]["model"] = provider.model
+                                    _persist_current_credentials()
                                 st.success(f"✅ {msg}")
                             else:
                                 st.error(f"❌ {msg}")
@@ -481,13 +495,22 @@ def _render_inline_quick_config(expanded: bool = False):
                 with col_o_save:
                     if st.button(f"💾 Lưu {reg['display_name']}", key=f"main_save_{p_name}", use_container_width=True):
                         if o_key:
+                            provider = get_provider_from_registry(p_name, api_key=o_key, custom_model=o_model)
+                            final_o_model = o_model
+                            if provider:
+                                with st.spinner(f"Đang kiểm tra & kích hoạt {reg['display_name']}..."):
+                                    ok, _ = validate_provider_connection(provider)
+                                if ok and provider.model:
+                                    final_o_model = provider.model
                             st.session_state.llm_provider_keys[p_name] = {
                                 "api_key": o_key,
-                                "model": o_model,
+                                "model": final_o_model,
                                 "base_url": "",
                             }
                             _persist_current_credentials()
-                            st.success(f"✅ Đã lưu {reg['display_name']} ({mask_api_key(o_key)})")
+                            st.success(
+                                f"✅ Đã lưu {reg['display_name']} ({mask_api_key(o_key)}) • Model: {final_o_model or reg['default_model']}"
+                            )
                             st.rerun()
                         else:
                             st.session_state.llm_provider_keys.pop(p_name, None)
@@ -502,6 +525,13 @@ def _render_inline_quick_config(expanded: bool = False):
                                 with st.spinner("Đang kiểm tra..."):
                                     ok, msg = validate_provider_connection(provider)
                                 if ok:
+                                    if (
+                                        provider.model
+                                        and provider.model != o_model
+                                        and p_name in st.session_state.llm_provider_keys
+                                    ):
+                                        st.session_state.llm_provider_keys[p_name]["model"] = provider.model
+                                        _persist_current_credentials()
                                     st.success(f"✅ {msg}")
                                 else:
                                     st.error(f"❌ {msg}")

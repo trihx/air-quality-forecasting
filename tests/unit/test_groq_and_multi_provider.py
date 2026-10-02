@@ -29,11 +29,11 @@ from src.chatbot.provider_config import (
 class TestGroqConfiguration:
     """Verify Groq default configuration and model recommendations."""
 
-    def test_groq_default_model_is_llama_3_1_8b_instant(self):
-        """Groq default model must be llama-3.1-8b-instant with 30k TPM limit."""
+    def test_groq_default_model(self):
+        """Groq default model must be openai/gpt-oss-20b."""
         groq_cfg = PROVIDER_REGISTRY.get("groq")
         assert groq_cfg is not None
-        assert groq_cfg["default_model"] == "llama-3.1-8b-instant"
+        assert groq_cfg["default_model"] == "openai/gpt-oss-20b"
 
     def test_groq_model_recommendations_structure(self):
         """GROQ_MODEL_RECOMMENDATIONS must contain recommended models with proper metadata."""
@@ -41,12 +41,12 @@ class TestGroqConfiguration:
         assert len(GROQ_MODEL_RECOMMENDATIONS) >= 3
 
         names = [m["name"] for m in GROQ_MODEL_RECOMMENDATIONS]
-        assert "llama-3.1-8b-instant" in names
-        assert "llama-3.3-70b-versatile" in names
-        assert "gemma2-9b-it" in names
+        assert "openai/gpt-oss-20b" in names
+        assert "openai/gpt-oss-120b" in names
+        assert "qwen/qwen3.6-27b" in names
 
-        # llama-3.1-8b-instant must be recommended
-        rec = next(m for m in GROQ_MODEL_RECOMMENDATIONS if m["name"] == "llama-3.1-8b-instant")
+        # openai/gpt-oss-20b must be recommended
+        rec = next(m for m in GROQ_MODEL_RECOMMENDATIONS if m["name"] == "openai/gpt-oss-20b")
         assert rec["recommended"] is True
 
 
@@ -123,15 +123,30 @@ class TestValidateProviderConnectionProbe:
             assert ok is False
             assert "Lỗi tham số chat" in msg
 
-    def test_probe_auth_failure_on_models_list(self, mock_provider):
-        """When models.list fails with 401/403, return invalid API key immediately."""
+    def test_probe_auto_switches_deprecated_model(self, mock_provider):
+        """When user model is deprecated/missing from models.list, auto-switch to active chat model."""
         mock_client = MagicMock()
-        mock_client.models.list.side_effect = Exception("401 Unauthorized: Invalid API key")
+        # Server only has openai/gpt-oss-20b and audio model whisper
+        mock_client.models.list.return_value.data = [
+            MagicMock(id="whisper-large-v3"),
+            MagicMock(id="openai/gpt-oss-20b"),
+        ]
+        # mock_provider still configured with deprecated model
+        mock_provider.model = "llama-3.1-8b-instant"
 
         with patch("openai.OpenAI", return_value=mock_client):
             ok, msg = validate_provider_connection(mock_provider)
-            assert ok is False
-            assert "API key không hợp lệ" in msg
+            assert ok is True
+            assert "Tự động chuyển sang model hoạt động: 'openai/gpt-oss-20b'" in msg
+            assert mock_provider.model == "openai/gpt-oss-20b"
+
+            # Chat probe was executed on the auto-switched model
+            mock_client.chat.completions.create.assert_called_once_with(
+                model="openai/gpt-oss-20b",
+                messages=[{"role": "user", "content": "hi"}],
+                max_tokens=2,
+                timeout=5.0,
+            )
 
 
 class TestPayloadSanitization:
@@ -260,7 +275,7 @@ class TestChatStreamErrorTransparency:
             display_name="Groq",
             base_url="https://api.groq.com/openai/v1",
             api_key="gsk-test",
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
         )
 
         mock_client = MagicMock()
@@ -276,6 +291,40 @@ class TestChatStreamErrorTransparency:
             assert gen is None
             assert hasattr(provider, "_last_error")
             assert "Chạm giới hạn tốc độ" in provider._last_error
+
+    def test_try_stream_provider_auto_recovers_deprecated_model(self):
+        """When initial model fails with 404, query models.list and retry with active model."""
+        provider = LLMProvider(
+            name="groq",
+            display_name="Groq",
+            base_url="https://api.groq.com/openai/v1",
+            api_key="gsk-test",
+            model="deprecated-model-404",
+        )
+
+        mock_client = MagicMock()
+        # First call fails with 404 model not found
+        # Second call (retry) succeeds with active model stream
+        mock_stream = [MagicMock()]
+        mock_client.chat.completions.create.side_effect = [
+            Exception("404 Model deprecated-model-404 not found"),
+            mock_stream,
+        ]
+        mock_client.models.list.return_value.data = [
+            MagicMock(id="whisper-large-v3"),
+            MagicMock(id="openai/gpt-oss-20b"),
+        ]
+
+        with patch("src.chatbot.llm_client._build_client", return_value=mock_client):
+            gen = _try_stream_provider(
+                provider=provider,
+                full_messages=[{"role": "user", "content": "Hi"}],
+                temperature=0.3,
+                max_tokens=100,
+            )
+            assert gen is not None
+            assert provider.model == "openai/gpt-oss-20b"
+            assert mock_client.chat.completions.create.call_count == 2
 
 
 class TestPrimaryProviderPrioritization:
