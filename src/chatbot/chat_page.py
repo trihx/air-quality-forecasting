@@ -55,37 +55,38 @@ def _trim_chat_history(messages: list[dict], max_history: int = MAX_CHAT_HISTORY
     return messages
 
 
-# ── Preset questions for thesis defense preparation ──
+# ── Preset questions for thesis defense preparation (5 Groups / Grill-Me Holes First) ──
 PRESET_QUESTIONS = {
-    "📋 Phương pháp luận": [
-        "Giải thích quy trình pipeline end-to-end của dự án",
-        "Tại sao chọn phương pháp anti-leakage bằng shift(1)?",
-        "Tại sao dùng MASE làm metric chính thay vì RMSE hay MAE?",
-        "Giải thích cách chia train/validation/test theo temporal split",
+    "🔥 Trọng Điểm Chất Vấn Hội Đồng (Grill-Me Holes)": [
+        "Tại sao dòng 1 bảng Diebold-Mariano mang dấu dương (+13.729) mà các dòng sau lại mang dấu âm (-8.452)?",
+        "Tại sao dũng cảm Drop 19.810 giờ khuyết thiếu thay vì dùng GAN/Deep Learning để bù dữ liệu?",
+        "Tại sao hệ số xác định R² ngoài mẫu (Out-of-Sample) lại nhận giá trị âm?",
+        "Bẫy ngoại lai IQR 3.0 đã xóa nhầm dữ liệu ra sao và tại sao đề án dùng Domain Bounds [0, 500]?",
+        "Bẫy tự tương quan (r=0.86) ở bước 1h là gì và tại sao GRU 15m phá được bẫy này?",
     ],
-    "🔬 Xử lý dữ liệu": [
-        "Cách xử lý missing data trong dữ liệu IoT sensor?",
-        "Tại sao dùng IQR 3.0 để phát hiện outlier?",
-        "Giải thích chiến lược imputation: Spline vs KNN?",
-        "Feature engineering đã thực hiện những gì?",
+    "📋 Phương Pháp Luận & Tính Liêm Chính": [
+        "Giải thích quy trình pipeline 7 bước từ dữ liệu thô đến mô hình",
+        "Kỷ luật Anti-Leakage shift(1) đã lật tẩy vụ việc R²=1.000 ảo như thế nào?",
+        "Tại sao dùng MASE mẫu số chuẩn hóa đồng nhất 1.821 µg/m³ thay vì RMSE?",
+        "Giải thích thiết kế mỏ neo Anchor Split 80:10:10 và nguyên tắc Test on Real Only",
     ],
-    "🤖 Mô hình": [
-        "Tại sao Persistence baseline rất mạnh ở horizon 1h?",
-        "So sánh ưu nhược điểm của GRU vs LSTM trong dự án",
-        "LightGBM được tối ưu hyperparameter bằng cách nào?",
-        "TFT Transformer có ưu điểm gì so với các mô hình khác?",
+    "🔬 Kỹ Nghệ Dữ Liệu & Thống Kê": [
+        "Chiến lược phục hồi dữ liệu phân tầng: Spline (≤6h) vs KNN (6-24h) hoạt động ra sao?",
+        "Kiểm định tính dừng kép (ADF & KPSS) và tính chất phi chuẩn của PM2.5",
+        "Kho 119 đặc trưng gồm những nhóm nào và vai trò của Ventilation Index?",
+        "Tại sao độ phân giải 30 phút là 'Điểm ngọt Pareto' (chiếm 10/15 vị trí top-5)?",
     ],
-    "📊 Đánh giá": [
-        "Tại sao cần đánh giá ở nhiều horizons (1h, 6h, 24h)?",
-        "Shuffle test là gì và kết quả ra sao?",
-        "Giải thích về Prediction Intervals trong dự án",
-        "SHAP Explainability cho thấy features nào quan trọng nhất?",
+    "🤖 Kiến Trúc Mô Hình & Điểm Ngọt": [
+        "So sánh ưu nhược điểm và cơ chế của GRU 15m vs LightGBM vs TFT Transformer",
+        "Tại sao mô hình Ensemble Weighted thống trị ở tầm xa 6h và 24h?",
+        "Quy trình tối ưu siêu tham số Hyperparameter Tuning bằng Optuna TPE 50 trials",
+        "Đánh giá cảnh báo sớm ô nhiễm: F1-score và độ nhạy Recall tại ngưỡng WHO 45 µg/m³",
     ],
-    "🎓 Bài học kinh nghiệm": [
-        "Những lỗi quan trọng nhất đã gặp và cách khắc phục?",
-        "Data leakage đã được phát hiện và xử lý như thế nào?",
-        "Kinh nghiệm xử lý dữ liệu IoT bị thiếu 85%?",
-        "Bài học gì từ việc so sánh nhiều mô hình ML/DL?",
+    "🧠 XAI & Định Lượng Bất Định": [
+        "Phát hiện điểm chuyển pha khí quyển 14–17 µg/m³ từ SHAP Dependence ra sao?",
+        "Tại sao phân luồng Tree SHAP cho LightGBM và Permutation Importance cho Học sâu?",
+        "Khoảng tin cậy bất định CQR 90% kết hợp ACI giải quyết trôi dạt dữ liệu thế nào?",
+        "Đặc thù vi khí hậu Sa Đéc: Chu kỳ ngày đêm và nguồn phát thải địa phương",
     ],
 }
 
@@ -728,14 +729,14 @@ def page_ai_assistant(results):
             """
         <div style="font-size: 0.85rem; font-weight: 700;
                     margin-bottom: 0.75rem;">
-            💡 Câu Hỏi Kỹ Thuật Thường Gặp
+            🎯 Ngân Hàng Câu Hỏi Phản Biện
         </div>
         """,
             unsafe_allow_html=True,
         )
 
-        for category, questions in PRESET_QUESTIONS.items():
-            with st.expander(category, expanded=False):
+        for i, (category, questions) in enumerate(PRESET_QUESTIONS.items()):
+            with st.expander(category, expanded=(i == 0)):
                 for q in questions:
                     if st.button(
                         q,

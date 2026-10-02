@@ -173,6 +173,44 @@ class TestZeroDependencyKnowledgeStore:
         avg_ms = (duration / 100) * 1000
         assert avg_ms < 2.0, f"Average search took {avg_ms:.3f}ms, expected < 2.0ms"
 
+    @pytest.mark.parametrize(
+        "query,expected_doc_id_or_title",
+        [
+            (
+                "Tại sao dòng 1 bảng Diebold-Mariano mang dấu dương (+13.729) mà các dòng sau lại mang dấu âm (-8.452)?",
+                "Diebold-Mariano",
+            ),
+            (
+                "Tại sao hệ số xác định R² ngoài mẫu (Out-of-Sample) lại nhận giá trị âm?",
+                "R² ngoài mẫu",
+            ),
+            (
+                "Tại sao dũng cảm Drop 19.810 giờ khuyết thiếu thay vì dùng GAN/Deep Learning để bù dữ liệu?",
+                "Drop 19.810 giờ",
+            ),
+            (
+                "Bẫy ngoại lai IQR 3.0 đã xóa nhầm dữ liệu ra sao và tại sao đề án dùng Domain Bounds [0, 500]?",
+                "Bẫy xóa ngoại lai IQR 3.0",
+            ),
+            (
+                "Bẫy tự tương quan (r=0.86) ở bước 1h là gì và tại sao GRU 15m phá được bẫy này?",
+                "Bẫy tự tương quan",
+            ),
+        ],
+    )
+    def test_search_grill_me_holes_queries(self, query: str, expected_doc_id_or_title: str):
+        """High-stakes defense grill-me hole questions return exact relevant documents."""
+        from src.chatbot.knowledge_store import search_curated_knowledge
+
+        results = search_curated_knowledge(query, top_k=3)
+        assert len(results) > 0, f"No search results for Grill-Me query: {query}"
+        top = results[0]
+        combined = (top["title"] + " " + top["content"]).lower()
+        expected_lower = expected_doc_id_or_title.lower()
+        assert expected_lower in combined or expected_lower in top["title"].lower(), (
+            f"Expected '{expected_doc_id_or_title}' in top result title '{top['title']}' for query '{query}'"
+        )
+
 
 # ==============================================================================
 # 3. Tests for KnowledgeBase RAG Fallback

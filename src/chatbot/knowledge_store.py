@@ -19,6 +19,7 @@ from typing import Any
 def _strip_accents(text: str) -> str:
     """Remove Vietnamese accents and lowercase for fuzzy zero-dep matching."""
     text = text.lower()
+    text = text.replace("²", "2").replace("µ", "u")
     text = unicodedata.normalize("NFD", text)
     text = "".join(c for c in text if unicodedata.category(c) != "Mn")
     text = text.replace("đ", "d").replace("Đ", "d")
@@ -142,7 +143,13 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "bay ngoai lai",
             "iqr",
             "iqr 3.0",
+            "bay iqr 3.0",
+            "bay iqr",
+            "xoa nham",
+            "xoa nham 66 dinh",
+            "66 dinh",
             "domain bounds",
+            "domain bounds [0, 500]",
             "dinh o nhiem",
             "fat tailed",
             "fat-tailed",
@@ -150,18 +157,26 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "kurtosis",
             "who aqi",
             "500",
+            "s-esd",
+            "flatline",
+            "f1-score",
+            "f1 0.782",
+            "ao tuong chinh xac",
         ],
         source="knowledge_vault/01_Pipeline_and_Data_Engineering/03_Outlier_Trap_and_Domain_Bounds.md",
         citations=["Mục 3.2 Báo cáo ThS", "Ablation Study v10 vs v9", "WHO AQI Guidelines"],
         content=(
             "### Bẫy xóa ngoại lai IQR 3.0 & Domain Bounds [0, 500] µg/m³:\n\n"
-            "- **Bẫy IQR 3.0 cổ điển:** Phương pháp Tukey IQR (Q3 + 3.0*IQR ~ 54 µg/m³) đã gọt nhầm 66 đỉnh ô nhiễm thực tế "
-            "(55 - 120 µg/m³). Việc này tạo ra ảo tưởng chính xác (False Sense of Accuracy): RMSE trên validation giảm đẹp giả tạo "
-            "(2.12 µg/m³), nhưng khi ra môi trường thật mô hình hoàn toàn mù trước ô nhiễm nặng (F1 cảnh báo < 0.35).\n"
-            "- **Bản chất phân phối Fat-Tailed của PM2.5:** Skewness = 2.0046 (lệch phải mạnh), Kurtosis = 6.1458 (đuôi dày, nhọn). "
-            "Các đỉnh nồng độ cao là biến cố vi khí hậu có thật (nghịch nhiệt, đốt rơm rạ), không phải lỗi cảm biến.\n"
-            "- **Giải pháp Domain Bounds [0, 500]:** Thiết lập ngưỡng vật lý [0, 500] µg/m³ theo chuẩn WHO AQI, kết hợp S-ESD "
-            "chỉ loại bỏ lỗi phần cứng (treo cảm biến flatline). Khôi phục F1-score cảnh báo sớm lên 0.782."
+            "- **Bản chất bẫy IQR 3.0 cổ điển:** Phương pháp Tukey IQR truyền thống (Q3 + 3.0*IQR ~ 54 µg/m³) "
+            "đã gọt nhầm 66 đỉnh ô nhiễm thực tế (55 – 120 µg/m³). Việc này tạo ra ảo tưởng chính xác giả tạo (False Sense of Accuracy): "
+            "RMSE trên validation giảm đẹp giả tạo (2.12 µg/m³), nhưng khi ra môi trường thật mô hình hoàn toàn mù trước ô nhiễm nặng, "
+            "khiến F1-score cảnh báo sớm sụt giảm nghiêm trọng xuống < 0.35.\n"
+            "- **Bản chất phân phối Fat-Tailed của PM2.5:** Chuỗi PM2.5 Sa Đéc có Skewness = 2.0046 (lệch phải mạnh) và Kurtosis = 6.1458 (đuôi dày, đỉnh nhọn). "
+            "Các đỉnh nồng độ cao là biến cố vi khí hậu có thật (nghịch nhiệt bề mặt, đốt rơm rạ vụ mùa), không phải nhiễu ngoại lai.\n"
+            "- **Giải pháp thay thế Domain Bounds [0, 500] & S-ESD:**\n"
+            "  Đề án loại bỏ IQR 3.0, chuyển sang Domain Bounds [0, 500] µg/m³ theo dải đo vật lý WHO AQI, kết hợp thuật toán S-ESD "
+            "chỉ lọc các lỗi phần cứng cảm biến (như hiện tượng flatline kẹt giá trị liên tục). Nhờ bảo tồn 66 đỉnh thật, mô hình khôi phục "
+            "F1-score cảnh báo sớm lên mức xuất sắc 0.782."
         ),
     ),
     KnowledgeDocument(
@@ -179,20 +194,35 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "knn",
             "drop 19810h",
             "drop 19.810",
+            "drop 19.810 gio",
+            "dung cam drop",
+            "tai sao drop 19810",
+            "gioi han 24h",
+            "mnar",
+            "data hallucination",
+            "ve du lieu ao",
+            "gan",
+            "mice",
             "74%",
             "do thuc",
+            "liem chinh nghien cuu",
         ],
         source="knowledge_vault/01_Pipeline_and_Data_Engineering/02_Tiered_Imputation_and_Data_Sparsity.md",
         citations=["Bảng 3.4 Báo cáo ThS", "Akima (1970)", "Mục 3.2 Luận văn"],
         content=(
-            "### Chiến lược phục hồi dữ liệu phân tầng & Quyết định Drop 19.810 giờ:\n\n"
-            "- **Thực trạng dữ liệu IoT Sa Đéc:** Tỷ lệ khuyết thiếu tích lũy lên tới 74% qua 38 tháng (do bảo trì, mất điện, mất sóng).\n"
-            "- **Chiến lược 3 tầng xử lý:**\n"
-            "  + **Tầng 1 (Gap ≤ 6 giờ):** Dùng PCHIP/Akima Spline bảo toàn tính đơn điệu cục bộ, chống vọt lố (overshooting).\n"
-            "  + **Tầng 2 (6h < Gap ≤ 24 giờ):** Dùng KNN Imputation (k=5), tuân thủ nghiêm ngặt donors chỉ lấy trong quá khứ (t' < t).\n"
-            "  + **Tầng 3 (Gap > 24 giờ):** DŨNG CẢM LOẠI BỎ 19.810 giờ khuyết dài. Không dùng MICE hay GAN để vẽ thêm dữ liệu giả mạo "
-            "(chống Data Hallucination). Cắt chuỗi thành các phân đoạn liên tục sạch có ý nghĩa vật lý.\n"
-            "- **Kích thước dữ liệu sạch sau xử lý:** 18.355 mẫu ở 15m, 8.625 mẫu ở 30m, 6.689 mẫu ở 1h."
+            "### Chiến lược phục hồi dữ liệu phân tầng & Quyết định dũng cảm Drop 19.810 giờ:\n\n"
+            "- **Thực trạng dữ liệu IoT Sa Đéc:** Tỷ lệ khuyết thiếu tích lũy lên tới 74% qua 38 tháng (209.594 bản ghi thô, "
+            "do cúp điện, bảo trì trạm, nghẽn đường truyền 4G).\n"
+            "- **Chiến lược 3 tầng xử lý & Giới hạn phục hồi 24h:**\n"
+            "  + **Tầng 1 (Gap ≤ 6 giờ):** Dùng PCHIP/Akima Spline bảo toàn tính đơn điệu cục bộ, chống vọt lố (overshooting) qua các đỉnh dốc.\n"
+            "  + **Tầng 2 (6h < Gap ≤ 24 giờ):** Dùng KNN Imputation (k=5), tuân thủ nghiêm ngặt donors chỉ lấy trong quá khứ (t' < t) chống rò rỉ.\n"
+            "  + **Tầng 3 (Gap > 24 giờ): DŨNG CẢM LOẠI BỎ 19.810 giờ khuyết dài.** Thực nghiệm chứng minh: vượt quá 24h, sai số phục hồi bùng nổ "
+            "(RMSE > 12 µg/m³, vượt quá 100% nồng độ trung bình nền), làm biến dạng hoàn toàn tương quan động học.\n"
+            "- **Bản chất MNAR & Chống ảo giác dữ liệu (Anti-Data Hallucination):**\n"
+            "  Dữ liệu khuyết dài ngày mang bản chất MNAR (Missing Not At Random — trạm mất điện kéo dài trong mùa bão hoặc hư hỏng linh kiện). "
+            "Đề án dứt khoát KHÔNG dùng các mô hình sinh như GAN, VAE hay MICE để tự vẽ thêm dữ liệu giả mạo. Việc loại bỏ 19.810 giờ thể hiện "
+            "kỷ luật liêm chính khoa học: thà cắt chuỗi thành các phân đoạn sạch có ý nghĩa vật lý (18.355 mẫu ở 15m, 8.625 mẫu ở 30m, 6.689 mẫu ở 1h) "
+            "còn hơn huấn luyện mô hình trên dữ liệu ảo tạo."
         ),
     ),
     KnowledgeDocument(
@@ -240,6 +270,10 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "pha bay",
             "tre pha",
             "phase lag",
+            "r 0.86",
+            "0.86",
+            "buoc 1h",
+            "pha bay tu tuong quan",
         ],
         source="knowledge_vault/04_Models_and_Architectures/02_Autocorrelation_Trap_and_GRU_15m.md",
         citations=["Mục 4.1 & 4.3 Báo cáo ThS", "Bảng PL.3.1"],
@@ -250,6 +284,109 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "Nhiều mô hình ML phức tạp khi chạy ở chuỗi giờ bị trễ pha (phase lag), đạt MASE > 1.0 (kém hơn đoán ngây thơ).\n"
             "- **Đột phá GRU 15 phút:** Tại độ phân giải 15m, tầm 1h tương ứng 4 bước (h=4). Mạng GRU với Update Gate và Reset Gate "
             "học được đạo hàm vi phân và gia tốc tích tụ hạt bụi trong 4 nhịp 15 phút, đạt MASE = 0.667 (đánh bại Persistence 33.3%)."
+        ),
+    ),
+    KnowledgeDocument(
+        doc_id="benchmark_models",
+        title="Tổng quan 11 kiến trúc mô hình đối chuẩn & Cơ chế GRU vs LightGBM vs TFT",
+        category="models",
+        keywords=[
+            "11 mo hinh",
+            "benchmark models",
+            "gru",
+            "lightgbm",
+            "tft",
+            "temporal fusion transformer",
+            "lstm",
+            "arima",
+            "sarimax",
+            "so sanh mo hinh",
+            "uu nhuoc diem",
+            "co che",
+            "gru 15m vs lightgbm vs tft",
+            "l1 loss",
+            "regression_l1",
+        ],
+        source="knowledge_vault/04_Models_and_Architectures/01_Benchmark_Models_Overview.md",
+        citations=["Mục 4.1 & 4.2 Báo cáo ThS", "Bảng 4.2 Đề án"],
+        content=(
+            "### Tổng quan 11 kiến trúc mô hình đối chuẩn (Benchmark Architectures):\n\n"
+            "- **4 trường phái đối chuẩn:**\n"
+            "  1. *Cơ sở (Baselines):* Persistence Naive (rất mạnh ở 1h) và Moving Average.\n"
+            "  2. *Thống kê cổ điển:* ARIMA (2,0,1) và SARIMAX (thêm khí tượng ngoại sinh).\n"
+            "  3. *Học máy dạng bảng:* ElasticNet, Random Forest (200 cây), LightGBM (L1 loss regression_l1).\n"
+            "  4. *Học sâu chuỗi thời gian:* LSTM (cổng nhớ tế bào), GRU (cổng tối giản, vi phân nhịp 15m), "
+            "Temporal Fusion Transformer (TFT - Gated Residual Networks & Multi-Head Attention).\n"
+            "  5. *Học kết hợp:* Weighted Optimization Ensemble (Mô hình quán quân toàn diện).\n"
+            "- **So sánh cơ chế GRU 15m vs LightGBM vs TFT:**\n"
+            "  + **GRU 15m:** Tinh gọn, học liên tục quán tính và gia tốc hạt bụi qua 4 bước 15m, phá vỡ bẫy tự tương quan ở 1h (MASE=0.667).\n"
+            "  + **LightGBM:** Cực nhanh, chia nhánh cây phi tuyến theo các ngưỡng khí tượng (gió, độ ẩm), tối ưu L1 loss chống outlier.\n"
+            "  + **TFT Transformer:** Cơ chế tự chú ý đa đầu nắm bắt phụ thuộc dài hạn và chọn lọc biến tự động, nhưng chi phí tính toán cao."
+        ),
+    ),
+    KnowledgeDocument(
+        doc_id="sweet_spot_ensemble",
+        title="Sự thống trị của Ensemble Weighted tại điểm ngọt 30 phút ở tầm xa 6h và 24h",
+        category="models",
+        keywords=[
+            "ensemble weighted",
+            "mo hinh quan quan",
+            "thong tri 6h 24h",
+            "weighted ensemble",
+            "tam xa 6h 24h",
+            "error diversity",
+            "bu tru sai so",
+            "mase 0.382",
+            "mase 0.469",
+            "diem ngot 30 phut",
+            "tai sao ensemble thong tri",
+        ],
+        source="knowledge_vault/04_Models_and_Architectures/03_Sweet_Spot_30m_Ensemble.md",
+        citations=["Mục 4.3 Báo cáo ThS", "Bảng 4.3 Đề án"],
+        content=(
+            "### Sự thống trị của Mô hình Quán quân Weighted Optimization Ensemble tại 30m:\n\n"
+            "- **Cơ chế tối ưu hóa trọng số lồi:** min_w sum |y_t - sum(w_i * y_hat_{i,t})| với sum(w_i)=1, w_i >= 0 "
+            "trên tập Validation, phối hợp 3 trường phái: LightGBM (ngưỡng phi tuyến), GRU (quán tính chuỗi), Random Forest (làm mượt).\n"
+            "- **Bảng thành tích vượt trội tại 30 phút:**\n"
+            "  + Tầm 1h (h=1 30m): MASE = 0.712 (cải thiện +28.8% so với baseline).\n"
+            "  + Tầm 6h (h=6 30m): MASE = 0.382 (cải thiện +25.5%, điểm tối ưu nhất toàn đề án).\n"
+            "  + Tầm 24h (h=24 30m): MASE = 0.469 (cải thiện +15.0%).\n"
+            "- **Tại sao Ensemble thống trị ở tầm xa 6h và 24h?**\n"
+            "  1. *Bù trừ sai số đa dạng (Error Diversity):* Sai số phân tán của cây LightGBM và sai số làm mượt của GRU triệt tiêu lẫn nhau, "
+            "hạ thấp đáng kể phương sai sai số tổng thể khi bước dự báo tăng xa.\n"
+            "  2. *Điểm ngọt Pareto 30 phút:* Tỷ lệ tín hiệu trên nhiễu (SNR) tối ưu giúp bộ trọng số cân bằng hoàn hảo giữa thích ứng và ổn định."
+        ),
+    ),
+    KnowledgeDocument(
+        doc_id="optuna_tuning",
+        title="Quy trình tối ưu siêu tham số Hyperparameter Tuning bằng Optuna TPE 50 trials",
+        category="models",
+        keywords=[
+            "optuna",
+            "tpe",
+            "50 trials",
+            "hyperparameter tuning",
+            "toi uu sieu tham so",
+            "validation set",
+            "early stopping",
+            "patience 10",
+            "quy trinh toi uu",
+            "loss l1",
+            "mae",
+        ],
+        source="knowledge_vault/04_Models_and_Architectures/04_Hyperparameter_Tuning_Optuna.md",
+        citations=["Mục 3.4 Báo cáo ThS", "Optuna Akiba (2019)"],
+        content=(
+            "### Quy trình tối ưu siêu tham số Hyperparameter Tuning bằng Optuna TPE 50 trials:\n\n"
+            "- **Phương pháp luận:** Áp dụng thuật toán Tree-structured Parzen Estimator (TPE) 50 trials độc lập cho mỗi mô hình.\n"
+            "- **Kỷ luật dữ liệu nghiêm ngặt:** Chỉ tối ưu trên Tập Xác Thực (Validation Set 10%, 10/2024 - 12/2024), "
+            "tuyệt đối KHÔNG chạm vào tập Test. Hàm mục tiêu tối thiểu hóa MAE để đồng bộ với MASE.\n"
+            "- **Cấu hình tối ưu tiêu biểu:**\n"
+            "  + *LightGBM:* learning_rate=0.042, num_leaves=31, max_depth=6, feature_fraction=0.78, objective='regression_l1'.\n"
+            "  + *GRU:* hidden_dim=64, num_layers=2, dropout=0.20, learning_rate=0.0012, batch_size=64 (AdamW + Cosine Annealing).\n"
+            "  + *ElasticNet:* alpha=0.085, l1_ratio=0.45.\n"
+            "- **Cơ chế Early Stopping:** patience=10 epochs cho GRU/LSTM và early_stopping_rounds=30 cho LightGBM, "
+            "chống triệt để hiện tượng học vẹt (overfitting)."
         ),
     ),
     KnowledgeDocument(
@@ -283,6 +420,46 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
         ),
     ),
     KnowledgeDocument(
+        doc_id="r2_out_of_sample_negative",
+        title="Tại sao hệ số xác định R² ngoài mẫu (Out-of-Sample) lại nhận giá trị âm?",
+        category="evaluation",
+        keywords=[
+            "r2 am",
+            "r2 out of sample",
+            "r2 ngoai mau",
+            "negative r2",
+            "ss_res",
+            "ss_tot",
+            "he so xac dinh",
+            "ngoai mau am",
+            "r2 am ngoai mau",
+            "he so r2",
+            "r bình âm",
+            "r2 am la gi",
+            "giai thich r2 am",
+            "tai sao r2 am",
+        ],
+        source="knowledge_vault/05_Evaluation_and_Uncertainty/01_Metrics_Standard_MASE_over_RMSE.md",
+        citations=["Hyndman & Koehler (2006)", "Armstrong (1985)", "Mục 3.5 Báo cáo ThS"],
+        content=(
+            "### Tại sao hệ số xác định R² ngoài mẫu (Out-of-Sample) lại nhận giá trị âm?\n\n"
+            "- **Định nghĩa toán học của R²:**\n"
+            "  $$R^2 = 1 - \\frac{SS_{res}}{SS_{tot}} = 1 - \\frac{\\sum_{t=1}^n (y_t - \\hat{y}_t)^2}{\\sum_{t=1}^n (y_t - \\bar{y}_{test})^2}$$\n\n"
+            "- **Tại sao R² có thể âm trong chuỗi thời gian ngoài mẫu (Out-of-Sample)?**\n"
+            "  1. **Trong OLS hồi quy cổ điển nội mẫu (In-sample):** Mô hình tuyến tính luôn có R² nằm trong [0, 1] do có chứa hệ số chặn "
+            "(intercept) và SS_res <= SS_tot theo định lý phân rã phương sai.\n"
+            "  2. **Trong dự báo chuỗi thời gian ngoài mẫu (Out-of-Sample):** Baseline ngầm định của R² là đường thẳng nằm ngang trung bình "
+            "y_bar_test. Giả định này hoàn toàn phi thực tế vì trong thực tế ta không thể biết trước giá trị trung bình tương lai của tập test! "
+            "Khi chuỗi thời gian có xu hướng (trend), chu kỳ mùa (seasonality), trôi dạt phân phối (concept drift), hoặc mô hình bị lệch pha "
+            "(phase lag), tổng bình phương sai số của mô hình SS_res hoàn toàn có thể vượt qua tổng phương sai tự nhiên của chuỗi test SS_tot. "
+            "Khi đó SS_res / SS_tot > 1 dẫn đến R² < 0.\n\n"
+            "- **Khẳng định tính đúng đắn & Liêm chính khoa học:**\n"
+            "  Giá trị R² < 0 KHÔNG PHẢI là lỗi lập trình hay mô hình bị sụp đổ, mà là minh chứng khoa học đanh thép chỉ ra rằng: "
+            "Hệ số R² là một thước đo phi lý, nguy hiểm và gây hiểu lầm nghiêm trọng trong dự báo chuỗi thời gian (Hyndman & Koehler, 2006). "
+            "Đó chính là lý do đề án thạc sĩ CTU dứt khoát loại bỏ R² và chọn MASE làm tiêu chuẩn vàng đồng nhất."
+        ),
+    ),
+    KnowledgeDocument(
         doc_id="diebold_mariano",
         title="Kiểm định ý nghĩa thống kê Diebold-Mariano & Hiệu chỉnh Harvey-HLN",
         category="evaluation",
@@ -296,19 +473,35 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "hln",
             "p-value",
             "dau am",
+            "dau duong",
+            "+13.729",
+            "-8.452",
+            "-5.891",
+            "-4.120",
             "bang 4.7",
+            "dong 1",
+            "dong 1 bang diebold mariano",
+            "tai sao dong 1 mang dau duong",
+            "tai sao dm mang dau am",
+            "quy uoc dau dm",
         ],
         source="knowledge_vault/05_Evaluation_and_Uncertainty/02_Diebold_Mariano_Hypothesis_Testing.md",
         citations=["Diebold & Mariano (1995)", "Harvey, Leybourne & Newbold (1997)", "Bảng 4.7 Đề án"],
         content=(
-            "### Kiểm định ý nghĩa thống kê Diebold-Mariano (DM Test) & Hiệu chỉnh HLN:\n\n"
+            "### Kiểm định ý nghĩa thống kê Diebold-Mariano (DM Test) & Hiệu chỉnh HLN (Bảng 4.7):\n\n"
             "- **Mục đích:** Khẳng định bằng toán học xác suất rằng sự vượt trội của mô hình không phải do ngẫu nhiên.\n"
-            "- **Hiệu chỉnh Harvey-HLN (1997):** Áp dụng công thức hiệu chỉnh mẫu hữu hạn cho tầm dự báo đa bước h > 1.\n"
-            "- **Giải trình quy ước dấu âm (Bảng 4.7):** Hàm vi phân tổn thất d_t = |e_{proposed}| - |e_{baseline}|. "
-            "Khi mô hình đề xuất có sai số nhỏ hơn mô hình cơ sở, trung bình d_t < 0. Do đó, thống kê DM mang DẤU ÂM LỚN "
-            "(ví dụ -8.452) và p < 0.001 chính là minh chứng mô hình đề xuất vượt trội có ý nghĩa thống kê.\n"
-            "- **4 cặp đối kháng thực nghiệm:** Ensemble vs Persistence (DM*=-8.452, p<0.001); GRU 15m vs Persistence (DM*=-5.891, p<0.001); "
-            "LightGBM vs ARIMA (DM*=-4.120, p=0.0002); Ensemble vs LightGBM (DM*=-2.134, p=0.033)."
+            "- **Hiệu chỉnh Harvey-HLN (1997):** Áp dụng công thức hiệu chỉnh mẫu hữu hạn cho tầm dự báo đa bước h > 1: "
+            "DM* = DM * sqrt([n + 1 - 2h + h(h-1)/n] / n).\n"
+            "- **Quy ước vi phân tổn thất & Bản chất dấu của DM:**\n"
+            "  Hàm sai số vi phân tổn thất: d_t = |e_{proposed, t}| - |e_{baseline, t}|.\n"
+            "  Thống kê DM chuẩn tắc kiểm định giả thuyết H0: E(d_t) = 0.\n"
+            "  + **Tại sao dòng 1 (1h) mang dấu dương (+13.729)?** Tại tầm cực ngắn 1h, chuỗi có tự tương quan rất cao (r = 0.86), "
+            "baseline ngây thơ Persistence có sai số cực nhỏ (|e_base| < |e_proposed|). Do đó d_t > 0 => d_bar > 0 => DM* = +13.729 "
+            "với p < 0.001. Con số dấu dương này phản ánh hoàn toàn trung thực với thực nghiệm: ở tầm 1h, Persistence đánh bại các mô hình học sâu đơn lẻ.\n"
+            "  + **Tại sao dòng 2, 3, 4 (6h, 24h) mang dấu âm (-8.452, -5.891, -4.120)?** Ở tầm xa 6h và 24h, quán tính tắt dần, mô hình đề xuất vượt trội "
+            "với sai số nhỏ hơn mô hình cơ sở (|e_proposed| < |e_baseline| => d_t < 0 => d_bar < 0 => DM* < 0). "
+            "Giá trị thống kê DM* = -8.452 (Ensemble vs Persistence ở 6h), -5.891 (GRU 15m vs Persistence), -4.120 (LightGBM vs ARIMA) "
+            "đều có p < 0.001, khẳng định mô hình đề xuất vượt trội có ý nghĩa thống kê 99.9%."
         ),
     ),
     KnowledgeDocument(
@@ -509,19 +702,35 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "luan an",
             "luan van",
             "de an",
+            "grill-me",
+            "grill me",
+            "grill-me holes",
+            "trong diem chat van",
+            "bao ve de an",
+            "cau hoi kho",
         ],
         source="knowledge_vault/07_Defense_Playbook_and_FAQ/01_Master_Defense_QnA_Hoi_Dong.md",
         citations=["Bộ 20 câu hỏi Hội đồng", "SLIDES_DEFENSE_PLAYBOOK.md"],
         content=(
-            "### Bộ câu hỏi - đáp trọng điểm trước Hội đồng Đề án Thạc sĩ:\n\n"
-            "1. **Tại sao dùng MASE?** MASE scale-independent, mẫu số chuẩn hóa đồng nhất 1.821 µg/m³, phân định rõ True Skill (<1.0).\n"
-            "2. **Tại sao DM mang dấu âm?** d_t = |e_proposed| - |e_baseline|. Sai số nhỏ hơn baseline tạo ra trung bình d_t < 0; "
-            "thống kê DM < 0 và p < 0.001 khẳng định mô hình vượt trội có ý nghĩa thống kê.\n"
-            "3. **Tại sao drop 19.810 giờ?** 19.810h là dữ liệu khuyết dài MNAR. Thà chịu mất mẫu còn hơn vẽ dữ liệu ảo (GAN/MICE) "
-            "làm sai lệch quy luật tự nhiên.\n"
-            "4. **Tại sao R² ngoài mẫu có thể âm?** R² so với đường trung bình ngang. Khi mô hình bị lệch pha ở dữ liệu ngoài mẫu, "
-            "tổng bình phương sai số mô hình lớn hơn phương sai dữ liệu, dẫn đến R² < 0.\n"
-            "5. **Tại sao phân luồng XAI?** Tree SHAP cho LightGBM chính xác 100% trong <100ms; Permutation cho GRU tránh bẫy 16h của Kernel SHAP."
+            "### Bộ câu hỏi - đáp trọng điểm trước Hội đồng Đề án Thạc sĩ (Grill-Me Defense Holes):\n\n"
+            "1. **Tại sao dùng MASE thay vì RMSE/MAE?** MASE scale-independent, mẫu số chuẩn hóa đồng nhất 1.821 µg/m³, "
+            "phân định rõ True Skill (<1.0) và cho phép so sánh công bằng giữa các trạm quan trắc.\n"
+            "2. **Tại sao dòng 1 bảng Diebold-Mariano mang dấu dương (+13.729) mà dòng 2, 3 mang dấu âm (-8.452)?**\n"
+            "   Dấu của DM theo hàm vi phân tổn thất d_t = |e_proposed| - |e_base|. Ở tầm 1h, Persistence có sai số nhỏ hơn do "
+            "tự tương quan cao r=0.86, dẫn đến d_t > 0 => DM* = +13.729. Ở tầm 6h và 24h, mô hình đề xuất vượt trội với sai số nhỏ hơn, "
+            "d_t < 0 => DM* = -8.452 và -5.891 với p < 0.001, khẳng định ưu thế có ý nghĩa thống kê 99.9%.\n"
+            "3. **Tại sao dũng cảm drop 19.810 giờ khuyết thiếu thay vì dùng GAN/Deep Learning?**\n"
+            "   19.810h là dữ liệu khuyết dài >24h mang bản chất MNAR. Vượt quá 24h, RMSE tái tạo bùng nổ >12 µg/m³ (>100% nồng độ nền). "
+            "Không dùng GAN/MICE để tự vẽ thêm dữ liệu ảo (chống Data Hallucination), bảo vệ tuyệt đối tính liêm chính nghiên cứu.\n"
+            "4. **Tại sao hệ số xác định R² ngoài mẫu (Out-of-Sample) lại nhận giá trị âm?**\n"
+            "   R² ngầm định đường trung bình tập test làm baseline (giả định biết trước tương lai). Khi chuỗi có xu hướng/mùa/trôi dạt "
+            "hoặc mô hình bị lệch pha, sai số mô hình SS_res vượt qua phương sai tự nhiên SS_tot, dẫn đến R² < 0. Đây là lý do loại bỏ R².\n"
+            "5. **Bẫy ngoại lai IQR 3.0 đã xóa nhầm dữ liệu ra sao?**\n"
+            "   Tukey IQR 3.0 gọt nhầm 66 đỉnh ô nhiễm thực tế (55 - 120 µg/m³) do phân phối Fat-tailed (Skewness=2.00, Kurtosis=6.15), "
+            "tạo ảo tưởng chính xác giả nhưng làm F1 cảnh báo tụt < 0.35. Đề án thay thế bằng Domain Bounds [0, 500] kết hợp S-ESD, "
+            "khôi phục F1 lên 0.782.\n"
+            "6. **Tại sao phân luồng XAI Tree SHAP vs Permutation?** Tree SHAP cho LightGBM chính xác 100% trong <100ms; "
+            "Permutation cho GRU/LSTM tránh bẫy 16 giờ của Kernel SHAP."
         ),
     ),
 ]

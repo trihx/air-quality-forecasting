@@ -67,6 +67,31 @@ class TestChatGuardrailsPresetQuestions:
         assert total_checked >= 20
 
 
+class TestChatGuardrailsGrillMeHoles:
+    """Verify high-stakes defense grill-me hole questions pass guardrails with 0 false positives."""
+
+    @pytest.mark.parametrize(
+        "query",
+        [
+            "Tại sao dòng 1 bảng Diebold-Mariano mang dấu dương (+13.729) mà các dòng sau lại mang dấu âm (-8.452)?",
+            "Tại sao dũng cảm Drop 19.810 giờ khuyết thiếu thay vì dùng GAN/Deep Learning để bù dữ liệu?",
+            "Tại sao hệ số xác định R² ngoài mẫu (Out-of-Sample) lại nhận giá trị âm?",
+            "Bẫy ngoại lai IQR 3.0 đã xóa nhầm dữ liệu ra sao và tại sao đề án dùng Domain Bounds [0, 500]?",
+            "Bẫy tự tương quan (r=0.86) ở bước 1h là gì và tại sao GRU 15m phá được bẫy này?",
+            "DM test dấu âm và dấu dương thể hiện điều gì?",
+            "R2 âm ngoài mẫu có phải do mô hình bị lỗi không?",
+            "Tại sao drop 19.810h dữ liệu khuyết dài?",
+            "Bẫy IQR 3.0 xóa nhầm bao nhiêu đỉnh ô nhiễm?",
+            "Chất vấn hội đồng về R2 out-of-sample âm",
+            "Phản biện đề án thạc sĩ về Diebold-Mariano dấu dương",
+        ],
+    )
+    def test_grill_me_holes_pass_guardrails(self, query: str):
+        is_valid, error = ChatGuardrails.validate_prompt(query)
+        assert is_valid is True, f"Blocked Grill-Me question: '{query}' -> {error}"
+        assert error is None
+
+
 class TestChatGuardrailsAcademicQueries:
     """Verify specialized scientific and thesis-specific queries pass guardrails."""
 
