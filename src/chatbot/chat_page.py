@@ -17,12 +17,25 @@ from src.chatbot.provider_config import (
     LOCAL_MODEL_RECOMMENDATIONS,
     PROVIDER_REGISTRY,
     detect_available_providers,
+    get_lm_studio_default_url,
     get_provider_from_registry,
+    is_cloud_environment,
     mask_api_key,
     validate_provider_connection,
 )
 
 logger = logging.getLogger(__name__)
+
+# Max messages retained in session to prevent OOM on 512MB RAM containers
+MAX_CHAT_HISTORY = 40
+
+
+def _trim_chat_history(messages: list[dict], max_history: int = MAX_CHAT_HISTORY) -> list[dict]:
+    """Trim chat history to keep memory bounded on low-RAM containers."""
+    if len(messages) > max_history:
+        return messages[-max_history:]
+    return messages
+
 
 # ── Preset questions for thesis defense preparation ──
 PRESET_QUESTIONS = {
@@ -244,7 +257,7 @@ def _render_provider_config():
             key="input_lm_studio_url",
             value=st.session_state.llm_provider_keys.get("lm_studio", {}).get(
                 "base_url",
-                PROVIDER_REGISTRY["lm_studio"]["base_url"],
+                get_lm_studio_default_url(),
             ),
         )
 
@@ -285,6 +298,8 @@ def _render_provider_config():
     local_cfg = st.session_state.llm_provider_keys.get("lm_studio", {})
     if local_cfg.get("api_key"):
         st.sidebar.success("🖥️ LM Studio: Đã cấu hình")
+    elif is_cloud_environment():
+        st.sidebar.caption("🖥️ LM Studio: Tắt (Môi trường Cloud)")
     else:
         st.sidebar.caption("🖥️ LM Studio: Fallback (auto-detect)")
 
@@ -332,7 +347,19 @@ def page_ai_assistant(results):
         elif local_providers:
             st.info("🖥️ AI: **LM Studio** (local)")
         else:
-            st.warning("⚠️ Chưa cấu hình AI — vào **⚙️ Cấu Hình AI Provider** ở sidebar")
+            if is_cloud_environment():
+                st.warning(
+                    "⚠️ Chưa kích hoạt AI Provider — Vui lòng dán Tunnel URL của Kaggle hoặc nhập Gemini API Key ở sidebar."
+                )
+                with st.expander("ℹ️ Hướng dẫn kích hoạt nhanh AI (Miễn phí 100%)", expanded=False):
+                    st.markdown(
+                        "- **Cách 1 (Nhanh nhất):** Lấy Google Gemini API Key miễn phí tại "
+                        "[Google AI Studio](https://aistudio.google.com/) rồi dán vào sidebar.\n"
+                        "- **Cách 2 (Mạnh mẽ):** Dùng Free GPU 32GB VRAM qua Kaggle Ollama. "
+                        "Xem hướng dẫn chi tiết trong mục **Kaggle Ollama** ở sidebar."
+                    )
+            else:
+                st.warning("⚠️ Chưa cấu hình AI — vào **⚙️ Cấu Hình AI Provider** ở sidebar")
 
     with col_info:
         # Show fallback chain
@@ -349,6 +376,11 @@ def page_ai_assistant(results):
                 st.caption(f"📚 Knowledge Base: {doc_count} tài liệu indexed (Vector RAG sẵn sàng)")
             else:
                 st.caption("📚 Knowledge Base: Sẵn sàng (Chế độ System Prompt tích hợp)")
+            if is_cloud_environment():
+                st.caption(
+                    "⚠️ Lưu ý: Trên Cloud Server Render (RAM 512MB), khuyến nghị sử dụng chế độ "
+                    "System Prompt tích hợp (đã chứa sẵn 100% tri thức và số liệu cốt lõi của đề án)."
+                )
         with reindex_col:
             btn_label = "🔄 Tạo Index" if doc_count == 0 else "🔄 Re-index"
             if st.button(btn_label, help="Cập nhật hoặc xây dựng vector index cho chatbot"):
@@ -362,6 +394,11 @@ def page_ai_assistant(results):
     except Exception as e:
         with kb_col:
             st.caption("📚 Knowledge Base: Sẵn sàng (Chế độ System Prompt tích hợp)")
+            if is_cloud_environment():
+                st.caption(
+                    "⚠️ Lưu ý: Trên Cloud Server Render (RAM 512MB), khuyến nghị sử dụng chế độ "
+                    "System Prompt tích hợp (đã chứa sẵn 100% tri thức và số liệu cốt lõi của đề án)."
+                )
         logger.warning(f"Knowledge Base initialization notice: {e}")
         kb = None
 
@@ -394,9 +431,11 @@ def page_ai_assistant(results):
 
     # ── Chat interface (main panel) ──
     with chat_col:
-        # Init chat history
+        # Init and trim chat history
         if "chat_messages" not in st.session_state:
             st.session_state.chat_messages = []
+        else:
+            st.session_state.chat_messages = _trim_chat_history(st.session_state.chat_messages)
 
         # Display chat history
         for msg in st.session_state.chat_messages:
@@ -419,13 +458,13 @@ def page_ai_assistant(results):
             is_valid, block_reason = ChatGuardrails.validate_prompt(prompt)
 
             if not is_valid:
-                # Add user message
+                # Add user message and block reason, trimmed
                 st.session_state.chat_messages.append({"role": "user", "content": prompt})
+                st.session_state.chat_messages.append({"role": "assistant", "content": block_reason})
+                st.session_state.chat_messages = _trim_chat_history(st.session_state.chat_messages)
+
                 with st.chat_message("user"):
                     st.markdown(prompt)
-
-                # Add guardrail block message
-                st.session_state.chat_messages.append({"role": "assistant", "content": block_reason})
                 with st.chat_message("assistant"):
                     st.markdown(block_reason)
 
@@ -434,6 +473,7 @@ def page_ai_assistant(results):
 
             # Add user message
             st.session_state.chat_messages.append({"role": "user", "content": prompt})
+            st.session_state.chat_messages = _trim_chat_history(st.session_state.chat_messages)
             with st.chat_message("user"):
                 st.markdown(prompt)
 
@@ -478,6 +518,7 @@ def page_ai_assistant(results):
 
             # Save assistant response
             st.session_state.chat_messages.append({"role": "assistant", "content": response})
+            st.session_state.chat_messages = _trim_chat_history(st.session_state.chat_messages)
 
         # ── Chat controls ──
         if st.session_state.chat_messages and st.button("🗑️ Xóa lịch sử chat", type="secondary"):

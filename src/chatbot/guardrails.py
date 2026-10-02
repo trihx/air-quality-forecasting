@@ -24,20 +24,30 @@ class ChatGuardrails:
         r"bây giờ bạn là",
         r"system prompt",
         r"developer mode",
-        r"dan (do anything now)",
+        r"dan \(?do anything now\)?",
+        r"\bdan mode\b",
         r"forget everything",
         r"new instructions:",
     ]
 
     # Danh sách các chủ đề liên quan (Positive List)
     RELEVANT_TOPICS = [
+        # Domain & Vị trí địa lý
         r"pm2\.5",
         r"air quality",
         r"không khí",
         r"thời tiết",
+        r"khí tượng",
+        r"nhiệt độ",
+        r"độ ẩm",
+        r"gió",
+        r"áp suất",
         r"iot",
         r"sensor",
         r"cảm biến",
+        r"sa đéc",
+        r"đồng tháp",
+        # Dự báo & Machine Learning cơ bản
         r"dự báo",
         r"forecast",
         r"predict",
@@ -48,6 +58,7 @@ class ChatGuardrails:
         r"ai",
         r"model",
         r"mô hình",
+        # Mô hình cụ thể
         r"lgbm",
         r"lightgbm",
         r"gru",
@@ -59,6 +70,32 @@ class ChatGuardrails:
         r"ensemble",
         r"baseline",
         r"persistence",
+        # Thống kê & Kiểm định chuỗi thời gian
+        r"chuỗi thời gian",
+        r"time series",
+        r"iqr",
+        r"outlier",
+        r"ngoại lai",
+        r"tính dừng",
+        r"stationarity",
+        r"adf",
+        r"kpss",
+        r"s-esd",
+        r"shapiro",
+        r"ljung-box",
+        r"autocorrelation",
+        r"tự tương quan",
+        r"acf",
+        r"pacf",
+        r"diurnal",
+        r"chu kỳ",
+        r"resample",
+        r"resampling",
+        r"shuffle",
+        # Metrics & Đánh giá
+        r"đánh giá",
+        r"horizon",
+        r"horizons",
         r"metric",
         r"mase",
         r"mae",
@@ -66,10 +103,31 @@ class ChatGuardrails:
         r"mape",
         r"r2",
         r"r bình",
+        r"diebold-mariano",
+        r"dm test",
+        r"cqr",
+        r"aci",
+        r"conformal",
+        r"prediction interval",
+        r"khoảng tin cậy",
+        r"khoảng dự báo",
+        r"độ bao phủ",
+        r"coverage",
+        r"pareto",
+        r"ablation",
+        r"bóc tách",
+        r"tipping point",
+        r"điểm bùng phát",
+        r"14–17",
+        r"14-17",
+        r"19\.810",
+        r"19810",
+        # Dữ liệu & Tiền xử lý
         r"data",
         r"dữ liệu",
         r"missing",
         r"imputation",
+        r"nội suy",
         r"spline",
         r"knn",
         r"feature",
@@ -77,9 +135,14 @@ class ChatGuardrails:
         r"lag",
         r"rolling",
         r"temporal",
+        r"split",
+        r"train",
+        r"validation",
+        r"test",
         r"leakage",
         r"rò rỉ",
         r"anti-leakage",
+        # Đề án & Nghiên cứu
         r"luận văn",
         r"đề án",
         r"đồ án",
@@ -92,9 +155,15 @@ class ChatGuardrails:
         r"ứng dụng",
         r"workflow",
         r"quy trình",
+        r"pipeline",
         r"shap",
         r"explainability",
         r"giải thích",
+        r"bài học",
+        r"kinh nghiệm",
+        r"khắc phục",
+        r"lỗi",
+        # Hội thoại tự nhiên cơ bản
         r"chào",
         r"hello",
         r"hi",
@@ -128,6 +197,13 @@ class ChatGuardrails:
     _injection_regex = None
     _relevant_regex = None
     _irrelevant_regex = None
+
+    @classmethod
+    def reset_cache(cls):
+        """Reset compiled regex caches."""
+        cls._injection_regex = None
+        cls._relevant_regex = None
+        cls._irrelevant_regex = None
 
     @classmethod
     def get_injection_regex(cls):

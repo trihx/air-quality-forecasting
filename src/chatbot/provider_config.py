@@ -31,6 +31,11 @@ class LLMProvider:
             self.display_name = self.name
 
 
+def get_lm_studio_default_url() -> str:
+    """Get default LM Studio URL dynamically from environment."""
+    return os.getenv("LM_STUDIO_URL", "http://host.docker.internal:8888/v1")
+
+
 # ── Provider Registry ──
 
 PROVIDER_REGISTRY: dict[str, dict] = {
@@ -72,7 +77,7 @@ PROVIDER_REGISTRY: dict[str, dict] = {
     },
     "lm_studio": {
         "display_name": "LM Studio (Local)",
-        "base_url": os.getenv("LM_STUDIO_URL", "http://host.docker.internal:8888/v1"),
+        "base_url": "http://host.docker.internal:8888/v1",
         "default_model": "",  # Auto-detect from server
         "env_key": "LM_STUDIO_API_KEY",
         "priority": 99,  # Fallback
@@ -186,7 +191,9 @@ def get_provider_from_registry(
 
     # Ensure Ollama endpoints have /v1 suffix
     final_base_url = custom_base_url or reg["base_url"]
-    if provider_name == "kaggle_ollama":
+    if provider_name == "lm_studio" and not custom_base_url:
+        final_base_url = get_lm_studio_default_url()
+    elif provider_name == "kaggle_ollama":
         final_base_url = custom_base_url or os.getenv(reg["env_key"], "") or reg["base_url"]
         if final_base_url:
             final_base_url = final_base_url.rstrip("/")
@@ -204,6 +211,19 @@ def get_provider_from_registry(
     )
 
 
+def is_cloud_environment() -> bool:
+    """Check if running in a cloud hosting environment (Render, Vercel, Fly, etc.).
+
+    Detects common cloud platform environment variables or production flags.
+    """
+    cloud_env_keys = ("RENDER", "RENDER_SERVICE_ID", "VERCEL", "FLY_ALLOC_ID")
+    if any(os.getenv(k) for k in cloud_env_keys):
+        return True
+    if os.getenv("ENVIRONMENT", "").lower() == "production":
+        return True
+    return os.getenv("IS_CLOUD", "").lower() in ("true", "1", "yes")
+
+
 def detect_available_providers(
     session_keys: dict | None = None,
 ) -> list[LLMProvider]:
@@ -217,6 +237,7 @@ def detect_available_providers(
     """
     providers = []
     session_keys = session_keys or {}
+    is_cloud = is_cloud_environment()
 
     for name, reg in PROVIDER_REGISTRY.items():
         # Check session state first, then env vars
@@ -242,18 +263,37 @@ def detect_available_providers(
                 )
                 providers.append(provider)
         elif name == "lm_studio":
-            # LM Studio is always "available" as fallback — connection check at runtime
-            base_url = session_cfg.get("base_url", "") or reg["base_url"]
-            provider = LLMProvider(
-                name=name,
-                display_name=reg["display_name"],
-                base_url=base_url,
-                api_key=api_key or "lm-studio",
-                model=session_cfg.get("model", "") or reg["default_model"],
-                priority=reg["priority"],
-                is_local=True,
-            )
-            providers.append(provider)
+            default_docker_url = "http://host.docker.internal:8888/v1"
+            session_url = session_cfg.get("base_url", "").strip()
+            env_url = os.getenv("LM_STUDIO_URL", "").strip()
+
+            if is_cloud:
+                # On Cloud: only add LM Studio if explicitly configured with a non-default custom URL
+                candidate_url = session_url or env_url
+                if candidate_url and candidate_url.rstrip("/") != default_docker_url.rstrip("/"):
+                    provider = LLMProvider(
+                        name=name,
+                        display_name=reg["display_name"],
+                        base_url=candidate_url,
+                        api_key=api_key or "lm-studio",
+                        model=session_cfg.get("model", "") or reg["default_model"],
+                        priority=reg["priority"],
+                        is_local=True,
+                    )
+                    providers.append(provider)
+            else:
+                # Local environment: LM Studio is always available as fallback
+                base_url = session_url or env_url or get_lm_studio_default_url()
+                provider = LLMProvider(
+                    name=name,
+                    display_name=reg["display_name"],
+                    base_url=base_url,
+                    api_key=api_key or "lm-studio",
+                    model=session_cfg.get("model", "") or reg["default_model"],
+                    priority=reg["priority"],
+                    is_local=True,
+                )
+                providers.append(provider)
         elif api_key:
             provider = LLMProvider(
                 name=name,
@@ -269,6 +309,30 @@ def detect_available_providers(
     # Sort by priority
     providers.sort(key=lambda p: p.priority)
     return providers
+
+
+def sanitize_error_message(error_str: str) -> str:
+    """Remove sensitive authorization tokens, keys, and credentials from error strings."""
+    import re
+
+    # Redact Bearer / Authorization tokens
+    sanitized = re.sub(
+        r"(Bearer\s+)[A-Za-z0-9_\-\.]+",
+        r"\1[REDACTED]",
+        error_str,
+        flags=re.IGNORECASE,
+    )
+    # Redact api_key=..., key=..., token=...
+    sanitized = re.sub(
+        r"((?:api[_-]?key|token|auth(?:orization)?|secret)\s*[:=]\s*)[A-Za-z0-9_\-\.]+",
+        r"\1[REDACTED]",
+        sanitized,
+        flags=re.IGNORECASE,
+    )
+    # Redact OpenAI sk-... or Google AIza... tokens
+    sanitized = re.sub(r"\b(sk-[A-Za-z0-9_\-]{8,})\b", "[REDACTED_KEY]", sanitized)
+    sanitized = re.sub(r"\b(AIza[A-Za-z0-9_\-]{10,})\b", "[REDACTED_KEY]", sanitized)
+    return sanitized
 
 
 def validate_provider_connection(provider: LLMProvider) -> tuple[bool, str]:
@@ -289,7 +353,7 @@ def validate_provider_connection(provider: LLMProvider) -> tuple[bool, str]:
         model_count = len(models.data) if models.data else 0
         return True, f"Kết nối thành công ({model_count} models)"
     except Exception as e:
-        error = str(e)
+        error = sanitize_error_message(str(e))
         if "401" in error or "403" in error or "invalid" in error.lower():
             return False, "API key không hợp lệ"
         if "Connection" in error or "refused" in error or "timeout" in error.lower():

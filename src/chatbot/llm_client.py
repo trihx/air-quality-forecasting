@@ -7,7 +7,9 @@ Supports tiered fallback across multiple providers:
 All providers use OpenAI-compatible API — zero extra dependencies.
 """
 
+import hashlib
 import logging
+from collections import OrderedDict
 from collections.abc import Generator
 
 from openai import OpenAI
@@ -15,7 +17,9 @@ from openai import OpenAI
 from src.chatbot.provider_config import (
     LLMProvider,
     detect_available_providers,
+    is_cloud_environment,
     mask_api_key,
+    sanitize_error_message,
 )
 
 logger = logging.getLogger(__name__)
@@ -61,17 +65,41 @@ Bạn là trợ lý AI phân tích kỹ thuật chuyên sâu về hệ thống \
 """
 
 
-def _build_client(provider: LLMProvider) -> OpenAI | None:
-    """Create OpenAI-compatible client for any provider."""
+_MAX_CLIENT_CACHE_SIZE = 8
+_CLIENT_CACHE: OrderedDict[tuple[str, str, float], OpenAI] = OrderedDict()
+
+
+def clear_client_cache() -> None:
+    """Clear cached OpenAI client instances to reset connection pools."""
+    _CLIENT_CACHE.clear()
+
+
+def _build_client(provider: LLMProvider, timeout: float = 15.0) -> OpenAI | None:
+    """Create or retrieve cached OpenAI-compatible client for any provider.
+
+    Reuses existing client instances to preserve HTTP connection pools and prevent
+    socket descriptor exhaustion. Uses hashed key and bounds cache size to 8 entries.
+    """
+    key_hash = hashlib.sha256(provider.api_key.encode("utf-8")).hexdigest()[:16]
+    cache_key = (provider.base_url, key_hash, timeout)
+
+    if cache_key in _CLIENT_CACHE:
+        _CLIENT_CACHE.move_to_end(cache_key)
+        return _CLIENT_CACHE[cache_key]
+
     try:
         client = OpenAI(
             base_url=provider.base_url,
             api_key=provider.api_key,
-            timeout=60.0,
+            timeout=timeout,
         )
+        while len(_CLIENT_CACHE) >= _MAX_CLIENT_CACHE_SIZE:
+            _CLIENT_CACHE.popitem(last=False)
+        _CLIENT_CACHE[cache_key] = client
         return client
     except Exception as e:
-        logger.error(f"Cannot create client for {provider.display_name}: {e}")
+        sanitized_err = sanitize_error_message(str(e))
+        logger.error(f"Cannot create client for {provider.display_name}: {sanitized_err}")
         return None
 
 
@@ -129,12 +157,29 @@ def _try_stream_provider(
         return None
 
     model = provider.model
-    if not model and (provider.is_local or provider.name == "kaggle_ollama"):
-        # Auto-detect model for LM Studio / Kaggle Ollama
+    if provider.name == "kaggle_ollama":
+        # Auto-detect real model on Kaggle Ollama server if model not set or doesn't match
+        try:
+            models_list = client.models.list()
+            available_ids = [m.id for m in models_list.data] if models_list.data else []
+            if available_ids:
+                if not model or model not in available_ids:
+                    model = available_ids[0]
+                    provider.model = model
+            elif not model:
+                model = "qwen3:4b"
+        except Exception as e:
+            sanitized_err = sanitize_error_message(str(e))
+            logger.warning(f"Could not auto-detect Kaggle model: {sanitized_err}")
+            if not model:
+                model = "qwen3:4b"
+    elif not model and provider.is_local:
+        # Auto-detect model for LM Studio
         try:
             models_list = client.models.list()
             if models_list.data:
                 model = models_list.data[0].id
+                provider.model = model
             else:
                 return None
         except Exception:
@@ -153,14 +198,49 @@ def _try_stream_provider(
         )
 
         def _gen():
-            for chunk in stream:
-                if chunk.choices and chunk.choices[0].delta.content:
-                    yield chunk.choices[0].delta.content
+            try:
+                for chunk in stream:
+                    if chunk.choices and chunk.choices[0].delta.content:
+                        yield chunk.choices[0].delta.content
+            except Exception as stream_err:
+                sanitized_err = sanitize_error_message(str(stream_err))
+                logger.warning(f"Stream interrupted on {provider.display_name}: {sanitized_err}")
+                yield "\n\n⚠️ *[Kết nối bị gián đoạn giữa chừng]*"
 
         return _gen()
     except Exception as e:
-        error_msg = str(e)
+        error_msg = sanitize_error_message(str(e))
         logger.warning(f"Provider {provider.display_name} failed: {error_msg[:100]}")
+        # If Kaggle Ollama failed due to model issue, retry with first available model if different
+        if provider.name == "kaggle_ollama" and ("not found" in error_msg.lower() or "404" in error_msg):
+            try:
+                models_list = client.models.list()
+                if models_list.data and models_list.data[0].id != model:
+                    fallback_model = models_list.data[0].id
+                    logger.info(f"Retrying Kaggle Ollama with detected model: {fallback_model}")
+                    provider.model = fallback_model
+                    retry_stream = client.chat.completions.create(
+                        model=fallback_model,
+                        messages=full_messages,  # type: ignore[arg-type]
+                        temperature=temperature,
+                        max_tokens=max_tokens,
+                        stream=True,
+                    )
+
+                    def _retry_gen():
+                        try:
+                            for chunk in retry_stream:
+                                if chunk.choices and chunk.choices[0].delta.content:
+                                    yield chunk.choices[0].delta.content
+                        except Exception as retry_stream_err:
+                            sanitized_err = sanitize_error_message(str(retry_stream_err))
+                            logger.warning(f"Retry stream interrupted on {provider.display_name}: {sanitized_err}")
+                            yield "\n\n⚠️ *[Kết nối bị gián đoạn giữa chừng]*"
+
+                    return _retry_gen()
+            except Exception as retry_err:
+                sanitized_err = sanitize_error_message(str(retry_err))
+                logger.warning(f"Retry Kaggle Ollama failed: {sanitized_err}")
         return None
 
 
@@ -201,13 +281,22 @@ def chat_stream(
         providers = detect_available_providers(session_keys)
 
     if not providers:
-        yield (
-            "⚠️ Chưa cấu hình LLM provider nào.\n\n"
-            "**Hướng dẫn:**\n"
-            "1. Vào **⚙️ Cấu Hình AI** ở sidebar bên trái\n"
-            "2. Nhập API key (khuyến nghị: **Gemini** — miễn phí)\n"
-            "3. Hoặc cài **LM Studio** trên máy và load model\n"
-        )
+        if is_cloud_environment():
+            yield (
+                "⚠️ Chưa kích hoạt AI Provider nào trên Cloud Server.\n\n"
+                "**Hướng dẫn kích hoạt (Hoàn toàn Miễn phí):**\n"
+                "1. **Google Gemini (Khuyên dùng):** Nhập API Key miễn phí (15 RPM) tại **⚙️ Cấu Hình AI Provider** ở sidebar\n"
+                "2. **Kaggle Ollama (Free GPU 32GB):** Dán Cloudflare Tunnel URL từ Kaggle notebook vào sidebar\n"
+                "3. **Groq Cloud:** Nhập Groq API Key siêu tốc (miễn phí 30 RPM)\n"
+            )
+        else:
+            yield (
+                "⚠️ Chưa cấu hình LLM provider nào.\n\n"
+                "**Hướng dẫn:**\n"
+                "1. Vào **⚙️ Cấu Hình AI** ở sidebar bên trái\n"
+                "2. Nhập API key (khuyến nghị: **Gemini** — miễn phí)\n"
+                "3. Hoặc cài **LM Studio** trên máy và load model\n"
+            )
         return
 
     # Try each provider in priority order
@@ -230,12 +319,23 @@ def chat_stream(
 
     # All providers failed
     tried_str = ", ".join(tried)
-    yield (
-        f"❌ Không thể kết nối với bất kỳ LLM nào.\n\n"
-        f"**Đã thử:** {tried_str}\n\n"
-        "**Hướng dẫn khắc phục:**\n"
-        "1. Kiểm tra kết nối internet (cho Cloud API)\n"
-        "2. Kiểm tra API key còn hạn sử dụng\n"
-        "3. Mở LM Studio → Load model → Bật Server port 8888\n"
-        "4. Reload trang dashboard\n"
-    )
+    if is_cloud_environment():
+        yield (
+            f"❌ Không thể kết nối với bất kỳ AI Provider nào.\n\n"
+            f"**Đã thử:** {tried_str}\n\n"
+            "**Hướng dẫn khắc phục trên Cloud Server:**\n"
+            "1. Kiểm tra lại Google Gemini API Key hoặc Groq API Key (hết quota / sai key)\n"
+            "2. Nếu dùng Kaggle Ollama: Kiểm tra Cloudflare Tunnel URL còn online không (Kaggle session có bị timeout không)\n"
+            "3. Cập nhật cấu hình tại **⚙️ Cấu Hình AI Provider** ở sidebar\n"
+            "4. Reload lại trang dashboard\n"
+        )
+    else:
+        yield (
+            f"❌ Không thể kết nối với bất kỳ LLM nào.\n\n"
+            f"**Đã thử:** {tried_str}\n\n"
+            "**Hướng dẫn khắc phục:**\n"
+            "1. Kiểm tra kết nối internet (cho Cloud API)\n"
+            "2. Kiểm tra API key còn hạn sử dụng\n"
+            "3. Mở LM Studio → Load model → Bật Server port 8888\n"
+            "4. Reload trang dashboard\n"
+        )
