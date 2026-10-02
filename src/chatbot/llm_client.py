@@ -229,6 +229,59 @@ def _try_stream_provider(
     if not model:
         return None
 
+    def _create_guarded_generator(active_client, stream_obj, active_model):
+        def _gen():
+            total_yielded_chars = 0
+            interrupted = False
+            try:
+                for chunk in stream_obj:
+                    if not chunk.choices:
+                        continue
+                    delta = chunk.choices[0].delta
+                    content = getattr(delta, "content", None) or ""
+                    # Check reasoning content (e.g. Qwen 3 thinking tokens)
+                    reasoning = getattr(delta, "reasoning_content", None) or getattr(delta, "thinking", None) or ""
+                    if reasoning:
+                        logger.debug("Received reasoning token from %s", provider.display_name)
+                    if content:
+                        total_yielded_chars += len(content)
+                        yield content
+            except Exception as stream_err:
+                interrupted = True
+                sanitized_err = sanitize_error_message(str(stream_err))
+                logger.warning(f"Stream interrupted on {provider.display_name}: {sanitized_err}")
+                yield "\n\n⚠️ *[Kết nối bị gián đoạn giữa chừng]*"
+
+            # Anti-Empty Guard: If stream finished normally without exception but produced 0 content chars
+            # (e.g. model consumed tokens only in thinking or stream closed early),
+            # execute a single non-stream call to retrieve the complete answer.
+            if total_yielded_chars == 0 and not interrupted:
+                logger.info(
+                    f"Stream yielded 0 content chars on {provider.display_name}. "
+                    "Triggering anti-empty non-streaming fallback."
+                )
+                try:
+                    completion = active_client.chat.completions.create(
+                        model=active_model,
+                        messages=full_messages,  # type: ignore[arg-type]
+                        temperature=temperature,
+                        max_tokens=max_tokens,
+                        stream=False,
+                    )
+                    if completion.choices and completion.choices[0].message:
+                        msg = completion.choices[0].message
+                        raw_content = msg.content or ""
+                        raw_reasoning = getattr(msg, "reasoning_content", None) or getattr(msg, "thinking", None) or ""
+                        if raw_content and raw_content.strip():
+                            yield raw_content
+                        elif raw_reasoning and raw_reasoning.strip():
+                            yield f"*(Trích xuất từ quá trình suy luận của mô hình)*\n\n{raw_reasoning.strip()}"
+                except Exception as fallback_err:
+                    sanitized_err = sanitize_error_message(str(fallback_err))
+                    logger.warning(f"Non-stream fallback failed on {provider.display_name}: {sanitized_err}")
+
+        return _gen()
+
     try:
         stream = client.chat.completions.create(
             model=model,
@@ -238,17 +291,7 @@ def _try_stream_provider(
             stream=True,
         )
 
-        def _gen():
-            try:
-                for chunk in stream:
-                    if chunk.choices and chunk.choices[0].delta.content:
-                        yield chunk.choices[0].delta.content
-            except Exception as stream_err:
-                sanitized_err = sanitize_error_message(str(stream_err))
-                logger.warning(f"Stream interrupted on {provider.display_name}: {sanitized_err}")
-                yield "\n\n⚠️ *[Kết nối bị gián đoạn giữa chừng]*"
-
-        return _gen()
+        return _create_guarded_generator(client, stream, model)
     except Exception as e:
         error_msg = sanitize_error_message(str(e))
         logger.warning(f"Provider {provider.display_name} failed: {error_msg[:100]}")
@@ -268,17 +311,7 @@ def _try_stream_provider(
                         stream=True,
                     )
 
-                    def _retry_gen():
-                        try:
-                            for chunk in retry_stream:
-                                if chunk.choices and chunk.choices[0].delta.content:
-                                    yield chunk.choices[0].delta.content
-                        except Exception as retry_stream_err:
-                            sanitized_err = sanitize_error_message(str(retry_stream_err))
-                            logger.warning(f"Retry stream interrupted on {provider.display_name}: {sanitized_err}")
-                            yield "\n\n⚠️ *[Kết nối bị gián đoạn giữa chừng]*"
-
-                    return _retry_gen()
+                    return _create_guarded_generator(client, retry_stream, fallback_model)
             except Exception as retry_err:
                 sanitized_err = sanitize_error_message(str(retry_err))
                 logger.warning(f"Retry Kaggle Ollama failed: {sanitized_err}")
@@ -351,10 +384,18 @@ def chat_stream(
 
         gen = _try_stream_provider(provider, full_messages, temperature, max_tokens)
         if gen is not None:
-            # Yield provider info header
-            yield f"*🤖 {provider.display_name}*\n\n"
-            yield from gen
-            return
+            # Peek first chunk to verify provider actually produces content
+            try:
+                first_chunk = next(gen)
+            except StopIteration:
+                first_chunk = None
+
+            if first_chunk is not None:
+                # Yield provider info header
+                yield f"*🤖 {provider.display_name}*\n\n"
+                yield first_chunk
+                yield from gen
+                return
 
         tried.append(provider.display_name)
 

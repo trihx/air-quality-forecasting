@@ -5,6 +5,8 @@ Indexes project documentation into ChromaDB for context-aware Q&A.
 Uses sentence-transformers for embedding, ChromaDB for vector storage.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 from pathlib import Path
@@ -263,6 +265,35 @@ def _load_dashboard_content_json() -> list[dict]:
         return []
 
 
+def _load_vault_docs() -> list[dict]:
+    """Load markdown files from knowledge_vault directory."""
+    vault_dir = PROJECT_ROOT / "knowledge_vault"
+    if not vault_dir.exists():
+        return []
+    docs = []
+    for md_path in vault_dir.rglob("*.md"):
+        try:
+            content = md_path.read_text(encoding="utf-8")
+            rel_path = str(md_path.relative_to(PROJECT_ROOT))
+            chunks = _chunk_text(content)
+            for i, chunk in enumerate(chunks):
+                docs.append(
+                    {
+                        "content": chunk,
+                        "metadata": {
+                            "source": rel_path,
+                            "type": "obsidian_vault",
+                            "chunk_index": i,
+                        },
+                    }
+                )
+        except Exception as e:
+            logger.warning(f"Failed to load {md_path}: {e}")
+    if docs:
+        logger.info(f"Loaded {len(docs)} chunks from knowledge_vault")
+    return docs
+
+
 class KnowledgeBase:
     """Vector-based knowledge base using ChromaDB + sentence-transformers."""
 
@@ -352,6 +383,7 @@ class KnowledgeBase:
         # Load all knowledge
         all_docs = (
             _load_markdown_docs()
+            + _load_vault_docs()
             + _load_experiment_results()
             + _load_info_cards_from_db()
             + _load_dashboard_content_json()
@@ -380,15 +412,21 @@ class KnowledgeBase:
         """
         Search for relevant context given a query.
 
+        Falls back automatically to Zero-Dependency Curated Knowledge Store
+        whenever ChromaDB is not indexed, empty, or returns no matches.
         Returns list of {content, source, score} dicts.
         """
         if not self.is_indexed():
-            return []
+            from src.chatbot.knowledge_store import search_curated_knowledge
+
+            return search_curated_knowledge(query, top_k=n_results)
 
         try:
             collection = self._get_collection(with_embedding=True)
             if collection.count() == 0:
-                return []
+                from src.chatbot.knowledge_store import search_curated_knowledge
+
+                return search_curated_knowledge(query, top_k=n_results)
 
             results = collection.query(
                 query_texts=[query],
@@ -412,10 +450,24 @@ class KnowledgeBase:
                             }
                         )
                         logger.debug(f"RAG match: score={score:.3f} src={meta.get('source')}")
+
+            if not docs:
+                from src.chatbot.knowledge_store import search_curated_knowledge
+
+                return search_curated_knowledge(query, top_k=n_results)
+
             return docs
         except Exception as e:
             logger.warning(f"RAG search error: {e}")
-            return []
+            from src.chatbot.knowledge_store import search_curated_knowledge
+
+            return search_curated_knowledge(query, top_k=n_results)
+
+    def get_all_curated_topics(self) -> list[str]:
+        """Return list of available curated topics from the curated knowledge store."""
+        from src.chatbot.knowledge_store import get_all_curated_topics
+
+        return get_all_curated_topics()
 
 
 # Singleton instance
