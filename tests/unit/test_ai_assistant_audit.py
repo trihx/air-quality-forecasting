@@ -84,6 +84,7 @@ class TestChatGuardrailsGrillMeHoles:
             "Bẫy IQR 3.0 xóa nhầm bao nhiêu đỉnh ô nhiễm?",
             "Chất vấn hội đồng về R2 out-of-sample âm",
             "Phản biện đề án thạc sĩ về Diebold-Mariano dấu dương",
+            "5 hạn chế lớn nhất của đề án là gì và giải pháp kỹ thuật đột phá tương ứng là gì?",
         ],
     )
     def test_grill_me_holes_pass_guardrails(self, query: str):

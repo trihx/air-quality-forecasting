@@ -63,6 +63,7 @@ PRESET_QUESTIONS = {
         "Tại sao hệ số xác định R² ngoài mẫu (Out-of-Sample) lại nhận giá trị âm?",
         "Bẫy ngoại lai IQR 3.0 đã xóa nhầm dữ liệu ra sao và tại sao đề án dùng Domain Bounds [0, 500]?",
         "Bẫy tự tương quan (r=0.86) ở bước 1h là gì và tại sao GRU 15m phá được bẫy này?",
+        "5 hạn chế lớn nhất của đề án là gì và giải pháp kỹ thuật đột phá tương ứng là gì?",
     ],
     "📋 Phương Pháp Luận & Tính Liêm Chính": [
         "Giải thích quy trình pipeline 7 bước từ dữ liệu thô đến mô hình",

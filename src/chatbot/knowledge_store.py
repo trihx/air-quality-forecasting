@@ -730,7 +730,60 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "tạo ảo tưởng chính xác giả nhưng làm F1 cảnh báo tụt < 0.35. Đề án thay thế bằng Domain Bounds [0, 500] kết hợp S-ESD, "
             "khôi phục F1 lên 0.782.\n"
             "6. **Tại sao phân luồng XAI Tree SHAP vs Permutation?** Tree SHAP cho LightGBM chính xác 100% trong <100ms; "
-            "Permutation cho GRU/LSTM tránh bẫy 16 giờ của Kernel SHAP."
+            "Permutation cho GRU/LSTM tránh bẫy 16 giờ của Kernel SHAP.\n"
+            "7. **5 Hạn chế lớn nhất và giải pháp kỹ thuật đột phá là gì?**\n"
+            "   - (1) Khuyết 19.810h -> Hardware Ring-Buffer 64MB + Solar & Neural ODE (giảm mất mẫu <3%).\n"
+            "   - (2) Trạm đơn lẻ Sa Đéc -> Spatial PINN + Vệ tinh CAMS downscaling 40km xuống 1km (Heatmap 2D).\n"
+            "   - (3) Sai số sensor ±3 µg/m³ -> US-EPA Kohler hygroscopic correction (hạ error floor về ±1,1 µg/m³).\n"
+            "   - (4) Thiếu biến gió -> Đồng hóa ERA5-Land vector gió & Ventilation Index (phát hiện sớm trước 3-6h).\n"
+            "   - (5) Ensemble Bias +1,30 µg/m³ -> Dynamic Conformal Bias Calibration (kéo bias về ±0,08 µg/m³, triệt tiêu Alarm Fatigue)."
+        ),
+    ),
+    KnowledgeDocument(
+        doc_id="limitations_and_solutions",
+        title="5 Hạn chế Cốt lõi của Đề án & Giải pháp Công nghệ Đột phá Tương ứng",
+        category="defense",
+        keywords=[
+            "han che",
+            "giai phap",
+            "khac phuc",
+            "limitations",
+            "solutions",
+            "hardware buffer",
+            "neural ode",
+            "kohler",
+            "do am",
+            "hygroscopic",
+            "bias",
+            "alarm fatigue",
+            "era5-land",
+            "vector gio",
+            "spatial downscaling",
+            "5 han che",
+            "han che lon nhat",
+            "nhuoc diem",
+            "5 han che va giai phap",
+            "error floor",
+        ],
+        source="knowledge_vault/07_Defense_Playbook_and_FAQ/03_Limitations_and_Actionable_Solutions.md",
+        citations=["Mục 5.3 Báo cáo ThS", "US-EPA RH Correction", "Chen et al. (2018) Neural ODE"],
+        content=(
+            "### 5 Hạn chế Cốt lõi của Đề án & Giải pháp Công nghệ Đột phá Tương ứng (§5.3):\n\n"
+            "1. **Gián đoạn dữ liệu quan trắc 89 ngày/năm (Drop 19.810h):**\n"
+            "   - *Hạn chế:* Sự cố mất điện, rớt mạng cục bộ khiến khuyết 74% dữ liệu tích lũy qua 38 tháng, phải loại bỏ 19.810 giờ khuyết dài >24h (MNAR).\n"
+            "   - *Giải pháp:* Tích hợp Hardware Ring-Buffer (MicroSD/SPI Flash 64MB) + nguồn LiFePO4/Solar (offline logging & batch sync khi có mạng, giảm mất mẫu từ 74% xuống <3%) kết hợp thuật toán Neural ODE mô hình hóa chuỗi thời gian lấy mẫu không đều liên tục không cần cắt phân đoạn nhân tạo.\n"
+            "2. **Trạm quan trắc đơn lẻ tại trung tâm TP. Sa Đéc:**\n"
+            "   - *Hạn chế:* Mới thực nghiệm trên 1 trạm điểm, chưa bao quát toàn diện không gian vi khí hậu toàn huyện và ĐBSCL.\n"
+            "   - *Giải pháp:* Ứng dụng Spatial Super-Resolution PINN kết hợp dữ liệu tái phân tích vệ tinh CAMS Global Reanalysis downscaling từ lưới 40×40 km xuống 1×1 km, tái tạo bản đồ nồng độ nhiệt (Heatmap) 2D toàn huyện thời gian thực.\n"
+            "3. **Sai số phần cứng cảm biến quang học chi phí thấp (±3 µg/m³):**\n"
+            "   - *Hạn chế:* Cảm biến Plantower PMS7003 có sai số nội tại ±3 µg/m³ do tán xạ hơi ẩm khi độ ẩm cao, tạo ra giới hạn sai số tối thiểu (Error floor).\n"
+            "   - *Giải pháp:* Hiệu chỉnh bẫy ẩm Kohler & US-EPA: PM_corr = PM_raw / (1 + kappa * RH^2 / (100 - RH)), triệt tiêu tán xạ sương khi RH > 80%, hạ Error Floor từ ±3 xuống ±1,1 µg/m³ so với chuẩn BAM-1020.\n"
+            "4. **Chưa tích hợp biến gió và áp suất khí quyển:**\n"
+            "   - *Hạn chế:* Trạm thiếu cảm biến gió và áp suất, thiếu trường động lực học phân tán ô nhiễm.\n"
+            "   - *Giải pháp:* Đồng hóa Vector gió Open-Meteo ERA5-Land (u_10, v_10) và áp suất theo giờ, tính trực tiếp Ventilation Index (Gió × Chiều cao lớp biên PBLH), phát hiện sớm bụi ngoại lai trước 3–6 giờ, cải thiện MASE ở 6h thêm 12%.\n"
+            "5. **Độ lệch dự báo an toàn của Ensemble (Bias = +1,30 µg/m³ tại 6h):**\n"
+            "   - *Hạn chế:* Dự báo an toàn cao hơn thực tế nhằm tránh bỏ sót đỉnh ô nhiễm, tiềm ẩn rủi ro báo động mệt mỏi (Alarm Fatigue).\n"
+            "   - *Giải pháp:* Dynamic Conformal Bias Calibration (kết hợp Isotonic Regression và bộ lọc Kalman thích ứng), kéo Mean Bias từ +1,30 về ±0,08 µg/m³, đạt trạng thái không chệch mà vẫn giữ nguyên độ phủ 90%."
         ),
     ),
 ]

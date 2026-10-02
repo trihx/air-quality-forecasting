@@ -179,6 +179,13 @@ class ChatGuardrails:
         r"bài học",
         r"kinh nghiệm",
         r"khắc phục",
+        r"hạn chế",
+        r"giải pháp",
+        r"nhược điểm",
+        r"kohler",
+        r"neural ode",
+        r"alarm fatigue",
+        r"error floor",
         r"lỗi",
         # Hội thoại tự nhiên cơ bản
         r"chào",

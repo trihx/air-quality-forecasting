@@ -55,6 +55,7 @@ mindmap
     Defense Playbook & FAQ
       [[01_Master_Defense_QnA_Hoi_Dong]]
       [[02_Slides_Narrative_and_Key_Arguments]]
+      [[03_Limitations_and_Actionable_Solutions]]
 ```
 
 ---
@@ -92,6 +93,7 @@ mindmap
 ### 7. 🛡️ Chuyên Đề 7: Cẩm Nang Bảo Vệ & Phản Biện Hội Đồng
 * [[01_Master_Defense_QnA_Hoi_Dong]]: Bộ 20 câu hỏi - đáp chất vấn chuyên sâu chia theo 3 vai trò (Chủ tịch, Phản biện 1, Phản biện 2).
 * [[02_Slides_Narrative_and_Key_Arguments]]: Kịch bản 24 slides thuyết trình, bản đồ thời gian vàng 18 phút và 4 tuyên bố học thuật đanh thép.
+* [[03_Limitations_and_Actionable_Solutions]]: 5 hạn chế cốt lõi của đề án và các giải pháp công nghệ đột phá tương ứng (Hardware Ring-Buffer, Neural ODE, PINN, Kohler Correction, Conformal Calibration).
 
 ---
 *Ghi chú: Toàn bộ tri thức trong vault này được kết nối hai chiều (`[[...]]`) phục vụ việc tra cứu tức thời của Trợ lý AI và nghiên cứu chuyên sâu.*\n

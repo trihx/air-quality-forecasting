@@ -50,6 +50,7 @@ class TestObsidianSecondBrainVault:
         "06_Explainability_and_Domain_Insights/03_Diurnal_Cycle_and_Sa_Dec_Context.md",
         "07_Defense_Playbook_and_FAQ/01_Master_Defense_QnA_Hoi_Dong.md",
         "07_Defense_Playbook_and_FAQ/02_Slides_Narrative_and_Key_Arguments.md",
+        "07_Defense_Playbook_and_FAQ/03_Limitations_and_Actionable_Solutions.md",
     ]
 
     def test_vault_directory_exists(self):
@@ -58,7 +59,7 @@ class TestObsidianSecondBrainVault:
         assert VAULT_DIR.is_dir()
 
     def test_all_expected_vault_files_exist(self):
-        """All 21 required markdown notes must exist."""
+        """All 22 required markdown notes must exist."""
         for rel_file in self.EXPECTED_FILES:
             file_path = VAULT_DIR / rel_file
             assert file_path.exists(), f"Missing vault file: {rel_file}"
@@ -196,6 +197,10 @@ class TestZeroDependencyKnowledgeStore:
                 "Bẫy tự tương quan (r=0.86) ở bước 1h là gì và tại sao GRU 15m phá được bẫy này?",
                 "Bẫy tự tương quan",
             ),
+            (
+                "5 hạn chế lớn nhất của đề án là gì và giải pháp kỹ thuật đột phá tương ứng là gì?",
+                "Hạn chế",
+            ),
         ],
     )
     def test_search_grill_me_holes_queries(self, query: str, expected_doc_id_or_title: str):
@@ -210,6 +215,16 @@ class TestZeroDependencyKnowledgeStore:
         assert expected_lower in combined or expected_lower in top["title"].lower(), (
             f"Expected '{expected_doc_id_or_title}' in top result title '{top['title']}' for query '{query}'"
         )
+
+    def test_search_limitations_and_solutions_returns_correct_document(self):
+        """Query for limitations and solutions specifically returns limitations_and_solutions document."""
+        from src.chatbot.knowledge_store import search_curated_knowledge
+
+        results = search_curated_knowledge("5 hạn chế lớn nhất của đề án và giải pháp", top_k=3)
+        assert len(results) > 0, "No results found for limitations query"
+        top = results[0]
+        assert "limitations_and_solutions" in top["source"] or "Hạn chế" in top["title"]
+        assert "kohler" in top["content"].lower() or "neural ode" in top["content"].lower()
 
 
 # ==============================================================================
