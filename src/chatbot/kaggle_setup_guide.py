@@ -34,36 +34,58 @@ KAGGLE_CELL_3_MODEL = """# Cell 3: Tải model (chọn 1 trong các lệnh dư�
 """
 
 KAGGLE_CELL_4_TUNNEL = """# Cell 4: Tạo Cloudflare Tunnel (public URL)
-import subprocess, time, re
+import os, re, shutil, subprocess, time
 
-!wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-!sudo dpkg -i cloudflared-linux-amd64.deb
+# 1. Tải và cài đặt cloudflared nếu chưa có
+if not shutil.which("cloudflared"):
+    print("📦 Đang tải và cài đặt cloudflared...")
+    subprocess.run(["wget", "-q", "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb"], check=True)
+    subprocess.run(["sudo", "dpkg", "-i", "cloudflared-linux-amd64.deb"], check=True)
 
+# 2. Tắt tiến trình tunnel cũ (nếu có)
+subprocess.run(["pkill", "-f", "cloudflared"], check=False)
+
+# 3. Khởi chạy cloudflared ở chế độ nền (ghi thẳng ra file log, không dùng shell &)
+log_file = open("tunnel.log", "w")
 tunnel_proc = subprocess.Popen(
-    ["cloudflared", "tunnel", "--url", "http://127.0.0.1:11434",
-     "--http-host-header", "localhost:11434"],
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
+    [
+        "cloudflared", "tunnel",
+        "--url", "http://127.0.0.1:11434",
+        "--http-host-header", "localhost:11434",
+    ],
+    stdout=log_file,
+    stderr=subprocess.STDOUT,
+    start_new_session=True,
 )
 
-# Đọc URL tunnel từ output
-time.sleep(10)
-import select
-while True:
-    if select.select([tunnel_proc.stderr], [], [], 1)[0]:
-        line = tunnel_proc.stderr.readline().decode()
-        if "trycloudflare.com" in line:
-            url = re.search(r"https://[\\w-]+\\.trycloudflare\\.com", line)
-            if url:
-                print(f"")
-                print(f"🔗 TUNNEL URL: {url.group()}")
-                print(f"")
-                print(f"👉 Copy URL trên và paste vào Dashboard > Trợ Lý AI > Kaggle Ollama")
+# 4. Đọc URL tunnel từ file log (chờ tối đa 30 giây)
+print("⏳ Đang khởi tạo Cloudflare Tunnel...", end="", flush=True)
+tunnel_url = None
+for _ in range(30):
+    time.sleep(1)
+    print(".", end="", flush=True)
+    try:
+        with open("tunnel.log", "r") as f:
+            log_content = f.read()
+            match = re.search(r"https://[a-zA-Z0-9-]+\\.trycloudflare\\.com", log_content)
+            if match:
+                tunnel_url = match.group()
                 break
-    else:
-        break
+    except FileNotFoundError:
+        pass
 
-print("\\n✅ Server sẵn sàng! Giữ notebook này mở để duy trì kết nối.")
+if tunnel_url:
+    print("\\n" + "=" * 60)
+    print(f"🔗 TUNNEL URL: {tunnel_url}")
+    print("=" * 60)
+    print("👉 Copy URL trên và dán vào Dashboard > Trợ Lý AI > Kaggle Ollama")
+else:
+    print("\\n❌ Chưa lấy được URL sau 30s. Chi tiết log từ cloudflared:")
+    try:
+        with open("tunnel.log", "r") as f:
+            print(f.read())
+    except Exception as e:
+        print(f"Lỗi đọc file log: {e}")
 """
 
 KAGGLE_CELL_5_KEEPALIVE = """# Cell 5: Giữ session sống (chạy cuối cùng)

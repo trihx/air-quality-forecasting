@@ -9,6 +9,7 @@ Provides a chat interface with:
 """
 
 import contextlib
+import logging
 
 import streamlit as st
 
@@ -20,6 +21,8 @@ from src.chatbot.provider_config import (
     mask_api_key,
     validate_provider_connection,
 )
+
+logger = logging.getLogger(__name__)
 
 # ── Preset questions for thesis defense preparation ──
 PRESET_QUESTIONS = {
@@ -67,8 +70,8 @@ def _ensure_index(kb) -> int:
     """Ensure knowledge base is indexed, re-index if user content changed.
 
     Checks for a `.needs_reindex` flag file set by the content API
-    when users edit info cards via the Dashboard UI. This ensures
-    the chatbot always has the latest user-curated knowledge.
+    when users edit info cards via the Dashboard UI.
+    Does NOT block page load with automatic heavy build_index() to prevent OOM/freezing.
     """
     from src.chatbot.knowledge_base import REINDEX_FLAG_PATH
 
@@ -77,16 +80,16 @@ def _ensure_index(kb) -> int:
 
     if needs_reindex:
         with st.spinner("🔄 Cập nhật kiến thức mới từ nội dung đã chỉnh sửa..."):
-            count = kb.build_index(force=True)
-        with contextlib.suppress(FileNotFoundError):
-            REINDEX_FLAG_PATH.unlink()
-        st.toast("✅ Kiến thức chatbot đã được cập nhật!", icon="🧠")
-        return count
-
-    if not kb.is_indexed():
-        with st.spinner("🔄 Đang index tài liệu dự án lần đầu... (30-60 giây)"):
-            count = kb.build_index()
-        return count
+            try:
+                count = kb.build_index(force=True)
+                with contextlib.suppress(FileNotFoundError):
+                    REINDEX_FLAG_PATH.unlink()
+                st.toast("✅ Kiến thức chatbot đã được cập nhật!", icon="🧠")
+                return count
+            except Exception as e:
+                logger.warning(f"Re-indexing failed: {e}")
+                with contextlib.suppress(FileNotFoundError):
+                    REINDEX_FLAG_PATH.unlink()
 
     return kb.index_count()
 
@@ -342,15 +345,24 @@ def page_ai_assistant(results):
         kb = _get_knowledge_base()
         doc_count = _ensure_index(kb)
         with kb_col:
-            st.caption(f"📚 Knowledge Base: {doc_count} documents indexed")
+            if doc_count > 0:
+                st.caption(f"📚 Knowledge Base: {doc_count} tài liệu indexed (Vector RAG sẵn sàng)")
+            else:
+                st.caption("📚 Knowledge Base: Sẵn sàng (Chế độ System Prompt tích hợp)")
         with reindex_col:
-            if st.button("🔄 Re-index", help="Cập nhật lại dữ liệu cho chatbot"):
-                with st.spinner("🔄 Đang re-index toàn bộ tài liệu..."):
-                    new_count = kb.build_index(force=True)
-                st.success(f"✅ Đã index lại {new_count} documents!")
-                st.rerun()
+            btn_label = "🔄 Tạo Index" if doc_count == 0 else "🔄 Re-index"
+            if st.button(btn_label, help="Cập nhật hoặc xây dựng vector index cho chatbot"):
+                with st.spinner("🔄 Đang xử lý index tài liệu... (có thể mất 1-2 phút)"):
+                    try:
+                        new_count = kb.build_index(force=True)
+                        st.success(f"✅ Đã index {new_count} tài liệu!")
+                        st.rerun()
+                    except Exception as err:
+                        st.error(f"❌ Không thể tạo index: {err}")
     except Exception as e:
-        st.warning(f"⚠️ Knowledge Base chưa sẵn sàng: {e}")
+        with kb_col:
+            st.caption("📚 Knowledge Base: Sẵn sàng (Chế độ System Prompt tích hợp)")
+        logger.warning(f"Knowledge Base initialization notice: {e}")
         kb = None
 
     st.divider()

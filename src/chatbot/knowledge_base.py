@@ -270,39 +270,63 @@ class KnowledgeBase:
         self._persist_dir = persist_dir or str(CHROMA_DIR)
         self._collection = None
         self._client = None
+        self._embedding_fn = None
 
-    def _get_collection(self):
-        """Lazy-init ChromaDB collection."""
-        if self._collection is None:
+    def _get_client(self):
+        """Get or create ChromaDB persistent client without loading embedding models."""
+        if self._client is None:
             import chromadb
+
+            self._client = chromadb.PersistentClient(path=self._persist_dir)
+        return self._client
+
+    def _get_embedding_fn(self):
+        """Lazy-load sentence-transformers embedding function only when needed."""
+        if self._embedding_fn is None:
             from chromadb.utils.embedding_functions import (
                 SentenceTransformerEmbeddingFunction,
             )
 
-            embedding_fn = SentenceTransformerEmbeddingFunction(
+            self._embedding_fn = SentenceTransformerEmbeddingFunction(
                 model_name="paraphrase-multilingual-MiniLM-L12-v2",
             )
+        return self._embedding_fn
 
-            self._client = chromadb.PersistentClient(path=self._persist_dir)
-            self._collection = self._client.get_or_create_collection(
+    def _get_collection(self, with_embedding: bool = False):
+        """Lazy-init ChromaDB collection. Only loads heavy embedding model if with_embedding=True."""
+        client = self._get_client()
+        if with_embedding:
+            embedding_fn = self._get_embedding_fn()
+            self._collection = client.get_or_create_collection(
                 name="pm25_knowledge",
                 embedding_function=embedding_fn,
                 metadata={"hnsw:space": "cosine"},
             )
+        elif self._collection is None:
+            try:
+                self._collection = client.get_collection(name="pm25_knowledge")
+            except Exception:
+                self._collection = client.get_or_create_collection(
+                    name="pm25_knowledge",
+                    metadata={"hnsw:space": "cosine"},
+                )
         return self._collection
 
     def is_indexed(self) -> bool:
-        """Check if knowledge base has been indexed."""
+        """Check if knowledge base has been indexed (fast, zero model download)."""
         try:
-            collection = self._get_collection()
-            return collection.count() > 0
+            client = self._get_client()
+            coll = client.get_collection(name="pm25_knowledge")
+            return coll.count() > 0
         except Exception:
             return False
 
     def index_count(self) -> int:
-        """Get number of indexed documents."""
+        """Get number of indexed documents (fast, zero model download)."""
         try:
-            return self._get_collection().count()
+            client = self._get_client()
+            coll = client.get_collection(name="pm25_knowledge")
+            return coll.count()
         except Exception:
             return 0
 
@@ -312,7 +336,7 @@ class KnowledgeBase:
 
         Returns number of documents indexed.
         """
-        collection = self._get_collection()
+        collection = self._get_collection(with_embedding=True)
 
         if collection.count() > 0 and not force:
             logger.info(f"Index already exists with {collection.count()} docs. Use force=True to rebuild.")
@@ -358,33 +382,40 @@ class KnowledgeBase:
 
         Returns list of {content, source, score} dicts.
         """
-        collection = self._get_collection()
-        if collection.count() == 0:
+        if not self.is_indexed():
             return []
 
-        results = collection.query(
-            query_texts=[query],
-            n_results=min(n_results, collection.count()),
-        )
+        try:
+            collection = self._get_collection(with_embedding=True)
+            if collection.count() == 0:
+                return []
 
-        docs = []
-        if results and results["documents"]:
-            for i, doc in enumerate(results["documents"][0]):
-                meta = results["metadatas"][0][i] if results["metadatas"] else {}
-                distance = results["distances"][0][i] if results["distances"] else 1.0
-                score = 1 - distance  # cosine similarity
-                # Only include docs with reasonable similarity
-                if score > 0.1:
-                    docs.append(
-                        {
-                            "content": doc,
-                            "source": meta.get("source", "unknown"),
-                            "type": meta.get("type", "unknown"),
-                            "score": score,
-                        }
-                    )
-                    logger.debug(f"RAG match: score={score:.3f} src={meta.get('source')}")
-        return docs
+            results = collection.query(
+                query_texts=[query],
+                n_results=min(n_results, collection.count()),
+            )
+
+            docs = []
+            if results and results["documents"]:
+                for i, doc in enumerate(results["documents"][0]):
+                    meta = results["metadatas"][0][i] if results["metadatas"] else {}
+                    distance = results["distances"][0][i] if results["distances"] else 1.0
+                    score = 1 - distance  # cosine similarity
+                    # Only include docs with reasonable similarity
+                    if score > 0.1:
+                        docs.append(
+                            {
+                                "content": doc,
+                                "source": meta.get("source", "unknown"),
+                                "type": meta.get("type", "unknown"),
+                                "score": score,
+                            }
+                        )
+                        logger.debug(f"RAG match: score={score:.3f} src={meta.get('source')}")
+            return docs
+        except Exception as e:
+            logger.warning(f"RAG search error: {e}")
+            return []
 
 
 # Singleton instance
