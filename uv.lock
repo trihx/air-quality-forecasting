@@ -6154,6 +6154,7 @@ source = { editable = "." }
 dependencies = [
     { name = "chromadb" },
     { name = "cloudscraper" },
+    { name = "cryptography" },
     { name = "fastapi" },
     { name = "ipykernel" },
     { name = "jupyter-client" },
@@ -6208,6 +6209,7 @@ dev = [
 requires-dist = [
     { name = "chromadb", specifier = ">=1.5.5" },
     { name = "cloudscraper", specifier = ">=1.2.71" },
+    { name = "cryptography", specifier = ">=46.0.6" },
     { name = "fastapi", specifier = ">=0.136.1" },
     { name = "ipykernel", specifier = ">=7.2.0" },
     { name = "jupyter-client", specifier = ">=8.8.0" },

@@ -13,6 +13,12 @@ import logging
 
 import streamlit as st
 
+from src.chatbot.credentials_manager import (
+    clear_credentials,
+    is_credentials_persisted,
+    load_credentials,
+    save_credentials,
+)
 from src.chatbot.provider_config import (
     GROQ_MODEL_RECOMMENDATIONS,
     LOCAL_MODEL_RECOMMENDATIONS,
@@ -29,6 +35,17 @@ logger = logging.getLogger(__name__)
 
 # Max messages retained in session to prevent OOM on 512MB RAM containers
 MAX_CHAT_HISTORY = 40
+
+
+def _persist_current_credentials(primary: str | None = None) -> None:
+    """Helper to persist current session credentials if remember_ai_credentials is enabled."""
+    remember = bool(st.session_state.get("remember_ai_credentials", is_credentials_persisted()))
+    pri = primary or st.session_state.get("primary_provider")
+    save_credentials(
+        st.session_state.get("llm_provider_keys", {}),
+        primary_provider=pri,
+        remember=remember,
+    )
 
 
 def _trim_chat_history(messages: list[dict], max_history: int = MAX_CHAT_HISTORY) -> list[dict]:
@@ -168,10 +185,12 @@ def _render_provider_config():
                             "model": model,
                             "base_url": "",
                         }
+                        _persist_current_credentials()
                         st.success(f"✅ Đã lưu ({mask_api_key(key)})")
                     else:
                         # Clear provider
                         st.session_state.llm_provider_keys.pop(provider_name, None)
+                        _persist_current_credentials()
                         st.info("Đã xóa API key")
 
             with col_test:
@@ -219,9 +238,11 @@ def _render_provider_config():
                         "base_url": kaggle_url,
                         "model": kaggle_model,
                     }
+                    _persist_current_credentials()
                     st.success("✅ Đã lưu Kaggle Ollama")
                 else:
                     st.session_state.llm_provider_keys.pop("kaggle_ollama", None)
+                    _persist_current_credentials()
                     st.info("Đã xóa cấu hình Kaggle")
 
         with col_test_k:
@@ -351,10 +372,12 @@ def _render_inline_quick_config(expanded: bool = False):
                             "base_url": k_url,
                             "model": k_model,
                         }
+                        _persist_current_credentials()
                         st.success("✅ Đã kích hoạt Kaggle Ollama thành công!")
                         st.rerun()
                     else:
                         st.session_state.llm_provider_keys.pop("kaggle_ollama", None)
+                        _persist_current_credentials()
                         st.info("Đã xóa cấu hình Kaggle")
                         st.rerun()
             with col_k_test:
@@ -407,10 +430,12 @@ def _render_inline_quick_config(expanded: bool = False):
                             "model": g_model,
                             "base_url": "",
                         }
+                        _persist_current_credentials()
                         st.success(f"✅ Đã lưu Google Gemini ({mask_api_key(g_key)})")
                         st.rerun()
                     else:
                         st.session_state.llm_provider_keys.pop("gemini", None)
+                        _persist_current_credentials()
                         st.info("Đã xóa Google Gemini")
                         st.rerun()
             with col_g_test:
@@ -461,10 +486,12 @@ def _render_inline_quick_config(expanded: bool = False):
                                 "model": o_model,
                                 "base_url": "",
                             }
+                            _persist_current_credentials()
                             st.success(f"✅ Đã lưu {reg['display_name']} ({mask_api_key(o_key)})")
                             st.rerun()
                         else:
                             st.session_state.llm_provider_keys.pop(p_name, None)
+                            _persist_current_credentials()
                             st.info(f"Đã xóa {reg['display_name']}")
                             st.rerun()
                 with col_o_test:
@@ -482,9 +509,61 @@ def _render_inline_quick_config(expanded: bool = False):
                             st.warning("Chưa nhập API key")
                 st.divider()
 
+        # ── Credentials Persistence & Zeroize Options ──
+        col_remember, col_clear = st.columns([3, 2])
+        with col_remember:
+            remember_val = st.checkbox(
+                "💾 Tự động ghi nhớ trên thiết bị này (Mã hóa an toàn AES-128)",
+                value=is_credentials_persisted()
+                if "remember_ai_credentials" not in st.session_state
+                else bool(st.session_state.remember_ai_credentials),
+                key="remember_ai_credentials",
+                help="Thông tin API Key và Tunnel URL được mã hóa đối xứng Fernet (AES-128 + HMAC-SHA256) với quyền file 0600.",
+            )
+            if not remember_val and is_credentials_persisted():
+                clear_credentials()
+        with col_clear:
+            if st.button(
+                "🗑️ Xóa sạch thông tin kết nối đã lưu",
+                use_container_width=True,
+                help="Xóa hoàn toàn file mã hóa trên đĩa và làm mới cấu hình kết nối",
+            ):
+                clear_credentials()
+                st.session_state.llm_provider_keys = {}
+                st.session_state.primary_provider = None
+                st.session_state.pop("primary_ai_provider", None)
+                # Triệt để zeroize toàn bộ widget-state keys của Streamlit
+                for k in list(st.session_state.keys()):
+                    if isinstance(k, str) and any(
+                        k.startswith(pfx)
+                        for pfx in (
+                            "input_key_",
+                            "input_model_",
+                            "main_key_",
+                            "main_model_",
+                            "main_kaggle_",
+                            "input_kaggle_",
+                        )
+                    ):
+                        st.session_state.pop(k, None)
+                st.toast("✅ Đã xóa sạch toàn bộ thông tin kết nối và bộ nhớ tạm trên thiết bị!", icon="🗑️")
+                st.rerun()
+
 
 def page_ai_assistant(results):
     """Render AI Assistant chatbot page."""
+    # ── Initialize remember_me state early to preserve opt-in consent ──
+    if "remember_ai_credentials" not in st.session_state:
+        st.session_state.remember_ai_credentials = is_credentials_persisted()
+
+    # ── Auto-restore saved credentials if session is empty ──
+    if "llm_provider_keys" not in st.session_state or not st.session_state.llm_provider_keys:
+        saved_keys, saved_primary = load_credentials()
+        if saved_keys:
+            st.session_state.llm_provider_keys = saved_keys
+            if saved_primary:
+                st.session_state.primary_provider = saved_primary
+                st.session_state.primary_ai_provider = saved_primary
 
     # ── Render provider config in sidebar ──
     _render_provider_config()
@@ -565,6 +644,8 @@ def page_ai_assistant(results):
         )
         if selected_pri != st.session_state.primary_provider:
             st.session_state.primary_provider = selected_pri
+            st.session_state.primary_ai_provider = selected_pri
+            _persist_current_credentials(primary=selected_pri)
             st.rerun()
 
     # ── Inline Quick Config Form (Always accessible on page) ──
@@ -731,3 +812,7 @@ def page_ai_assistant(results):
         if st.session_state.chat_messages and st.button("🗑️ Xóa lịch sử chat", type="secondary"):
             st.session_state.chat_messages = []
             st.rerun()
+
+
+# Alias for backwards compatibility / modular imports
+render_chat_page = page_ai_assistant

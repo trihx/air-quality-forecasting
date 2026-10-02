@@ -68,6 +68,11 @@ node_modules/
 .env.*
 *.key
 *.pem
+*.enc
+*.credentials
+.chatbot_credentials*
+.chatbot_salt*
+data/.chatbot_credentials*
 
 # ── 6. PYTHON BUILDS, RUNTIME & TEST CACHES ──
 __pycache__/
