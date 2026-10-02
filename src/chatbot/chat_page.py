@@ -37,9 +37,10 @@ logger = logging.getLogger(__name__)
 MAX_CHAT_HISTORY = 40
 
 
-def _persist_current_credentials(primary: str | None = None) -> None:
-    """Helper to persist current session credentials if remember_ai_credentials is enabled."""
-    remember = bool(st.session_state.get("remember_ai_credentials", is_credentials_persisted()))
+def _persist_current_credentials(primary: str | None = None, remember: bool | None = None) -> None:
+    """Helper to persist current session credentials (defaults to remember=True when user saves)."""
+    if remember is None:
+        remember = bool(st.session_state.get("remember_ai_credentials", True))
     pri = primary or st.session_state.get("primary_provider")
     save_credentials(
         st.session_state.get("llm_provider_keys", {}),
@@ -195,6 +196,7 @@ def _render_provider_config():
                             "base_url": "",
                         }
                         _persist_current_credentials()
+                        st.toast("✅ Đã mã hóa AES-128 và lưu trữ an toàn!", icon="🔒")
                         st.success(f"✅ Đã lưu ({mask_api_key(key)}) • Model: {final_m or reg['default_model']}")
                     else:
                         # Clear provider
@@ -255,6 +257,7 @@ def _render_provider_config():
                         "model": kaggle_model,
                     }
                     _persist_current_credentials()
+                    st.toast("✅ Đã mã hóa AES-128 và lưu trữ an toàn!", icon="🔒")
                     st.success("✅ Đã lưu Kaggle Ollama")
                 else:
                     st.session_state.llm_provider_keys.pop("kaggle_ollama", None)
@@ -389,6 +392,7 @@ def _render_inline_quick_config(expanded: bool = False):
                             "model": k_model,
                         }
                         _persist_current_credentials()
+                        st.toast("✅ Đã mã hóa AES-128 và lưu trữ an toàn!", icon="🔒")
                         st.success("✅ Đã kích hoạt Kaggle Ollama thành công!")
                         st.rerun()
                     else:
@@ -447,6 +451,7 @@ def _render_inline_quick_config(expanded: bool = False):
                             "base_url": "",
                         }
                         _persist_current_credentials()
+                        st.toast("✅ Đã mã hóa AES-128 và lưu trữ an toàn!", icon="🔒")
                         st.success(f"✅ Đã lưu Google Gemini ({mask_api_key(g_key)})")
                         st.rerun()
                     else:
@@ -510,6 +515,7 @@ def _render_inline_quick_config(expanded: bool = False):
                                 "base_url": "",
                             }
                             _persist_current_credentials()
+                            st.toast("✅ Đã mã hóa AES-128 và lưu trữ an toàn!", icon="🔒")
                             st.success(
                                 f"✅ Đã lưu {reg['display_name']} ({mask_api_key(o_key)}) • Model: {final_o_model or reg['default_model']}"
                             )
@@ -546,9 +552,7 @@ def _render_inline_quick_config(expanded: bool = False):
         with col_remember:
             remember_val = st.checkbox(
                 "💾 Tự động ghi nhớ trên thiết bị này (Mã hóa an toàn AES-128)",
-                value=is_credentials_persisted()
-                if "remember_ai_credentials" not in st.session_state
-                else bool(st.session_state.remember_ai_credentials),
+                value=bool(st.session_state.get("remember_ai_credentials", True)),
                 key="remember_ai_credentials",
                 help="Thông tin API Key và Tunnel URL được mã hóa đối xứng Fernet (AES-128 + HMAC-SHA256) với quyền file 0600.",
             )
@@ -575,6 +579,7 @@ def _render_inline_quick_config(expanded: bool = False):
                             "main_model_",
                             "main_kaggle_",
                             "input_kaggle_",
+                            "quick_",
                         )
                     ):
                         st.session_state.pop(k, None)
@@ -584,18 +589,56 @@ def _render_inline_quick_config(expanded: bool = False):
 
 def page_ai_assistant(results):
     """Render AI Assistant chatbot page."""
-    # ── Initialize remember_me state early to preserve opt-in consent ──
+    # ── Initialize remember_me state early (default True so saving persists credentials) ──
     if "remember_ai_credentials" not in st.session_state:
-        st.session_state.remember_ai_credentials = is_credentials_persisted()
+        st.session_state["remember_ai_credentials"] = True
 
     # ── Auto-restore saved credentials if session is empty ──
-    if "llm_provider_keys" not in st.session_state or not st.session_state.llm_provider_keys:
+    if "llm_provider_keys" not in st.session_state or not st.session_state.get("llm_provider_keys"):
         saved_keys, saved_primary = load_credentials()
         if saved_keys:
-            st.session_state.llm_provider_keys = saved_keys
+            st.session_state["llm_provider_keys"] = saved_keys
+            st.session_state["remember_ai_credentials"] = True
             if saved_primary:
-                st.session_state.primary_provider = saved_primary
-                st.session_state.primary_ai_provider = saved_primary
+                st.session_state["primary_provider"] = saved_primary
+                st.session_state["primary_ai_provider"] = saved_primary
+
+            # Đồng bộ Widget State của Streamlit khi nạp credentials
+            for p, p_cfg in saved_keys.items():
+                if not isinstance(p_cfg, dict):
+                    continue
+                api_k = str(p_cfg.get("api_key") or "")
+                mod = str(p_cfg.get("model") or "")
+                b_url = str(p_cfg.get("base_url") or "")
+
+                # Cho từng provider (Sidebar & Main/Quick)
+                if f"input_key_{p}" not in st.session_state:
+                    st.session_state[f"input_key_{p}"] = api_k
+                if f"input_model_{p}" not in st.session_state:
+                    st.session_state[f"input_model_{p}"] = mod
+                if f"main_key_{p}" not in st.session_state:
+                    st.session_state[f"main_key_{p}"] = api_k
+                if f"main_model_{p}" not in st.session_state:
+                    st.session_state[f"main_model_{p}"] = mod
+                if f"quick_{p}_key" not in st.session_state:
+                    st.session_state[f"quick_{p}_key"] = api_k
+                if f"quick_{p}_model" not in st.session_state:
+                    st.session_state[f"quick_{p}_model"] = mod
+
+                # Cho Kaggle Ollama
+                if p == "kaggle_ollama":
+                    if "input_kaggle_ollama_url" not in st.session_state:
+                        st.session_state["input_kaggle_ollama_url"] = b_url
+                    if "main_kaggle_url" not in st.session_state:
+                        st.session_state["main_kaggle_url"] = b_url
+                    if "quick_kaggle_url" not in st.session_state:
+                        st.session_state["quick_kaggle_url"] = b_url
+                    if "input_kaggle_model" not in st.session_state:
+                        st.session_state["input_kaggle_model"] = mod
+                    if "main_kaggle_model" not in st.session_state:
+                        st.session_state["main_kaggle_model"] = mod
+                    if "quick_kaggle_model" not in st.session_state:
+                        st.session_state["quick_kaggle_model"] = mod
 
     # ── Render provider config in sidebar ──
     _render_provider_config()

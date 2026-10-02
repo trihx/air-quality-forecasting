@@ -75,8 +75,7 @@ def list_info_cards(
 ) -> list[InfoCardResponse]:
     """List all info cards, optionally filtered by page."""
     stmt = select(InfoCard).order_by(InfoCard.page, InfoCard.display_order)
-    if page:
-        stmt = stmt.where(InfoCard.page == page)
+    stmt = stmt.where(InfoCard.page == page) if page else stmt.where(InfoCard.page != "_system")
     cards = db.scalars(stmt).all()
     return [InfoCardResponse.model_validate(c) for c in cards]
 
