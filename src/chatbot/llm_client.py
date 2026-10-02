@@ -195,6 +195,7 @@ def _try_stream_provider(
     """Attempt to stream from a single provider. Returns None on failure."""
     client = _build_client(provider)
     if not client:
+        provider._last_error = "Không thể khởi tạo client (URL hoặc Key không hợp lệ)"
         return None
 
     model = provider.model
@@ -222,11 +223,15 @@ def _try_stream_provider(
                 model = models_list.data[0].id
                 provider.model = model
             else:
+                provider._last_error = "Không tìm thấy model nào đang được load trên LM Studio"
                 return None
-        except Exception:
-            model = "local-model"
+        except Exception as lm_err:
+            sanitized_err = sanitize_error_message(str(lm_err))
+            provider._last_error = f"Không thể lấy danh sách model từ LM Studio: {sanitized_err[:80]}"
+            return None
 
     if not model:
+        provider._last_error = "Chưa cấu hình model hoặc không phát hiện được model"
         return None
 
     def _create_guarded_generator(active_client, stream_obj, active_model):
@@ -295,6 +300,19 @@ def _try_stream_provider(
     except Exception as e:
         error_msg = sanitize_error_message(str(e))
         logger.warning(f"Provider {provider.display_name} failed: {error_msg[:100]}")
+        if "429" in error_msg or "rate limit" in error_msg.lower() or "tpm" in error_msg.lower():
+            provider._last_error = f"Chạm giới hạn tốc độ (Rate Limit / TPM limit): {error_msg[:120]}"
+        elif "401" in error_msg or "403" in error_msg or "invalid_api_key" in error_msg.lower():
+            provider._last_error = f"API key không hợp lệ hoặc hết hạn: {error_msg[:120]}"
+        elif "404" in error_msg or "model_not_found" in error_msg.lower() or "not found" in error_msg.lower():
+            provider._last_error = f"Model '{model}' không tồn tại trên {provider.display_name}: {error_msg[:120]}"
+        elif "400" in error_msg:
+            provider._last_error = f"Lỗi tham số yêu cầu (400 Bad Request): {error_msg[:120]}"
+        elif "connection" in error_msg.lower() or "timeout" in error_msg.lower():
+            provider._last_error = f"Lỗi kết nối / timeout: {error_msg[:120]}"
+        else:
+            provider._last_error = f"Lỗi gọi API: {error_msg[:120]}"
+
         # If Kaggle Ollama failed due to model issue, retry with first available model if different
         if provider.name == "kaggle_ollama" and ("not found" in error_msg.lower() or "404" in error_msg):
             try:
@@ -315,6 +333,7 @@ def _try_stream_provider(
             except Exception as retry_err:
                 sanitized_err = sanitize_error_message(str(retry_err))
                 logger.warning(f"Retry Kaggle Ollama failed: {sanitized_err}")
+                provider._last_error = f"Retry Kaggle thất bại: {sanitized_err[:120]}"
         return None
 
 
@@ -326,6 +345,7 @@ def chat_stream(
     max_tokens: int = 2048,
     providers: list[LLMProvider] | None = None,
     session_keys: dict | None = None,
+    primary_provider: str | None = None,
 ) -> Generator[str, None, None]:
     """Stream chat completion with tiered fallback.
 
@@ -339,20 +359,29 @@ def chat_stream(
         max_tokens: Max response length
         providers: Pre-sorted provider list (if None, auto-detect)
         session_keys: Session state keys for provider config
+        primary_provider: Optional provider name to prioritize as #1
 
     Yields:
         Response text chunks for streaming
     """
     # Build system message with RAG context
     system_content = SYSTEM_PROMPT
-    if context:
-        system_content += f"\n\n## Context từ dữ liệu dự án:\n{context}"
+    if context and context.strip():
+        system_content += f"\n\n## Context từ dữ liệu dự án:\n{context.strip()}"
 
-    full_messages = [{"role": "system", "content": system_content}] + messages
+    raw_messages = [{"role": "system", "content": system_content}] + messages
+
+    # Sanitize messages: eliminate empty content and strip whitespace
+    # Triệt tiêu 100% nguy cơ lỗi Groq 400 Bad Request
+    full_messages = [
+        {"role": m["role"], "content": str(m["content"]).strip()}
+        for m in raw_messages
+        if m.get("content") and str(m["content"]).strip()
+    ]
 
     # Detect providers if not given
     if providers is None:
-        providers = detect_available_providers(session_keys)
+        providers = detect_available_providers(session_keys, primary_provider=primary_provider)
 
     if not providers:
         if is_cloud_environment():
@@ -375,20 +404,27 @@ def chat_stream(
 
     # Try each provider in priority order
     tried = []
+    failed_reasons: dict[str, str] = {}
     for provider in providers:
         # Override model if explicitly specified
         if model:
             provider.model = model
 
+        # Groq Payload Optimization: bound max_tokens to 1024 to preserve TPM limit
+        effective_max_tokens = min(max_tokens, 1024) if provider.name == "groq" and max_tokens > 1024 else max_tokens
+
         logger.info(f"Trying provider: {provider.display_name} (key: {mask_api_key(provider.api_key)})")
 
-        gen = _try_stream_provider(provider, full_messages, temperature, max_tokens)
+        gen = _try_stream_provider(provider, full_messages, temperature, effective_max_tokens)
         if gen is not None:
             # Peek first chunk to verify provider actually produces content
             try:
                 first_chunk = next(gen)
             except StopIteration:
                 first_chunk = None
+            except Exception as stream_err:
+                first_chunk = None
+                provider._last_error = sanitize_error_message(str(stream_err))
 
             if first_chunk is not None:
                 # Yield provider info header
@@ -396,28 +432,36 @@ def chat_stream(
                 yield first_chunk
                 yield from gen
                 return
+            else:
+                if not getattr(provider, "_last_error", None):
+                    provider._last_error = "Model không phản hồi dữ liệu (0 tokens)"
 
+        err_reason = getattr(provider, "_last_error", "Không thể kết nối hoặc không nhận được phản hồi")
+        failed_reasons[provider.display_name] = err_reason
         tried.append(provider.display_name)
 
     # All providers failed
-    tried_str = ", ".join(tried)
-    if is_cloud_environment():
+    is_cloud = is_cloud_environment()
+    if is_cloud:
+        yield (f"❌ Không thể kết nối với bất kỳ AI Provider nào.\n\n**Đã thử ({len(tried)}):**\n")
+        for p_name, p_err in failed_reasons.items():
+            yield f"• **{p_name}**: {p_err}\n"
         yield (
-            f"❌ Không thể kết nối với bất kỳ AI Provider nào.\n\n"
-            f"**Đã thử:** {tried_str}\n\n"
-            "**Hướng dẫn khắc phục trên Cloud Server:**\n"
-            "1. Kiểm tra lại Google Gemini API Key hoặc Groq API Key (hết quota / sai key)\n"
-            "2. Nếu dùng Kaggle Ollama: Kiểm tra Cloudflare Tunnel URL còn online không (Kaggle session có bị timeout không)\n"
-            "3. Cập nhật cấu hình tại **⚙️ Cấu Hình AI Provider** ở sidebar\n"
-            "4. Reload lại trang dashboard\n"
+            "\n**Hướng dẫn khắc phục trên Cloud Server:**\n"
+            "1. **Groq**: Nếu chạm TPM limit (429), chuyển sang model `llama-3.1-8b-instant` (hạn mức 30,000 TPM) tại tab Groq hoặc sidebar\n"
+            "2. **Google Gemini**: Kiểm tra lại API key hoặc quota tại Google AI Studio (miễn phí 15 RPM)\n"
+            "3. **Kaggle Ollama**: Kiểm tra Cloudflare Tunnel URL còn online không (Kaggle session có bị timeout không)\n"
+            "4. Cập nhật cấu hình tại **⚙️ Cấu Hình AI Provider** ở sidebar hoặc bảng trên trang\n"
+            "5. Reload lại trang dashboard\n"
         )
     else:
+        yield (f"❌ Không thể kết nối với bất kỳ LLM nào.\n\n**Đã thử ({len(tried)}):**\n")
+        for p_name, p_err in failed_reasons.items():
+            yield f"• **{p_name}**: {p_err}\n"
         yield (
-            f"❌ Không thể kết nối với bất kỳ LLM nào.\n\n"
-            f"**Đã thử:** {tried_str}\n\n"
-            "**Hướng dẫn khắc phục:**\n"
-            "1. Kiểm tra kết nối internet (cho Cloud API)\n"
-            "2. Kiểm tra API key còn hạn sử dụng\n"
-            "3. Mở LM Studio → Load model → Bật Server port 8888\n"
+            "\n**Hướng dẫn khắc phục:**\n"
+            "1. **Groq / Cloud API**: Nếu chạm giới hạn TPM, đổi model sang `llama-3.1-8b-instant` hoặc kiểm tra kết nối internet / API key\n"
+            "2. **LM Studio**: Mở LM Studio → Load model → Bật Server port 8888\n"
+            "3. Kiểm tra API key còn hạn sử dụng\n"
             "4. Reload trang dashboard\n"
         )

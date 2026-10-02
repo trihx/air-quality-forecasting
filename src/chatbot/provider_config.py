@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +25,7 @@ class LLMProvider:
     priority: int = 0  # Lower = higher priority
     is_local: bool = False
     display_name: str = ""
+    _last_error: str = field(default="", repr=False)
 
     def __post_init__(self):
         if not self.display_name:
@@ -69,7 +70,7 @@ PROVIDER_REGISTRY: dict[str, dict] = {
     "groq": {
         "display_name": "Groq",
         "base_url": "https://api.groq.com/openai/v1",
-        "default_model": "llama-3.3-70b-versatile",
+        "default_model": "llama-3.1-8b-instant",
         "env_key": "GROQ_API_KEY",
         "priority": 3,
         "is_local": False,
@@ -157,6 +158,24 @@ KAGGLE_MODEL_RECOMMENDATIONS = [
     },
 ]
 
+GROQ_MODEL_RECOMMENDATIONS = [
+    {
+        "name": "llama-3.1-8b-instant",
+        "description": "Siêu tốc (>800 tok/s), hạn mức cao (30,000 TPM, 30 RPM), tối ưu hỏi đáp",
+        "recommended": True,
+    },
+    {
+        "name": "llama-3.3-70b-versatile",
+        "description": "Mô hình 70B thông minh sâu sắc (hạn mức 6,000 TPM)",
+        "recommended": False,
+    },
+    {
+        "name": "gemma2-9b-it",
+        "description": "Mô hình Google Gemma 2 tối ưu trên phần cứng LPU Groq",
+        "recommended": False,
+    },
+]
+
 
 def mask_api_key(key: str) -> str:
     """Mask API key for safe display in logs/UI.
@@ -226,11 +245,13 @@ def is_cloud_environment() -> bool:
 
 def detect_available_providers(
     session_keys: dict | None = None,
+    primary_provider: str | None = None,
 ) -> list[LLMProvider]:
     """Detect all available providers from env vars and session state.
 
     Args:
         session_keys: Dict of {provider_name: {api_key, base_url, model}} from UI.
+        primary_provider: Optional provider name to prioritize as #1.
 
     Returns:
         List of LLMProvider sorted by priority (lowest first = highest priority).
@@ -306,8 +327,16 @@ def detect_available_providers(
             )
             providers.append(provider)
 
-    # Sort by priority
-    providers.sort(key=lambda p: p.priority)
+    # Sort by priority, placing primary_provider first if specified
+    resolved_primary = (
+        primary_provider
+        or (session_keys.get("_primary") if session_keys else None)
+        or (session_keys.get("primary_provider") if session_keys else None)
+    )
+    if resolved_primary:
+        providers.sort(key=lambda p: (0 if p.name == resolved_primary else 1, p.priority))
+    else:
+        providers.sort(key=lambda p: p.priority)
     return providers
 
 
@@ -351,7 +380,6 @@ def validate_provider_connection(provider: LLMProvider) -> tuple[bool, str]:
         )
         models = client.models.list()
         model_count = len(models.data) if models.data else 0
-        return True, f"Kết nối thành công ({model_count} models)"
     except Exception as e:
         error = sanitize_error_message(str(e))
         if "401" in error or "403" in error or "invalid" in error.lower():
@@ -361,3 +389,23 @@ def validate_provider_connection(provider: LLMProvider) -> tuple[bool, str]:
         if "429" in error:
             return False, "Rate limit — vui lòng thử lại sau"
         return False, f"Lỗi: {error[:100]}"
+
+    # Chat probe: verify model can actually complete chat requests
+    try:
+        probe_model = provider.model or (models.data[0].id if models.data else "default")
+        client.chat.completions.create(
+            model=probe_model,
+            messages=[{"role": "user", "content": "hi"}],
+            max_tokens=2,
+            timeout=5.0,
+        )
+        return True, f"Kết nối & kiểm tra Chat thành công ({model_count} models)"
+    except Exception as probe_err:
+        err_str = sanitize_error_message(str(probe_err))
+        if "429" in err_str or "rate limit" in err_str.lower():
+            return False, f"Chạm giới hạn tốc độ (Rate Limit / TPM) trên {provider.display_name}: {err_str[:80]}"
+        if "404" in err_str or "model" in err_str.lower():
+            return False, f"Model '{probe_model}' không tồn tại hoặc không hỗ trợ chat"
+        if "400" in err_str:
+            return False, f"Lỗi tham số chat: {err_str[:80]}"
+        return False, f"Lỗi chat probe: {err_str[:80]}"

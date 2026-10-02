@@ -14,6 +14,7 @@ import logging
 import streamlit as st
 
 from src.chatbot.provider_config import (
+    GROQ_MODEL_RECOMMENDATIONS,
     LOCAL_MODEL_RECOMMENDATIONS,
     PROVIDER_REGISTRY,
     detect_available_providers,
@@ -151,6 +152,12 @@ def _render_provider_config():
                 placeholder=reg["default_model"],
                 value=st.session_state.llm_provider_keys.get(provider_name, {}).get("model", ""),
             )
+
+            if provider_name == "groq":
+                with st.expander("📋 Model khuyến nghị cho Groq (Tránh 429 TPM)", expanded=False):
+                    for m in GROQ_MODEL_RECOMMENDATIONS:
+                        star = " ⭐ (Khuyên dùng)" if m["recommended"] else ""
+                        st.markdown(f"• **`{m['name']}`**{star}: {m['description']}")
 
             col_save, col_test = st.columns(2)
             with col_save:
@@ -431,13 +438,27 @@ def _render_inline_quick_config(expanded: bool = False):
                     placeholder="Nhập API key...",
                     value=st.session_state.llm_provider_keys.get(p_name, {}).get("api_key", ""),
                 )
+                o_model = st.text_input(
+                    f"Model {reg['display_name']} (tùy chọn)",
+                    key=f"main_model_{p_name}",
+                    placeholder=reg["default_model"],
+                    value=st.session_state.llm_provider_keys.get(p_name, {}).get("model", ""),
+                    help=f"Mặc định: {reg['default_model']}",
+                )
+
+                if p_name == "groq":
+                    with st.expander("📋 Model khuyến nghị cho Groq (Tránh 429 TPM)", expanded=False):
+                        for m in GROQ_MODEL_RECOMMENDATIONS:
+                            star = " ⭐ (Khuyên dùng)" if m["recommended"] else ""
+                            st.markdown(f"• **`{m['name']}`**{star}: {m['description']}")
+
                 col_o_save, col_o_test = st.columns(2)
                 with col_o_save:
                     if st.button(f"💾 Lưu {reg['display_name']}", key=f"main_save_{p_name}", use_container_width=True):
                         if o_key:
                             st.session_state.llm_provider_keys[p_name] = {
                                 "api_key": o_key,
-                                "model": "",
+                                "model": o_model,
                                 "base_url": "",
                             }
                             st.success(f"✅ Đã lưu {reg['display_name']} ({mask_api_key(o_key)})")
@@ -449,7 +470,7 @@ def _render_inline_quick_config(expanded: bool = False):
                 with col_o_test:
                     if st.button(f"🔍 Test {reg['display_name']}", key=f"main_test_{p_name}", use_container_width=True):
                         if o_key:
-                            provider = get_provider_from_registry(p_name, api_key=o_key)
+                            provider = get_provider_from_registry(p_name, api_key=o_key, custom_model=o_model)
                             if provider:
                                 with st.spinner("Đang kiểm tra..."):
                                     ok, msg = validate_provider_connection(provider)
@@ -488,8 +509,19 @@ def page_ai_assistant(results):
     render_version_badge(ver)
     cards_ai_assistant(ver)
 
-    # ── Active provider status ──
-    providers = detect_available_providers(st.session_state.get("llm_provider_keys", {}))
+    # ── Active provider status & Primary Provider selection ──
+    raw_providers = detect_available_providers(st.session_state.get("llm_provider_keys", {}))
+    available_names = [p.name for p in raw_providers]
+
+    # Validate or set primary provider
+    if "primary_provider" not in st.session_state or st.session_state.primary_provider not in available_names:
+        st.session_state.primary_provider = available_names[0] if available_names else None
+
+    # Re-detect with primary provider prioritized
+    providers = detect_available_providers(
+        st.session_state.get("llm_provider_keys", {}),
+        primary_provider=st.session_state.primary_provider,
+    )
     cloud_providers = [p for p in providers if not p.is_local]
     local_providers = [p for p in providers if p.is_local]
 
@@ -515,7 +547,25 @@ def page_ai_assistant(results):
     with col_info:
         # Show fallback chain
         chain = " → ".join([p.display_name for p in providers]) or "Chưa cấu hình"
-        st.caption(f"🔗 Fallback: {chain}")
+        st.caption(f"🔗 Thứ tự: {chain}")
+
+    # Primary provider selection selector if 2+ providers available
+    if len(raw_providers) > 1:
+        current_pri = st.session_state.primary_provider or raw_providers[0].name
+        pri_idx = available_names.index(current_pri) if current_pri in available_names else 0
+        display_map = {p.name: f"{p.display_name} ({p.model or 'auto'})" for p in raw_providers}
+
+        selected_pri = st.selectbox(
+            "⭐ Chọn AI Provider ưu tiên hàng đầu (Primary Provider):",
+            options=available_names,
+            index=pri_idx,
+            format_func=lambda k: display_map.get(k, k),
+            key="select_primary_provider_widget",
+            help="Provider được chọn sẽ luôn được ưu tiên gọi đầu tiên. Nếu gặp lỗi, hệ thống sẽ tự động fallback sang các provider còn lại.",
+        )
+        if selected_pri != st.session_state.primary_provider:
+            st.session_state.primary_provider = selected_pri
+            st.rerun()
 
     # ── Inline Quick Config Form (Always accessible on page) ──
     _render_inline_quick_config(expanded=(not cloud_providers and not local_providers))
@@ -655,7 +705,10 @@ def page_ai_assistant(results):
                 history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.chat_messages[-6:]]
 
                 # Get providers
-                current_providers = detect_available_providers(st.session_state.get("llm_provider_keys", {}))
+                current_providers = detect_available_providers(
+                    st.session_state.get("llm_provider_keys", {}),
+                    primary_provider=st.session_state.get("primary_provider"),
+                )
 
                 response = st.write_stream(
                     chat_stream(
