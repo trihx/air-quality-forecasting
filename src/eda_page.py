@@ -57,17 +57,18 @@ COLORS = {
 
 
 def _insight_card(title: str, text: str, card_type: str = "default"):
-    """Render standardized insight card."""
+    """Render standardized insight card with UI-Pro high-contrast layout."""
+    border_color = "#F59E0B" if card_type == "warning" else "#00D4AA"
     cls = "warning" if card_type == "warning" else ""
     parsed_text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)
     parsed_text = re.sub(r"\*(.*?)\*", r"<i>\1</i>", parsed_text)
     st.markdown(
         f"""
-    <div class="insight-card {cls}" style="background: var(--secondary-background-color);
-                border-left: 4px solid #00D4AA; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0;
-                margin: 1rem 0; border: 1px solid rgba(0,212,170,0.2);">
-        <h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem; color: #00D4AA;">{title}</h4>
-        <div style="font-size: 0.92rem; line-height: 1.6; opacity: 0.9;">{parsed_text}</div>
+    <div class="insight-card {cls}" style="background: #0B1120;
+                border-left: 4px solid {border_color}; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0;
+                margin: 1rem 0; border: 1px solid rgba(0,212,170,0.25); color: #F8FAFC;">
+        <h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem; color: {border_color}; font-weight: 700;">{title}</h4>
+        <div style="font-size: 0.92rem; line-height: 1.6; color: #CBD5E1;">{parsed_text}</div>
     </div>
     """,
         unsafe_allow_html=True,
@@ -259,18 +260,18 @@ def page_eda(results):
         # Data Summary Card
         st.markdown(
             """
-        <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1.2rem;
-                    margin-bottom: 1.5rem; border: 1px solid rgba(0,212,170,0.2);">
-            <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.8rem; color: var(--text-color);">
+        <div style="background: #0B1120; border-radius: 12px; padding: 1.25rem 1.5rem;
+                    margin-bottom: 1.5rem; border: 1px solid rgba(0,212,170,0.3); border-left: 5px solid #00D4AA; color: #F8FAFC;">
+            <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.8rem; color: #00D4AA;">
                 📋 Tóm Tắt Bộ Dữ Liệu Quan Trắc Môi Trường Không Khí
             </div>
-            <table style="width: 100%; font-size: 0.88rem; color: var(--text-color);">
-                <tr><td style="padding: 4px 0; opacity: 0.6;">🏭 Nguồn</td><td>Trạm cảm biến IoT quan trắc ngoài trời tại Sa Đéc, Đồng Tháp (phân tích dữ liệu môi trường cấp huyện)</td></tr>
-                <tr><td style="padding: 4px 0; opacity: 0.6;">📅 Giai đoạn</td><td><b>16/03/2022 — 11/05/2025</b> (38 tháng, ~3.1 năm liên tục)</td></tr>
-                <tr><td style="padding: 4px 0; opacity: 0.6;">⏱️ Tần suất gốc (Raw IoT)</td><td><b>~2 phút/lần</b> (209.594 bản ghi thô từ cảm biến)</td></tr>
-                <tr><td style="padding: 4px 0; opacity: 0.6;">📊 Tái lấy mẫu (Resample)</td><td><b>15 phút</b> (18.355 mẫu sạch) · <b>30 phút</b> (8.625 mẫu sạch) · <b>1 giờ</b> (6.689 mẫu sạch)</td></tr>
-                <tr><td style="padding: 4px 0; opacity: 0.6;">🧪 Features</td><td>119 đặc trưng thuộc 7 nhóm (anti-leakage, shift(1) strictly enforced)</td></tr>
-                <tr><td style="padding: 4px 0; opacity: 0.6;">✂️ Anchor Test Set</td><td>10% cuối cố định (669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) — 100% dữ liệu thực không nội suy</td></tr>
+            <table style="width: 100%; font-size: 0.9rem; color: #F8FAFC; border-collapse: separate; border-spacing: 0 4px;">
+                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8; width: 220px;">🏭 Nguồn</td><td>Trạm cảm biến IoT quan trắc ngoài trời tại Sa Đéc, Đồng Tháp (phân tích dữ liệu môi trường cấp huyện)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">📅 Giai đoạn</td><td><b style="color: #F8FAFC;">16/03/2022 — 11/05/2025</b> (38 tháng, ~3.1 năm liên tục)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">⏱️ Tần suất gốc (Raw IoT)</td><td><b style="color: #F8FAFC;">~2 phút/lần</b> (209.594 bản ghi thô từ cảm biến)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">📊 Tái lấy mẫu (Resample)</td><td><b style="color: #00D4AA;">15 phút</b> (18.355 mẫu sạch) · <b style="color: #00D4AA;">30 phút</b> (8.625 mẫu sạch) · <b style="color: #00D4AA;">1 giờ</b> (6.689 mẫu sạch)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">🧪 Features</td><td>119 đặc trưng thuộc 7 nhóm (anti-leakage, shift(1) strictly enforced)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">✂️ Anchor Test Set</td><td>10% cuối cố định (669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) — 100% dữ liệu thực không nội suy</td></tr>
             </table>
         </div>
         """,
@@ -636,7 +637,7 @@ def page_eda(results):
             st.image(str(img_f), caption=cap_f, use_container_width=True)
             st.markdown(
                 f"""
-            <div style="background: rgba(0,212,170,0.05); border-left: 3px solid #00D4AA; padding: 0.8rem 1rem; border-radius: 4px; margin-top: 0.5rem; margin-bottom: 1.5rem; font-size: 0.92rem; line-height: 1.6;">
+            <div style="background: #0B1120; border-left: 3px solid #00D4AA; border: 1px solid rgba(0,212,170,0.25); padding: 0.8rem 1rem; border-radius: 4px; margin-top: 0.5rem; margin-bottom: 1.5rem; font-size: 0.92rem; line-height: 1.6; color: #CBD5E1;">
                 {desc_f}
             </div>
             """,
@@ -1270,11 +1271,11 @@ def page_eda(results):
                 with c_g2:
                     st.markdown(
                         """
-                    <div style="background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; padding: 1rem; font-size: 0.9rem; line-height: 1.6;">
+                    <div style="background: #180D10; border: 1px solid rgba(239,68,68,0.35); border-left: 4px solid #EF4444; border-radius: 8px; padding: 1rem; font-size: 0.9rem; line-height: 1.6; color: #F8FAFC;">
                         <b style="color: #EF4444;">🚨 Điểm Mù Dữ Liệu (Blind Spots):</b><br>
-                        Khi gộp dữ liệu thành một năm tổng hợp điển hình, chuỗi quan trắc vẫn bị mù hoàn toàn <b>89 ngày</b> (~24,3%).<br>
+                        <span style="color: #CBD5E1;">Khi gộp dữ liệu thành một năm tổng hợp điển hình, chuỗi quan trắc vẫn bị mù hoàn toàn <b>89 ngày</b> (~24,3%).<br>
                         Trong đó <b>Tháng 2 và Tháng 9</b> gần như mất tín hiệu hoàn toàn (tỉ lệ bao phủ ~13%).<br><br>
-                        <b>Khuyến nghị:</b> Không ép mô hình dự báo chu kỳ năm dài hạn trên các tháng mù này, tập trung năng lực dự báo vào các tầm nhìn khả thi (1h - 24h).
+                        <b style="color: #F8FAFC;">Khuyến nghị:</b> Không ép mô hình dự báo chu kỳ năm dài hạn trên các tháng mù này, tập trung năng lực dự báo vào các tầm nhìn khả thi (1h - 24h).</span>
                     </div>
                     """,
                         unsafe_allow_html=True,

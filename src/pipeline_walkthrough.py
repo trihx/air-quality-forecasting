@@ -2,8 +2,8 @@
 Pipeline Walkthrough page for PM2.5 Forecasting Dashboard.
 
 Shows the complete research workflow step-by-step:
-  1. Data Collection → 2. Cleaning → 3. EDA → 4. Feature Engineering
-  5. Imputation → 6. Modeling & Evaluation → 7. Results & Conclusions
+  1. Data Collection → 2. Cleaning → 3. EDA → 4. Imputation
+  5. Feature Engineering → 6. Modeling & Evaluation → 7. Results & Conclusions
 
 Uses pre-computed results for instant display + selective live demos.
 """
@@ -80,10 +80,10 @@ def _render_custom_metric(label, value, icon=""):
     """Render a custom metric card that prevents truncation and supports wrapping."""
     st.markdown(
         f"""
-        <div style="display: flex; flex-direction: column; background: var(--secondary-background-color);
-                    border: 1px solid rgba(128,128,128,0.2); border-radius: 8px; padding: 1rem; height: 100%;">
-            <span style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 0.3rem;">{icon} {label}</span>
-            <span style="font-size: 1.25rem; font-weight: 600; line-height: 1.4; word-break: break-word; white-space: normal;">{value}</span>
+        <div style="display: flex; flex-direction: column; background: #0B1120;
+                    border: 1px solid rgba(0, 212, 170, 0.25); border-radius: 8px; padding: 1rem; height: 100%;">
+            <span style="font-size: 0.85rem; color: #94A3B8; font-weight: 500; margin-bottom: 0.3rem;">{icon} {label}</span>
+            <span style="font-size: 1.25rem; font-weight: 700; color: #F8FAFC; line-height: 1.4; word-break: break-word; white-space: normal;">{value}</span>
         </div>
         """,
         unsafe_allow_html=True,
@@ -94,14 +94,14 @@ def _step_data_collection():
     """Step 1: Data Collection."""
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
-                border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
-                border: 1px solid rgba(0,212,170,0.2);">
+    <div style="background: #0B1120; color: #F8FAFC !important;
+                border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.35); border-left: 5px solid #00D4AA;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #00D4AA;">
             📥 Bước 1: Thu Thập Dữ Liệu
         </div>
-        <div style="opacity: 0.7; margin-top: 0.5rem;">
-            Dữ liệu IoT sensor thu thập liên tục tại Sa Đéc, Đồng Tháp
+        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+            Dữ liệu IoT sensor thu thập liên tục tại Sa Đéc, Đồng Tháp (38 tháng, 209.594 bản ghi)
         </div>
     </div>
     """,
@@ -151,14 +151,14 @@ def _step_data_cleaning():
     """Step 2: Data Cleaning."""
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
-                border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
-                border: 1px solid rgba(236,72,153,0.2);">
+    <div style="background: #0B1120; color: #F8FAFC !important;
+                border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+                border: 1px solid rgba(236,72,153,0.35); border-left: 5px solid #EC4899;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #EC4899;">
-            🧹 Bước 2: Làm sạch Dữ Liệu
+            🧹 Bước 2: Làm sạch Dữ Liệu & Resampling
         </div>
-        <div style="opacity: 0.7; margin-top: 0.5rem;">
-            Xử lý outliers, duplicates, và domain constraints
+        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+            Xử lý outliers, duplicates, domain bounds [0, 500] theo WHO và đa phân giải (15m, 30m, 1h)
         </div>
     </div>
     """,
@@ -166,7 +166,7 @@ def _step_data_cleaning():
     )
 
     # Cleaning pipeline steps
-    steps = [
+    cleaning_steps = [
         ("1️⃣ Xóa duplicates", "Loại bỏ bản ghi trùng lặp theo timestamp"),
         (
             f"2️⃣ Domain Bounds {cite('who2021')}",
@@ -182,13 +182,13 @@ def _step_data_cleaning():
         ),
     ]
 
-    for title, desc in steps:
+    for title, desc in cleaning_steps:
         st.markdown(
             f"""
-        <div style="background: rgba(236,72,153,0.05); border-left: 3px solid #EC4899;
-                    padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0;">
-            <strong>{title}</strong><br>
-            <span style="opacity: 0.7; font-size: 0.9rem;">{desc}</span>
+        <div style="background: #111827; border-left: 3px solid #EC4899; border: 1px solid rgba(236,72,153,0.25);
+                    padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; color: #F8FAFC;">
+            <strong style="color: #F8FAFC;">{title}</strong><br>
+            <span style="color: #CBD5E1; font-size: 0.9rem;">{desc}</span>
         </div>
         """,
             unsafe_allow_html=True,
@@ -220,14 +220,14 @@ def _step_eda():
     """Step 3: Exploratory Data Analysis."""
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
-                border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
-                border: 1px solid rgba(139,92,246,0.2);">
+    <div style="background: #0B1120; color: #F8FAFC !important;
+                border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+                border: 1px solid rgba(139,92,246,0.35); border-left: 5px solid #8B5CF6;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #8B5CF6;">
             🔬 Bước 3: Phân Tích Khám Phá (EDA)
         </div>
-        <div style="opacity: 0.7; margin-top: 0.5rem;">
-            Phát hiện patterns, seasonality, và mối quan hệ giữa các biến
+        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+            Phát hiện patterns, bẫy tự tương quan r=0.86, phân phối lệch phải (Skew 2.00, Kurt 6.15)
         </div>
     </div>
     """,
@@ -260,8 +260,88 @@ def _get_dashboard_content():
         return {}
 
 
+def _step_imputation():
+    """Step 4: Missing Data Imputation."""
+    st.markdown(
+        """
+    <div style="background: #0B1120; color: #F8FAFC !important;
+                border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+                border: 1px solid rgba(6,182,212,0.35); border-left: 5px solid #06B6D4;">
+        <div style="font-size: 1.3rem; font-weight: 700; color: #06B6D4;">
+            🧪 Bước 4: Xử Lý Missing Data (Tiered Imputation)
+        </div>
+        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+            Chiến lược Tiered Imputation: Spline (≤6h), KNN (6–24h) và Dũng cảm loại bỏ (Drop 19.810h khuyết dài >24h)
+        </div>
+    </div>
+    """,
+        unsafe_allow_html=True,
+    )
+
+    tiers = [
+        (
+            f"🟢 Gap ngắn (≤6 rows) {cite('moritz2015')}",
+            "Cubic Spline Interpolation",
+            "Tương đương: 6h (1h) | 3h (30m) | 1.5h (15m)",
+        ),
+        (
+            f"🟡 Gap trung bình (6-24 rows) {cite('troyanskaya2001')}",
+            "KNN Multivariate (k=5)",
+            "Tương đương: 24h (1h) | 12h (30m) | 6h (15m)",
+        ),
+        (
+            f"🔴 Gap dài (>24 rows) {cite('moritz2015')}",
+            "DROP 19.810h — Không recover",
+            "Bỏ qua các đứt gãy quá lớn để triệt tiêu sinh dữ liệu giả (Anti Data Hallucination)",
+        ),
+    ]
+
+    for tier, method, reason in tiers:
+        col1, col2, col3 = st.columns([1.2, 1, 1.8])
+        col1.markdown(f"**{tier}**", unsafe_allow_html=True)
+        col2.markdown(f"`{method}`")
+        col3.markdown(f"*{reason}*")
+
+    content = _get_dashboard_content()
+    imputation_strat = content.get("pipeline_walkthrough", {}).get("imputation_strategy", {})
+    if imputation_strat:
+        st.markdown(
+            f"""
+        <div style="background: #111827; padding: 1rem; border-left: 4px solid #06B6D4; border: 1px solid rgba(6,182,212,0.25); border-radius: 6px; margin-top: 1rem; margin-bottom: 1.5rem; color: #F8FAFC;">
+            <span style="font-size: 0.95em; color: #CBD5E1;">💡 <b style="color: #06B6D4;">{imputation_strat.get("title", "Cơ Sở Học Thuật")}:</b> {imputation_strat.get("explanation", "")}</span>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    st.markdown("---")
+    col1, col2 = st.columns(2)
+    with col1:
+        _render_custom_metric("Kết quả", "Tùy thuộc độ phân giải (15m/30m/1h)")
+    with col2:
+        _render_custom_metric("Tracking", "Cột `is_imputed` = 1/0")
+
+    val_strategy = content.get("pipeline_walkthrough", {}).get("validation_strategy", {})
+    val_title = val_strategy.get("title", "Chiến Lược Xác Thực (Validation Strategy) & Tính Toàn Vẹn Dữ Liệu")
+    val_explanation = val_strategy.get("explanation", "Test set BẮT BUỘC chỉ dùng data thật (`is_imputed == 0`).")
+
+    st.markdown(
+        f"""
+        <div style="background: #111827; border-left: 4px solid #06B6D4; border: 1px solid rgba(6,182,212,0.3); padding: 1.2rem; border-radius: 6px; margin: 1.5rem 0; color: #F8FAFC;">
+            <div style="font-size: 1.05em; font-weight: 700; color: #06B6D4; margin-bottom: 0.5rem;">
+                🔬 {val_title}
+            </div>
+            <div style="font-size: 0.95em; line-height: 1.6; color: #CBD5E1;">
+                {val_explanation}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def _step_feature_engineering():
-    """Step 4: Feature Engineering."""
+    """Step 5: Feature Engineering."""
     metrics = _get_pipeline_metrics()
     f_count = metrics.get("features_count", 121)
 
@@ -274,19 +354,19 @@ def _step_feature_engineering():
 
     st.markdown(
         f"""
-    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
-                border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
-                border: 1px solid rgba(245,158,11,0.2);">
+    <div style="background: #0B1120; color: #F8FAFC !important;
+                border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+                border: 1px solid rgba(245,158,11,0.35); border-left: 5px solid #F59E0B;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #F59E0B;">
-            🛠️ Bước 4: Feature Engineering {cite("christ2018")}
+            🛠️ Bước 5: Feature Engineering {cite("christ2018")}
         </div>
-        <div style="opacity: 0.7; margin-top: 0.5rem;">
-            Từ 5 biến gốc → 119 Features ({f_count} tổng số cột - 1 Target - 1 Metadata)
+        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+            Từ 5 biến gốc → 119 Features ({f_count} tổng số cột - 1 Target - 1 Metadata) kỷ luật shift(1) chống rò rỉ
         </div>
     </div>
 
-    <div style="background: rgba(245,158,11,0.05); padding: 1rem; border-left: 3px solid #F59E0B; border-radius: 4px; margin-bottom: 1.5rem;">
-        <span style="font-size: 0.95em;">💡 <b>Lưu ý học thuật:</b> {feat_explanation}</span>
+    <div style="background: #111827; padding: 1rem; border-left: 4px solid #F59E0B; border: 1px solid rgba(245,158,11,0.25); border-radius: 6px; margin-bottom: 1.5rem; color: #F8FAFC;">
+        <span style="font-size: 0.95em; color: #CBD5E1;">💡 <b style="color: #F59E0B;">Lưu ý học thuật:</b> {feat_explanation}</span>
     </div>
     """,
         unsafe_allow_html=True,
@@ -309,8 +389,8 @@ def _step_feature_engineering():
             f"""
         <div style="display: flex; justify-content: space-between; align-items: center;
                     padding: 0.5rem 1rem; margin: 0.25rem 0;
-                    background: rgba(245,158,11,0.05); border-radius: 8px;">
-            <span><strong>{group}</strong></span>
+                    background: #111827; border: 1px solid rgba(245,158,11,0.2); border-radius: 8px;">
+            <span style="color: #F8FAFC;"><strong>{group}</strong></span>
             <span style="color: #F59E0B; font-weight: 600;">{count}</span>
         </div>
         """,
@@ -320,7 +400,7 @@ def _step_feature_engineering():
 
     st.markdown(
         f"""
-        <div style="background: rgba(245,158,11,0.1); border-left: 4px solid #F59E0B; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+        <div style="background: #18120B; border: 1px solid rgba(245,158,11,0.4); border-left: 4px solid #F59E0B; padding: 1rem; border-radius: 6px; margin: 1rem 0; color: #F8FAFC;">
             <span style="font-size: 1.1em; font-weight: 600; color: #F59E0B;">⚠️ Anti-Leakage</span> {cite("hyndman2021")}<br><br>
             Tất cả features dùng target (diff, pct_change, ratio) đều áp dụng <code>shift(1)</code> — chỉ dùng dữ liệu QUÁ KHỨ.<br>
             Kiểm tra: <code>|corr(feature, target)| < 0.99</code> cho mọi feature.
@@ -360,99 +440,18 @@ def _step_feature_engineering():
                 st.error(f"❌ Lỗi: {e}")
 
 
-def _step_imputation():
-    """Step 5: Missing Data Imputation."""
-    st.markdown(
-        """
-    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
-                border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
-                border: 1px solid rgba(6,182,212,0.2);">
-        <div style="font-size: 1.3rem; font-weight: 700; color: #06B6D4;">
-            🧪 Bước 5: Xử Lý Missing Data
-        </div>
-        <div style="opacity: 0.7; margin-top: 0.5rem;">
-            Chiến lược Tiered Imputation cho dữ liệu IoT
-        </div>
-    </div>
-    """,
-        unsafe_allow_html=True,
-    )
-
-    tiers = [
-        (
-            f"🟢 Gap ngắn (≤6 rows) {cite('moritz2015')}",
-            "Cubic Spline Interpolation",
-            "Tương đương: 6h (1h) | 3h (30m) | 1.5h (15m)",
-        ),
-        (
-            f"🟡 Gap trung bình (6-24 rows) {cite('troyanskaya2001')}",
-            "KNN Multivariate (k=5)",
-            "Tương đương: 24h (1h) | 12h (30m) | 6h (15m)",
-        ),
-        (
-            f"🔴 Gap dài (>24 rows) {cite('moritz2015')}",
-            "DROP — Không recover",
-            "Bỏ qua các đứt gãy quá lớn để tránh noise",
-        ),
-    ]
-
-    for tier, method, reason in tiers:
-        col1, col2, col3 = st.columns([1.2, 1, 1.8])
-        col1.markdown(f"**{tier}**", unsafe_allow_html=True)
-        col2.markdown(f"`{method}`")
-        col3.markdown(f"*{reason}*")
-
-    content = _get_dashboard_content()
-    imputation_strat = content.get("pipeline_walkthrough", {}).get("imputation_strategy", {})
-    if imputation_strat:
-        st.markdown(
-            f"""
-        <div style="background: rgba(245,158,11,0.05); padding: 1rem; border-left: 3px solid #F59E0B; border-radius: 4px; margin-top: 1rem; margin-bottom: 1.5rem;">
-            <span style="font-size: 0.95em;">💡 <b>{imputation_strat.get("title", "Cơ Sở Học Thuật")}:</b> {imputation_strat.get("explanation", "")}</span>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
-
-    st.markdown("---")
-    col1, col2 = st.columns(2)
-    with col1:
-        _render_custom_metric("Kết quả", "Tùy thuộc độ phân giải (15m/30m/1h)")
-    with col2:
-        _render_custom_metric("Tracking", "Cột `is_imputed` = 1/0")
-
-    content = _get_dashboard_content()
-    val_strategy = content.get("pipeline_walkthrough", {}).get("validation_strategy", {})
-    val_title = val_strategy.get("title", "Chiến Lược Xác Thực (Validation Strategy) & Tính Toàn Vẹn Dữ Liệu")
-    val_explanation = val_strategy.get("explanation", "Test set BẮT BUỘC chỉ dùng data thật (`is_imputed == 0`).")
-
-    st.markdown(
-        f"""
-        <div style="background: rgba(6,182,212,0.05); border-left: 4px solid #06B6D4; padding: 1.2rem; border-radius: 4px; margin: 1.5rem 0;">
-            <div style="font-size: 1.05em; font-weight: 700; color: #06B6D4; margin-bottom: 0.5rem;">
-                🔬 {val_title}
-            </div>
-            <div style="font-size: 0.95em; line-height: 1.6;">
-                {val_explanation}
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
 def _step_modeling():
     """Step 6: Modeling & Evaluation."""
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
-                border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
-                border: 1px solid rgba(16,185,129,0.2);">
+    <div style="background: #0B1120; color: #F8FAFC !important;
+                border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+                border: 1px solid rgba(16,185,129,0.35); border-left: 5px solid #10B981;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #10B981;">
             📊 Bước 6: Huấn Luyện & Đánh Giá Mô Hình
         </div>
-        <div style="opacity: 0.7; margin-top: 0.5rem;">
-            Mô hình đa độ phân giải (15m, 30m, 1h) × 3 horizons — v9 pipeline
+        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+            Mô hình đa độ phân giải (15m, 30m, 1h) × 3 horizons — Temporal Split 80/10/10 v9
         </div>
     </div>
     """,
@@ -492,9 +491,9 @@ def _step_modeling():
 
     st.markdown(
         """
-        <div style="background: rgba(16,185,129,0.05); padding: 1rem; border-left: 3px solid #10B981; border-radius: 4px; margin-top: 1.5rem; margin-bottom: 1.5rem;">
-            <div style="font-size: 0.95em; line-height: 1.6;">
-                <b>💡 Lý do chọn mô hình:</b> Hệ thống áp dụng 5 phân lớp mô hình để kiểm chứng chéo giả thuyết (Cross-Hypothesis Testing):
+        <div style="background: #111827; padding: 1rem; border-left: 4px solid #10B981; border: 1px solid rgba(16,185,129,0.25); border-radius: 6px; margin-top: 1.5rem; margin-bottom: 1.5rem; color: #F8FAFC;">
+            <div style="font-size: 0.95em; line-height: 1.6; color: #CBD5E1;">
+                <b style="color: #10B981;">💡 Lý do chọn mô hình:</b> Hệ thống áp dụng 5 phân lớp mô hình để kiểm chứng chéo giả thuyết (Cross-Hypothesis Testing):
                 <b>(1) Baseline</b> cung cấp mức sàn tối thiểu;
                 <b>(2) Statistical</b> xử lý tuyến tính và xu hướng vĩ mô;
                 <b>(3) Tree-based ML</b> giải quyết tốt dữ liệu dạng bảng (tabular) với nhiều features;
@@ -580,14 +579,14 @@ def _step_results():
     """Step 7: Results & Conclusions."""
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); color: var(--text-color) !important;
-                border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
-                border: 1px solid rgba(234,179,8,0.2);">
+    <div style="background: #0B1120; color: #F8FAFC !important;
+                border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+                border: 1px solid rgba(234,179,8,0.35); border-left: 5px solid #EAB308;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #EAB308;">
             📈 Bước 7: Kết Quả & Kết Luận
         </div>
-        <div style="opacity: 0.7; margin-top: 0.5rem;">
-            Tổng hợp findings và bài học kinh nghiệm
+        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+            Tổng hợp findings, bảng xếp hạng MASE và bài học kinh nghiệm
         </div>
     </div>
     """,
@@ -651,10 +650,10 @@ def _step_results():
     for title, desc in findings:
         st.markdown(
             f"""
-        <div style="background: rgba(234,179,8,0.05); border-left: 3px solid #EAB308;
-                    padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0;">
-            <strong>{title}</strong><br>
-            <span style="opacity: 0.7;">{desc}</span>
+        <div style="background: #111827; border-left: 3px solid #EAB308; border: 1px solid rgba(234,179,8,0.25);
+                    padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; color: #F8FAFC;">
+            <strong style="color: #F8FAFC;">{title}</strong><br>
+            <span style="color: #CBD5E1;">{desc}</span>
         </div>
         """,
             unsafe_allow_html=True,
@@ -766,8 +765,8 @@ def page_pipeline_walkthrough(results):
         "📥 Thu thập",
         "🧹 Làm sạch",
         "🔬 EDA",
-        "🔧 Features",
         "🧪 Imputation",
+        "🛠️ Features",
         "📊 Modeling",
         "📈 Kết quả",
     ]
@@ -779,9 +778,9 @@ def page_pipeline_walkthrough(results):
             st.markdown(
                 f"""
             <div style="text-align: center; padding: 0.5rem;
-                        background: rgba(0,212,170,0.1); border-radius: 8px;
-                        border: 1px solid rgba(0,212,170,0.2);
-                        font-size: 0.75rem; color: #00D4AA;">
+                        background: #0B1120; border-radius: 8px;
+                        border: 1px solid rgba(0,212,170,0.35);
+                        font-size: 0.78rem; font-weight: 600; color: #00D4AA;">
                 {step}
             </div>
             """,
@@ -797,9 +796,9 @@ def page_pipeline_walkthrough(results):
     st.divider()
     _step_eda()
     st.divider()
-    _step_feature_engineering()
-    st.divider()
     _step_imputation()
+    st.divider()
+    _step_feature_engineering()
     st.divider()
     _step_modeling()
     st.divider()
