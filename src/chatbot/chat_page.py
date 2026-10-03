@@ -10,6 +10,7 @@ Provides a chat interface with:
 
 import contextlib
 import logging
+import os
 
 import streamlit as st
 
@@ -18,6 +19,12 @@ from src.chatbot.credentials_manager import (
     is_credentials_persisted,
     load_credentials,
     save_credentials,
+)
+from src.chatbot.pin_security import (
+    check_and_apply_query_param_unlock,
+    is_session_unlocked,
+    lock_session,
+    render_pin_security_gate,
 )
 from src.chatbot.provider_config import (
     GROQ_MODEL_RECOMMENDATIONS,
@@ -640,19 +647,56 @@ def page_ai_assistant(results):
                     if "quick_kaggle_model" not in st.session_state:
                         st.session_state["quick_kaggle_model"] = mod
 
+    # ── Check query params for secret unlock (?unlock_pin=190034, ?puk=...) ──
+    with contextlib.suppress(Exception):
+        check_and_apply_query_param_unlock(st.query_params, st.session_state)
+
+    # ── Security PIN Gate: Require PIN 190034 before exposing AI Assistant ──
+    if not is_session_unlocked(st.session_state):
+        render_pin_security_gate()
+        return
+
     # ── Render provider config in sidebar ──
     _render_provider_config()
 
-    # ── Header ──
+    # ── Header with Security Status & Manual Lock ──
+    col_hdr, col_lock = st.columns([4, 1.2])
+    with col_hdr:
+        st.markdown(
+            """
+        <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
+            💬 Trợ Lý AI — Phân Tích Kỹ Thuật
+        </h1>
+        <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 0.4rem;">
+            Trợ lý AI chuyên sâu • Tra cứu kiến trúc mô hình, quy trình tiền xử lý và kết quả thực nghiệm
+        </p>
+        """,
+            unsafe_allow_html=True,
+        )
+    with col_lock:
+        st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
+        if st.button(
+            "🔒 Khóa Lại",
+            key="btn_lock_ai_session",
+            use_container_width=True,
+            help="Khóa ngay phiên làm việc Trợ Lý AI để bảo vệ an toàn thông tin khi rời máy",
+        ):
+            lock_session(st.session_state)
+            st.toast("🔒 Đã khóa phiên làm việc Trợ Lý AI.", icon="🔒")
+            st.rerun()
+
     st.markdown(
         """
-    <h1 style="font-size: 2.2rem; margin-bottom: 0.25rem;">
-        💬 Trợ Lý AI — Phân Tích Kỹ Thuật
-    </h1>
-    <p style="opacity: 0.7; font-size: 1.05rem; margin-bottom: 1rem;">
-        Trợ lý AI chuyên sâu • Tra cứu kiến trúc mô hình, quy trình tiền xử lý và kết quả thực nghiệm
-    </p>
-    """,
+        <div style="
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(0, 212, 170, 0.08); border: 1px solid rgba(0, 212, 170, 0.25);
+            border-radius: 8px; padding: 0.35rem 0.85rem; font-size: 0.85rem; color: #00D4AA;
+            margin-bottom: 1rem;
+        ">
+            <span>🛡️</span>
+            <span><strong>Xác thực PIN: Hợp lệ (190034)</strong> • Bảo vệ Brute-force & DoS: Đang hoạt động</span>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -663,18 +707,92 @@ def page_ai_assistant(results):
     render_version_badge(ver)
     cards_ai_assistant(ver)
 
-    # ── Active provider status & Primary Provider selection ──
-    raw_providers = detect_available_providers(st.session_state.get("llm_provider_keys", {}))
-    available_names = [p.name for p in raw_providers]
+    # ── AI Assistant Options & Configuration Status ──
+    assistant_options = ["gemini", "groq", "kaggle_ollama", "openai"]
+    if not is_cloud_environment():
+        assistant_options.append("lm_studio")
 
-    # Validate or set primary provider
-    if "primary_provider" not in st.session_state or st.session_state.primary_provider not in available_names:
-        st.session_state.primary_provider = available_names[0] if available_names else None
+    saved_keys = st.session_state.get("llm_provider_keys", {})
 
-    # Re-detect with primary provider prioritized
+    def _is_assistant_configured(name: str) -> bool:
+        cfg = saved_keys.get(name, {})
+        if not isinstance(cfg, dict):
+            return False
+        if name == "kaggle_ollama":
+            return bool(cfg.get("base_url") or os.getenv("KAGGLE_OLLAMA_URL"))
+        if name == "lm_studio":
+            return bool(cfg.get("api_key") or os.getenv("LM_STUDIO_API_KEY"))
+        env_k = PROVIDER_REGISTRY.get(name, {}).get("env_key", "")
+        return bool(cfg.get("api_key") or (env_k and os.getenv(env_k)))
+
+    assistant_labels = {
+        "gemini": "⚡ Google Gemini (Miễn phí 15 RPM • Flash/Pro)",
+        "groq": "🚀 Groq LPU (Siêu tốc >800 tok/s • Llama 3.1)",
+        "kaggle_ollama": "🦙 Kaggle Ollama (Free GPU 32GB VRAM • Qwen 3)",
+        "openai": "🧠 OpenAI (GPT-4o-mini / GPT-4o)",
+        "lm_studio": "🖥️ LM Studio (Local Inference • Tự lưu trữ)",
+    }
+
+    def _format_assistant_choice(name: str) -> str:
+        base_label = assistant_labels.get(name, name)
+        if _is_assistant_configured(name):
+            return f"{base_label}  [🟢 Đã kết nối]"
+        return f"{base_label}  [⚪ Chưa cấu hình]"
+
+    # Determine default selection
+    current_selected = st.session_state.get("primary_provider")
+    if current_selected not in assistant_options:
+        configured = [p for p in assistant_options if _is_assistant_configured(p)]
+        current_selected = configured[0] if configured else "gemini"
+        st.session_state["primary_provider"] = current_selected
+
+    curr_idx = assistant_options.index(current_selected) if current_selected in assistant_options else 0
+
+    st.markdown(
+        """
+        <div style="
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 0.8rem 1rem 0.2rem 1rem;
+            margin-bottom: 0.6rem;
+        ">
+            <span style="font-weight: 700; color: #E2E8F0; font-size: 0.95rem;">
+                🤖 Chọn Trợ Lý AI Sử Dụng (Primary AI Assistant):
+            </span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    chosen_assistant = st.selectbox(
+        "Chọn Trợ Lý AI Sử Dụng:",
+        options=assistant_options,
+        index=curr_idx,
+        format_func=_format_assistant_choice,
+        key="global_primary_assistant_selector",
+        label_visibility="collapsed",
+        help="Trợ lý được chọn sẽ luôn được ưu tiên gọi đầu tiên để giải đáp mọi câu hỏi. Bạn có thể chuyển đổi bất kỳ lúc nào.",
+    )
+
+    if chosen_assistant != st.session_state.get("primary_provider"):
+        st.session_state["primary_provider"] = chosen_assistant
+        st.session_state["primary_ai_provider"] = chosen_assistant
+        _persist_current_credentials(primary=chosen_assistant)
+        st.rerun()
+
+    is_chosen_configured = _is_assistant_configured(chosen_assistant)
+    if not is_chosen_configured:
+        chosen_meta = PROVIDER_REGISTRY.get(chosen_assistant, {})
+        st.info(
+            f"💡 Bạn đang chọn **{chosen_meta.get('display_name', chosen_assistant)}** làm Trợ lý chính nhưng chưa kết nối. "
+            f"Vui lòng dán Cloudflare Tunnel URL hoặc nhập API Key ở bảng **⚙️ Cấu Hình Nhanh** bên dưới 👇"
+        )
+
+    # ── Active provider status & fallback chain ──
     providers = detect_available_providers(
         st.session_state.get("llm_provider_keys", {}),
-        primary_provider=st.session_state.primary_provider,
+        primary_provider=st.session_state.get("primary_provider"),
     )
     cloud_providers = [p for p in providers if not p.is_local]
     local_providers = [p for p in providers if p.is_local]
@@ -684,47 +802,24 @@ def page_ai_assistant(results):
         if cloud_providers:
             primary = cloud_providers[0]
             st.success(
-                f"🟢 AI: **{primary.display_name}** ({primary.model or 'auto'})"
-                + (f" + {len(cloud_providers) - 1} fallback" if len(cloud_providers) > 1 else "")
+                f"🟢 Đang dùng: **{primary.display_name}** ({primary.model or 'auto'})"
+                + (f" + {len(cloud_providers) - 1} dự phòng" if len(cloud_providers) > 1 else "")
                 + (" + LM Studio" if local_providers else "")
             )
         elif local_providers:
-            st.info("🖥️ AI: **LM Studio** (local)")
+            st.info("🖥️ Đang dùng: **LM Studio** (local)")
         else:
             if is_cloud_environment():
-                st.warning(
-                    "⚠️ Chưa kích hoạt AI Provider — Vui lòng cấu hình ở bảng bên dưới hoặc mở Sidebar (góc trên cùng bên trái >)."
-                )
+                st.warning("⚠️ Chưa kích hoạt AI Provider nào — Vui lòng cấu hình ở bảng bên dưới hoặc mở Sidebar.")
             else:
                 st.warning("⚠️ Chưa cấu hình AI — vào **⚙️ Cấu Hình AI Provider** ở sidebar hoặc bảng bên dưới")
 
     with col_info:
-        # Show fallback chain
         chain = " → ".join([p.display_name for p in providers]) or "Chưa cấu hình"
-        st.caption(f"🔗 Thứ tự: {chain}")
-
-    # Primary provider selection selector if 2+ providers available
-    if len(raw_providers) > 1:
-        current_pri = st.session_state.primary_provider or raw_providers[0].name
-        pri_idx = available_names.index(current_pri) if current_pri in available_names else 0
-        display_map = {p.name: f"{p.display_name} ({p.model or 'auto'})" for p in raw_providers}
-
-        selected_pri = st.selectbox(
-            "⭐ Chọn AI Provider ưu tiên hàng đầu (Primary Provider):",
-            options=available_names,
-            index=pri_idx,
-            format_func=lambda k: display_map.get(k, k),
-            key="select_primary_provider_widget",
-            help="Provider được chọn sẽ luôn được ưu tiên gọi đầu tiên. Nếu gặp lỗi, hệ thống sẽ tự động fallback sang các provider còn lại.",
-        )
-        if selected_pri != st.session_state.primary_provider:
-            st.session_state.primary_provider = selected_pri
-            st.session_state.primary_ai_provider = selected_pri
-            _persist_current_credentials(primary=selected_pri)
-            st.rerun()
+        st.caption(f"🔗 Chuỗi dự phòng: {chain}")
 
     # ── Inline Quick Config Form (Always accessible on page) ──
-    _render_inline_quick_config(expanded=(not cloud_providers and not local_providers))
+    _render_inline_quick_config(expanded=(not is_chosen_configured or (not cloud_providers and not local_providers)))
 
     # ── Knowledge Base status ──
     kb_col, reindex_col = st.columns([3, 1])
