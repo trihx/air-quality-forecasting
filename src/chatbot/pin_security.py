@@ -141,10 +141,10 @@ def check_and_apply_query_param_unlock(query_params: Any, session: Any) -> bool:
 
 
 def render_pin_security_gate() -> None:
-    """Render the PIN Security Gate UI in Streamlit.
+    """Render the PIN Security Gate UI in Streamlit with high-contrast B2B/B2G Tech theme.
 
     If locked out: displays a secure lockout screen with cooldown timer and emergency PUK recovery.
-    If pending verification: displays the B2B/B2G Tech PIN input card.
+    If pending verification: displays the high-contrast B2B/B2G Tech PIN input card.
     """
     is_locked, remaining_seconds, failed_attempts = get_lockout_info(st.session_state)
 
@@ -156,35 +156,37 @@ def render_pin_security_gate() -> None:
         st.markdown(
             f"""
             <div style="
-                background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(20, 20, 25, 0.95) 100%);
-                border: 2px solid #EF4444;
+                background: #181111;
+                border: 1px solid rgba(239, 68, 68, 0.5);
+                border-left: 6px solid #EF4444;
                 border-radius: 14px;
                 padding: 2.2rem;
-                margin: 2rem 0;
+                margin: 1.5rem 0 2rem 0;
                 text-align: center;
-                box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(239, 68, 68, 0.15);
             ">
                 <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🛡️🔒</div>
-                <h2 style="color: #EF4444; font-size: 1.8rem; margin-bottom: 0.5rem; font-weight: 800;">
+                <h2 style="color: #EF4444; font-size: 1.85rem; margin-bottom: 0.6rem; font-weight: 800; letter-spacing: -0.01em;">
                     Chức Năng Trợ Lý AI Đang Tạm Khóa
                 </h2>
-                <p style="color: #E2E8F0; font-size: 1.05rem; max-width: 650px; margin: 0 auto 1.2rem auto; line-height: 1.6;">
+                <p style="color: #F8FAFC; font-size: 1.05rem; max-width: 680px; margin: 0 auto 1.4rem auto; line-height: 1.65;">
                     Bạn đã nhập sai mã PIN <strong>5 lần liên tiếp</strong>. Hệ thống đã kích hoạt cơ chế tự vệ
                     chống tấn công dò mã (Brute-Force & DoS Protection) nhằm bảo vệ hạn mức API và tài nguyên GPU.
                 </p>
                 <div style="
                     display: inline-block;
-                    background: rgba(239, 68, 68, 0.15);
-                    border: 1px solid rgba(239, 68, 68, 0.4);
+                    background: #7F1D1D;
+                    border: 1px solid #EF4444;
                     border-radius: 8px;
-                    padding: 0.6rem 1.4rem;
-                    color: #FCA5A5;
+                    padding: 0.65rem 1.6rem;
+                    color: #FFFFFF;
                     font-family: 'JetBrains Mono', monospace;
                     font-size: 1.25rem;
-                    font-weight: 700;
-                    margin-bottom: 1.5rem;
+                    font-weight: 800;
+                    margin-bottom: 0.5rem;
+                    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
                 ">
-                    ⏳ Tự động mở lại sau: <span style="color: #FFFFFF;">{time_str}</span>
+                    ⏳ Tự động mở lại sau: <span style="color: #FEF08A;">{time_str}</span>
                 </div>
             </div>
             """,
@@ -213,7 +215,7 @@ def render_pin_security_gate() -> None:
                 else:
                     st.error("❌ Mã PUK không chính xác! Vui lòng kiểm tra lại biến môi trường hoặc tài liệu.")
 
-        with col_right, st.expander("ℹ️ Hướng Dẫn Dành Riêng Cho Quản Trị Viên (Anh Trí)", expanded=True):
+        with col_right, st.expander("ℹ️ Hướng Dành Riêng Cho Quản Trị Viên (Anh Trí)", expanded=True):
             st.markdown(
                 """
                     **Đặc quyền mở khóa cấp tốc:**
@@ -227,43 +229,46 @@ def render_pin_security_gate() -> None:
                 st.rerun()
         return
 
-    # ── Security PIN Input Card (Not locked, pending verification) ──
+    # ── Security PIN Input Card (High Contrast Dark Theme) ──
     attempts_left = MAX_FAILED_ATTEMPTS - failed_attempts
 
     st.markdown(
         """
         <div style="
-            background: linear-gradient(135deg, rgba(0, 212, 170, 0.04) 0%, rgba(15, 23, 42, 0.95) 100%);
-            border: 1px solid rgba(0, 212, 170, 0.25);
+            background: #0B1120;
+            border: 1px solid rgba(0, 212, 170, 0.45);
+            border-left: 6px solid #00D4AA;
             border-radius: 14px;
-            padding: 2.2rem;
-            margin: 1.5rem 0 2rem 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            padding: 1.8rem 2.2rem;
+            margin: 1.2rem 0 1.8rem 0;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(0, 212, 170, 0.08);
         ">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.2rem; margin-bottom: 0.8rem;">
                 <div style="
                     font-size: 2.2rem;
-                    background: rgba(0, 212, 170, 0.12);
-                    border: 1px solid rgba(0, 212, 170, 0.3);
+                    background: rgba(0, 212, 170, 0.15);
+                    border: 1px solid rgba(0, 212, 170, 0.5);
                     border-radius: 12px;
-                    width: 56px;
-                    height: 56px;
+                    width: 58px;
+                    height: 58px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    color: #00D4AA;
                 ">🔒</div>
                 <div>
-                    <h2 style="color: #00D4AA; font-size: 1.6rem; margin: 0; font-weight: 800; letter-spacing: -0.01em;">
+                    <h2 style="color: #00D4AA; font-size: 1.65rem; margin: 0; font-weight: 800; letter-spacing: -0.01em;">
                         Bảo Mật Trợ Lý AI — Xác Thực Mã PIN
                     </h2>
-                    <p style="color: #94A3B8; font-size: 0.95rem; margin: 0.2rem 0 0 0;">
-                        Cơ chế bảo vệ tài nguyên điện toán GPU & hạn mức API Key mô hình ngôn ngữ lớn (LLM)
+                    <p style="color: #CBD5E1; font-size: 0.95rem; margin: 0.25rem 0 0 0; font-weight: 500;">
+                        Cơ chế bảo vệ tài nguyên điện toán GPU &amp; hạn mức API Key mô hình ngôn ngữ lớn (LLM)
                     </p>
                 </div>
             </div>
-            <p style="color: #CBD5E1; font-size: 1rem; line-height: 1.6; margin-bottom: 1.2rem;">
+            <p style="color: #F8FAFC; font-size: 1.02rem; line-height: 1.7; margin-top: 1rem; margin-bottom: 0;">
                 Chức năng Trợ Lý AI tích hợp tri thức toàn diện của Đề án ThS và kết nối trực tiếp với các dịch vụ suy luận
-                (Google Gemini, Groq LPU, Kaggle Ollama 32GB VRAM, OpenAI). Vui lòng nhập mã PIN bảo mật <strong>(6 số)</strong> để tiếp tục.
+                (<strong style="color: #38BDF8;">Google Gemini</strong>, <strong style="color: #F97316;">Groq LPU</strong>, <strong style="color: #A855F7;">Kaggle Ollama 32GB VRAM</strong>, <strong style="color: #10B981;">OpenAI</strong>).
+                Vui lòng nhập mã PIN bảo mật <span style="background: rgba(0, 212, 170, 0.2); color: #00D4AA; padding: 0.15rem 0.55rem; border-radius: 6px; font-weight: 700; font-family: monospace;">(6 số)</span> để tiếp tục.
             </p>
         </div>
         """,
@@ -312,19 +317,24 @@ def render_pin_security_gate() -> None:
         st.markdown(
             """
             <div style="
-                background: rgba(255, 255, 255, 0.02);
-                border: 1px dashed rgba(255, 255, 255, 0.15);
-                border-radius: 10px;
-                padding: 1.2rem;
-                font-size: 0.9rem;
-                color: #94A3B8;
-                line-height: 1.6;
+                background: #111827;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-left: 4px solid #38BDF8;
+                border-radius: 12px;
+                padding: 1.3rem 1.4rem;
+                font-size: 0.92rem;
+                color: #F1F5F9;
+                line-height: 1.65;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             ">
-                <strong style="color: #E2E8F0;">💡 Lưu ý bảo mật:</strong>
-                <ul style="margin: 0.5rem 0 0.5rem 1.2rem; padding: 0;">
-                    <li>Mã PIN bảo mật giúp tránh hao hụt API quota do truy cập công khai ngoài ý muốn.</li>
-                    <li>Phiên làm việc được ghi nhớ tự động trong suốt thời gian duyệt trang của bạn.</li>
-                    <li>Sau khi hoàn thành tra cứu, bạn có thể chủ động bấm <strong>🔒 Khóa lại</strong> bất cứ lúc nào.</li>
+                <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.6rem;">
+                    <span style="font-size: 1.1rem;">💡</span>
+                    <strong style="color: #38BDF8; font-size: 1rem;">Lưu Ý Bảo Mật:</strong>
+                </div>
+                <ul style="margin: 0.2rem 0 0.2rem 1.2rem; padding: 0; color: #E2E8F0;">
+                    <li style="margin-bottom: 0.4rem;">Mã PIN bảo mật giúp tránh hao hụt API quota do truy cập công khai ngoài ý muốn.</li>
+                    <li style="margin-bottom: 0.4rem;">Phiên làm việc được ghi nhớ tự động trong suốt thời gian duyệt trang của bạn.</li>
+                    <li>Sau khi hoàn thành tra cứu, bạn có thể chủ động bấm <strong style="color: #00D4AA;">🔒 Khóa lại</strong> bất cứ lúc nào.</li>
                 </ul>
             </div>
             """,
