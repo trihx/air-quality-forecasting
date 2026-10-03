@@ -46,9 +46,9 @@ def page_multi_horizon(results: dict[str, Any]) -> None:
     # ── Methodology note ──
     st.markdown(
         f"""
-    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
-                border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
-        <div style="font-size: 0.85rem; opacity: 0.65;">
+    <div style="background: #0B1120; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.3); color: #CBD5E1 !important;">
+        <div style="font-size: 0.88rem; line-height: 1.6;">
             📌 Metrics chính: <b>MASE</b> {cite("hyndman2006")} (scale-independent, unified baseline),
             MAE {cite("willmott2005")}, và Forecast Bias {cite("hyndman2021")}.
             Đánh giá trên temporal test set (80/10/10) {cite("tashman2000")}, chỉ dùng real data.
@@ -232,8 +232,8 @@ def page_multi_horizon(results: dict[str, Any]) -> None:
     section_header("📋", "Bảng 4.3: Tổng Hợp Kết Quả Dự Báo Trên Tập Kiểm Thử Mỏ Neo (Anchor Test Set)")
     st.markdown(
         f"""
-    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem;
-                border-left: 4px solid #00D4AA; font-size: 0.88rem; line-height: 1.65;">
+    <div style="background: #0B1120; border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.25); border-left: 4px solid #00D4AA; font-size: 0.88rem; line-height: 1.65; color: #CBD5E1 !important;">
         Bảng đối chuẩn tổng hợp hiệu năng dự báo của các mô hình đại diện thuộc 5 họ thuật toán trên tập kiểm thử mỏ neo
         (<b>Anchor Test Set</b> — 10% mỏ neo: 669h ở chuỗi 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m, 100% dữ liệu thực <code>is_imputed == 0</code>) {cite("tashman2000")}.
     </div>
@@ -277,7 +277,7 @@ def page_multi_horizon(results: dict[str, Any]) -> None:
     dm_data = pd.DataFrame(dm_data_list) if dm_data_list else pd.DataFrame()
     st.dataframe(dm_data, use_container_width=True, hide_index=True)
     st.markdown(
-        f'<div style="font-size: 0.85rem; color: gray; margin-top: 0.3rem; margin-bottom: 1.5rem; font-style: italic;">'
+        f'<div style="font-size: 0.85rem; color: #94A3B8; margin-top: 0.3rem; margin-bottom: 1.5rem; font-style: italic;">'
         f"Kiểm định Diebold-Mariano {cite('diebold1995')}: Thống kê DM âm với p < 0,05 chứng minh mô hình đề xuất vượt trội "
         f"mô hình đối chuẩn một cách có ý nghĩa thống kê, loại trừ hoàn toàn yếu tố biến động ngẫu nhiên của mẫu thử."
         f"</div>",

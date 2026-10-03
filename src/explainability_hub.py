@@ -45,7 +45,7 @@ COLORS = {
     "warning": PALETTE_SEMANTIC["warning"],
     "text": "#FAFAFA",
     "text_muted": "#71717A",
-    "card_bg": "var(--secondary-background-color)",
+    "card_bg": "#0B1120",
 }
 
 CHART_COLORS = PALETTE_CATEGORICAL
@@ -256,11 +256,11 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
   h1 {{ font-size: 1.8rem; color: #00D4AA; margin-bottom: 0.3rem; }}
   h2 {{ font-size: 1.3rem; color: #4ECDC4; margin: 2rem 0 0.8rem; border-bottom: 1px solid rgba(0,212,170,0.2); padding-bottom: 0.5rem; }}
   .meta {{ color: #71717A; font-size: 0.85rem; margin-bottom: 1.5rem; }}
-  .card {{ background: var(--secondary-background-color); border-radius: 12px; padding: 1.2rem; margin: 0.5rem 0; border: 1px solid rgba(0,212,170,0.15); }}
+  .card {{ background: #0B1120; border-radius: 12px; padding: 1.2rem; margin: 0.5rem 0; border: 1px solid rgba(0,212,170,0.25); color: #CBD5E1; }}
   .card h3 {{ color: #FFE66D; font-size: 1rem; margin-bottom: 0.5rem; }}
-  .card p {{ color: var(--text-color); opacity: 0.75; font-size: 0.85rem; line-height: 1.6; }}
+  .card p {{ color: #CBD5E1; opacity: 1; font-size: 0.85rem; line-height: 1.6; }}
   .stats-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }}
-  .stat {{ background: linear-gradient(135deg, var(--secondary-background-color), var(--background-color)); border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid rgba(0,212,170,0.2); }}
+  .stat {{ background: #0B1120; border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid rgba(0,212,170,0.25); color: #CBD5E1; }}
   .stat .label {{ font-size: 0.75rem; color: #71717A; text-transform: uppercase; letter-spacing: 0.05em; }}
   .stat .value {{ font-size: 1.4rem; font-weight: 700; color: #00D4AA; font-family: 'JetBrains Mono', monospace; margin: 0.3rem 0; }}
   .stat .detail {{ font-size: 0.7rem; color: var(--text-color); opacity: 0.5; }}
@@ -542,10 +542,10 @@ def _tab_pipeline_journey():
     <style>
         .pipeline-card {
             text-align: center; padding: 1.2rem 0.5rem;
-            background: var(--secondary-background-color) !important;
-            border-radius: 10px; border: 1px solid rgba(0,212,170,0.2);
+            background: #0B1120 !important;
+            border-radius: 10px; border: 1px solid rgba(0,212,170,0.25);
             border-top: 3px solid rgba(0,212,170,0.8);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .pipeline-card:hover {
@@ -560,11 +560,11 @@ def _tab_pipeline_journey():
         }
         .pipeline-card .pc-value {
             font-size: 1.5rem; font-weight: 800;
-            color: var(--text-color) !important; font-family: 'JetBrains Mono', monospace;
+            color: #F8FAFC !important; font-family: 'JetBrains Mono', monospace;
             text-shadow: 0 0 12px rgba(0,212,170,0.3); margin: 0.3rem 0;
         }
         .pipeline-card .pc-detail {
-            font-size: 0.72rem; color: var(--text-color) !important; opacity: 0.75;
+            font-size: 0.72rem; color: #CBD5E1 !important; opacity: 0.9;
             margin-top: 0.2rem;
         }
     </style>
@@ -602,10 +602,10 @@ def _tab_pipeline_journey():
             .checkpoint-card {{
                 display: flex; align-items: center; gap: 0.75rem;
                 padding: 0.85rem 1.2rem; margin: 0.4rem 0;
-                background: var(--secondary-background-color) !important; border-radius: 8px;
-                border-left: 4px solid #00D4AA; border-top: 1px solid rgba(255,255,255,0.06);
-                border-right: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06);
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                background: #0B1120 !important; border-radius: 8px;
+                border-left: 4px solid #00D4AA; border-top: 1px solid rgba(255,255,255,0.08);
+                border-right: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.25);
             }}
         </style>
         <div class="checkpoint-card">
@@ -1412,10 +1412,10 @@ def _tab_model_selection(results: dict):
             <style>
                 .timeline-step {{
                     text-align: center; padding: 1rem 0.5rem;
-                    background: var(--secondary-background-color) !important;
+                    background: #0B1120 !important;
                     border-radius: 12px; height: 100%;
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    border: 1px solid rgba(0, 212, 170, 0.25);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
                     transition: transform 0.2s ease;
                 }}
                 .timeline-step:hover {{
@@ -1528,9 +1528,9 @@ def _tab_model_selection(results: dict):
                 f"""
             <style>
                 .best-model-card {{
-                    background: var(--secondary-background-color) !important;
+                    background: #0B1120 !important;
                     border: 2px solid {border}; border-radius: 14px;
-                    padding: 1.5rem; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+                    padding: 1.5rem; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
                     transition: transform 0.2s ease, box-shadow 0.2s ease;
                 }}
                 .best-model-card:hover {{
@@ -1611,10 +1611,10 @@ def _tab_anti_leakage():
         <style>
             .leakage-card {{
                 display: flex; gap: 1rem; padding: 1rem 1.2rem; margin: 0.5rem 0;
-                background: var(--secondary-background-color) !important; border-radius: 10px;
+                background: #0B1120 !important; border-radius: 10px;
                 border-left: 4px solid #FF6B6B; border-top: 1px solid rgba(255,107,107,0.2);
                 border-right: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             }}
         </style>
         <div class="leakage-card">
@@ -1688,12 +1688,12 @@ def _tab_anti_leakage():
 
     st.markdown(
         f"""
-    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
-                border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
+    <div style="background: #0B1120;
+                border: 1px solid rgba(0,212,170,0.3); border-radius: 12px;
                 padding: 1.5rem; text-align: center;">
         <div style="font-size: 3rem; font-weight: 800; color: #00D4AA;">{_test_count} / {_test_count}</div>
-        <div style="font-size: 1rem; color: #71717A; margin-top: 0.3rem;">Tests Passed</div>
-        <div style="font-size: 0.8rem; color: var(--text-color); opacity: 0.5; margin-top: 0.5rem;">
+        <div style="font-size: 1rem; color: #94A3B8; margin-top: 0.3rem;">Tests Passed</div>
+        <div style="font-size: 0.85rem; color: #CBD5E1; margin-top: 0.5rem;">
             Bao gồm: leakage tests, shuffle tests, metric validation, pipeline integrity</div>
     </div>
     """,
@@ -1780,28 +1780,28 @@ def _tab_scientific_foundation():
                 f"""
             <style>
                 .ref-card-{i} {{
-                    background: var(--secondary-background-color) !important;
+                    background: #0B1120 !important;
                     border-left: 4px solid {color};
                     border-radius: 10px; padding: 1.1rem 1.3rem; margin: 0.45rem 0;
-                    border-top: 1px solid rgba(255, 255, 255, 0.06);
-                    border-right: 1px solid rgba(255, 255, 255, 0.06);
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+                    border-top: 1px solid rgba(255, 255, 255, 0.08);
+                    border-right: 1px solid rgba(255, 255, 255, 0.08);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
                     transition: transform 0.2s ease, box-shadow 0.2s ease;
                 }}
                 .ref-card-{i}:hover {{
                     transform: translateY(-2px);
-                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
                 }}
             </style>
             <div class="ref-card-{i}">
-                <div style="font-weight: 700; color: var(--text-color); font-size: 0.98rem; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-weight: 700; color: #F8FAFC; font-size: 0.98rem; display: flex; justify-content: space-between; align-items: center;">
                     <span>📖 {author}</span>
                     <span style="font-size: 0.75rem; font-weight: 600; color: {color}; border: 1px solid {color}; border-radius: 4px; padding: 0.1rem 0.4rem;">IEEE [{ieee_id}]</span>
                 </div>
                 <div style="font-style: italic; color: {color}; font-size: 0.88rem;
                             margin: 0.4rem 0;">{title}</div>
-                <div style="font-size: 0.82rem; color: var(--text-color); opacity: 0.85; line-height: 1.45;">
+                <div style="font-size: 0.82rem; color: #CBD5E1; opacity: 1; line-height: 1.45;">
                     → {contribution}</div>
             </div>
             """,
@@ -1814,14 +1814,14 @@ def _tab_scientific_foundation():
 
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); border-radius: 12px;
+    <div style="background: #0B1120; border-radius: 12px;
                 padding: 1.3rem 1.5rem; border-left: 4px solid #00D4AA; margin: 0.75rem 0;
-                border-top: 1px solid rgba(255,255,255,0.06); border-right: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06);">
-        <p style="margin: 0; font-size: 1rem; color: var(--text-color);">
+                border-top: 1px solid rgba(0,212,170,0.25); border-right: 1px solid rgba(0,212,170,0.25); border-bottom: 1px solid rgba(0,212,170,0.25); color: #CBD5E1 !important;">
+        <p style="margin: 0; font-size: 1rem; color: #F8FAFC;">
             📚 Xem bảng đối chuẩn chi tiết với <b>14 nghiên cứu SOTA đã thẩm định (2022–2025)</b>
             tại trang <b>📚 Đối Chiếu Khoa Học</b> trong sidebar.
         </p>
-        <p style="margin: 0.6rem 0 0 0; font-size: 0.88rem; color: var(--text-color); opacity: 0.8; line-height: 1.5;">
+        <p style="margin: 0.6rem 0 0 0; font-size: 0.88rem; color: #CBD5E1; opacity: 0.9; line-height: 1.5;">
             <i>Bảng so sánh bao gồm: Sai số MAE, RMSE, chỉ số chuẩn hóa MASE, Radar Chart 6 chiều, phân tích định lượng độ bất định Conformal Prediction (CQR/ACI), và vị thế đóng góp học thuật của đề án tại khu vực ĐBSCL.</i>
         </p>
     </div>

@@ -131,18 +131,20 @@ st.markdown(
 
     /* ── Insight Cards ── */
     .insight-card {
-        background: linear-gradient(135deg, rgba(0,212,170,0.08) 0%, rgba(78,205,196,0.04) 100%);
+        background: #0B1120;
+        border: 1px solid rgba(0,212,170,0.3);
         border-left: 4px solid #00D4AA;
         border-radius: 0 12px 12px 0;
         padding: 1.25rem 1.5rem;
         margin: 1rem 0;
     }
     .insight-card.warning {
-        background: linear-gradient(135deg, rgba(255,107,107,0.08) 0%, rgba(255,230,109,0.04) 100%);
-        border-left-color: #FF6B6B;
+        background: #0B1120;
+        border: 1px solid rgba(255,107,107,0.3);
+        border-left: 4px solid #FF6B6B;
     }
-    .insight-card h4 { margin: 0 0 0.5rem 0; font-weight: 600; }
-    .insight-card .insight-text { margin: 0; opacity: 0.85; line-height: 1.6; }
+    .insight-card h4 { margin: 0 0 0.5rem 0; font-weight: 600; color: #F8FAFC; }
+    .insight-card .insight-text { margin: 0; color: #CBD5E1; opacity: 1; line-height: 1.6; }
 
     /* ── Data Table Styling ── */
     .stDataFrame { border-radius: 12px; overflow: hidden; }

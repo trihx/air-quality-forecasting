@@ -148,17 +148,17 @@ def page_scientific_benchmark(results: dict[str, Any]) -> None:
 
     st.markdown(
         f"""
-    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
-                color: var(--text-color) !important;
+    <div style="background: #0B1120;
+                color: #CBD5E1 !important;
                 border-radius: 14px; padding: 1.5rem; margin: 0.5rem 0 2rem 0;
-                border: 1px solid rgba(0,212,170,0.25);">
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; color: var(--text-color);">
+                border: 1px solid rgba(0,212,170,0.3);">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; color: #CBD5E1;">
             <tr style="border-bottom: 1px solid rgba(0,212,170,0.3);">
-                <th style="text-align: left; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">Tiêu chí</th>
-                <th style="text-align: center; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">Nghiên cứu này</th>
-                <th style="text-align: center; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">TB Quốc tế</th>
-                <th style="text-align: center; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">TB Việt Nam</th>
-                <th style="text-align: left; padding: 0.5rem; color: var(--text-color); opacity: 0.7;">Đánh giá</th>
+                <th style="text-align: left; padding: 0.5rem; color: #F8FAFC;">Tiêu chí</th>
+                <th style="text-align: center; padding: 0.5rem; color: #00D4AA;">Nghiên cứu này</th>
+                <th style="text-align: center; padding: 0.5rem; color: #94A3B8;">TB Quốc tế</th>
+                <th style="text-align: center; padding: 0.5rem; color: #94A3B8;">TB Việt Nam</th>
+                <th style="text-align: left; padding: 0.5rem; color: #F8FAFC;">Đánh giá</th>
             </tr>
             {"".join(exec_rows)}
         </table>
@@ -286,14 +286,14 @@ def page_scientific_benchmark(results: dict[str, Any]) -> None:
     section_header("📚", "Chi Tiết Nguồn Tham Khảo (2022–2025)")
     st.markdown(
         """
-    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
-                color: var(--text-color) !important;
+    <div style="background: #0B1120;
+                color: #CBD5E1 !important;
                 border-radius: 14px; padding: 1.5rem; margin: 1rem 0;
-                border: 1px solid rgba(0,212,170,0.2);">
-        <div style="font-size: 0.95rem; color: var(--text-color); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+                border: 1px solid rgba(0,212,170,0.3);">
+        <div style="font-size: 0.95rem; color: #F8FAFC; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 1.2rem;">🔬</span> <b>Academic Rigor & Auditability</b>
         </div>
-        <div style="font-size: 0.85rem; color: var(--text-color); opacity: 0.8; line-height: 1.6;">
+        <div style="font-size: 0.88rem; color: #CBD5E1; opacity: 1; line-height: 1.6;">
             Danh sách dưới đây bao gồm <strong style="color:#00D4AA; background: rgba(0,212,170,0.1); padding: 2px 6px; border-radius: 4px;">8 nghiên cứu khoa học chất lượng cao</strong> đã được kiểm chứng chéo (peer-reviewed), chọn lọc khắt khe và tải về thành công để đảm bảo tính minh bạch, có thể đối chiếu (audit) chi tiết trong suốt quá trình xây dựng đề án.
         </div>
     </div>

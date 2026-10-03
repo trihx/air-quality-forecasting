@@ -60,9 +60,9 @@ def page_actual_vs_predicted(results: dict[str, Any]) -> None:
 
     st.markdown(
         f"""
-    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
-                border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
-        <div style="font-size: 0.85rem; opacity: 0.85;">
+    <div style="background: #0B1120; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.3); color: #CBD5E1 !important;">
+        <div style="font-size: 0.88rem; line-height: 1.6;">
             📌 Đánh giá trên <b>Anchor Test Set</b> (10% mỏ neo: 669h ở chuỗi 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m, 100% dữ liệu thực <code>is_imputed == 0</code>) {cite("tashman2000")}.
             Metrics chính: <b>MASE</b> {cite("hyndman2006")} (scale-independent), MAE {cite("willmott2005")},
             kiểm định Diebold-Mariano {cite("diebold1995")} và khoảng dự báo thích ứng ACI {cite("gibbs2021")}.
@@ -180,10 +180,10 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
     n_test = len(test_actuals)
     st.markdown(
         f"""
-    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
-                border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
+    <div style="background: #0B1120;
+                border: 1px solid rgba(0,212,170,0.3); border-radius: 12px;
                 padding: 1rem 1.5rem; margin: 1rem 0;">
-        <span style="opacity: 0.65; font-size: 0.85rem;">
+        <span style="color: #CBD5E1; font-size: 0.88rem;">
             📊 Test samples: <b style="color:#00D4AA">{n_test}</b> (real data only, {selected_res}) |
             Horizon: <b style="color:#00D4AA">{horizon}h</b> |
             Trực quan hóa: <b style="color:#00D4AA">{len(selected_models)}/{len(filtered_models)}</b> mô hình
@@ -333,7 +333,7 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
                     f"""
                 <style>
                     .avp-tab-unselected {{
-                        background: var(--secondary-background-color) !important;
+                        background: #0B1120 !important;
                         border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 0.8rem; text-align: center;
                     }}
                 </style>
@@ -356,23 +356,23 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
                         f"""
                     <style>
                         .avp-model-card-{rank} {{
-                            background: var(--secondary-background-color) !important; border-radius: 8px;
+                            background: #0B1120 !important; border-radius: 8px;
                             padding: 0.7rem 0.9rem; margin: 0.4rem 0;
                             border-left: 3px solid {border_color};
-                            border-top: 1px solid rgba(255, 255, 255, 0.06);
-                            border-right: 1px solid rgba(255, 255, 255, 0.06);
-                            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                            border-top: 1px solid rgba(255, 255, 255, 0.08);
+                            border-right: 1px solid rgba(255, 255, 255, 0.08);
+                            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
                         }}
                     </style>
                     <div class="avp-model-card-{rank}">
-                        <div style="font-size: 0.75rem; color: var(--text-color); opacity: 0.7;">{medal} Top {rank + 1}</div>
-                        <div style="font-weight: 600; font-size: 0.95rem; color: var(--text-color); margin-top: 0.1rem;">{row["model"]}</div>
-                        <div style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--text-color);">
-                            MAE: <b>{row["mae"]:.2f}</b> · MASE: <b style="color: {mase_color};">{row["mase"]:.2f}</b>
+                        <div style="font-size: 0.75rem; color: #94A3B8;">{medal} Top {rank + 1}</div>
+                        <div style="font-weight: 600; font-size: 0.95rem; color: #F8FAFC; margin-top: 0.1rem;">{row["model"]}</div>
+                        <div style="font-size: 0.85rem; margin-top: 0.25rem; color: #CBD5E1;">
+                            MAE: <b style="color: #F8FAFC;">{row["mae"]:.2f}</b> · MASE: <b style="color: {mase_color};">{row["mase"]:.2f}</b>
                         </div>
-                        <div style="font-size: 0.78rem; margin-top: 0.2rem; color: var(--text-color); opacity: 0.75;">
-                            RMSE: <b>{rmse_display}</b> · R²: <b>{r2_display}</b> · DA: <b>{da_display}</b>
+                        <div style="font-size: 0.78rem; margin-top: 0.2rem; color: #94A3B8;">
+                            RMSE: <b style="color: #CBD5E1;">{rmse_display}</b> · R²: <b style="color: #CBD5E1;">{r2_display}</b> · DA: <b style="color: #CBD5E1;">{da_display}</b>
                         </div>
                     </div>""",
                         unsafe_allow_html=True,
@@ -426,8 +426,8 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
     section_header("🔬", "Chẩn Đoán Thặng Dư & Kiểm Định Tự Tương Quan Ljung-Box (Chương 4 §4.5)")
     st.markdown(
         f"""
-    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem;
-                border-left: 4px solid #00D4AA; font-size: 0.88rem; line-height: 1.65;">
+    <div style="background: #0B1120; border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.25); border-left: 4px solid #00D4AA; font-size: 0.88rem; line-height: 1.65; color: #CBD5E1 !important;">
         Phân tích chẩn đoán phần dư ($e_t = y_t - \\hat{{y}}_t$) là bước bắt buộc trong kinh tế lượng chuỗi thời gian
         nhằm kiểm tra các giả định kinh điển về <b>nhiễu trắng (White Noise)</b> {cite("ljung1978")},
         tính đối xứng sai số và độ bất định của dự báo.

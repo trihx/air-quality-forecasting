@@ -138,111 +138,83 @@ def _render_overview_current(rpt: ReportingEngine, content: ContentManager, ver:
 
     # ── Pipeline ──
     section_header("🔧", "Kiến Trúc Pipeline Dự Báo")
-    st.markdown(
-        f"""
-    <div style="background: #0B1120; border: 1px solid rgba(0, 212, 170, 0.35); border-left: 6px solid #00D4AA;
-                border-radius: 14px; padding: 1.6rem 1.8rem; margin: 1.2rem 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
-            <div style="font-weight: 700; color: #00D4AA; font-size: 1.15rem; display: flex; align-items: center; gap: 0.6rem;">
-                <span>🌐</span>
-                <span>Dòng Chảy Dữ Liệu &amp; Kiến Trúc Pipeline 7 Bước Chuẩn Khoa Học</span>
-            </div>
-            <div style="font-size: 0.85rem; background: rgba(0, 212, 170, 0.15); color: #00D4AA;
-                        border: 1px solid rgba(0, 212, 170, 0.3); padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600;">
-                📍 Trạm IoT Sa Đéc • 209.594 Bản Ghi (38 Tháng: 03/2022 – 05/2025)
-            </div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
-            <!-- Bước 1 -->
-            <div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #38BDF8;
-                        border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
-                <div style="background: #0284C7; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 1</div>
-                <div>
-                    <strong style="color: #F8FAFC; font-size: 0.95rem;">📥 Thu Thập Dữ Liệu Cảm Biến IoT Thô (Raw Data)</strong>
-                    <div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
-                        Thu thập chuỗi thời gian liên tục từ trạm quan trắc ngoài trời TP. Sa Đéc, Đồng Tháp. Tổng cộng <strong>209.594 bản ghi</strong> (~2 phút/lần) gồm 5 kênh đo: PM2.5, Nhiệt độ, Độ ẩm, Điểm sương và CO₂.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bước 2 -->
-            <div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #EC4899;
-                        border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
-                <div style="background: #DB2777; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 2</div>
-                <div>
-                    <strong style="color: #F8FAFC; font-size: 0.95rem;">🧹 Tiền Xử Lý, Lọc Ngoại Lai &amp; Resampling Đa Phân Giải {cite("rosner1983")}</strong>
-                    <div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
-                        Áp dụng <span style="color: #F43F5E; font-weight: 600;">Domain Bounds [0, 500] µg/m³</span> theo quy chuẩn WHO AQI (bảo vệ 66 đỉnh ô nhiễm thực tế, không dùng IQR làm cụt đỉnh) kết hợp S-ESD loại bỏ flatline do lỗi cảm biến. Resampling đa phân giải đồng thời 3 chuỗi: <strong>15 phút, 30 phút, 1 giờ</strong>.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bước 3 -->
-            <div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #06B6D4;
-                        border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
-                <div style="background: #0891B2; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 3</div>
-                <div>
-                    <strong style="color: #F8FAFC; font-size: 0.95rem;">🧪 Phục Hồi Dữ Liệu Phân Tầng (Tiered Imputation) &amp; Bảo Vệ Liêm Chính {cite("moritz2015")}</strong>
-                    <div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
-                        Quy tắc 3 bậc: (1) Gaps ngắn ≤6h dùng <strong>Cubic Spline</strong>; (2) Gaps trung bình 6–24h dùng <strong>KNN Multivariate (k=5)</strong>; (3) Gaps dài >24h: <strong>Dũng cảm DROP 19.810 giờ (96,8% tổng giờ khuyết)</strong> chống sinh ảo giác dữ liệu (hallucination). Tập mẫu sạch đạt chuẩn: 15m (18.355 mẫu), 30m (8.625 mẫu), 1h (6.689 mẫu).
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bước 4 -->
-            <div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #F59E0B;
-                        border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
-                <div style="background: #D97706; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 4</div>
-                <div>
-                    <strong style="color: #F8FAFC; font-size: 0.95rem;">🛠️ Kỹ Nghệ Đặc Trưng Toàn Diện ({feature_cols} Features) &amp; Kỷ Luật Shift(1) {cite("hyndman2021")}</strong>
-                    <div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
-                        Xây dựng 7 nhóm đặc trưng: 40 lag features, 36 rolling statistics, 16 EWMA, 12 Fourier harmonic (chu kỳ ngày/tuần), 11 lịch/thời gian, 4 tỷ số domain. Triệt tiêu 100% Data Leakage qua kỷ luật <span style="color: #FBBF24; font-weight: 700;">shift(1) bắt buộc</span> cho toàn bộ các biến phái sinh từ target.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bước 5 -->
-            <div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #A855F7;
-                        border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
-                <div style="background: #7E22CE; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 5</div>
-                <div>
-                    <strong style="color: #F8FAFC; font-size: 0.95rem;">⚓ Phân Chia Thời Gian &amp; Tập Kiểm Thử Mỏ Neo (Anchor Test Set) {cite("tashman2000")}</strong>
-                    <div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
-                        Phân chia theo thứ tự thời gian nghiêm ngặt 80:10:10 (Train: 03/2022–09/2024, Val: 09/2024–12/2024, Test: 01/2025–05/2025). Tập Test (10% mỏ neo: 669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) tuân thủ tiêu chuẩn vàng: <span style="color: #34D399; font-weight: 700;">100% REAL DATA ONLY (is_imputed == 0)</span>.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bước 6 -->
-            <div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #10B981;
-                        border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
-                <div style="background: #059669; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 6</div>
-                <div>
-                    <strong style="color: #F8FAFC; font-size: 0.95rem;">🤖 Huấn Luyện Đa Mô Hình (41 Cấu Hình) &amp; Điểm Ngọt Pareto 30 Phút {cite("peixeiro2022")}</strong>
-                    <div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
-                        Đối chuẩn 11 kiến trúc từ Baseline (Persistence), Thống kê (ARIMA, SARIMAX), Học máy (Ridge, Random Forest, LightGBM tinh chỉnh Optuna TPE 50 trials) đến Học sâu (LSTM, GRU, TFT) và Mô hình phối hợp Weighted Ensemble. Khẳng định độ phân giải 30 phút là điểm ngọt Pareto vượt trội toàn diện.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bước 7 -->
-            <div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #EAB308;
-                        border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
-                <div style="background: #CA8A04; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 7</div>
-                <div>
-                    <strong style="color: #F8FAFC; font-size: 0.95rem;">📈 Đánh Giá Khoa Học, Kiểm Định Thống Kê &amp; Lượng Hóa Bất Định (XAI &amp; UQ) {cite("hyndman2006")}</strong>
-                    <div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
-                        Thước đo chính <span style="color: #FEF08A; font-weight: 700;">MASE</span> (chuẩn hóa trên MAE Persistence 1h = 1,821 µg/m³) + Kiểm định Diebold-Mariano với hiệu chỉnh HLN ($p &lt; 0.001$) + Lượng hóa độ bất định bằng Conformal Quantile Regression kết hợp ACI (độ phủ thực tế 90,2%) + Bóc tách cơ chế giải thích SHAP TreeExplainer.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    """,
-        unsafe_allow_html=True,
-    )
+    pipeline_html = f"""<div style="background: #0B1120; border: 1px solid rgba(0, 212, 170, 0.35); border-left: 6px solid #00D4AA; border-radius: 14px; padding: 1.6rem 1.8rem; margin: 1.2rem 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
+<div style="font-weight: 700; color: #00D4AA; font-size: 1.15rem; display: flex; align-items: center; gap: 0.6rem;">
+<span>🌐</span>
+<span>Dòng Chảy Dữ Liệu &amp; Kiến Trúc Pipeline 7 Bước Chuẩn Khoa Học</span>
+</div>
+<div style="font-size: 0.85rem; background: rgba(0, 212, 170, 0.15); color: #00D4AA; border: 1px solid rgba(0, 212, 170, 0.3); padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600;">
+📍 Trạm IoT Sa Đéc • 209.594 Bản Ghi (38 Tháng: 03/2022 – 05/2025)
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 0.8rem;">
+<div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #38BDF8; border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #0284C7; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 1</div>
+<div>
+<strong style="color: #F8FAFC; font-size: 0.95rem;">📥 Thu Thập Dữ Liệu Cảm Biến IoT Thô (Raw Data)</strong>
+<div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
+Thu thập chuỗi thời gian liên tục từ trạm quan trắc ngoài trời TP. Sa Đéc, Đồng Tháp. Tổng cộng <strong>209.594 bản ghi</strong> (~2 phút/lần) gồm 5 kênh đo: PM2.5, Nhiệt độ, Độ ẩm, Điểm sương và CO₂.
+</div>
+</div>
+</div>
+<div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #EC4899; border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #DB2777; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 2</div>
+<div>
+<strong style="color: #F8FAFC; font-size: 0.95rem;">🧹 Tiền Xử Lý, Lọc Ngoại Lai &amp; Resampling Đa Phân Giải {cite("rosner1983")}</strong>
+<div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
+Áp dụng <span style="color: #F43F5E; font-weight: 600;">Domain Bounds [0, 500] µg/m³</span> theo quy chuẩn WHO AQI (bảo vệ 66 đỉnh ô nhiễm thực tế, không dùng IQR làm cụt đỉnh) kết hợp S-ESD loại bỏ flatline do lỗi cảm biến. Resampling đa phân giải đồng thời 3 chuỗi: <strong>15 phút, 30 phút, 1 giờ</strong>.
+</div>
+</div>
+</div>
+<div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #06B6D4; border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #0891B2; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 3</div>
+<div>
+<strong style="color: #F8FAFC; font-size: 0.95rem;">🧪 Phục Hồi Dữ Liệu Phân Tầng (Tiered Imputation) &amp; Bảo Vệ Liêm Chính {cite("moritz2015")}</strong>
+<div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
+Quy tắc 3 bậc: (1) Gaps ngắn ≤6h dùng <strong>Cubic Spline</strong>; (2) Gaps trung bình 6–24h dùng <strong>KNN Multivariate (k=5)</strong>; (3) Gaps dài >24h: <strong>Dũng cảm DROP 19.810 giờ (96,8% tổng giờ khuyết)</strong> chống sinh ảo giác dữ liệu (hallucination). Tập mẫu sạch đạt chuẩn: 15m (18.355 mẫu), 30m (8.625 mẫu), 1h (6.689 mẫu).
+</div>
+</div>
+</div>
+<div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #F59E0B; border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #D97706; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 4</div>
+<div>
+<strong style="color: #F8FAFC; font-size: 0.95rem;">🛠️ Kỹ Nghệ Đặc Trưng Toàn Diện ({feature_cols} Features) &amp; Kỷ Luật Shift(1) {cite("hyndman2021")}</strong>
+<div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
+Xây dựng 7 nhóm đặc trưng: 40 lag features, 36 rolling statistics, 16 EWMA, 12 Fourier harmonic (chu kỳ ngày/tuần), 11 lịch/thời gian, 4 tỷ số domain. Triệt tiêu 100% Data Leakage qua kỷ luật <span style="color: #FBBF24; font-weight: 700;">shift(1) bắt buộc</span> cho toàn bộ các biến phái sinh từ target.
+</div>
+</div>
+</div>
+<div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #A855F7; border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #7E22CE; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 5</div>
+<div>
+<strong style="color: #F8FAFC; font-size: 0.95rem;">⚓ Phân Chia Thời Gian &amp; Tập Kiểm Thử Mỏ Neo (Anchor Test Set) {cite("tashman2000")}</strong>
+<div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
+Phân chia theo thứ tự thời gian nghiêm ngặt 80:10:10 (Train: 03/2022–09/2024, Val: 09/2024–12/2024, Test: 01/2025–05/2025). Tập Test (10% mỏ neo: 669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) tuân thủ tiêu chuẩn vàng: <span style="color: #34D399; font-weight: 700;">100% REAL DATA ONLY (is_imputed == 0)</span>.
+</div>
+</div>
+</div>
+<div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #10B981; border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #059669; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 6</div>
+<div>
+<strong style="color: #F8FAFC; font-size: 0.95rem;">🤖 Huấn Luyện Đa Mô Hình (41 Cấu Hình) &amp; Điểm Ngọt Pareto 30 Phút {cite("peixeiro2022")}</strong>
+<div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
+Đối chuẩn 11 kiến trúc từ Baseline (Persistence), Thống kê (ARIMA, SARIMAX), Học máy (Ridge, Random Forest, LightGBM tinh chỉnh Optuna TPE 50 trials) đến Học sâu (LSTM, GRU, TFT) và Mô hình phối hợp Weighted Ensemble. Khẳng định độ phân giải 30 phút là điểm ngọt Pareto vượt trội toàn diện.
+</div>
+</div>
+</div>
+<div style="background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #EAB308; border-radius: 8px; padding: 0.9rem 1.1rem; display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #CA8A04; color: #FFFFFF; font-weight: 800; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; white-space: nowrap;">BƯỚC 7</div>
+<div>
+<strong style="color: #F8FAFC; font-size: 0.95rem;">📈 Đánh Giá Khoa Học, Kiểm Định Thống Kê &amp; Lượng Hóa Bất Định (XAI &amp; UQ) {cite("hyndman2006")}</strong>
+<div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
+Thước đo chính <span style="color: #FEF08A; font-weight: 700;">MASE</span> (chuẩn hóa trên MAE Persistence 1h = 1,821 µg/m³) + Kiểm định Diebold-Mariano với hiệu chỉnh HLN ($p &lt; 0.001$) + Lượng hóa độ bất định bằng Conformal Quantile Regression kết hợp ACI (độ phủ thực tế 90,2%) + Bóc tách cơ chế giải thích SHAP TreeExplainer.
+</div>
+</div>
+</div>
+</div>
+</div>"""
+    st.markdown(pipeline_html, unsafe_allow_html=True)
 
     # ── Experiments Info Cards ──
     experiments = content.get_overview_experiments(ver)
