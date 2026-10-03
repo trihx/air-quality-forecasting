@@ -358,7 +358,7 @@ def sanitize_error_message(error_str: str) -> str:
     )
     # Redact api_key=..., key=..., token=...
     sanitized = re.sub(
-        r"((?:api[_-]?key|token|auth(?:orization)?|secret)\s*[:=]\s*)[A-Za-z0-9_\-\.]+",
+        r"((?:api[\s_-]?key|token|auth(?:orization)?|secret)\s*[:=]\s*)[A-Za-z0-9_\-\.]+",
         r"\1[REDACTED]",
         sanitized,
         flags=re.IGNORECASE,
@@ -366,6 +366,25 @@ def sanitize_error_message(error_str: str) -> str:
     # Redact OpenAI sk-... or Google AIza... tokens
     sanitized = re.sub(r"\b(sk-[A-Za-z0-9_\-]{8,})\b", "[REDACTED_KEY]", sanitized)
     sanitized = re.sub(r"\b(AIza[A-Za-z0-9_\-]{10,})\b", "[REDACTED_KEY]", sanitized)
+    # Redact Groq gsk-... tokens
+    sanitized = re.sub(r"\b(gsk_[A-Za-z0-9_\-]{10,})\b", "[REDACTED_KEY]", sanitized)
+    # Redact Anthropic sk-ant-... and HuggingFace hf_... tokens
+    sanitized = re.sub(r"\b(sk-ant-[A-Za-z0-9_\-]{8,})\b", "[REDACTED_KEY]", sanitized)
+    sanitized = re.sub(r"\b(hf_[A-Za-z0-9_\-]{10,})\b", "[REDACTED_KEY]", sanitized)
+    # Redact Cloudflare Tunnel URLs (masking random subdomain)
+    sanitized = re.sub(
+        r"https://[a-zA-Z0-9-]+\.trycloudflare\.com",
+        "https://[REDACTED].trycloudflare.com",
+        sanitized,
+        flags=re.IGNORECASE,
+    )
+    # Redact Database password in connection URLs (postgresql://user:pass@host:port/db)
+    sanitized = re.sub(
+        r"((?:postgres(?:ql)?|mysql|mariadb)://[^:]+:)([^@]+)(@[^\s\"']+)",
+        r"\1[REDACTED_PASSWORD]\3",
+        sanitized,
+        flags=re.IGNORECASE,
+    )
     return sanitized
 
 

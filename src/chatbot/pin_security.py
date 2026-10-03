@@ -118,16 +118,27 @@ def reset_lockout(session: Any) -> None:
     session["ai_pin_lockout_until"] = None
 
 
-def check_and_apply_query_param_unlock(query_params: Any, session: Any) -> bool:
-    """Check URL query parameters for valid unlock tokens (?unlock_pin=190034, ?puk=...).
+def _sanitize_query_params() -> None:
+    """Remove sensitive unlock tokens from browser address bar to prevent leaking in history and referrers."""
+    for key in ("unlock_pin", "pin", "unlock_ai", "ai_pin", "puk", "unlock_puk", "master_key", "master_puk"):
+        if hasattr(st, "query_params") and key in st.query_params:
+            try:
+                del st.query_params[key]
+            except Exception as e:
+                logger.debug(f"Could not clear query parameter {key}: {e}")
 
-    If matched, clears any lockout and unlocks the session immediately.
+
+def check_and_apply_query_param_unlock(query_params: Any, session: Any) -> bool:
+    """Check URL query parameters for valid unlock tokens.
+
+    If matched, clears any lockout, unlocks the session, and sanitizes browser query parameters.
     """
     # Check PIN query parameters
     for key in ("unlock_pin", "pin", "unlock_ai", "ai_pin"):
         val = query_params.get(key)
         if val and verify_pin(str(val)):
             unlock_session(session)
+            _sanitize_query_params()
             return True
 
     # Check PUK emergency query parameters
@@ -135,6 +146,7 @@ def check_and_apply_query_param_unlock(query_params: Any, session: Any) -> bool:
         val = query_params.get(key)
         if val and verify_puk(str(val)):
             unlock_session(session)
+            _sanitize_query_params()
             return True
 
     return False
@@ -203,7 +215,7 @@ def render_pin_security_gate() -> None:
                 "Mã PUK Cứu Hộ",
                 type="password",
                 key="puk_recovery_input_field",
-                placeholder="Nhập mã PUK (ví dụ: MASTER-190034-UNLOCK)...",
+                placeholder="Nhập mã PUK cứu hộ được cấp...",
             )
             if st.button(
                 "🔓 Mở Khóa Khẩn Cấp Bằng PUK", key="btn_unlock_puk", type="primary", use_container_width=True
@@ -219,8 +231,7 @@ def render_pin_security_gate() -> None:
             st.markdown(
                 """
                     **Đặc quyền mở khóa cấp tốc:**
-                    - Bạn có thể mở khóa ngay lập tức bằng cách thêm tham số URL bí mật vào bookmark trình duyệt:
-                      `?unlock_pin=190034` hoặc `?puk=MASTER-190034-UNLOCK`
+                    - Bạn có thể mở khóa ngay lập tức bằng cách sử dụng tham số URL cứu hộ đã được cấp trong tài liệu bảo mật hoặc biến môi trường `AI_ASSISTANT_PIN` / `AI_ASSISTANT_PUK`.
                     - Phiên làm việc trên các thiết bị khác hoặc của Hội đồng đánh giá hoàn toàn **không bị ảnh hưởng**
                       nhờ kiến trúc Client/Session-Scoped Lockout độc lập.
                     """

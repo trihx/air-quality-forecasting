@@ -243,6 +243,7 @@ def _render_provider_config():
         kaggle_url = st.text_input(
             "Tunnel URL",
             key="input_kaggle_ollama_url",
+            type="password",
             placeholder="https://xxx.trycloudflare.com",
             value=st.session_state.llm_provider_keys.get("kaggle_ollama", {}).get("base_url", ""),
         )
@@ -377,6 +378,7 @@ def _render_inline_quick_config(expanded: bool = False):
             k_url = st.text_input(
                 "Cloudflare Tunnel URL",
                 key="main_kaggle_url",
+                type="password",
                 placeholder="https://xxx.trycloudflare.com",
                 value=st.session_state.llm_provider_keys.get("kaggle_ollama", {}).get("base_url", ""),
                 help="Dán URL sinh ra từ Cell 4 của Kaggle Notebook",
@@ -694,7 +696,7 @@ def page_ai_assistant(results):
             margin-bottom: 1rem;
         ">
             <span>🛡️</span>
-            <span><strong>Xác thực PIN: Hợp lệ (190034)</strong> • Bảo vệ Brute-force & DoS: Đang hoạt động</span>
+            <span><strong>Xác thực PIN: Hợp lệ</strong> • Bảo vệ Brute-force & DoS: Đang hoạt động</span>
         </div>
         """,
         unsafe_allow_html=True,

@@ -74,8 +74,11 @@ def list_info_cards(
     db: Session = Depends(get_db),
 ) -> list[InfoCardResponse]:
     """List all info cards, optionally filtered by page."""
+    if page and page.startswith("_"):
+        raise HTTPException(status_code=403, detail="Access to system configuration cards is forbidden")
+
     stmt = select(InfoCard).order_by(InfoCard.page, InfoCard.display_order)
-    stmt = stmt.where(InfoCard.page == page) if page else stmt.where(InfoCard.page != "_system")
+    stmt = stmt.where(InfoCard.page == page) if page else stmt.where(~InfoCard.page.startswith("_"))
     cards = db.scalars(stmt).all()
     return [InfoCardResponse.model_validate(c) for c in cards]
 
@@ -86,10 +89,15 @@ def get_info_card(
     db: Session = Depends(get_db),
 ) -> InfoCardResponse:
     """Get a single info card by its unique key."""
+    if card_key.startswith("_"):
+        raise HTTPException(status_code=403, detail="Access to system configuration cards is forbidden")
+
     stmt = select(InfoCard).where(InfoCard.card_key == card_key)
     card = db.scalars(stmt).first()
     if not card:
         raise HTTPException(status_code=404, detail=f"Info card '{card_key}' not found")
+    if card.page.startswith("_"):
+        raise HTTPException(status_code=403, detail="Access to system configuration cards is forbidden")
     return InfoCardResponse.model_validate(card)
 
 
@@ -100,10 +108,15 @@ def update_info_card(
     db: Session = Depends(get_db),
 ) -> InfoCardResponse:
     """Update an info card's title or content."""
+    if card_key.startswith("_"):
+        raise HTTPException(status_code=403, detail="Modifying system configuration cards is forbidden")
+
     stmt = select(InfoCard).where(InfoCard.card_key == card_key)
     card = db.scalars(stmt).first()
     if not card:
         raise HTTPException(status_code=404, detail=f"Info card '{card_key}' not found")
+    if card.page.startswith("_"):
+        raise HTTPException(status_code=403, detail="Modifying system configuration cards is forbidden")
 
     if update_data.title is not None:
         card.title = update_data.title

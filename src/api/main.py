@@ -142,7 +142,8 @@ def health_check():
             conn.execute(text("SELECT 1"))
         db_status = "connected"
     except Exception as e:
-        db_status = f"error: {e}"
+        logger.warning(f"Database health check failed: {e}")
+        db_status = "error: database_unreachable"
 
     # Check model weights availability
     models_dir = Path("models/exported")

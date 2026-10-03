@@ -218,7 +218,14 @@ class ChatGuardrails:
     def _compile_regex(cls, patterns):
         return re.compile("|".join(patterns), re.IGNORECASE)
 
+    CREDENTIAL_EXTRACTION_PATTERNS = [
+        r"(?:cho tôi|xin|tiết lộ|show|give|tell|reveal|what is|lấy)\b.*?\b(?:api[\s_-]?key|mã pin|puk|password|mật khẩu|token bí mật|cloudflare tunnel|link cloudflare|tunnel url|credentials)",
+        r"\b(?:api[\s_-]?key|mã pin|puk|password|mật khẩu|link cloudflare|tunnel url|credentials)\b.*?\b(?:của bạn|của hệ thống|ở đâu|là gì)\b",
+        r"\b(?:what is the system pin|show me your api key|reveal credentials)\b",
+    ]
+
     _injection_regex = None
+    _extraction_regex = None
     _relevant_regex = None
     _irrelevant_regex = None
 
@@ -226,6 +233,7 @@ class ChatGuardrails:
     def reset_cache(cls):
         """Reset compiled regex caches."""
         cls._injection_regex = None
+        cls._extraction_regex = None
         cls._relevant_regex = None
         cls._irrelevant_regex = None
 
@@ -234,6 +242,12 @@ class ChatGuardrails:
         if cls._injection_regex is None:
             cls._injection_regex = cls._compile_regex(cls.PROMPT_INJECTION_PATTERNS)
         return cls._injection_regex
+
+    @classmethod
+    def get_extraction_regex(cls):
+        if cls._extraction_regex is None:
+            cls._extraction_regex = cls._compile_regex(cls.CREDENTIAL_EXTRACTION_PATTERNS)
+        return cls._extraction_regex
 
     @classmethod
     def get_relevant_regex(cls):
@@ -262,6 +276,14 @@ class ChatGuardrails:
             return False, "Câu hỏi không hợp lệ."
 
         text_to_check = prompt.lower()
+
+        # 0. Check for credential extraction attempts
+        if cls.get_extraction_regex().search(text_to_check):
+            logger.warning(f"Guardrail Blocked: Credential extraction detected in: {prompt[:50]}...")
+            return (
+                False,
+                "⚠️ **Guardrail Security Alert:** Không thể cung cấp hoặc tiết lộ thông tin xác thực, API Key, mã PIN/PUK hoặc đường dẫn nội bộ của hệ thống.",
+            )
 
         # 1. Check for prompt injection
         if cls.get_injection_regex().search(text_to_check):
