@@ -56,6 +56,9 @@ mindmap
       [[01_Master_Defense_QnA_Hoi_Dong]]
       [[02_Slides_Narrative_and_Key_Arguments]]
       [[03_Limitations_and_Actionable_Solutions]]
+    Defense Deck 2026
+      [[01_Deck_Fact_Sheet_Index]]
+      [[02_Discrepancy_Register]]
 ```
 
 ---
@@ -95,5 +98,10 @@ mindmap
 * [[02_Slides_Narrative_and_Key_Arguments]]: Kịch bản 24 slides thuyết trình, bản đồ thời gian vàng 18 phút và 4 tuyên bố học thuật đanh thép.
 * [[03_Limitations_and_Actionable_Solutions]]: 5 hạn chế cốt lõi của đề án và các giải pháp công nghệ đột phá tương ứng (Hardware Ring-Buffer, Neural ODE, PINN, Kohler Correction, Conformal Calibration).
 
+### 8. 🎓 Chuyên Đề 8: Bộ Tri Thức Bảo Vệ Đề Án 2026 (SSOT & Discrepancy)
+* [[01_Deck_Fact_Sheet_Index]]: Chỉ mục Fact Sheet tổng hợp toàn bộ số liệu chuẩn xác 100% khớp Báo cáo nộp (CTU QĐ 1799) và liên kết 22 chuyên đề vault.
+* [[02_Discrepancy_Register]]: Bảng đối soát và giải trình 8 điểm sai lệch số liệu giữa Báo cáo nộp, Slide cũ và Dashboard hiện hành.
+
 ---
-*Ghi chú: Toàn bộ tri thức trong vault này được kết nối hai chiều (`[[...]]`) phục vụ việc tra cứu tức thời của Trợ lý AI và nghiên cứu chuyên sâu.*\n
+*Ghi chú: Toàn bộ tri thức trong vault này được kết nối hai chiều (`[[...]]`) phục vụ việc tra cứu tức thời của Trợ lý AI và nghiên cứu chuyên sâu.*
+\n

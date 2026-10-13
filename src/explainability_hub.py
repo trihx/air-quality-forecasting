@@ -345,7 +345,7 @@ def _tab_pipeline_journey():
         # Step 1: Raw Data
         f"1. Raw Data ({raw_rows // 1000}K)",  # 0
         # Step 2: Cleaning
-        "2. Cleaning (S-ESD)",  # 1
+        "2. Cleaning (Ngưỡng & IQR)",  # 1
         # Step 3: Resample
         "3. Resample (15m)",  # 2
         "3. Resample (30m)",  # 3
@@ -374,7 +374,7 @@ def _tab_pipeline_journey():
 
     hover_labels = [
         "Bước 1: Thu thập dữ liệu IoT thô",
-        "Bước 2: Xử lý ngoại lai S-ESD & kẹp giá trị [0, 500]",
+        "Bước 2: Domain bounds [0, 500] & IQR k=3",
         "Bước 3: Resample 15 phút",
         "Bước 3: Resample 30 phút",
         "Bước 3: Resample 1 giờ",
@@ -533,7 +533,7 @@ def _tab_pipeline_journey():
     col1, col2, col3, col4 = st.columns(4)
     stats = [
         ("📥 Raw Input", "209K records", "~2 phút/mẫu, 3.1 năm"),
-        ("🧹 Clean & Resample", "15m/30m/1h", "Đa độ phân giải (S-ESD)"),
+        ("🧹 Clean & Resample", "15m/30m/1h", "Đa độ phân giải (Ngưỡng & IQR)"),
         ("🔧 Imputed Rows", "88 (15m) / 230 (30m) / 631 (1h)", "Hybrid: Spline + KNN"),
         ("📐 Features", f"{f_count} columns", "v9: anti-leakage ✅"),
     ]
@@ -746,7 +746,7 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     # ── Build labels ──
     labels = [
         f"1. Raw Data ({raw_rows:,} pts)",
-        "2. Clean & S-ESD",
+        "2. Clean (Ngưỡng & IQR)",
         f"3. Resample {res} ({total_rows:,})",
         f"4. Impute ({total_rows:,})",
         f"5. Features ({n_features} features)",
@@ -762,7 +762,7 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
     # ── Build hover labels ──
     hover = [
         f"Bước 1: Thu thập {raw_rows:,} bản ghi thô (~2 phút/mẫu, 3.1 năm)",
-        "Bước 2: Domain clipping [0, 500] & S-ESD loại bỏ ngoại lai",
+        "Bước 2: Domain clipping [0, 500] & IQR k=3 loại bỏ ngoại lai vi khí tượng",
         f"Bước 3: Gom nhóm trung bình chu kỳ {res} ({total_rows:,} mốc thời gian)",
         "Bước 4: Impute gaps (Spline ≤6h + KNN 6-24h)",
         f"Bước 5: Kỹ nghệ {n_features} đặc trưng ({n_cols} cột gồm index, target & segment_id)",
@@ -805,7 +805,7 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
         link_labels.append(lbl)
         link_colors.append(c)
 
-    add_link(IDX_RAW, IDX_CLEAN, total_rows, f"Làm sạch S-ESD ({raw_rows:,} mẫu thô)", "rgba(249,115,22,0.25)")
+    add_link(IDX_RAW, IDX_CLEAN, total_rows, f"Làm sạch ngưỡng & IQR ({raw_rows:,} mẫu thô)", "rgba(249,115,22,0.25)")
     add_link(
         IDX_CLEAN, IDX_RESAMPLE, total_rows, f"Resample -> {res} ({total_rows:,} chu kỳ)", "rgba(255,230,109,0.30)"
     )

@@ -1,0 +1,208 @@
+{
+  "table_4_7_reproduction": [
+    {
+      "case_id": "Row 1",
+      "table_pair": "GRU_15m so với Persistence",
+      "horizon": "1 giờ",
+      "printed_in_thesis": {
+        "DM_statistic": "+13,729",
+        "p_value": "< 0,001",
+        "verdict": "Persistence tốt hơn ở 1h tần suất gốc"
+      },
+      "reproduced_on_codebase": {
+        "n_samples": 1353,
+        "squared_loss_h_steps": {
+          "HLN_statistic": -3.1367,
+          "p_value": 0.001746,
+          "DM_raw": -3.1448
+        },
+        "squared_loss_h_1": {
+          "HLN_statistic": -3.3207,
+          "p_value": 0.000922,
+          "DM_raw": -3.3219
+        },
+        "absolute_loss_h_steps": {
+          "HLN_statistic": -4.7711,
+          "p_value": 2e-06,
+          "DM_raw": -4.7835
+        },
+        "absolute_loss_h_1": {
+          "HLN_statistic": -6.4625,
+          "p_value": 0.0,
+          "DM_raw": -6.4649
+        }
+      },
+      "note": "So sánh trên tần suất 15m (n=1353)"
+    },
+    {
+      "case_id": "Row 1 (1h Resolution Origin)",
+      "table_pair": "GRU_1h so với Persistence_1h",
+      "horizon": "1 giờ",
+      "printed_in_thesis": {
+        "DM_statistic": "+13,729",
+        "p_value": "< 0,001",
+        "verdict": "Persistence tốt hơn ở 1h (nguồn gốc số +13,729 trong statistical_tests_results.json)"
+      },
+      "reproduced_on_codebase": {
+        "n_samples": 600,
+        "squared_loss_h_steps": {
+          "HLN_statistic": 3.9606,
+          "p_value": 8.4e-05,
+          "DM_raw": 3.9639
+        },
+        "squared_loss_h_1": {
+          "HLN_statistic": 3.9606,
+          "p_value": 8.4e-05,
+          "DM_raw": 3.9639
+        },
+        "absolute_loss_h_steps": {
+          "HLN_statistic": 7.4384,
+          "p_value": 0.0,
+          "DM_raw": 7.4446
+        },
+        "absolute_loss_h_1": {
+          "HLN_statistic": 7.4384,
+          "p_value": 0.0,
+          "DM_raw": 7.4446
+        }
+      },
+      "note": "So sánh trên chuỗi 1h gốc (n=600)"
+    },
+    {
+      "case_id": "Row 2",
+      "table_pair": "Ensemble_30m so với Persistence",
+      "horizon": "6 giờ",
+      "printed_in_thesis": {
+        "DM_statistic": "-8,452",
+        "p_value": "< 0,001",
+        "verdict": "Ensemble vượt trội có ý nghĩa thống kê"
+      },
+      "reproduced_on_codebase": {
+        "n_samples": 684,
+        "squared_loss_h_steps": {
+          "HLN_statistic": -2.111,
+          "p_value": 0.035137,
+          "DM_raw": -2.1471
+        },
+        "squared_loss_h_1": {
+          "HLN_statistic": -6.1323,
+          "p_value": 0.0,
+          "DM_raw": -6.1368
+        },
+        "absolute_loss_h_steps": {
+          "HLN_statistic": -3.6109,
+          "p_value": 0.000328,
+          "DM_raw": -3.6726
+        },
+        "absolute_loss_h_1": {
+          "HLN_statistic": -9.4494,
+          "p_value": 0.0,
+          "DM_raw": -9.4563
+        }
+      },
+      "note": "So sánh trên tần suất 30m (n=684)"
+    },
+    {
+      "case_id": "Row 3",
+      "table_pair": "Ensemble_30m so với Persistence",
+      "horizon": "24 giờ",
+      "printed_in_thesis": {
+        "DM_statistic": "-5,891",
+        "p_value": "< 0,001",
+        "verdict": "Ensemble vượt trội có ý nghĩa thống kê"
+      },
+      "reproduced_on_codebase": {
+        "n_samples": 652,
+        "squared_loss_h_steps": {
+          "HLN_statistic": -2.4983,
+          "p_value": 0.012724,
+          "DM_raw": -2.6946
+        },
+        "squared_loss_h_1": {
+          "HLN_statistic": -6.9239,
+          "p_value": 0.0,
+          "DM_raw": -6.9292
+        },
+        "absolute_loss_h_steps": {
+          "HLN_statistic": -3.6009,
+          "p_value": 0.000341,
+          "DM_raw": -3.8839
+        },
+        "absolute_loss_h_1": {
+          "HLN_statistic": -9.9763,
+          "p_value": 0.0,
+          "DM_raw": -9.984
+        }
+      },
+      "note": "So sánh trên tần suất 30m (n=652)"
+    },
+    {
+      "case_id": "Row 4",
+      "table_pair": "Ensemble_30m so với LSTM_30m",
+      "horizon": "6 giờ",
+      "printed_in_thesis": {
+        "DM_statistic": "-2,134",
+        "p_value": "0,033",
+        "verdict": "Ensemble tốt hơn LSTM có ý nghĩa"
+      },
+      "reproduced_on_codebase": {
+        "n_samples": 684,
+        "squared_loss_h_steps": {
+          "HLN_statistic": -1.9723,
+          "p_value": 0.048977,
+          "DM_raw": -2.006
+        },
+        "squared_loss_h_1": {
+          "HLN_statistic": -4.6522,
+          "p_value": 4e-06,
+          "DM_raw": -4.6556
+        },
+        "absolute_loss_h_steps": {
+          "HLN_statistic": -0.8535,
+          "p_value": 0.39369,
+          "DM_raw": -0.8681
+        },
+        "absolute_loss_h_1": {
+          "HLN_statistic": -2.1916,
+          "p_value": 0.028742,
+          "DM_raw": -2.1932
+        }
+      },
+      "note": "So sánh Ensemble 30m vs LSTM 30m (n=684)"
+    },
+    {
+      "case_id": "Row 4 (Alt: vs LightGBM_30m)",
+      "table_pair": "Ensemble_30m so với LightGBM_30m",
+      "horizon": "6 giờ",
+      "printed_in_thesis": {
+        "DM_statistic": "-2,134",
+        "p_value": "0,033",
+        "verdict": "Ensemble tốt hơn LightGBM đơn lẻ (theo knowledge_vault ghi nhận DM*=-2.134, p=0.033)"
+      },
+      "reproduced_on_codebase": {
+        "n_samples": 684,
+        "squared_loss_h_steps": {
+          "HLN_statistic": -1.0928,
+          "p_value": 0.274853,
+          "DM_raw": -1.1115
+        },
+        "squared_loss_h_1": {
+          "HLN_statistic": -2.8325,
+          "p_value": 0.004754,
+          "DM_raw": -2.8346
+        },
+        "absolute_loss_h_steps": {
+          "HLN_statistic": -2.0871,
+          "p_value": 0.037249,
+          "DM_raw": -2.1228
+        },
+        "absolute_loss_h_1": {
+          "HLN_statistic": -5.5321,
+          "p_value": 0.0,
+          "DM_raw": -5.5361
+        }
+      },
+      "note": "So sánh Ensemble 30m vs LightGBM 30m (n=684)"
+    }
+  ]
+}

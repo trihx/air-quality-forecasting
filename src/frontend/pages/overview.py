@@ -163,7 +163,7 @@ Thu thập chuỗi thời gian liên tục từ trạm quan trắc ngoài trời
 <div>
 <strong style="color: #F8FAFC; font-size: 0.95rem;">🧹 Tiền Xử Lý, Lọc Ngoại Lai &amp; Resampling Đa Phân Giải {cite("rosner1983")}</strong>
 <div style="color: #CBD5E1; font-size: 0.88rem; margin-top: 0.2rem; line-height: 1.5;">
-Áp dụng <span style="color: #F43F5E; font-weight: 600;">Domain Bounds [0, 500] µg/m³</span> theo quy chuẩn WHO AQI (bảo vệ 66 đỉnh ô nhiễm thực tế, không dùng IQR làm cụt đỉnh) kết hợp S-ESD loại bỏ flatline do lỗi cảm biến. Resampling đa phân giải đồng thời 3 chuỗi: <strong>15 phút, 30 phút, 1 giờ</strong>.
+Áp dụng <span style="color: #F43F5E; font-weight: 600;">Domain Bounds [0, 500] µg/m³</span> theo quy chuẩn WHO AQI (bảo vệ 66 đỉnh ô nhiễm thực tế, không dùng IQR làm cụt đỉnh PM2.5) kết hợp IQR k=3.0 cho biến vi khí tượng. Resampling đa phân giải đồng thời 3 chuỗi: <strong>15 phút, 30 phút, 1 giờ</strong>.
 </div>
 </div>
 </div>
