@@ -496,12 +496,15 @@ def sidebar() -> str:
         <div style="display: flex; justify-content: center; align-items: center;">
             {logo_html}
         </div>
-        <div style="font-size: 0.94rem; font-weight: 700; color: var(--ds-teal); margin-top: 0.4rem; line-height: 1.35;">
-            Hệ Thống Phân Tích & Dự Báo Bụi Mịn PM2.5 Đa Tầm Xa
+        <div style="font-size: 0.92rem; font-weight: 700; color: var(--ds-teal); margin-top: 0.4rem; line-height: 1.35;">
+            Ứng dụng Business Intelligence để phân tích dữ liệu môi trường cho một huyện
         </div>
-        <div style="font-size: 0.78rem; color: var(--ds-text-secondary); margin-top: 0.35rem; line-height: 1.45;">
+        <div style="font-size: 0.8rem; color: var(--ds-text-secondary); margin-top: 0.35rem; line-height: 1.5;">
             Trạm quan trắc IoT Sa Đéc — Đồng Tháp<br>
-            <span style="color: var(--ds-text-muted); font-size: 0.75rem;">Hoàng Xuân Trí · TS. Nguyễn Minh Khiêm</span>
+            <span style="color: var(--ds-text-muted); font-size: 0.76rem; display: inline-block; margin-top: 0.2rem;">
+                <b>CBHD:</b> TS. Nguyễn Minh Khiêm<br>
+                <b>HVTH:</b> Hoàng Xuân Trí (M2522016)
+            </span>
         </div>
     </div>
     """,
