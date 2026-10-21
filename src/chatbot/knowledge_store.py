@@ -208,9 +208,9 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "liem chinh nghien cuu",
         ],
         source="knowledge_vault/01_Pipeline_and_Data_Engineering/02_Tiered_Imputation_and_Data_Sparsity.md",
-        citations=["Bảng 3.4 Báo cáo ThS", "Akima (1970)", "Mục 3.2 Luận văn"],
+        citations=["Bảng 3.4 Báo cáo ThS", "Akima (1970)", "Mục 3.2 Đề án"],
         content=(
-            "### Chiến lược phục hồi dữ liệu phân tầng & Quyết định dũng cảm Drop 19.810 giờ:\n\n"
+            "### Chiến lược phục hồi dữ liệu phân tầng & Quyết định loại bỏ 19.810 giờ khuyết dài:\n\n"
             "- **Thực trạng dữ liệu IoT Sa Đéc:** Tỷ lệ khuyết thiếu tích lũy lên tới 74% qua 38 tháng (209.594 bản ghi thô, "
             "do cúp điện, bảo trì trạm, nghẽn đường truyền 4G).\n"
             "- **Chiến lược 3 tầng xử lý & Giới hạn phục hồi 24h:**\n"
@@ -326,12 +326,10 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
     ),
     KnowledgeDocument(
         doc_id="sweet_spot_ensemble",
-        title="Sự thống trị của Ensemble Weighted tại điểm ngọt 30 phút ở tầm xa 6h và 24h",
+        title="Hiệu năng tối ưu của Ensemble Weighted tại độ phân giải 30 phút ở tầm 6h và 24h",
         category="models",
         keywords=[
             "ensemble weighted",
-            "mo hinh quan quan",
-            "thong tri 6h 24h",
             "weighted ensemble",
             "tam xa 6h 24h",
             "error diversity",
@@ -339,22 +337,21 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "mase 0.382",
             "mase 0.469",
             "diem ngot 30 phut",
-            "tai sao ensemble thong tri",
         ],
         source="knowledge_vault/04_Models_and_Architectures/03_Sweet_Spot_30m_Ensemble.md",
         citations=["Mục 4.3 Báo cáo ThS", "Bảng 4.3 Đề án"],
         content=(
-            "### Sự thống trị của Mô hình Quán quân Weighted Optimization Ensemble tại 30m:\n\n"
+            "### Hiệu năng của mô hình Weighted Optimization Ensemble tại độ phân giải 30m:\n\n"
             "- **Cơ chế tối ưu hóa trọng số lồi:** min_w sum |y_t - sum(w_i * y_hat_{i,t})| với sum(w_i)=1, w_i >= 0 "
             "trên tập Validation, phối hợp 3 trường phái: LightGBM (ngưỡng phi tuyến), GRU (quán tính chuỗi), Random Forest (làm mượt).\n"
-            "- **Bảng thành tích vượt trội tại 30 phút:**\n"
+            "- **Kết quả thực nghiệm tại độ phân giải 30 phút:**\n"
             "  + Tầm 1h (h=1 30m): MASE = 0.712 (cải thiện +28.8% so với baseline).\n"
             "  + Tầm 6h (h=6 30m): MASE = 0.382 (cải thiện +25.5%, điểm tối ưu nhất toàn đề án).\n"
             "  + Tầm 24h (h=24 30m): MASE = 0.469 (cải thiện +15.0%).\n"
-            "- **Tại sao Ensemble thống trị ở tầm xa 6h và 24h?**\n"
+            "- **Tại sao Ensemble đạt sai số thấp nhất ở tầm xa 6h và 24h?**\n"
             "  1. *Bù trừ sai số đa dạng (Error Diversity):* Sai số phân tán của cây LightGBM và sai số làm mượt của GRU triệt tiêu lẫn nhau, "
             "hạ thấp đáng kể phương sai sai số tổng thể khi bước dự báo tăng xa.\n"
-            "  2. *Điểm ngọt Pareto 30 phút:* Tỷ lệ tín hiệu trên nhiễu (SNR) tối ưu giúp bộ trọng số cân bằng hoàn hảo giữa thích ứng và ổn định."
+            "  2. *Điểm ngọt Pareto 30 phút:* Tỷ lệ tín hiệu trên nhiễu (SNR) tối ưu giúp bộ trọng số cân bằng tốt giữa tính thích ứng và ổn định."
         ),
     ),
     KnowledgeDocument(
@@ -687,7 +684,7 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
     ),
     KnowledgeDocument(
         doc_id="defense_faq",
-        title="Bộ câu hỏi - đáp phản biện trọng điểm trước Hội đồng Đề án Thạc sĩ",
+        title="Bộ câu hỏi - đáp chuyên sâu về các bẫy phương pháp luận của hệ thống",
         category="defense",
         keywords=[
             "hoi dong",
@@ -710,9 +707,9 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "cau hoi kho",
         ],
         source="knowledge_vault/07_Defense_Playbook_and_FAQ/01_Master_Defense_QnA_Hoi_Dong.md",
-        citations=["Bộ 20 câu hỏi Hội đồng", "SLIDES_DEFENSE_PLAYBOOK.md"],
+        citations=["Chuyên khảo 20 vấn đề phương pháp luận", "THESIS_EXPLANATIONS.md"],
         content=(
-            "### Bộ câu hỏi - đáp trọng điểm trước Hội đồng Đề án Thạc sĩ (Grill-Me Defense Holes):\n\n"
+            "### Bộ câu hỏi - đáp kỹ thuật chuyên sâu về các bẫy phương pháp luận & cơ sở khoa học:\n\n"
             "1. **Tại sao dùng MASE thay vì RMSE/MAE?** MASE scale-independent, mẫu số chuẩn hóa đồng nhất 1.821 µg/m³, "
             "phân định rõ True Skill (<1.0) và cho phép so sánh công bằng giữa các trạm quan trắc.\n"
             "2. **Tại sao dòng 1 bảng Diebold-Mariano mang dấu dương (+13.729) mà dòng 2, 3 mang dấu âm (-8.452)?**\n"
@@ -727,7 +724,7 @@ CURATED_DOCUMENTS: list[KnowledgeDocument] = [
             "hoặc mô hình bị lệch pha, sai số mô hình SS_res vượt qua phương sai tự nhiên SS_tot, dẫn đến R² < 0. Đây là lý do loại bỏ R².\n"
             "5. **Bẫy ngoại lai IQR 3.0 đã xóa nhầm dữ liệu ra sao?**\n"
             "   Tukey IQR 3.0 gọt nhầm 66 đỉnh ô nhiễm thực tế (55 - 120 µg/m³) do phân phối Fat-tailed (Skewness=2.00, Kurtosis=6.15), "
-            "tạo ảo tưởng chính xác giả nhưng làm F1 cảnh báo tụt < 0.35. Đề án thay thế bằng Domain Bounds [0, 500] kết hợp S-ESD, "
+            "tạo ảo tưởng chính xác giả nhưng làm F1 cảnh báo tụt < 0.35. Hệ thống thay thế bằng Domain Bounds [0, 500] kết hợp IQR k=3 vi khí tượng, "
             "khôi phục F1 lên 0.782.\n"
             "6. **Tại sao phân luồng XAI Tree SHAP vs Permutation?** Tree SHAP cho LightGBM chính xác 100% trong <100ms; "
             "Permutation cho GRU/LSTM tránh bẫy 16 giờ của Kernel SHAP.\n"

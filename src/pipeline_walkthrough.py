@@ -80,10 +80,12 @@ def _render_custom_metric(label, value, icon=""):
     """Render a custom metric card that prevents truncation and supports wrapping."""
     st.markdown(
         f"""
-        <div style="display: flex; flex-direction: column; background: #0B1120;
-                    border: 1px solid rgba(0, 212, 170, 0.25); border-radius: 8px; padding: 1rem; height: 100%;">
-            <span style="font-size: 0.85rem; color: #94A3B8; font-weight: 500; margin-bottom: 0.3rem;">{icon} {label}</span>
-            <span style="font-size: 1.25rem; font-weight: 700; color: #F8FAFC; line-height: 1.4; word-break: break-word; white-space: normal;">{value}</span>
+        <div style="display: flex; flex-direction: column; justify-content: space-between;
+                    background: var(--ds-bg-card); color: var(--ds-text-primary);
+                    border: 1px solid rgba(0, 212, 170, 0.25); border-radius: 8px;
+                    padding: 1rem; min-height: 92px; height: 100%; box-sizing: border-box;">
+            <span style="font-size: 0.85rem; color: var(--ds-text-muted); font-weight: 500; margin-bottom: 0.3rem;">{icon} {label}</span>
+            <span style="font-size: clamp(1.05rem, 1.3vw, 1.25rem); font-weight: 700; color: var(--ds-text-primary); line-height: 1.4; word-break: break-word; white-space: normal;">{value}</span>
         </div>
         """,
         unsafe_allow_html=True,
@@ -94,13 +96,13 @@ def _step_data_collection():
     """Step 1: Data Collection."""
     st.markdown(
         """
-    <div style="background: #0B1120; color: #F8FAFC !important;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary);
                 border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(0,212,170,0.35); border-left: 5px solid #00D4AA;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #00D4AA;">
             📥 Bước 1: Thu Thập Dữ Liệu
         </div>
-        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+        <div style="color: var(--ds-text-secondary); margin-top: 0.4rem; font-size: 0.95rem;">
             Dữ liệu IoT sensor thu thập liên tục tại Sa Đéc, Đồng Tháp (38 tháng, 209.594 bản ghi)
         </div>
     </div>
@@ -151,14 +153,14 @@ def _step_data_cleaning():
     """Step 2: Data Cleaning."""
     st.markdown(
         """
-    <div style="background: #0B1120; color: #F8FAFC !important;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary);
                 border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(236,72,153,0.35); border-left: 5px solid #EC4899;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #EC4899;">
             🧹 Bước 2: Làm sạch Dữ Liệu & Resampling
         </div>
-        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
-            Xử lý outliers, duplicates, domain bounds [0, 500] theo WHO và đa phân giải (15m, 30m, 1h)
+        <div style="color: var(--ds-text-secondary); margin-top: 0.4rem; font-size: 0.95rem;">
+            Xử lý outliers, duplicates, domain bounds [0, 500] µg/m³ (US-EPA / giới hạn cảm biến) và đa phân giải (15m, 30m, 1h)
         </div>
     </div>
     """,
@@ -170,25 +172,25 @@ def _step_data_cleaning():
         ("1️⃣ Xóa duplicates", "Loại bỏ bản ghi trùng lặp theo timestamp"),
         (
             f"2️⃣ Domain Bounds {cite('who2021')}",
-            "PM2.5 ∈ [0, 500] µg/m³ — Cắt ngưỡng vật lý theo WHO guidelines (AQI limit)",
+            "PM2.5 ∈ [0, 500] µg/m³ — Cắt ngưỡng vật lý cảm biến / thang US-EPA AQI [0, 500] µg/m³; bảo toàn toàn bộ 66 đợt vượt ngưỡng khuyến nghị WHO 24h (45 µg/m³).",
         ),
         (
             "3️⃣ Outlier detection",
-            "IQR 3.0 cho các biến môi trường phụ (Nhiệt độ, v.v.). ĐẶC BIỆT: KHÔNG DÙNG cho PM2.5 để tránh bẫy 'Outlier Removal Trap'.",
+            "IQR 3.0 cho các biến môi trường phụ (Nhiệt độ, v.v.). ĐẶC BIỆT: KHÔNG DÙNG cho PM2.5 để tránh loại bỏ nhầm cực trị thực tế (Outlier Removal Bias).",
         ),
         (
             f"4️⃣ Resampling {cite('barkjohn2021')}",
-            "Từ ~2 phút → đa độ phân giải (15m, 30m, 1h) bằng mean aggregation. v9 phát hiện 30m là tối ưu.",
+            "Từ ~2 phút → đa độ phân giải (15m, 30m, 1h) bằng mean aggregation. v9 xác định 30m là tối ưu cho dự báo 6h–24h.",
         ),
     ]
 
     for title, desc in cleaning_steps:
         st.markdown(
             f"""
-        <div style="background: #111827; border-left: 3px solid #EC4899; border: 1px solid rgba(236,72,153,0.25);
-                    padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; color: #F8FAFC;">
-            <strong style="color: #F8FAFC;">{title}</strong><br>
-            <span style="color: #CBD5E1; font-size: 0.9rem;">{desc}</span>
+        <div style="background: var(--ds-bg-surface); border-left: 3px solid #EC4899; border: 1px solid rgba(236,72,153,0.25);
+                    padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; color: var(--ds-text-primary);">
+            <strong style="color: var(--ds-text-primary);">{title}</strong><br>
+            <span style="color: var(--ds-text-secondary); font-size: 0.9rem;">{desc}</span>
         </div>
         """,
             unsafe_allow_html=True,
@@ -209,9 +211,9 @@ def _step_data_cleaning():
     with st.expander("💡 Tại sao KHÔNG DÙNG IQR cho PM2.5?", expanded=False):
         st.markdown(
             """
-        **Vấn đề (Outlier Removal Trap)**: Áp dụng phương pháp IQR chuẩn (loại bỏ các giá trị > `Q3 + 1.5*IQR`) cho phân phối fat-tailed như PM2.5 sẽ xóa nhầm các đỉnh ô nhiễm cực đoan (extreme events). Nếu mô hình học trên dữ liệu bị "cắt ngọn" này, nó sẽ bị hội chứng **"False Sense of Accuracy"**: điểm số MAE có vẻ thấp (vì đoán vùng dữ liệu dễ), nhưng mô hình bị mù hoàn toàn trước các đợt bùng phát ô nhiễm thật sự.
+        **Vấn đề (Outlier Removal Bias)**: Áp dụng phương pháp IQR chuẩn (loại bỏ các giá trị > `Q3 + 1.5*IQR`) cho phân phối đuôi dày (fat-tailed) như PM2.5 sẽ xóa nhầm các đỉnh ô nhiễm cực đoan (extreme events). Nếu mô hình học trên dữ liệu bị cắt ngưỡng thống kê này, sai số trung bình MAE có vẻ thấp trên vùng nền nhưng mô hình sẽ đánh giá thấp nghiêm trọng các đợt bùng phát ô nhiễm thực tế.
 
-        **Giải pháp**: Với biến target (PM2.5), tuyệt đối không dùng filter thống kê (IQR/Z-score) mà bắt buộc dùng **Domain Bounds (0 - 500 µg/m³)**.
+        **Giải pháp**: Với biến mục tiêu (PM2.5), không dùng bộ lọc thống kê (IQR/Z-score) mà áp dụng **Domain Bounds vật lý (0 - 500 µg/m³)**.
         """
         )
 
@@ -220,14 +222,14 @@ def _step_eda():
     """Step 3: Exploratory Data Analysis."""
     st.markdown(
         """
-    <div style="background: #0B1120; color: #F8FAFC !important;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary);
                 border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(139,92,246,0.35); border-left: 5px solid #8B5CF6;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #8B5CF6;">
             🔬 Bước 3: Phân Tích Khám Phá (EDA)
         </div>
-        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
-            Phát hiện patterns, bẫy tự tương quan r=0.86, phân phối lệch phải (Skew 2.00, Kurt 6.15)
+        <div style="color: var(--ds-text-secondary); margin-top: 0.4rem; font-size: 0.95rem;">
+            Phát hiện quy luật chu kỳ, quán tính tự tương quan r=0.86, phân phối lệch phải (Skew 2.00, Kurt 6.15)
         </div>
     </div>
     """,
@@ -235,7 +237,7 @@ def _step_eda():
     )
 
     findings = {
-        f"🔄 Autocorrelation {cite('shumway2017')}": "Tự tương quan **rất cao** ($r \\approx 0,86$ ở chuỗi giờ 1h, $r \\approx 0,97$ ở chuỗi 15m) → Persistence baseline cực mạnh ở bước 1h",
+        f"🔄 Autocorrelation {cite('shumway2017')}": "Tự tương quan **rất cao** ($r \\approx 0,86$ ở chuỗi giờ 1h, $r \\approx 0,97$ ở chuỗi 15m) → Persistence baseline rất mạnh ở bước 1h",
         f"📈 Seasonality {cite('cleveland1990')}": "Chu kỳ ngày (24h) + tuần (168h) + mùa khô/mưa — STL decomposition bóc tách trend và seasonal rõ rệt",
         "🌡️ Correlations": "Nhiệt độ ($r = -0,48$), Độ ẩm ($r = -0,26$), Điểm sương ($r = +0,12$), CO₂ ($r = 0,069$ Pearson / $+0,251$ Spearman)",
         f"📊 Distribution {cite('boxcox1964')}": "PM2.5 lệch phải (Mean 17,46 > Median 13,67, Skewness = 2,0046, Kurtosis = 6,1458, Max 138,5 µg/m³)",
@@ -247,7 +249,7 @@ def _step_eda():
 
     st.info(
         "💡 **Key insight**: Do tự tương quan chuỗi giờ cao ($r \\approx 0,86$), Persistence baseline rất khó bị đánh bại ở bước 1h trên chuỗi 1h. "
-        "Mô hình học máy và học sâu khai thác biến động đa phân giải (15m) đã phá vỡ giới hạn này (GRU 15m đạt MASE = 0,667 < 1,0), và vượt trội ở horizons dài hơn (6h, 24h)."
+        "Mô hình học máy và học sâu khai thác biến động đa phân giải (15m) đã vượt qua giới hạn này (GRU 15m đạt MASE = 0,667 < 1,0), và vượt trội ở horizons dài hơn (6h, 24h)."
     )
 
 
@@ -264,14 +266,14 @@ def _step_imputation():
     """Step 4: Missing Data Imputation."""
     st.markdown(
         """
-    <div style="background: #0B1120; color: #F8FAFC !important;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary);
                 border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(6,182,212,0.35); border-left: 5px solid #06B6D4;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #06B6D4;">
             🧪 Bước 4: Xử Lý Missing Data (Tiered Imputation)
         </div>
-        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
-            Chiến lược Tiered Imputation: Spline (≤6h), KNN (6–24h) và Dũng cảm loại bỏ (Drop 19.810h khuyết dài >24h)
+        <div style="color: var(--ds-text-secondary); margin-top: 0.4rem; font-size: 0.95rem;">
+            Chiến lược Tiered Imputation: Linear (≤1h), Spline (1–6h), KNN (6–24h) và Loại bỏ có chủ đích (Drop 19.810h khuyết dài >24h)
         </div>
     </div>
     """,
@@ -281,7 +283,7 @@ def _step_imputation():
     tiers = [
         (
             f"🟢 Gap ngắn (≤6 rows) {cite('moritz2015')}",
-            "Cubic Spline Interpolation",
+            "Linear (≤1h) & Cubic Spline (1–6h)",
             "Tương đương: 6h (1h) | 3h (30m) | 1.5h (15m)",
         ),
         (
@@ -292,7 +294,7 @@ def _step_imputation():
         (
             f"🔴 Gap dài (>24 rows) {cite('moritz2015')}",
             "DROP 19.810h — Không recover",
-            "Bỏ qua các đứt gãy quá lớn để triệt tiêu sinh dữ liệu giả (Anti Data Hallucination)",
+            "Loại bỏ các đứt gãy quá lớn để tránh sai lệch nội suy trên chuỗi khuyết dài (Synthetic Interpolation Bias)",
         ),
     ]
 
@@ -307,8 +309,8 @@ def _step_imputation():
     if imputation_strat:
         st.markdown(
             f"""
-        <div style="background: #111827; padding: 1rem; border-left: 4px solid #06B6D4; border: 1px solid rgba(6,182,212,0.25); border-radius: 6px; margin-top: 1rem; margin-bottom: 1.5rem; color: #F8FAFC;">
-            <span style="font-size: 0.95em; color: #CBD5E1;">💡 <b style="color: #06B6D4;">{imputation_strat.get("title", "Cơ Sở Học Thuật")}:</b> {imputation_strat.get("explanation", "")}</span>
+        <div style="background: var(--ds-bg-surface); padding: 1rem; border-left: 4px solid #06B6D4; border: 1px solid rgba(6,182,212,0.25); border-radius: 6px; margin-top: 1rem; margin-bottom: 1.5rem; color: var(--ds-text-primary);">
+            <span style="font-size: 0.95em; color: var(--ds-text-secondary);">💡 <b style="color: #06B6D4;">{imputation_strat.get("title", "Cơ Sở Học Thuật")}:</b> {imputation_strat.get("explanation", "")}</span>
         </div>
         """,
             unsafe_allow_html=True,
@@ -327,11 +329,11 @@ def _step_imputation():
 
     st.markdown(
         f"""
-        <div style="background: #111827; border-left: 4px solid #06B6D4; border: 1px solid rgba(6,182,212,0.3); padding: 1.2rem; border-radius: 6px; margin: 1.5rem 0; color: #F8FAFC;">
+        <div style="background: var(--ds-bg-surface); border-left: 4px solid #06B6D4; border: 1px solid rgba(6,182,212,0.3); padding: 1.2rem; border-radius: 6px; margin: 1.5rem 0; color: var(--ds-text-primary);">
             <div style="font-size: 1.05em; font-weight: 700; color: #06B6D4; margin-bottom: 0.5rem;">
                 🔬 {val_title}
             </div>
-            <div style="font-size: 0.95em; line-height: 1.6; color: #CBD5E1;">
+            <div style="font-size: 0.95em; line-height: 1.6; color: var(--ds-text-secondary);">
                 {val_explanation}
             </div>
         </div>
@@ -354,19 +356,19 @@ def _step_feature_engineering():
 
     st.markdown(
         f"""
-    <div style="background: #0B1120; color: #F8FAFC !important;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary);
                 border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(245,158,11,0.35); border-left: 5px solid #F59E0B;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #F59E0B;">
             🛠️ Bước 5: Feature Engineering {cite("christ2018")}
         </div>
-        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+        <div style="color: var(--ds-text-secondary); margin-top: 0.4rem; font-size: 0.95rem;">
             Từ 5 biến gốc → 119 Features ({f_count} tổng số cột - 1 Target - 1 Metadata) kỷ luật shift(1) chống rò rỉ
         </div>
     </div>
 
-    <div style="background: #111827; padding: 1rem; border-left: 4px solid #F59E0B; border: 1px solid rgba(245,158,11,0.25); border-radius: 6px; margin-bottom: 1.5rem; color: #F8FAFC;">
-        <span style="font-size: 0.95em; color: #CBD5E1;">💡 <b style="color: #F59E0B;">Lưu ý học thuật:</b> {feat_explanation}</span>
+    <div style="background: var(--ds-bg-surface); padding: 1rem; border-left: 4px solid #F59E0B; border: 1px solid rgba(245,158,11,0.25); border-radius: 6px; margin-bottom: 1.5rem; color: var(--ds-text-primary);">
+        <span style="font-size: 0.95em; color: var(--ds-text-secondary);">💡 <b style="color: #F59E0B;">Lưu ý học thuật:</b> {feat_explanation}</span>
     </div>
     """,
         unsafe_allow_html=True,
@@ -389,8 +391,8 @@ def _step_feature_engineering():
             f"""
         <div style="display: flex; justify-content: space-between; align-items: center;
                     padding: 0.5rem 1rem; margin: 0.25rem 0;
-                    background: #111827; border: 1px solid rgba(245,158,11,0.2); border-radius: 8px;">
-            <span style="color: #F8FAFC;"><strong>{group}</strong></span>
+                    background: var(--ds-bg-surface); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px;">
+            <span style="color: var(--ds-text-primary);"><strong>{group}</strong></span>
             <span style="color: #F59E0B; font-weight: 600;">{count}</span>
         </div>
         """,
@@ -400,7 +402,7 @@ def _step_feature_engineering():
 
     st.markdown(
         f"""
-        <div style="background: #18120B; border: 1px solid rgba(245,158,11,0.4); border-left: 4px solid #F59E0B; padding: 1rem; border-radius: 6px; margin: 1rem 0; color: #F8FAFC;">
+        <div style="background: var(--ds-bg-amber-soft); border: 1px solid rgba(245,158,11,0.4); border-left: 4px solid #F59E0B; padding: 1rem; border-radius: 6px; margin: 1rem 0; color: var(--ds-text-primary);">
             <span style="font-size: 1.1em; font-weight: 600; color: #F59E0B;">⚠️ Anti-Leakage</span> {cite("hyndman2021")}<br><br>
             Tất cả features dùng target (diff, pct_change, ratio) đều áp dụng <code>shift(1)</code> — chỉ dùng dữ liệu QUÁ KHỨ.<br>
             Kiểm tra: <code>|corr(feature, target)| < 0.99</code> cho mọi feature.
@@ -444,13 +446,13 @@ def _step_modeling():
     """Step 6: Modeling & Evaluation."""
     st.markdown(
         """
-    <div style="background: #0B1120; color: #F8FAFC !important;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary);
                 border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(16,185,129,0.35); border-left: 5px solid #10B981;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #10B981;">
             📊 Bước 6: Huấn Luyện & Đánh Giá Mô Hình
         </div>
-        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+        <div style="color: var(--ds-text-secondary); margin-top: 0.4rem; font-size: 0.95rem;">
             Mô hình đa độ phân giải (15m, 30m, 1h) × 3 horizons — Temporal Split 80/10/10 v9
         </div>
     </div>
@@ -491,14 +493,14 @@ def _step_modeling():
 
     st.markdown(
         """
-        <div style="background: #111827; padding: 1rem; border-left: 4px solid #10B981; border: 1px solid rgba(16,185,129,0.25); border-radius: 6px; margin-top: 1.5rem; margin-bottom: 1.5rem; color: #F8FAFC;">
-            <div style="font-size: 0.95em; line-height: 1.6; color: #CBD5E1;">
+        <div style="background: var(--ds-bg-surface); padding: 1rem; border-left: 4px solid #10B981; border: 1px solid rgba(16,185,129,0.25); border-radius: 6px; margin-top: 1.5rem; margin-bottom: 1.5rem; color: var(--ds-text-primary);">
+            <div style="font-size: 0.95em; line-height: 1.6; color: var(--ds-text-secondary);">
                 <b style="color: #10B981;">💡 Lý do chọn mô hình:</b> Hệ thống áp dụng 5 phân lớp mô hình để kiểm chứng chéo giả thuyết (Cross-Hypothesis Testing):
                 <b>(1) Baseline</b> cung cấp mức sàn tối thiểu;
                 <b>(2) Statistical</b> xử lý tuyến tính và xu hướng vĩ mô;
                 <b>(3) Tree-based ML</b> giải quyết tốt dữ liệu dạng bảng (tabular) với nhiều features;
                 <b>(4) Deep Learning</b> (đặc biệt RNN/Attention) bắt sóng chuỗi thời gian phi tuyến tính; và
-                <b>(5) Ensemble</b> triệt tiêu sai số phương sai (variance) bằng cách hợp nhất sức mạnh của tất cả các họ trên.
+                <b>(5) Ensemble</b> giảm phương sai sai số (error variance) bằng cách hợp nhất các họ mô hình trên.
             </div>
         </div>
         """,
@@ -579,13 +581,13 @@ def _step_results():
     """Step 7: Results & Conclusions."""
     st.markdown(
         """
-    <div style="background: #0B1120; color: #F8FAFC !important;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary);
                 border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem;
                 border: 1px solid rgba(234,179,8,0.35); border-left: 5px solid #EAB308;">
         <div style="font-size: 1.3rem; font-weight: 700; color: #EAB308;">
             📈 Bước 7: Kết Quả & Kết Luận
         </div>
-        <div style="color: #CBD5E1; margin-top: 0.4rem; font-size: 0.95rem;">
+        <div style="color: var(--ds-text-secondary); margin-top: 0.4rem; font-size: 0.95rem;">
             Tổng hợp findings, bảng xếp hạng MASE và bài học kinh nghiệm
         </div>
     </div>
@@ -630,8 +632,8 @@ def _step_results():
             f"6h: {best_6h_model} (MASE={best_6h_mase:.3f}) | 24h: {best_24h_model} (MASE={best_24h_mase:.3f})",
         ),
         (
-            f"📏 Phá vỡ bẫy Autocorrelation {cite('hyndman2021')}",
-            "Ở bước 1h trên chuỗi giờ (r ≈ 0,86), Persistence rất mạnh khiến các mô hình 1h chuẩn đều có MASE > 1,0. Bằng cách khai thác đa phân giải 15m, mô hình GRU 15m đã chính thức phá vỡ giới hạn này (MASE = 0,667 < 1,0)!",
+            f"📏 Vượt ngưỡng tự tương quan bậc 1 (Autocorrelation Baseline) {cite('hyndman2021')}",
+            "Ở bước 1h trên chuỗi giờ (r ≈ 0,86), Persistence rất mạnh khiến các mô hình 1h chuẩn đều có MASE > 1,0. Nhờ khai thác đa phân giải 15m, mô hình GRU 15m đã vượt qua giới hạn này (MASE = 0,667 < 1,0).",
         ),
         (
             "🌲 ML vs DL",
@@ -639,7 +641,7 @@ def _step_results():
         ),
         (
             "🔧 Feature Engineering",
-            f"{f_count} features (Fourier + interaction + domain). Ablation chứng minh tabular FE > raw data cho IoT.",
+            f"{f_count} cột dữ liệu (119 features: Fourier + interaction + domain). Ablation chứng minh tabular FE > raw data cho IoT.",
         ),
         (
             f"⚠️ Anti-Leakage {cite('tashman2000')}",
@@ -650,10 +652,10 @@ def _step_results():
     for title, desc in findings:
         st.markdown(
             f"""
-        <div style="background: #111827; border-left: 3px solid #EAB308; border: 1px solid rgba(234,179,8,0.25);
-                    padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; color: #F8FAFC;">
-            <strong style="color: #F8FAFC;">{title}</strong><br>
-            <span style="color: #CBD5E1;">{desc}</span>
+        <div style="background: var(--ds-bg-surface); border-left: 3px solid #EAB308; border: 1px solid rgba(234,179,8,0.25);
+                    padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 0 8px 8px 0; color: var(--ds-text-primary);">
+            <strong style="color: var(--ds-text-primary);">{title}</strong><br>
+            <span style="color: var(--ds-text-secondary);">{desc}</span>
         </div>
         """,
             unsafe_allow_html=True,
@@ -697,7 +699,7 @@ def _step_results():
             )
             _render_chart(fig, filename="pipeline_mase_comparison")
 
-    # Thesis Figures PL.1 & PL.2
+    # Figures PL.1 & PL.2
     c_pl1, c_pl2 = st.columns(2)
     fig_pl1 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_PL.1_MASE_Decay.png"
     fig_pl2 = PROJECT_ROOT / "research" / "figures" / "thesis" / "Hinh_PL.2_Bootstrap_CI.png"
@@ -720,10 +722,10 @@ def _step_results():
     st.markdown("#### 📝 Bài học kinh nghiệm")
     lessons = [
         "Data Leakage dễ xảy ra trong time series khi dùng `diff(y)`, `pct_change(y)` chứa y[t]. Luôn shift(1).",
-        "IoT sensor missing data ~85% — phần lớn là gaps >1 tuần. Chỉ focus impute gaps ≤24h.",
-        "Persistence baseline cực mạnh ở short horizon. Cần multi-horizon eval để thấy giá trị ML.",
-        "Cubic Spline univariate không nên dùng cho gap >6h. KNN multivariate tốt hơn cho medium gaps.",
-        "Box-Cox transformation (λ≈-0.147) giúp normalize PM2.5 skewed distribution → model tốt hơn.",
+        "IoT sensor missing data ~74,0% (110 gaps) — phần lớn là các đứt gãy dài >24h. Chỉ nội suy các khoảng khuyết ≤24h.",
+        "Persistence baseline rất mạnh ở short horizon. Cần multi-horizon & multi-resolution evaluation để đánh giá toàn diện mô hình.",
+        "Cubic Spline univariate không nên dùng cho gap >6h. KNN multivariate tốt hơn cho medium gaps (6–24h).",
+        "Box-Cox transformation (λ≈-0.147) giúp chuẩn hóa phân phối PM2.5 lệch phải → ổn định phương sai sai số.",
     ]
     for i, lesson in enumerate(lessons, 1):
         st.markdown(f"{i}. {lesson}")
@@ -778,7 +780,7 @@ def page_pipeline_walkthrough(results):
             st.markdown(
                 f"""
             <div style="text-align: center; padding: 0.5rem;
-                        background: #0B1120; border-radius: 8px;
+                        background: var(--ds-bg-card); border-radius: 8px;
                         border: 1px solid rgba(0,212,170,0.35);
                         font-size: 0.78rem; font-weight: 600; color: #00D4AA;">
                 {step}

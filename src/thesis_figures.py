@@ -3,12 +3,12 @@
 Hiển thị toàn diện 38 hình ảnh thực nghiệm chuẩn thức (300 DPI, bảo toàn Aspect Ratio):
   - Kiến trúc & Quy trình: Sơ đồ Quy trình 7 bước (Hình 1.1) & Kiến trúc 3 tầng DevOps/SRE (Hình 3.1)
   - Phân tích khám phá EDA: Hình 4.1a-e, 4.2a-b, 4.3a-b, 4.4a-b, 4.5a-b
-  - Chẩn đoán thặng dư: 7 mô hình/horizon (Hình 4.6a-g)
+  - Chẩn đoán phần dư (Residual Diagnostics): 7 mô hình/horizon (Hình 4.6a-g)
   - Khả năng giải thích XAI: Hình 4.7a-c, Hình 4.8 Tipping Point, Hình 4.9a-c, Hình 4.10a-c
   - Khoảng tin cậy dự báo & Ablation Study: Hình 4.11a-c & Hình 4.12
   - Phụ lục mở rộng: MASE Decay (Hình PL.1), Bootstrap 95% CI (Hình PL.2), SHAP Horizons (Hình PL.3)
 
-Tích hợp biểu đồ tương tác Plotly chuẩn in ấn (B&W hatch patterns) và bộ xuất ZIP 38 hình 300 DPI.
+Tích hợp biểu đồ tương tác Plotly chuẩn xuất bản (B&W hatch patterns) và bộ xuất ZIP 38 hình 300 DPI.
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ from src.viz.chart_factory import (
 from src.viz.chart_factory import (
     render_chart as _render_chart,
 )
-from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC
+from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC, get_plotly_template
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RESEARCH_DIR = PROJECT_ROOT / "research"
@@ -291,6 +291,7 @@ def _chart_shap_comparison(shap_data):
         )
 
     fig.update_layout(
+        template=get_plotly_template(),
         height=500,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
@@ -338,6 +339,7 @@ def _chart_residual_bias(lb_data):
         )
     )
     fig.update_layout(
+        template=get_plotly_template(),
         height=350,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
@@ -419,7 +421,7 @@ def page_thesis_figures(results):
     st.markdown(
         f"""
     <div class="kpi-row">
-        {kpi_card("Hình chuẩn Đề án", str(n_official), "300 DPI — research/figures/thesis")}
+        {kpi_card("Hình chuẩn Hệ thống", str(n_official), "300 DPI — research/figures/thesis")}
         {kpi_card("Tỷ lệ khung hình", "100%", "Bảo toàn Aspect Ratio")}
         {kpi_card("Biểu đồ tương tác", "5", "Plotly dynamic")}
         {kpi_card("Độ tin cậy", "✅ 100% Verified", "193 core / 204 CI tests pass")}
@@ -432,26 +434,26 @@ def page_thesis_figures(results):
         "💡 **Quy chuẩn hiển thị & Trích xuất:**\n"
         "- **Nguồn ảnh duy nhất (Single Source of Truth):** Toàn bộ hình ảnh được đọc từ `research/figures/thesis/` (đồng bộ hoàn hảo với `docs/pics/`).\n"
         "- **Bảo toàn tỷ lệ (Aspect Ratio):** Tất cả hình ảnh được scale tự động theo kích thước gốc, tuyệt đối không co giãn làm vỡ chữ hay méo phối cảnh.\n"
-        "- **Chuẩn QĐ 1799/ĐHCT:** Tất cả biểu đồ có kèm bản in Đen-Trắng (B&W) với hatch patterns đạt chuẩn in ấn đề án."
+        "- **Tối ưu xuất bản kỹ thuật:** Tất cả biểu đồ có kèm bản in Đen-Trắng (B&W) với hatch patterns đạt chuẩn xuất bản khoa học."
     )
 
     # ══════════════════════════════════════════════════════
-    # 6 Tabs theo Chương Đề Án
+    # 6 Tabs theo Chuyên Đề Kỹ Thuật
     # ══════════════════════════════════════════════════════
     tab_ch1_3, tab_eda, tab_diag, tab_xai, tab_pi_abl, tab_appx = st.tabs(
         [
-            "🏢 Quy Trình & Kiến Trúc (§1.4, §3.7)",
-            "📉 Khám Phá Dữ Liệu EDA (§4.1)",
-            "🔬 Chẩn Đoán Thặng Dư (§4.5)",
-            "🧠 Giải Thích XAI (§4.6)",
-            "📈 Khoảng Dự Báo & Ablation (§4.7, §4.10)",
-            "📑 Phụ Lục Nghiên Cứu (Phụ Lục 3)",
+            "🏢 Quy Trình & Kiến Trúc",
+            "📉 Khám Phá Dữ Liệu (EDA)",
+            "🔬 Chẩn Đoán Phần Dư (Residuals)",
+            "🧠 Giải Thích Mô Hình (XAI)",
+            "📈 Khoảng Dự Báo & Ablation",
+            "📑 Phụ Lục Mở Rộng (Appendix)",
         ]
     )
 
-    # ── Tab 1: Chương 1 & 3 ──
+    # ── Tab 1: Quy trình & Kiến trúc ──
     with tab_ch1_3:
-        section_header("🏢", "Quy Trình Nghiên Cứu & Kiến Trúc Hệ Thống (Chương 1 & 3)")
+        section_header("🏢", "Quy Trình Nghiên Cứu & Kiến Trúc Hệ Thống")
         col1, col2 = st.columns(2)
         with col1:
             _render_image_card(
@@ -466,23 +468,23 @@ def page_thesis_figures(results):
                 "Kiến trúc 3-Tier chuẩn Enterprise: Presentation (Streamlit), Application (FastAPI), Database (PostgreSQL + Supabase Pooler) tích hợp Prometheus/Grafana.",
             )
 
-    # ── Tab 2: Chương 4 §4.1 EDA ──
+    # ── Tab 2: EDA ──
     with tab_eda:
-        section_header("📉", "Phân Tích Khám Phá Dữ Liệu Thực Nghiệm (Chương 4 §4.1)")
+        section_header("📉", "Phân Tích Khám Phá Dữ Liệu Thực Nghiệm (EDA)")
         eda_sel = st.selectbox(
             "Chọn nhóm biểu đồ EDA cần đối soát:",
             [
-                "1. Kiểm định tính dừng (§4.1.1 — Hình 4.1a-e)",
-                "2. Bẫy tự tương quan & Phân tán (§4.1.2 — Hình 4.2a-b)",
-                "3. Phân phối đuôi dài & Đỉnh dị thường (§4.1.3 — Hình 4.3a-b)",
-                "4. Tương quan động Concept Drift & Hexbin (§4.1.4 — Hình 4.4a-b)",
-                "5. Mã vạch dữ liệu khuyết & Giới hạn nội suy (§4.1.5 — Hình 4.5a-b)",
+                "1. Kiểm định tính dừng (4.1.1 — Hình 4.1a-e)",
+                "2. Quán tính tự tương quan & Phân tán (4.1.2 — Hình 4.2a-b)",
+                "3. Phân phối đuôi dài & Đỉnh dị thường (4.1.3 — Hình 4.3a-b)",
+                "4. Tương quan động Concept Drift & Hexbin (4.1.4 — Hình 4.4a-b)",
+                "5. Mã vạch dữ liệu khuyết & Giới hạn nội suy (4.1.5 — Hình 4.5a-b)",
             ],
             key="thesis_eda_sel",
         )
 
         if "4.1.1" in eda_sel:
-            st.markdown("#### §4.1.1: Chuỗi Kiểm Định Tính Dừng (Stationarity Tests)")
+            st.markdown("#### 4.1.1: Chuỗi Kiểm Định Tính Dừng (Stationarity Tests)")
             c1, c2 = st.columns(2)
             with c1:
                 _render_image_card("Hinh_4.1a_Stationarity_Raw_PM25.png", "Hình 4.1a: Chuỗi PM2.5 gốc (Raw)")
@@ -495,10 +497,10 @@ def page_thesis_figures(results):
                 _render_image_card("Hinh_4.1d_Stationarity_Log_PM25.png", "Hình 4.1d: Biến đổi Log PM2.5")
 
         elif "4.1.2" in eda_sel:
-            st.markdown("#### §4.1.2: Bẫy Tự Tương Quan & Độ Phân Tán Dữ Liệu")
+            st.markdown("#### 4.1.2: Quán Tính Tự Tương Quan & Độ Phân Tán Dữ Liệu")
             _render_image_card(
                 "Hinh_4.2a_EDA_Autocorrelation_Memory.png",
-                "Hình 4.2a: Bẫy tự tương quan — Suy giảm tự tương quan ACF/PACF theo độ trễ",
+                "Hình 4.2a: Quán tính tự tương quan — Suy giảm tự tương quan ACF/PACF theo độ trễ",
                 "Hệ số r=0,86 (chuỗi 1h) và r=0,97 (chuỗi thô 15m) lý giải hiệu năng vượt trội của Persistence ở h=1.",
             )
             _render_image_card(
@@ -507,7 +509,7 @@ def page_thesis_figures(results):
             )
 
         elif "4.1.3" in eda_sel:
-            st.markdown("#### §4.1.3: Phân Phối Đuôi Dài & Đỉnh Ô Nhiễm Dị Thường")
+            st.markdown("#### 4.1.3: Phân Phối Đuôi Dài & Đỉnh Ô Nhiễm Dị Thường")
             c1, c2 = st.columns(2)
             with c1:
                 _render_image_card(
@@ -523,7 +525,7 @@ def page_thesis_figures(results):
                 )
 
         elif "4.1.4" in eda_sel:
-            st.markdown("#### §4.1.4: Tương Quan Động Trượt (Concept Drift) & Bản Đồ Mật Độ Hexbin")
+            st.markdown("#### 4.1.4: Tương Quan Động Trượt (Concept Drift) & Bản Đồ Mật Độ Hexbin")
             _render_image_card(
                 "Hinh_4.4a_EDA_Rolling_Correlation.png",
                 "Hình 4.4a: Tương quan động trượt giữa PM2.5 và các biến khí tượng (Concept Drift)",
@@ -535,7 +537,7 @@ def page_thesis_figures(results):
             )
 
         elif "4.1.5" in eda_sel:
-            st.markdown("#### §4.1.5: Mã Vạch Dữ Liệu Khuyết & Giới Hạn Phục Hồi")
+            st.markdown("#### 4.1.5: Mã Vạch Dữ Liệu Khuyết & Giới Hạn Phục Hồi")
             _render_image_card(
                 "Hinh_4.5a_EDA_Missing_Data_Barcode.png",
                 "Hình 4.5a: Mã vạch phân bố khoảng trống mất mát dữ liệu (Missing Data Barcode)",
@@ -547,12 +549,12 @@ def page_thesis_figures(results):
                 "Xác lập ngưỡng an toàn cho nội suy: gap ≤ 24h (Linear/Time) và gap ≤ 72h (KNN k=5).",
             )
 
-    # ── Tab 3: Chương 4 §4.5 Chẩn Đoán Thặng Dư ──
+    # ── Tab 3: Chẩn Đoán Phần Dư (Residual Diagnostics) ──
     with tab_diag:
-        section_header("🔬", "Chẩn Đoán Thặng Dư & Kiểm Định Thống Kê (Chương 4 §4.5)")
+        section_header("🔬", "Chẩn Đoán Phần Dư & Kiểm Định Thống Kê (Residual Diagnostics)")
         diag_sel = st.radio(
             "Chọn mốc thời gian chẩn đoán:",
-            ["1 giờ (h=1)", "6 giờ (h=6)", "24 giờ (h=24)", "Tất cả 7 biểu đồ thặng dư"],
+            ["1 giờ (h=1)", "6 giờ (h=6)", "24 giờ (h=24)", "Tất cả 7 biểu đồ phần dư"],
             horizontal=True,
             key="thesis_diag_sel",
         )
@@ -560,26 +562,26 @@ def page_thesis_figures(results):
         if diag_sel == "1 giờ (h=1)":
             c1, c2 = st.columns(2)
             with c1:
-                _render_image_card("Hinh_4.6a_Diagnostics_GRU_1h.png", "Hình 4.6a: Phân tích thặng dư GRU tại 1h")
+                _render_image_card("Hinh_4.6a_Diagnostics_GRU_1h.png", "Hình 4.6a: Phân tích phần dư GRU tại 1h")
             with c2:
                 _render_image_card(
-                    "Hinh_4.6b_Diagnostics_LightGBM_1h.png", "Hình 4.6b: Phân tích thặng dư LightGBM tại 1h"
+                    "Hinh_4.6b_Diagnostics_LightGBM_1h.png", "Hình 4.6b: Phân tích phần dư LightGBM tại 1h"
                 )
 
         elif diag_sel == "6 giờ (h=6)":
-            _render_image_card("Hinh_4.6c_Diagnostics_GRU_6h.png", "Hình 4.6c: Phân tích thặng dư GRU tại 6h")
-            _render_image_card("Hinh_4.6d_Diagnostics_LightGBM_6h.png", "Hình 4.6d: Phân tích thặng dư LightGBM tại 6h")
+            _render_image_card("Hinh_4.6c_Diagnostics_GRU_6h.png", "Hình 4.6c: Phân tích phần dư GRU tại 6h")
+            _render_image_card("Hinh_4.6d_Diagnostics_LightGBM_6h.png", "Hình 4.6d: Phân tích phần dư LightGBM tại 6h")
             _render_image_card(
-                "Hinh_4.6e_Diagnostics_Persistence_6h.png", "Hình 4.6e: Phân tích thặng dư Persistence tại 6h"
+                "Hinh_4.6e_Diagnostics_Persistence_6h.png", "Hình 4.6e: Phân tích phần dư Persistence tại 6h"
             )
 
         elif diag_sel == "24 giờ (h=24)":
             c1, c2 = st.columns(2)
             with c1:
-                _render_image_card("Hinh_4.6f_Diagnostics_GRU_24h.png", "Hình 4.6f: Phân tích thặng dư GRU tại 24h")
+                _render_image_card("Hinh_4.6f_Diagnostics_GRU_24h.png", "Hình 4.6f: Phân tích phần dư GRU tại 24h")
             with c2:
                 _render_image_card(
-                    "Hinh_4.6g_Diagnostics_LightGBM_24h.png", "Hình 4.6g: Phân tích thặng dư LightGBM tại 24h"
+                    "Hinh_4.6g_Diagnostics_LightGBM_24h.png", "Hình 4.6g: Phân tích phần dư LightGBM tại 24h"
                 )
 
         else:
@@ -624,9 +626,9 @@ def page_thesis_figures(results):
                             )
                 st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
-    # ── Tab 4: Chương 4 §4.6 XAI & Tipping Point ──
+    # ── Tab 4: XAI & Tipping Point ──
     with tab_xai:
-        section_header("🧠", "Khả Năng Giải Thích Mô Hình — XAI & Tipping Point (Chương 4 §4.6)")
+        section_header("🧠", "Khả Năng Giải Thích Mô Hình — XAI & Tipping Point")
 
         st.markdown("#### 1. Tầm Quan Trọng Đặc Trưng SHAP Bar Plot (Hình 4.7a-c)")
         c1, c2, c3 = st.columns(3)
@@ -713,9 +715,9 @@ def page_thesis_figures(results):
         )
         st.dataframe(cross_df, use_container_width=True, hide_index=True)
 
-    # ── Tab 5: Chương 4 §4.7 Khoảng Dự Báo & §4.10 Ablation ──
+    # ── Tab 5: Khoảng Dự Báo & Ablation ──
     with tab_pi_abl:
-        section_header("📈", "Khoảng Dự Báo Bất Định & Thực Nghiệm Bóc Tách (Chương 4 §4.7 & §4.10)")
+        section_header("📈", "Khoảng Dự Báo Bất Định & Thực Nghiệm Bóc Tách (UQ & Ablation Study)")
 
         st.markdown("#### 1. Chuỗi Thời Gian Khoảng Dự Báo Conformal Prediction (Hình 4.11a-c)")
         _render_image_card("Hinh_4.11a_PI_Conformal_LightGBM_1h.png", "Hình 4.11a: Conformal Prediction (LightGBM 1h)")
@@ -729,7 +731,7 @@ def page_thesis_figures(results):
         _render_image_card(
             "Hinh_4.12_Ablation_Outlier_Impact.png",
             "Hình 4.12: Đánh giá mức độ ảnh hưởng của loại bỏ ngoại lai đến hiệu năng mô hình (Ablation Study)",
-            "Loại bỏ ngoại lai bằng IQR mù quáng (v10) tạo ra ảo giác giảm sai số tại h=1 nhưng làm mất đỉnh ô nhiễm thực tế.",
+            "Loại bỏ ngoại lai bằng quy tắc IQR tĩnh (v10) tạo ra sai lệch giảm sai số giả tạo (artificial MAE reduction) tại h=1 nhưng làm mất đỉnh ô nhiễm thực tế.",
         )
 
         if sens_data:
@@ -776,9 +778,9 @@ def page_thesis_figures(results):
                     ]
                     st.dataframe(pd.DataFrame(rows_aci), use_container_width=True, hide_index=True)
 
-    # ── Tab 6: Phụ Lục Đề Án ──
+    # ── Tab 6: Phụ Lục Thực Nghiệm Mở Rộng ──
     with tab_appx:
-        section_header("📑", "Phụ Lục Đề Án (Phụ Lục 3)")
+        section_header("📑", "Phụ Lục Thực Nghiệm Mở Rộng (Extended Appendix)")
 
         # Hình PL.1
         st.markdown("#### Hình PL.1: Tốc độ suy giảm chỉ số MASE qua các mốc thời gian dự báo")
@@ -834,15 +836,15 @@ def page_thesis_figures(results):
     col_filter, col_search = st.columns([1, 2])
     with col_filter:
         chap_filter = st.selectbox(
-            "Lọc theo chương:",
+            "Lọc theo nhóm chuyên đề:",
             [
                 "Tất cả (38 hình)",
-                "Chương 1 & 3",
-                "Chương 4 §4.1 (EDA)",
-                "Chương 4 §4.5 (Thặng dư)",
-                "Chương 4 §4.6 (XAI)",
-                "Chương 4 §4.7-4.10",
-                "Phụ Lục",
+                "Kiến trúc & Quy trình (Hình 1.1, 3.1)",
+                "Khám phá dữ liệu EDA (Hình 4.1–4.5)",
+                "Chẩn đoán phần dư (Hình 4.6)",
+                "Giải thích mô hình XAI (Hình 4.7–4.10)",
+                "Khoảng dự báo & Ablation (Hình 4.11–4.12)",
+                "Phụ lục mở rộng (Hình PL.1–PL.3)",
             ],
             key="gallery_chap_filter",
         )
@@ -859,9 +861,9 @@ def page_thesis_figures(results):
             return False
         if chap_filter == "Tất cả (38 hình)":
             return True
-        if chap_filter == "Chương 1 & 3":
+        if chap_filter == "Kiến trúc & Quy trình (Hình 1.1, 3.1)":
             return "hinh_1." in fn_lower or "hinh_3." in fn_lower
-        if chap_filter == "Chương 4 §4.1 (EDA)":
+        if chap_filter == "Khám phá dữ liệu EDA (Hình 4.1–4.5)":
             return any(
                 k in fn_lower
                 for k in [
@@ -876,13 +878,13 @@ def page_thesis_figures(results):
                     "hinh_4.5",
                 ]
             )
-        if chap_filter == "Chương 4 §4.5 (Thặng dư)":
+        if chap_filter == "Chẩn đoán phần dư (Hình 4.6)":
             return "hinh_4.6" in fn_lower
-        if chap_filter == "Chương 4 §4.6 (XAI)":
+        if chap_filter == "Giải thích mô hình XAI (Hình 4.7–4.10)":
             return any(k in fn_lower for k in ["hinh_4.7", "hinh_4.8", "hinh_4.9", "hinh_4.10"])
-        if chap_filter == "Chương 4 §4.7-4.10":
+        if chap_filter == "Khoảng dự báo & Ablation (Hình 4.11–4.12)":
             return "hinh_4.11" in fn_lower or "hinh_4.12" in fn_lower
-        if chap_filter == "Phụ Lục":
+        if chap_filter == "Phụ lục mở rộng (Hình PL.1–PL.3)":
             return "hinh_pl" in fn_lower
         return True
 
@@ -907,9 +909,9 @@ def page_thesis_figures(results):
 
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); border-radius: 10px;
-                padding: 1rem; border-left: 3px solid #00D4AA; margin-bottom: 1rem;
-                font-size: 0.9rem; opacity: 0.85;">
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary); border-radius: 10px;
+                padding: 1rem; border: 1px solid var(--ds-border); border-left: 3px solid var(--ds-accent); margin-bottom: 1rem;
+                font-size: 0.9rem;">
         Tải toàn bộ 38 hình ảnh kỹ thuật chuẩn hóa của hệ thống (300 DPI, bảo toàn tỷ lệ khung hình, định dạng PNG)
         kèm file danh mục <b>README_PICS_MAP.md</b> đóng gói trong 1 file ZIP duy nhất — sẵn sàng phục vụ báo cáo kỹ thuật và tài liệu hệ thống.
     </div>
@@ -933,7 +935,7 @@ def page_thesis_figures(results):
             st.download_button(
                 label=f"⬇️ Download ZIP ({len(pics_files)} hình 300 DPI)",
                 data=zip_buffer.getvalue(),
-                file_name="luan_van_figures_38_official.zip",
+                file_name="pm25_technical_figures_38.zip",
                 mime="application/zip",
                 key="download_official_38_zip",
             )

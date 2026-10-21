@@ -99,13 +99,6 @@ class ReportingEngine:
         if not h_data:
             return {"model": "N/A", "mae": 0.0, "mase": 0.0, "type": "?", "improvement_pct": 0.0}
 
-        # Find Persistence model MASE for improvement calculation
-        persist_mase = 1.0
-        for model_name, metrics in h_data.items():
-            if "Persistence" in model_name:
-                persist_mase = metrics.get("mase", 1.0)
-                break
-
         # Find best non-baseline model by MASE
         best = None
         for model_name, metrics in h_data.items():
@@ -123,8 +116,30 @@ class ReportingEngine:
         if best is None:
             return {"model": "N/A", "mae": 0.0, "mase": 0.0, "type": "?", "improvement_pct": 0.0, "persist_mase": 1.0}
 
-        # Calculate improvement vs Baseline
-        if best["mase"] != float("inf"):
+        # Match Persistence model of the same resolution (15m / 30m / 1h) so denominator cancels cleanly
+        persist_mase = 1.0
+        best_name = best["model"]
+        target_persist_keys = ["Persistence_1h", "Persistence"]
+        if "15m" in best_name:
+            target_persist_keys = ["Persistence_15m", "Persistence_1h", "Persistence"]
+        elif "30m" in best_name:
+            target_persist_keys = ["Persistence_30m", "Persistence_1h", "Persistence"]
+
+        found_persist = False
+        for pk in target_persist_keys:
+            if pk in h_data and h_data[pk].get("mase") is not None:
+                persist_mase = float(h_data[pk]["mase"])
+                found_persist = True
+                break
+
+        if not found_persist:
+            for model_name, metrics in h_data.items():
+                if "Persistence" in model_name and metrics.get("mase") is not None:
+                    persist_mase = float(metrics["mase"])
+                    break
+
+        # Calculate improvement vs matched-resolution Persistence baseline
+        if best["mase"] != float("inf") and persist_mase > 0:
             best["improvement_pct"] = ((persist_mase - best["mase"]) / persist_mase) * 100
         else:
             best["improvement_pct"] = 0.0
@@ -182,9 +197,9 @@ class ReportingEngine:
         return df.reset_index(drop=True)
 
     def get_ranking_display(self, top_n: int = 6) -> pd.DataFrame:
-        """Get ranking table formatted for display with ⭐ markers.
+        """Get ranking table formatted for display with [Best] markers.
 
-        Returns DataFrame with string-formatted MASE values and star markers.
+        Returns DataFrame with string-formatted MASE values and best-model markers.
         """
         df = self.get_ranking_table(top_n=top_n)
         if df.empty or "Model" not in df.columns:
@@ -199,12 +214,12 @@ class ReportingEngine:
                 best_idx = non_persist[col].idxmin()
                 best_per_h[h] = df.loc[best_idx, "Model"]
 
-        # Format with stars
+        # Format with best indicator
         for h in HORIZONS:
             col = f"{h}_MASE"
             df[col] = df.apply(
                 lambda row, c=col, horizon=h: (
-                    f"⭐ {row[c]:.3f}"
+                    f"{row[c]:.3f} (Best)"
                     if row["Model"] == best_per_h.get(horizon) and row[c] is not None
                     else (f"{row[c]:.3f}" if row[c] is not None else "—")
                 ),
@@ -468,38 +483,39 @@ class ReportingEngine:
         # Check if any model beats Persistence at 1h
         h1_beats_persistence = b1["mase"] < b1.get("persist_mase", 1.0)
 
-        if h1_beats_persistence:
+        if h1_beats_persistence or b1["mase"] < 1.0:
             h1_text = (
-                f"<b>{b1['model']}</b> phá vỡ Autocorrelation Trap ở 1h: "
-                f"<b>MASE={b1['mase']:.3f}</b> — model duy nhất thắng Persistence! ⭐"
+                f"Tại tầm dự báo 1h: <b>{b1['model']}</b> đạt <b>MASE = {b1['mase']:.3f} &lt; 1,0</b> "
+                f"(MAE = {b1['mae']:.3f} µg/m³), vượt mốc chuẩn Naive trên chuỗi có tự tương quan bậc 1 cao."
             )
         else:
             h1_text = (
-                f"Persistence vẫn thắng trên chuỗi 1h (r≈0,86). <b>{b1['model']}</b> gần nhất với MASE={b1['mase']:.3f}"
+                f"Tại tầm dự báo 1h: <b>Persistence</b> giữ ưu thế nhờ tự tương quan bậc 1 cao (r ≈ 0,86); "
+                f"mô hình học máy gần nhất là <b>{b1['model']}</b> (MASE = {b1['mase']:.3f})."
             )
 
         h6_text = (
-            f"<b>{b6['model']}</b> giảm <b>{abs(b6['improvement_pct']):.1f}%</b> lỗi "
-            f"so với Persistence tại 6h (MASE={b6['mase']:.3f}) ⭐"
+            f"Tại tầm dự báo 6h: <b>{b6['model']}</b> giảm <b>{abs(b6['improvement_pct']):.1f}%</b> sai số "
+            f"so với Persistence cùng độ phân giải (MASE = {b6['mase']:.3f}, MAE = {b6['mae']:.3f} µg/m³)."
         )
 
         h24_text = (
-            f"<b>{b24['model']}</b> giảm <b>{abs(b24['improvement_pct']):.1f}%</b> lỗi "
-            f"tại 24h (MASE={b24['mase']:.3f}) — long-range champion ⭐⭐"
+            f"Tại tầm dự báo 24h: <b>{b24['model']}</b> giảm <b>{abs(b24['improvement_pct']):.1f}%</b> sai số "
+            f"so với Persistence cùng độ phân giải (MASE = {b24['mase']:.3f}, MAE = {b24['mae']:.3f} µg/m³)."
         )
 
         main_insight = (
-            f"{h1_text}<br>"
+            f"• {h1_text}<br>"
             f"• {h6_text}<br>"
             f"• {h24_text}<br><br>"
-            f"Tổng cộng <b>{len(self.models)} mô hình</b> được đánh giá trên 3 horizons "
-            f"với Persistence baseline thống nhất."
+            f"Tổng cộng <b>{len(self.models)} cấu hình mô hình</b> được đánh giá trên 3 tầm dự báo (1h, 6h, 24h) "
+            f"trên tập kiểm thử neo cố định (Anchor Test Set, 100% dữ liệu quan trắc thực)."
         )
 
         # KPI subtitle for sidebar
         kpi_subtitle = (
-            f"6h: {b6['model']} ↓{abs(b6['improvement_pct']):.0f}% | "
-            f"24h: {b24['model']} ↓{abs(b24['improvement_pct']):.0f}%"
+            f"6h: {b6['model']} ↓{abs(b6['improvement_pct']):.1f}% | "
+            f"24h: {b24['model']} ↓{abs(b24['improvement_pct']):.1f}%"
         )
 
         return {

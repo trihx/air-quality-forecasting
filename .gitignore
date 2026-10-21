@@ -137,3 +137,6 @@ CLAUDE.md
 .cursorrules
 .github/prompts
 .github/copilot-instructions.md
+
+# Private skill approval receipts
+/.ai-dev-toolkit/skillsets/

@@ -69,7 +69,7 @@ def page_prediction_intervals(results: dict[str, Any]) -> None:
 
     tab_uq, tab_aci = st.tabs(
         [
-            "📊 Đối chuẩn 3 Phương Pháp UQ (Bảng 4.6 Đề Án)",
+            "📊 Đối chuẩn 3 Phương Pháp UQ (Bảng 4.6)",
             "🔄 Hiệu chuẩn Thích ứng (ACI vs CQR Tĩnh — Concept Drift)",
         ]
     )
@@ -181,11 +181,11 @@ def page_prediction_intervals(results: dict[str, Any]) -> None:
                 st.dataframe(display_pi_df, use_container_width=True, hide_index=True)
 
             insight_card(
-                "💡 Kết Luận Học Thuật (Bảng 4.6 Đề Án)",
-                "<b>1. Thất bại của MC Dropout (14.9% - 19.2%):</b> Mặc dù mạng nơ-ron học sâu biểu diễn tốt giá trị trung bình, MC Dropout đánh giá thấp phương sai thực tế trong dữ liệu chuỗi thời gian do hiện tượng overconfidence của mạng nơ-ron.<br>"
+                "💡 Kết Luận Thực Nghiệm Định Lượng Độ Bất Định (Bảng 4.6)",
+                "<b>1. Hạn chế của MC Dropout (14.9% - 19.2%):</b> Mặc dù mạng nơ-ron học sâu biểu diễn tốt giá trị trung bình, MC Dropout đánh giá thấp phương sai thực tế trong dữ liệu chuỗi thời gian do hiện tượng overconfidence của mạng nơ-ron.<br>"
                 "<b>2. Quantile Regression gốc (79.1% - 86.2%):</b> Đạt độ phủ khá nhưng độ rộng chuẩn hóa (NMPIW lên tới 0.62 ở 24h) và điểm phạt Winkler Score cao (12.35), làm giảm tính thực dụng khi hỗ trợ ra quyết định y tế.<br>"
                 "<b>3. Conformal Prediction tĩnh (CQR, 76.0% - 80.5%):</b> Bị sụt giảm độ phủ dưới hiện tượng trôi dạt khái niệm (concept drift), không đạt mục tiêu 90% khi phân phối tập kiểm thử biến động mạnh.<br>"
-                "<b>4. Adaptive Conformal Inference (ACI, γ=0.01):</b> Duy trì độ phủ lý tưởng <b>89.4% – 89.6%</b> (bám sát mục tiêu 90%) trên tất cả horizons, đồng thời tối ưu hóa độ rộng NMPIW (0.20 – 0.35) và đạt điểm <b>Winkler Score thấp nhất (4.12 – 9.85)</b>, chứng minh tính ưu việt toán học tuyệt đối của phương pháp thích ứng.",
+                "<b>4. Adaptive Conformal Inference (ACI, γ=0.01):</b> Duy trì độ phủ ổn định <b>89.4% – 89.6%</b> (bám sát mục tiêu 90%) trên tất cả horizons, đồng thời tối ưu hóa độ rộng NMPIW (0.20 – 0.35) và đạt điểm <b>Winkler Score thấp nhất (4.12 – 9.85)</b>.",
             )
         else:
             st.info("Chưa có dữ liệu đối chuẩn 3 phương pháp UQ.")
@@ -300,7 +300,7 @@ def page_prediction_intervals(results: dict[str, Any]) -> None:
         else:
             st.info("Chưa có dữ liệu ACI intervals.")
 
-    # ── Đề án Figures 4.11a-c (300 DPI Conformal Prediction Intervals) ──
+    # ── Figures 4.11a-c (300 DPI Conformal Prediction Intervals) ──
     section_header(
         "🎯",
         "Trực Quan Dải Băng Khoảng Dự Báo Conformal Prediction (300 DPI)",

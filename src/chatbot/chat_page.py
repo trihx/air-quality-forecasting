@@ -63,31 +63,31 @@ def _trim_chat_history(messages: list[dict], max_history: int = MAX_CHAT_HISTORY
     return messages
 
 
-# ── Preset questions for thesis defense preparation (5 Groups / Grill-Me Holes First) ──
+# ── Preset questions for deep technical exploration (5 Groups / Technical Invariants First) ──
 PRESET_QUESTIONS = {
-    "🔥 Trọng Điểm Chất Vấn Hội Đồng (Grill-Me Holes)": [
+    "🔥 Thách Thức Dữ Liệu & Bất Biến Kỹ Thuật (Technical Invariants)": [
         "Tại sao dòng 1 bảng Diebold-Mariano mang dấu dương (+13.729) mà các dòng sau lại mang dấu âm (-8.452)?",
-        "Tại sao dũng cảm Drop 19.810 giờ khuyết thiếu thay vì dùng GAN/Deep Learning để bù dữ liệu?",
+        "Tại sao cắt bỏ (drop) 19.810 giờ khuyết thiếu thay vì dùng GAN/Deep Learning để bù dữ liệu?",
         "Tại sao hệ số xác định R² ngoài mẫu (Out-of-Sample) lại nhận giá trị âm?",
-        "Bẫy ngoại lai IQR 3.0 đã xóa nhầm dữ liệu ra sao và tại sao đề án dùng Domain Bounds [0, 500]?",
-        "Bẫy tự tương quan (r=0.86) ở bước 1h là gì và tại sao GRU 15m phá được bẫy này?",
-        "5 hạn chế lớn nhất của đề án là gì và giải pháp kỹ thuật đột phá tương ứng là gì?",
+        "Quy tắc ngoại lai IQR 3.0 đã xóa nhầm dữ liệu ra sao và tại sao hệ thống dùng Domain Bounds [0, 500]?",
+        "Quán tính tự tương quan (r=0.86) ở bước 1h là gì và tại sao GRU 15m vượt qua được ngưỡng này?",
+        "5 hạn chế kỹ thuật của hệ thống là gì và giải pháp nâng cấp tương ứng là gì?",
     ],
     "📋 Phương Pháp Luận & Tính Liêm Chính": [
         "Giải thích quy trình pipeline 7 bước từ dữ liệu thô đến mô hình",
-        "Kỷ luật Anti-Leakage shift(1) đã lật tẩy vụ việc R²=1.000 ảo như thế nào?",
-        "Tại sao dùng MASE mẫu số chuẩn hóa đồng nhất 1.821 µg/m³ thay vì RMSE?",
+        "Quy tắc Anti-Leakage shift(1) đã phát hiện và loại bỏ hiện tượng R²=1.000 phóng đại như thế nào?",
+        "Tại sao dùng MASE chuẩn hóa đồng nhất (mẫu số 7.286 µg/m³ tại 1h) thay vì chỉ dùng RMSE?",
         "Giải thích thiết kế mỏ neo Anchor Split 80:10:10 và nguyên tắc Test on Real Only",
     ],
     "🔬 Kỹ Nghệ Dữ Liệu & Thống Kê": [
         "Chiến lược phục hồi dữ liệu phân tầng: Spline (≤6h) vs KNN (6-24h) hoạt động ra sao?",
         "Kiểm định tính dừng kép (ADF & KPSS) và tính chất phi chuẩn của PM2.5",
         "Kho 119 đặc trưng gồm những nhóm nào và vai trò của Ventilation Index?",
-        "Tại sao độ phân giải 30 phút là 'Điểm ngọt Pareto' (chiếm 10/15 vị trí top-5)?",
+        "Tại sao độ phân giải 30 phút là tần suất lấy mẫu tối ưu (chiếm 10/15 vị trí top-5)?",
     ],
-    "🤖 Kiến Trúc Mô Hình & Điểm Ngọt": [
+    "🤖 Kiến Trúc Mô Hình & Hiệu Năng Dự Báo": [
         "So sánh ưu nhược điểm và cơ chế của GRU 15m vs LightGBM vs TFT Transformer",
-        "Tại sao mô hình Ensemble Weighted thống trị ở tầm xa 6h và 24h?",
+        "Tại sao mô hình Ensemble Weighted đạt sai số thấp nhất ở tầm xa 6h và 24h?",
         "Quy trình tối ưu siêu tham số Hyperparameter Tuning bằng Optuna TPE 50 trials",
         "Đánh giá cảnh báo sớm ô nhiễm: F1-score và độ nhạy Recall tại ngưỡng WHO 45 µg/m³",
     ],
@@ -183,7 +183,7 @@ def _render_provider_config():
             if provider_name == "groq":
                 with st.expander("📋 Model khuyến nghị cho Groq (Tránh 429 TPM)", expanded=False):
                     for m in GROQ_MODEL_RECOMMENDATIONS:
-                        star = " ⭐ (Khuyên dùng)" if m["recommended"] else ""
+                        star = " [Khuyên dùng]" if m["recommended"] else ""
                         st.markdown(f"• **`{m['name']}`**{star}: {m['description']}")
 
             col_save, col_test = st.columns(2)
@@ -293,7 +293,7 @@ def _render_provider_config():
 
         with st.expander("📋 Model khuyến nghị cho Kaggle", expanded=False):
             for m in KAGGLE_MODEL_RECOMMENDATIONS:
-                star = " ⭐" if m["recommended"] else ""
+                star = " [Khuyên dùng]" if m["recommended"] else ""
                 st.markdown(
                     f"**{m['name']}{star}**\n- VRAM: {m['vram']} | {m['vietnamese']}\n- {m['best_for']}",
                 )
@@ -335,7 +335,7 @@ def _render_provider_config():
         # Model recommendations
         with st.expander("📋 Model khuyến nghị", expanded=False):
             for m in LOCAL_MODEL_RECOMMENDATIONS:
-                star = " ⭐" if m["recommended"] else ""
+                star = " [Khuyên dùng]" if m["recommended"] else ""
                 st.markdown(
                     f"**{m['name']}{star}**\n- VRAM: {m['vram']} | {m['vietnamese']}\n- {m['best_for']}",
                 )
@@ -504,7 +504,7 @@ def _render_inline_quick_config(expanded: bool = False):
                 if p_name == "groq":
                     with st.expander("📋 Model khuyến nghị cho Groq (Tránh 429 TPM)", expanded=False):
                         for m in GROQ_MODEL_RECOMMENDATIONS:
-                            star = " ⭐ (Khuyên dùng)" if m["recommended"] else ""
+                            star = " [Khuyên dùng]" if m["recommended"] else ""
                             st.markdown(f"• **`{m['name']}`**{star}: {m['description']}")
 
                 col_o_save, col_o_test = st.columns(2)
@@ -691,8 +691,8 @@ def page_ai_assistant(results):
         """
         <div style="
             display: inline-flex; align-items: center; gap: 0.5rem;
-            background: rgba(0, 212, 170, 0.08); border: 1px solid rgba(0, 212, 170, 0.25);
-            border-radius: 8px; padding: 0.35rem 0.85rem; font-size: 0.85rem; color: #00D4AA;
+            background: rgba(0, 212, 170, 0.08); border: 1px solid var(--ds-border-accent);
+            border-radius: 8px; padding: 0.35rem 0.85rem; font-size: 0.85rem; color: var(--ds-accent);
             margin-bottom: 1rem;
         ">
             <span>🛡️</span>
@@ -753,13 +753,13 @@ def page_ai_assistant(results):
     st.markdown(
         """
         <div style="
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--ds-bg-card);
+            border: 1px solid var(--ds-border);
             border-radius: 10px;
             padding: 0.8rem 1rem 0.2rem 1rem;
             margin-bottom: 0.6rem;
         ">
-            <span style="font-weight: 700; color: #E2E8F0; font-size: 0.95rem;">
+            <span style="font-weight: 700; color: var(--ds-text-primary); font-size: 0.95rem;">
                 🤖 Chọn Trợ Lý AI Sử Dụng (Primary AI Assistant):
             </span>
         </div>
@@ -836,7 +836,7 @@ def page_ai_assistant(results):
             if is_cloud_environment():
                 st.caption(
                     "⚠️ Lưu ý: Trên Cloud Server Render (RAM 512MB), khuyến nghị sử dụng chế độ "
-                    "System Prompt tích hợp (đã chứa sẵn 100% tri thức và số liệu cốt lõi của đề án)."
+                    "System Prompt tích hợp (đã chứa sẵn 100% tri thức và số liệu cốt lõi của hệ thống)."
                 )
         with reindex_col:
             btn_label = "🔄 Tạo Index" if doc_count == 0 else "🔄 Re-index"
@@ -854,7 +854,7 @@ def page_ai_assistant(results):
             if is_cloud_environment():
                 st.caption(
                     "⚠️ Lưu ý: Trên Cloud Server Render (RAM 512MB), khuyến nghị sử dụng chế độ "
-                    "System Prompt tích hợp (đã chứa sẵn 100% tri thức và số liệu cốt lõi của đề án)."
+                    "System Prompt tích hợp (đã chứa sẵn 100% tri thức và số liệu cốt lõi của hệ thống)."
                 )
         logger.warning(f"Knowledge Base initialization notice: {e}")
         kb = None
@@ -870,7 +870,7 @@ def page_ai_assistant(results):
             """
         <div style="font-size: 0.85rem; font-weight: 700;
                     margin-bottom: 0.75rem;">
-            🎯 Ngân Hàng Câu Hỏi Phản Biện
+            🎯 Ngân Hàng Câu Hỏi Kỹ Thuật Chuyên Sâu
         </div>
         """,
             unsafe_allow_html=True,

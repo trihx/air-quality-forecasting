@@ -154,7 +154,7 @@ class ChatGuardrails:
         r"rò rỉ",
         r"anti-leakage",
         r"chu kỳ mùa",
-        # Đề án & Nghiên cứu & Phản biện Hội đồng
+        # Lĩnh vực nghiên cứu, công trình & kiểm định hệ thống
         r"luận văn",
         r"đề án",
         r"đồ án",

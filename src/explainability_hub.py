@@ -30,7 +30,12 @@ from src.viz.chart_factory import (
 from src.viz.chart_factory import (
     render_chart as _render_chart,
 )
-from src.viz.theme import PALETTE_CATEGORICAL, PALETTE_SEMANTIC, get_plotly_annotation_style
+from src.viz.theme import (
+    PALETTE_CATEGORICAL,
+    PALETTE_SEMANTIC,
+    detect_streamlit_mode,
+    get_plotly_annotation_style,
+)
 
 # ── Config ──
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -256,11 +261,11 @@ def _generate_shapash_html(shap_data: dict, horizon: str) -> str:
   h1 {{ font-size: 1.8rem; color: #00D4AA; margin-bottom: 0.3rem; }}
   h2 {{ font-size: 1.3rem; color: #4ECDC4; margin: 2rem 0 0.8rem; border-bottom: 1px solid rgba(0,212,170,0.2); padding-bottom: 0.5rem; }}
   .meta {{ color: #71717A; font-size: 0.85rem; margin-bottom: 1.5rem; }}
-  .card {{ background: #0B1120; border-radius: 12px; padding: 1.2rem; margin: 0.5rem 0; border: 1px solid rgba(0,212,170,0.25); color: #CBD5E1; }}
+  .card {{ background: rgba(15,23,42,0.85); border-radius: 12px; padding: 1.2rem; margin: 0.5rem 0; border: 1px solid rgba(0,212,170,0.25); color: #CBD5E1; }}
   .card h3 {{ color: #FFE66D; font-size: 1rem; margin-bottom: 0.5rem; }}
   .card p {{ color: #CBD5E1; opacity: 1; font-size: 0.85rem; line-height: 1.6; }}
   .stats-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }}
-  .stat {{ background: #0B1120; border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid rgba(0,212,170,0.25); color: #CBD5E1; }}
+  .stat {{ background: rgba(15,23,42,0.85); border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid rgba(0,212,170,0.25); color: #CBD5E1; }}
   .stat .label {{ font-size: 0.75rem; color: #71717A; text-transform: uppercase; letter-spacing: 0.05em; }}
   .stat .value {{ font-size: 1.4rem; font-weight: 700; color: #00D4AA; font-family: 'JetBrains Mono', monospace; margin: 0.3rem 0; }}
   .stat .detail {{ font-size: 0.7rem; color: var(--text-color); opacity: 0.5; }}
@@ -391,7 +396,7 @@ def _tab_pipeline_journey():
         "Bước 7: Huấn luyện mô hình 30m",
         "Bước 7: Huấn luyện mô hình 1h",
         "Đánh giá tổng thể MASE, MAE, RMSE",
-        "Mô hình vô địch toàn diện",
+        "Mô hình tối ưu thực nghiệm (Champion Model)",
     ]
 
     # Cột màu sắc tương ứng
@@ -444,7 +449,7 @@ def _tab_pipeline_journey():
 
     # 2 -> 3
     add_link(1, 2, rows_15m, "Resample 15m", "rgba(255,107,107,0.20)")
-    add_link(1, 3, rows_30m, "Resample 30m ⭐", "rgba(255,230,109,0.30)")
+    add_link(1, 3, rows_30m, "Resample 30m (Optimal)", "rgba(255,230,109,0.30)")
     add_link(1, 4, rows_1h, "Resample 1h", "rgba(96,165,250,0.20)")
 
     # Parallel paths for 15m, 30m, 1h
@@ -487,6 +492,7 @@ def _tab_pipeline_journey():
         )
     )
 
+    sankey_text_color = "#F8FAFC" if detect_streamlit_mode() == "dark" else "#0F172A"
     fig.update_layout(
         title={
             "text": "Pipeline Data Flow — 7-Step Workflow",
@@ -494,11 +500,11 @@ def _tab_pipeline_journey():
             "pad": {"b": 20},
         },
     )
-    fig.update_traces(textfont={"size": 11, "color": "#FAFAFA"})
+    fig.update_traces(textfont={"size": 11, "color": sankey_text_color})
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font={"family": "Inter, Arial, sans-serif", "size": 10},
+        font={"family": "Inter, Arial, sans-serif", "size": 10, "color": sankey_text_color},
         margin={"l": 60, "r": 30, "t": 60, "b": 80},
         height=650,
     )
@@ -512,7 +518,7 @@ def _tab_pipeline_journey():
         showarrow=False,
         align="left",
         xanchor="left",
-        font={"family": "Inter, Arial, sans-serif", "size": 11, "color": "#FAFAFA"},
+        font={"family": "Inter, Arial, sans-serif", "size": 11, "color": sankey_text_color},
     )
     fig.add_annotation(
         x=0.985,
@@ -523,7 +529,7 @@ def _tab_pipeline_journey():
         showarrow=False,
         align="right",
         xanchor="right",
-        font={"family": "Inter, Arial, sans-serif", "size": 11, "color": "#FAFAFA"},
+        font={"family": "Inter, Arial, sans-serif", "size": 11, "color": sankey_text_color},
     )
     _render_chart(fig, filename="pipeline_sankey")
 
@@ -541,30 +547,33 @@ def _tab_pipeline_journey():
         """
     <style>
         .pipeline-card {
-            text-align: center; padding: 1.2rem 0.5rem;
-            background: #0B1120 !important;
-            border-radius: 10px; border: 1px solid rgba(0,212,170,0.25);
-            border-top: 3px solid rgba(0,212,170,0.8);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            text-align: center; padding: 1.1rem 0.65rem;
+            background: var(--ds-bg-card) !important;
+            border-radius: 10px; border: 1px solid rgba(0,212,170,0.28);
+            border-top: 3px solid rgba(0,212,170,0.85);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            min-height: 140px; height: 100%;
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-sizing: border-box;
         }
         .pipeline-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,212,170,0.25);
+            box-shadow: 0 6px 20px rgba(0,212,170,0.2);
         }
         .pipeline-card .pc-label {
             font-size: 0.78rem; color: #00D4AA !important;
             font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-            padding-bottom: 0.3rem; border-bottom: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 0.5rem;
+            padding-bottom: 0.35rem; border-bottom: 1px solid var(--ds-border);
+            margin-bottom: 0.4rem;
         }
         .pipeline-card .pc-value {
-            font-size: 1.5rem; font-weight: 800;
-            color: #F8FAFC !important; font-family: 'JetBrains Mono', monospace;
-            text-shadow: 0 0 12px rgba(0,212,170,0.3); margin: 0.3rem 0;
+            font-size: clamp(1.05rem, 1.3vw, 1.35rem); font-weight: 800;
+            color: var(--ds-text-primary) !important; font-family: 'JetBrains Mono', monospace;
+            line-height: 1.25; margin: 0.25rem 0;
         }
         .pipeline-card .pc-detail {
-            font-size: 0.72rem; color: #CBD5E1 !important; opacity: 0.9;
+            font-size: 0.75rem; color: var(--ds-text-secondary) !important;
             margin-top: 0.2rem;
         }
     </style>
@@ -602,16 +611,16 @@ def _tab_pipeline_journey():
             .checkpoint-card {{
                 display: flex; align-items: center; gap: 0.75rem;
                 padding: 0.85rem 1.2rem; margin: 0.4rem 0;
-                background: #0B1120 !important; border-radius: 8px;
-                border-left: 4px solid #00D4AA; border-top: 1px solid rgba(255,255,255,0.08);
-                border-right: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08);
-                box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+                background: var(--ds-bg-card) !important; border-radius: 8px;
+                border-left: 4px solid #00D4AA; border-top: 1px solid var(--ds-border);
+                border-right: 1px solid var(--ds-border); border-bottom: 1px solid var(--ds-border);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             }}
         </style>
         <div class="checkpoint-card">
             <span style="font-size: 0.95rem; font-weight: 700; color: #00D4AA;
                          min-width: 210px;">{check}</span>
-            <span style="font-size: 0.85rem; color: var(--text-color); opacity: 0.85;">{desc}</span>
+            <span style="font-size: 0.85rem; color: var(--ds-text-secondary);">{desc}</span>
         </div>
         """,
             unsafe_allow_html=True,
@@ -631,7 +640,7 @@ def _tab_pipeline_journey():
 
     detail_res = st.radio(
         "Chọn resolution:",
-        ["30m ⭐ (Tối ưu)", "15m", "1h"],
+        ["30m (Tối ưu)", "15m", "1h"],
         horizontal=True,
         key="detail_sankey_res",
     )
@@ -869,6 +878,7 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
         )
     )
 
+    sankey_text_color = "#F8FAFC" if detect_streamlit_mode() == "dark" else "#0F172A"
     res_display = {"15m": "15 phút", "30m": "30 phút", "1h": "1 giờ"}.get(res, res)
     fig.update_layout(
         title={
@@ -877,11 +887,11 @@ def _render_detail_sankey(res: str, pm: dict, best_all: dict):
             "pad": {"b": 15},
         },
     )
-    fig.update_traces(textfont={"size": 10, "color": "#FAFAFA"})
+    fig.update_traces(textfont={"size": 10, "color": sankey_text_color})
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font={"family": "Inter, Arial, sans-serif", "size": 10},
+        font={"family": "Inter, Arial, sans-serif", "size": 10, "color": sankey_text_color},
         margin={"l": 60, "r": 30, "t": 60, "b": 80},
         height=750,
     )
@@ -1046,7 +1056,7 @@ def _tab_feature_explainability():
             bar_fig = THESIS_DIR / f"Hinh_4.7{h_suffix_map.get(h, 'a')}_SHAP_Bar_{h}.png"
             if bar_fig.exists():
                 with st.expander(
-                    f"🖼️ Xem Biểu đồ Chuẩn Đề Án — Hình 4.7{h_suffix_map.get(h, 'a')}: SHAP Bar {h} (300 DPI)",
+                    f"🖼️ Xem Biểu đồ Xuất Bản 300 DPI — Hình 4.7{h_suffix_map.get(h, 'a')}: SHAP Bar {h}",
                     expanded=False,
                 ):
                     st.image(
@@ -1075,14 +1085,14 @@ def _tab_feature_explainability():
                     feat_list = ", ".join(feats[:3]) + ("..." if len(feats) > 3 else "")
                     st.markdown(
                         f"""
-                    <div style="background: rgba(0,212,170,0.06); border-radius: 10px;
+                    <div style="background: var(--ds-bg-teal-soft); border: 1px solid rgba(0,212,170,0.22); border-radius: 10px;
                                 padding: 1rem; text-align: center; min-height: 120px;">
                         <div style="font-size: 1.3rem;">{cat_name.split()[0]}</div>
-                        <div style="font-size: 0.75rem; color: #71717A; margin-top: 0.2rem;">
+                        <div style="font-size: 0.75rem; color: var(--ds-text-muted); margin-top: 0.2rem;">
                             {cat_name.split(maxsplit=1)[1]}</div>
                         <div style="font-size: 1.5rem; font-weight: 700; color: #00D4AA;
                                     margin: 0.3rem 0;">{count}</div>
-                        <div style="font-size: 0.65rem; color: var(--text-color); opacity: 0.5;
+                        <div style="font-size: 0.65rem; color: var(--ds-text-secondary);
                                     overflow: hidden; text-overflow: ellipsis;">
                             {feat_list if feats else "—"}</div>
                     </div>
@@ -1162,7 +1172,7 @@ def _tab_feature_explainability():
 
         horizons_fig = THESIS_DIR / "Hinh_PL.3_SHAP_Horizons.png"
         if horizons_fig.exists():
-            with st.expander("🖼️ Xem Biểu đồ Chuẩn Đề Án — Hình PL.3: SHAP Horizons Dynamics (300 DPI)", expanded=False):
+            with st.expander("🖼️ Xem Biểu đồ Xuất Bản 300 DPI — Hình PL.3: SHAP Horizons Dynamics", expanded=False):
                 st.image(
                     str(horizons_fig),
                     caption="Hình PL.3: So sánh động lực học đặc trưng SHAP chuyển dịch qua 3 horizon dự báo (1h, 6h, 24h)",
@@ -1196,7 +1206,7 @@ def _tab_feature_explainability():
 
                     _render_chart(fig_dep, filename=f"shap_dep_{h3}_{feature_name}")
 
-        # Phân tích Bước Ngoặt Phát Thải (Tipping Point) — Khám phá khoa học Chương 4 §4.6.2
+        # Phân tích Bước Ngoặt Phát Thải (Tipping Point)
         st.markdown("---")
         _section_header("🔥", "Khám Phá Điểm Chuyển Pha Phi Tuyến (Tipping Point: 14 – 17 µg/m³ & Chuẩn WHO 15 µg/m³)")
 
@@ -1261,11 +1271,11 @@ def _tab_feature_explainability():
         else:
             st.warning(f"File chưa tồn tại: {perm_path.name}")
 
-        # Bảng đối chứng Top-5 đặc trưng (Bảng 4.5 Đề án)
+        # Bảng đối chứng Top-5 đặc trưng (Bảng 4.5)
         st.markdown("---")
         _section_header("📋", "Đối Chứng Chéo: SHAP (LightGBM) vs Permutation Importance (GRU) — Horizon 6h")
         st.markdown(
-            "*So sánh giữa phương pháp chuyên biệt cho mô hình cây (Tree SHAP) và phương pháp model-agnostic trên mạng nơ-ron (Permutation Importance, Bảng 4.5 Đề án):*"
+            "*So sánh giữa phương pháp chuyên biệt cho mô hình cây (Tree SHAP) và phương pháp model-agnostic trên mạng nơ-ron (Permutation Importance, Bảng 4.5):*"
         )
         cross_val_df = pd.DataFrame(
             [
@@ -1314,17 +1324,17 @@ def _tab_feature_explainability():
             "hoàn toàn không phụ thuộc vào cấu trúc riêng của từng thuật toán (Tree vs Neural Network).",
         )
 
-        # ── Tổng Kết Mục 4.6: Ba Kết Luận Thực Nghiệm Trả Lời CH4 ──
+        # ── Tổng Kết Thực Nghiệm XAI ──
         st.markdown("---")
-        _section_header("🎯", "Tổng Kết Thực Nghiệm — Lời Giải Đáp Cho Câu Hỏi Nghiên Cứu CH4")
+        _section_header("🎯", "Tổng Kết Thực Nghiệm — Ba Kết Luận Cốt Lõi Từ Phân Tích XAI")
         st.markdown(
             """
-        <div style="background: rgba(0,212,170,0.05); border: 1px solid rgba(0,212,170,0.25);
+        <div style="background: var(--ds-bg-teal-soft); border: 1px solid rgba(0,212,170,0.25);
                     border-radius: 12px; padding: 1.25rem 1.5rem; margin: 1rem 0;">
             <div style="font-weight: 700; font-size: 1.05rem; color: #00D4AA; margin-bottom: 0.6rem;">
-                📌 3 Kết Luận Cốt Lõi Từ Phân Tích XAI (Chương 4 §4.6 Đề Án):
+                📌 3 Kết Luận Cốt Lõi Từ Phân Tích XAI (Explainable AI):
             </div>
-            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--text-color);">
+            <div style="font-size: 0.9rem; line-height: 1.6; color: var(--ds-text-primary);">
                 <b>1. Sự chuyển dịch cơ chế dự báo theo thời gian:</b> Mô hình dịch chuyển có quy luật từ việc dựa vào quán tính tức thời ở mốc 1h (r ≈ 0,86) sang nhận diện xu thế tích lũy nền ở mốc 6h (pm25_roll_24s_mean), và kết hợp biến tương tác vi khí tượng (pm25_x_humidity) cùng độ biến động tuần (pm25_roll_168s_std) ở mốc 24h.<br><br>
                 <b>2. Xác lập ngưỡng chuyển pha ô nhiễm cục bộ:</b> Xác định chính xác điểm chuyển pha phi tuyến trong khoảng <b>14–17 µg/m³</b>, vùng bùng phát mạnh xuất hiện khi nồng độ nền vượt 17 µg/m³ (cao hơn 13–20% so với chuẩn WHO 15 µg/m³), phản ánh ảnh hưởng rõ nét của độ ẩm cao và vận tốc gió yếu tại ĐBSCL.<br><br>
                 <b>3. Tính vững chắc liên kiến trúc:</b> Sự tương đồng về thứ hạng nhóm biến giữa Tree SHAP (LightGBM) và Permutation Importance (GRU) khẳng định các quy luật mang tính quy luật vật lý khách quan, loại trừ thiên kiến thuật toán.
@@ -1340,7 +1350,7 @@ def _tab_feature_explainability():
         _insight_card(
             "📋 Tính năng Export",
             "Tạo file HTML standalone chứa toàn bộ SHAP analysis cho LightGBM — "
-            "có thể mở offline, đính kèm đề án, hoặc chia sẻ với ban giám khảo. "
+            "có thể mở độc lập (offline), lưu trữ hồ sơ kỹ thuật, hoặc chia sẻ báo cáo chuyên môn. "
             "Report bao gồm: Feature Importance, Heatmap, Data Statistics.",
         )
 
@@ -1389,18 +1399,18 @@ def _tab_model_selection(results: dict):
     # Data verified: standardized_metrics.json (v7_retrain, unified baseline)
     # v9 MASE is dynamic from source-of-truth
     best_6h = _get_best_mase("6h")
-    v9_mase_label = f"30m best! MASE={best_6h.get('mase', 0.382):.3f} ⭐"
+    v9_mase_label = f"30m tối ưu! MASE={best_6h.get('mase', 0.382):.3f}"
 
     phases = [
         ("v1", "Persistence + ARIMA", "Baseline. MASE=1.0", "#FF6B6B"),
-        ("v2", "LightGBM + FE v2", "ML enters. MASE 6h=0.791", "#FFE66D"),
+        ("v2", "LightGBM + FE v2", "ML enters. MASE 6h=0.791", "#F59E0B"),
         ("v3", "RF, GB, Stacking", "Ensemble diversification", "#FB923C"),
         ("v4", "GRU/LSTM", "DL enters. GRU 6h: 0.769", "#A78BFA"),
-        ("v5", "Ensemble Methods", "Stack 6h: 0.745 ⭐", "#00D4AA"),
+        ("v5", "Ensemble Methods", "Stack 6h: 0.745", "#00D4AA"),
         ("v6", "PCA, Top-N, TFT", "TFT 1h: 0.987", "#4ECDC4"),
         ("v7", "CQR + Unified MASE", "Standardized. Docker", "#60A5FA"),
         ("v8", "Conformal Prediction", "CQR Intervals", "#F472B6"),
-        ("v9", "Multi-Res + Ensemble", v9_mase_label, "#FFE66D"),
+        ("v9", "Multi-Res + Ensemble", v9_mase_label, "#F59E0B"),
     ]
 
     # Timeline as a horizontal flow
@@ -1412,11 +1422,12 @@ def _tab_model_selection(results: dict):
             <style>
                 .timeline-step {{
                     text-align: center; padding: 1rem 0.5rem;
-                    background: #0B1120 !important;
-                    border-radius: 12px; height: 100%;
+                    background: var(--ds-bg-card) !important;
+                    border-radius: 12px; min-height: 145px; height: 100%;
                     border: 1px solid rgba(0, 212, 170, 0.25);
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
                     transition: transform 0.2s ease;
+                    box-sizing: border-box;
                 }}
                 .timeline-step:hover {{
                     transform: translateY(-2px);
@@ -1427,9 +1438,9 @@ def _tab_model_selection(results: dict):
                             border-radius: 50%; width: 36px; height: 36px;
                             display: flex; align-items: center; justify-content: center;
                             margin: 0 auto; font-size: 0.65rem;">{ver}</div>
-                <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-color);
+                <div style="font-size: 0.78rem; font-weight: 700; color: var(--ds-text-primary);
                             margin-top: 0.8rem; line-height: 1.3;">{name}</div>
-                <div style="font-size: 0.68rem; color: var(--text-color); opacity: 0.75;
+                <div style="font-size: 0.68rem; color: var(--ds-text-secondary);
                             margin-top: 0.4rem; line-height: 1.3;">{note}</div>
             </div>
             """,
@@ -1449,15 +1460,15 @@ def _tab_model_selection(results: dict):
 
     # Key models to compare
     model_meta = {
-        "Persistence": {"complexity": "Trivial", "interp": "⭐⭐⭐⭐⭐", "type": "Baseline"},
-        "ARIMA": {"complexity": "Low", "interp": "⭐⭐⭐⭐", "type": "Statistical"},
-        "SARIMA": {"complexity": "Low", "interp": "⭐⭐⭐⭐", "type": "Statistical"},
-        "LightGBM_tuned": {"complexity": "Medium", "interp": "⭐⭐⭐", "type": "ML"},
-        "GRU": {"complexity": "High", "interp": "⭐⭐", "type": "DL"},
-        "LSTM": {"complexity": "High", "interp": "⭐⭐", "type": "DL"},
-        "TFT": {"complexity": "High", "interp": "⭐⭐⭐", "type": "DL"},
-        "Ensemble_GRU": {"complexity": "High", "interp": "⭐⭐", "type": "Ensemble"},
-        "Ensemble_Stack": {"complexity": "High", "interp": "⭐⭐", "type": "Ensemble"},
+        "Persistence": {"complexity": "Trivial", "interp": "5/5 (Cao nhất)", "type": "Baseline"},
+        "ARIMA": {"complexity": "Low", "interp": "4/5 (Cao)", "type": "Statistical"},
+        "SARIMA": {"complexity": "Low", "interp": "4/5 (Cao)", "type": "Statistical"},
+        "LightGBM_tuned": {"complexity": "Medium", "interp": "3/5 (Tree SHAP)", "type": "ML"},
+        "GRU": {"complexity": "High", "interp": "2/5 (Permutation)", "type": "DL"},
+        "LSTM": {"complexity": "High", "interp": "2/5 (Permutation)", "type": "DL"},
+        "TFT": {"complexity": "High", "interp": "3/5 (Attention/VSN)", "type": "DL"},
+        "Ensemble_GRU": {"complexity": "High", "interp": "2/5 (Blending)", "type": "Ensemble"},
+        "Ensemble_Stack": {"complexity": "High", "interp": "2/5 (Stacking)", "type": "Ensemble"},
     }
 
     rows = []
@@ -1514,39 +1525,41 @@ def _tab_model_selection(results: dict):
             "1h",
             b1_model,
             f"{b1_mase:.3f}",
-            f"{b1_model} — MASE < 1.0 tại horizon 1h! ⭐" if b1_mase < 1.0 else f"{b1_model} — MASE={b1_mase:.3f}",
+            f"{b1_model} — MASE < 1.0 tại horizon 1h" if b1_mase < 1.0 else f"{b1_model} — MASE={b1_mase:.3f}",
         ),
-        ("6h", b6_model, f"{b6_mase:.3f}", f"Giảm {b6_improvement:.1f}% lỗi vs Persistence ⭐⭐"),
-        ("24h", b24_model, f"{b24_mase:.3f}", "Long-range champion — 30m là resolution tối ưu ⭐"),
+        ("6h", b6_model, f"{b6_mase:.3f}", f"Giảm {b6_improvement:.1f}% sai số trên thang MASE_unified"),
+        ("24h", b24_model, f"{b24_mase:.3f}", "Mô hình tối ưu tầm xa (24h) — độ phân giải 30m"),
     ]
 
     cols = st.columns(3)
     for col, (h, model, mase, reason) in zip(cols, winners, strict=False):
         with col:
-            border = "#FFE66D"
+            border = "#F59E0B"
             st.markdown(
                 f"""
             <style>
                 .best-model-card {{
-                    background: #0B1120 !important;
+                    background: var(--ds-bg-card) !important;
                     border: 2px solid {border}; border-radius: 14px;
-                    padding: 1.5rem; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+                    padding: 1.5rem; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.08);
                     transition: transform 0.2s ease, box-shadow 0.2s ease;
+                    min-height: 215px; display: flex; flex-direction: column; justify-content: space-between;
+                    box-sizing: border-box;
                 }}
                 .best-model-card:hover {{
                     transform: translateY(-3px);
-                    box-shadow: 0 8px 24px rgba(255,230,109,0.15);
+                    box-shadow: 0 8px 24px rgba(245,158,11,0.18);
                 }}
             </style>
             <div class="best-model-card">
                 <div style="font-size: 1.8rem; font-weight: 800; color: #00D4AA;">h={h}</div>
-                <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-color);
-                            margin: 0.6rem 0;">{model}</div>
-                <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem;
-                            font-weight: 800; color: #FFE66D; text-shadow: 0 0 10px rgba(255,230,109,0.2);">
+                <div style="font-size: 1.05rem; font-weight: 700; color: var(--ds-text-primary);
+                            margin: 0.5rem 0; word-break: break-word;">{model}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.45rem;
+                            font-weight: 800; color: #F59E0B;">
                     MASE = {mase}</div>
-                <div style="font-size: 0.78rem; color: var(--text-color); opacity: 0.8;
-                            margin-top: 0.8rem; line-height: 1.4;">{reason}</div>
+                <div style="font-size: 0.78rem; color: var(--ds-text-secondary);
+                            margin-top: 0.6rem; line-height: 1.4;">{reason}</div>
             </div>
             """,
                 unsafe_allow_html=True,
@@ -1557,9 +1570,9 @@ def _tab_model_selection(results: dict):
     _insight_card(
         "🔑 Kết Luận Quan Trọng (v9)",
         f"Tại horizon 1h, chuỗi dữ liệu giờ có tự tương quan cao (r ≈ 0,86 ở 1h và r ≈ 0,97 ở 15m) khiến Persistence baseline rất mạnh. "
-        f"Tuy nhiên, <b>{b1_model} đã phá vỡ autocorrelation trap</b> với MASE={b1_mase:.3f} (< 1,0). "
+        f"Tuy nhiên, <b>{b1_model} đã vượt ngưỡng tự tương quan bậc 1</b> với MASE={b1_mase:.3f} (< 1,0). "
         f"Ở horizons dài (6h, 24h), <b>{b6_model} chiếm ưu thế vượt trội</b> — "
-        f"MASE={b6_mase:.3f} ở 6h (giảm {b6_improvement:.1f}% lỗi) và MASE={b24_mase:.3f} ở 24h. "
+        f"MASE_unified={b6_mase:.3f} ở 6h (MASE_30m = 0,504) và MASE_unified={b24_mase:.3f} ở 24h (MASE_30m = 0,476). "
         "Kết luận: <b>Độ phân giải 30m là điểm cân bằng tối ưu</b> cho dự báo PM2.5.",
         card_type="warning",
     )
@@ -1578,8 +1591,8 @@ def _tab_anti_leakage():
     _insight_card(
         "⚠️ Tại sao Leakage Audit quan trọng?",
         'Data leakage = model "nhìn" thông tin tương lai khi training. '
-        "Hậu quả: MASE/MAE <b>rất đẹp nhưng giả</b> — model sẽ fail hoàn toàn khi deploy. "
-        "Dự án này đã phát hiện và sửa <b>4 nguồn leakage</b> trong 6 phiên bản.",
+        "Hậu quả: MASE/MAE <b>thấp giả tạo trong mẫu thử</b> — model sẽ suy giảm nghiêm trọng khi vận hành thực tế. "
+        "Dự án này đã phát hiện và sửa <b>4 nguồn leakage</b> trong quá trình phát triển pipeline.",
         card_type="warning",
     )
 
@@ -1611,22 +1624,22 @@ def _tab_anti_leakage():
         <style>
             .leakage-card {{
                 display: flex; gap: 1rem; padding: 1rem 1.2rem; margin: 0.5rem 0;
-                background: #0B1120 !important; border-radius: 10px;
+                background: var(--ds-bg-card) !important; border-radius: 10px;
                 border-left: 4px solid #FF6B6B; border-top: 1px solid rgba(255,107,107,0.2);
-                border-right: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                border-right: 1px solid var(--ds-border); border-bottom: 1px solid var(--ds-border);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             }}
         </style>
         <div class="leakage-card">
             <div style="font-size: 1.5rem; min-width: 30px; display: flex; align-items: center; justify-content: center;">{num}</div>
             <div style="flex: 1;">
-                <div style="font-weight: 700; color: var(--text-color); font-size: 1rem; margin-bottom: 0.3rem;">
+                <div style="font-weight: 700; color: var(--ds-text-primary); font-size: 1rem; margin-bottom: 0.3rem;">
                     {source}</div>
-                <div style="color: #FF8787; font-size: 0.85rem; margin: 0.2rem 0; font-weight: 500;">
+                <div style="color: #EF4444; font-size: 0.85rem; margin: 0.2rem 0; font-weight: 500;">
                     ❌ Vấn đề: {problem}</div>
                 <div style="color: #00D4AA; font-size: 0.85rem; font-weight: 500;">
                     ✅ Fix: {fix}</div>
-                <div style="color: var(--text-color); opacity: 0.7; font-size: 0.75rem; margin-top: 0.4rem;">
+                <div style="color: var(--ds-text-muted); font-size: 0.75rem; margin-top: 0.4rem;">
                     Phát hiện: {version}</div>
             </div>
         </div>
@@ -1665,9 +1678,9 @@ def _tab_anti_leakage():
 
     _insight_card(
         "💡 Key Takeaway",
-        "STL full-data cho MASE=0.507 (quá đẹp!) nhưng ĐÓ LÀ LEAKAGE. "
+        "STL full-data cho MASE=0.507 nhưng chứa rò rỉ dữ liệu tương lai (Data Leakage). "
         "Sau khi fix (STL train-only), MASE=0.736 — gần bằng raw features (0.731). "
-        "Chứng minh: STL decomposition KHÔNG tạo value thực sự, chỉ exploit future info.",
+        "Chứng minh: STL decomposition trên toàn bộ chuỗi gây sai lệch đánh giá ngoài mẫu.",
     )
 
     # ── Test Coverage ──
@@ -1688,12 +1701,12 @@ def _tab_anti_leakage():
 
     st.markdown(
         f"""
-    <div style="background: #0B1120;
+    <div style="background: var(--ds-bg-card);
                 border: 1px solid rgba(0,212,170,0.3); border-radius: 12px;
                 padding: 1.5rem; text-align: center;">
         <div style="font-size: 3rem; font-weight: 800; color: #00D4AA;">{_test_count} / {_test_count}</div>
-        <div style="font-size: 1rem; color: #94A3B8; margin-top: 0.3rem;">Tests Passed</div>
-        <div style="font-size: 0.85rem; color: #CBD5E1; margin-top: 0.5rem;">
+        <div style="font-size: 1rem; color: var(--ds-text-muted); margin-top: 0.3rem;">Tests Passed</div>
+        <div style="font-size: 0.85rem; color: var(--ds-text-secondary); margin-top: 0.5rem;">
             Bao gồm: leakage tests, shuffle tests, metric validation, pipeline integrity</div>
     </div>
     """,
@@ -1733,14 +1746,14 @@ def _tab_scientific_foundation():
             "Chen & Guestrin (2016)",
             "XGBoost: A Scalable Tree Boosting System",
             "Gradient boosting, regularization, feature importance",
-            "#4ECDC4",
+            "#0D9488",
             27,
         ),
         (
             "Ke et al. (2017)",
             "LightGBM: A Highly Efficient GBDT",
             "Histogram-based split, leaf-wise growth",
-            "#FFE66D",
+            "#F59E0B",
             28,
         ),
         (
@@ -1754,21 +1767,21 @@ def _tab_scientific_foundation():
             "Box, Jenkins & Reinsel (2015)",
             "Time Series Analysis (5th ed.)",
             "ARIMA/SARIMA methodology, stationarity testing",
-            "#60A5FA",
+            "#3B82F6",
             35,
         ),
         (
             "Lim et al. (2021)",
             "Temporal Fusion Transformers",
             "Multi-horizon forecasting, variable selection, attention",
-            "#F472B6",
+            "#EC4899",
             30,
         ),
         (
             "Molnar (2022)",
             "Interpretable Machine Learning (2nd ed.)",
             "Permutation importance, SHAP, global vs local explanations",
-            "#FF6B6B",
+            "#EF4444",
             51,
         ),
     ]
@@ -1780,28 +1793,28 @@ def _tab_scientific_foundation():
                 f"""
             <style>
                 .ref-card-{i} {{
-                    background: #0B1120 !important;
+                    background: var(--ds-bg-card) !important;
                     border-left: 4px solid {color};
                     border-radius: 10px; padding: 1.1rem 1.3rem; margin: 0.45rem 0;
-                    border-top: 1px solid rgba(255, 255, 255, 0.08);
-                    border-right: 1px solid rgba(255, 255, 255, 0.08);
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+                    border-top: 1px solid var(--ds-border);
+                    border-right: 1px solid var(--ds-border);
+                    border-bottom: 1px solid var(--ds-border);
+                    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
                     transition: transform 0.2s ease, box-shadow 0.2s ease;
                 }}
                 .ref-card-{i}:hover {{
                     transform: translateY(-2px);
-                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
                 }}
             </style>
             <div class="ref-card-{i}">
-                <div style="font-weight: 700; color: #F8FAFC; font-size: 0.98rem; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-weight: 700; color: var(--ds-text-primary); font-size: 0.98rem; display: flex; justify-content: space-between; align-items: center;">
                     <span>📖 {author}</span>
                     <span style="font-size: 0.75rem; font-weight: 600; color: {color}; border: 1px solid {color}; border-radius: 4px; padding: 0.1rem 0.4rem;">IEEE [{ieee_id}]</span>
                 </div>
                 <div style="font-style: italic; color: {color}; font-size: 0.88rem;
                             margin: 0.4rem 0;">{title}</div>
-                <div style="font-size: 0.82rem; color: #CBD5E1; opacity: 1; line-height: 1.45;">
+                <div style="font-size: 0.82rem; color: var(--ds-text-secondary); line-height: 1.45;">
                     → {contribution}</div>
             </div>
             """,
@@ -1814,15 +1827,15 @@ def _tab_scientific_foundation():
 
     st.markdown(
         """
-    <div style="background: #0B1120; border-radius: 12px;
+    <div style="background: var(--ds-bg-card); border-radius: 12px;
                 padding: 1.3rem 1.5rem; border-left: 4px solid #00D4AA; margin: 0.75rem 0;
-                border-top: 1px solid rgba(0,212,170,0.25); border-right: 1px solid rgba(0,212,170,0.25); border-bottom: 1px solid rgba(0,212,170,0.25); color: #CBD5E1 !important;">
-        <p style="margin: 0; font-size: 1rem; color: #F8FAFC;">
+                border-top: 1px solid rgba(0,212,170,0.25); border-right: 1px solid rgba(0,212,170,0.25); border-bottom: 1px solid rgba(0,212,170,0.25); color: var(--ds-text-secondary);">
+        <p style="margin: 0; font-size: 1rem; color: var(--ds-text-primary);">
             📚 Xem bảng đối chuẩn chi tiết với <b>14 nghiên cứu SOTA đã thẩm định (2022–2025)</b>
             tại trang <b>📚 Đối Chiếu Khoa Học</b> trong sidebar.
         </p>
-        <p style="margin: 0.6rem 0 0 0; font-size: 0.88rem; color: #CBD5E1; opacity: 0.9; line-height: 1.5;">
-            <i>Bảng so sánh bao gồm: Sai số MAE, RMSE, chỉ số chuẩn hóa MASE, Radar Chart 6 chiều, phân tích định lượng độ bất định Conformal Prediction (CQR/ACI), và vị thế đóng góp học thuật của đề án tại khu vực ĐBSCL.</i>
+        <p style="margin: 0.6rem 0 0 0; font-size: 0.88rem; color: var(--ds-text-secondary); line-height: 1.5;">
+            <i>Bảng so sánh bao gồm: Sai số MAE, RMSE, chỉ số chuẩn hóa MASE, Radar Chart 6 chiều, phân tích định lượng độ bất định Conformal Prediction (CQR/ACI), và vị thế đóng góp học thuật tại khu vực ĐBSCL.</i>
         </p>
     </div>
     """,
@@ -1831,7 +1844,7 @@ def _tab_scientific_foundation():
 
     # ── 3. Toàn Văn Thư Viện 54 Trích Dẫn Chuẩn IEEE ──
     st.markdown("---")
-    _section_header("📑", "3. Danh Mục 54 Trích Dẫn Chuẩn IEEE Chính Thức Của Đề Án")
+    _section_header("📑", "3. Danh Mục 54 Trích Dẫn Khoa Học Chuẩn IEEE")
     render_references_section()
 
 

@@ -168,20 +168,20 @@ def render_pin_security_gate() -> None:
         st.markdown(
             f"""
             <div style="
-                background: #181111;
+                background: var(--ds-bg-card);
                 border: 1px solid rgba(239, 68, 68, 0.5);
-                border-left: 6px solid #EF4444;
+                border-left: 6px solid var(--ds-danger);
                 border-radius: 14px;
                 padding: 2.2rem;
                 margin: 1.5rem 0 2rem 0;
                 text-align: center;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(239, 68, 68, 0.15);
+                box-shadow: var(--ds-shadow);
             ">
                 <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🛡️🔒</div>
-                <h2 style="color: #EF4444; font-size: 1.85rem; margin-bottom: 0.6rem; font-weight: 800; letter-spacing: -0.01em;">
+                <h2 style="color: var(--ds-danger); font-size: 1.85rem; margin-bottom: 0.6rem; font-weight: 800; letter-spacing: -0.01em;">
                     Chức Năng Trợ Lý AI Đang Tạm Khóa
                 </h2>
-                <p style="color: #F8FAFC; font-size: 1.05rem; max-width: 680px; margin: 0 auto 1.4rem auto; line-height: 1.65;">
+                <p style="color: var(--ds-text-primary); font-size: 1.05rem; max-width: 680px; margin: 0 auto 1.4rem auto; line-height: 1.65;">
                     Bạn đã nhập sai mã PIN <strong>5 lần liên tiếp</strong>. Hệ thống đã kích hoạt cơ chế tự vệ
                     chống tấn công dò mã (Brute-Force & DoS Protection) nhằm bảo vệ hạn mức API và tài nguyên GPU.
                 </p>
@@ -196,7 +196,6 @@ def render_pin_security_gate() -> None:
                     font-size: 1.25rem;
                     font-weight: 800;
                     margin-bottom: 0.5rem;
-                    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
                 ">
                     ⏳ Tự động mở lại sau: <span style="color: #FEF08A;">{time_str}</span>
                 </div>
@@ -208,7 +207,7 @@ def render_pin_security_gate() -> None:
         col_left, col_right = st.columns([1, 1])
         with col_left, st.expander("🔑 Mở Khóa Cứu Hộ Bằng Mã PUK (Master Recovery Key)", expanded=True):
             st.caption(
-                "Nếu bạn là quản trị viên hệ thống hoặc chủ nhân đề án và cần truy cập khẩn cấp, "
+                "Nếu bạn là quản trị viên hệ thống và cần truy cập khẩn cấp, "
                 "vui lòng nhập mã PUK bảo mật cấp cao:"
             )
             puk_input = st.text_input(
@@ -227,12 +226,12 @@ def render_pin_security_gate() -> None:
                 else:
                     st.error("❌ Mã PUK không chính xác! Vui lòng kiểm tra lại biến môi trường hoặc tài liệu.")
 
-        with col_right, st.expander("ℹ️ Hướng Dành Riêng Cho Quản Trị Viên (Anh Trí)", expanded=True):
+        with col_right, st.expander("ℹ️ Hướng Dẫn Dành Cho Quản Trị Viên Hệ Thống", expanded=True):
             st.markdown(
                 """
                     **Đặc quyền mở khóa cấp tốc:**
                     - Bạn có thể mở khóa ngay lập tức bằng cách sử dụng tham số URL cứu hộ đã được cấp trong tài liệu bảo mật hoặc biến môi trường `AI_ASSISTANT_PIN` / `AI_ASSISTANT_PUK`.
-                    - Phiên làm việc trên các thiết bị khác hoặc của Hội đồng đánh giá hoàn toàn **không bị ảnh hưởng**
+                    - Phiên làm việc trên các thiết bị khác hoặc của người dùng khác hoàn toàn **không bị ảnh hưởng**
                       nhờ kiến trúc Client/Session-Scoped Lockout độc lập.
                     """
             )
@@ -240,46 +239,46 @@ def render_pin_security_gate() -> None:
                 st.rerun()
         return
 
-    # ── Security PIN Input Card (High Contrast Dark Theme) ──
+    # ── Security PIN Input Card (Adaptive Light/Dark Theme) ──
     attempts_left = MAX_FAILED_ATTEMPTS - failed_attempts
 
     st.markdown(
         """
         <div style="
-            background: #0B1120;
-            border: 1px solid rgba(0, 212, 170, 0.45);
-            border-left: 6px solid #00D4AA;
+            background: var(--ds-bg-card);
+            border: 1px solid var(--ds-border-accent);
+            border-left: 6px solid var(--ds-accent);
             border-radius: 14px;
             padding: 1.8rem 2.2rem;
             margin: 1.2rem 0 1.8rem 0;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(0, 212, 170, 0.08);
+            box-shadow: var(--ds-shadow);
         ">
             <div style="display: flex; align-items: center; gap: 1.2rem; margin-bottom: 0.8rem;">
                 <div style="
                     font-size: 2.2rem;
                     background: rgba(0, 212, 170, 0.15);
-                    border: 1px solid rgba(0, 212, 170, 0.5);
+                    border: 1px solid var(--ds-border-accent);
                     border-radius: 12px;
                     width: 58px;
                     height: 58px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    color: #00D4AA;
+                    color: var(--ds-accent);
                 ">🔒</div>
                 <div>
-                    <h2 style="color: #00D4AA; font-size: 1.65rem; margin: 0; font-weight: 800; letter-spacing: -0.01em;">
+                    <h2 style="color: var(--ds-accent); font-size: 1.65rem; margin: 0; font-weight: 800; letter-spacing: -0.01em;">
                         Bảo Mật Trợ Lý AI — Xác Thực Mã PIN
                     </h2>
-                    <p style="color: #CBD5E1; font-size: 0.95rem; margin: 0.25rem 0 0 0; font-weight: 500;">
+                    <p style="color: var(--ds-text-secondary); font-size: 0.95rem; margin: 0.25rem 0 0 0; font-weight: 500;">
                         Cơ chế bảo vệ tài nguyên điện toán GPU &amp; hạn mức API Key mô hình ngôn ngữ lớn (LLM)
                     </p>
                 </div>
             </div>
-            <p style="color: #F8FAFC; font-size: 1.02rem; line-height: 1.7; margin-top: 1rem; margin-bottom: 0;">
-                Chức năng Trợ Lý AI tích hợp tri thức toàn diện của Đề án ThS và kết nối trực tiếp với các dịch vụ suy luận
-                (<strong style="color: #38BDF8;">Google Gemini</strong>, <strong style="color: #F97316;">Groq LPU</strong>, <strong style="color: #A855F7;">Kaggle Ollama 32GB VRAM</strong>, <strong style="color: #10B981;">OpenAI</strong>).
-                Vui lòng nhập mã PIN bảo mật <span style="background: rgba(0, 212, 170, 0.2); color: #00D4AA; padding: 0.15rem 0.55rem; border-radius: 6px; font-weight: 700; font-family: monospace;">(6 số)</span> để tiếp tục.
+            <p style="color: var(--ds-text-primary); font-size: 1.02rem; line-height: 1.7; margin-top: 1rem; margin-bottom: 0;">
+                Chức năng Trợ Lý AI tích hợp cơ sở tri thức kỹ thuật của hệ thống và kết nối trực tiếp với các dịch vụ suy luận
+                (<strong style="color: var(--ds-info);">Google Gemini</strong>, <strong style="color: #F97316;">Groq LPU</strong>, <strong style="color: #A855F7;">Kaggle Ollama 32GB VRAM</strong>, <strong style="color: var(--ds-accent);">OpenAI</strong>).
+                Vui lòng nhập mã PIN bảo mật <span style="background: rgba(0, 212, 170, 0.15); color: var(--ds-accent); padding: 0.15rem 0.55rem; border-radius: 6px; font-weight: 700; font-family: monospace;">(6 số)</span> để tiếp tục.
             </p>
         </div>
         """,
@@ -296,7 +295,7 @@ def render_pin_security_gate() -> None:
                 max_chars=12,
                 key="security_pin_input_field",
                 placeholder="Nhập mã PIN 6 số...",
-                help="Mã PIN mặc định của hệ thống được cấp cho đề án nghiên cứu.",
+                help="Mã PIN mặc định của hệ thống được cấp cho người vận hành.",
             )
             submit_pin = st.form_submit_button(
                 "🔓 Xác Nhận & Mở Khóa Trợ Lý AI",
@@ -328,24 +327,24 @@ def render_pin_security_gate() -> None:
         st.markdown(
             """
             <div style="
-                background: #111827;
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-left: 4px solid #38BDF8;
+                background: var(--ds-bg-card);
+                border: 1px solid var(--ds-border);
+                border-left: 4px solid var(--ds-info);
                 border-radius: 12px;
                 padding: 1.3rem 1.4rem;
                 font-size: 0.92rem;
-                color: #F1F5F9;
+                color: var(--ds-text-primary);
                 line-height: 1.65;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                box-shadow: var(--ds-shadow);
             ">
                 <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.6rem;">
                     <span style="font-size: 1.1rem;">💡</span>
-                    <strong style="color: #38BDF8; font-size: 1rem;">Lưu Ý Bảo Mật:</strong>
+                    <strong style="color: var(--ds-info); font-size: 1rem;">Lưu Ý Bảo Mật:</strong>
                 </div>
-                <ul style="margin: 0.2rem 0 0.2rem 1.2rem; padding: 0; color: #E2E8F0;">
-                    <li style="margin-bottom: 0.4rem;">Mã PIN bảo mật giúp tránh hao hụt API quota do truy cập công khai ngoài ý muốn.</li>
-                    <li style="margin-bottom: 0.4rem;">Phiên làm việc được ghi nhớ tự động trong suốt thời gian duyệt trang của bạn.</li>
-                    <li>Sau khi hoàn thành tra cứu, bạn có thể chủ động bấm <strong style="color: #00D4AA;">🔒 Khóa lại</strong> bất cứ lúc nào.</li>
+                <ul style="margin: 0.2rem 0 0.2rem 1.2rem; padding: 0; color: var(--ds-text-secondary);">
+                    <li style="margin-bottom: 0.4rem; color: var(--ds-text-secondary) !important;">Mã PIN bảo mật giúp tránh hao hụt API quota do truy cập công khai ngoài ý muốn.</li>
+                    <li style="margin-bottom: 0.4rem; color: var(--ds-text-secondary) !important;">Phiên làm việc được ghi nhớ tự động trong suốt thời gian duyệt trang của bạn.</li>
+                    <li style="color: var(--ds-text-secondary) !important;">Sau khi hoàn thành tra cứu, bạn có thể chủ động bấm <strong style="color: var(--ds-accent);">🔒 Khóa lại</strong> bất cứ lúc nào.</li>
                 </ul>
             </div>
             """,

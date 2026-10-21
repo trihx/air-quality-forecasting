@@ -64,11 +64,11 @@ def _insight_card(title: str, text: str, card_type: str = "default"):
     parsed_text = re.sub(r"\*(.*?)\*", r"<i>\1</i>", parsed_text)
     st.markdown(
         f"""
-    <div class="insight-card {cls}" style="background: #0B1120;
+    <div class="insight-card {cls}" style="background: var(--ds-bg-card);
                 border-left: 4px solid {border_color}; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0;
-                margin: 1rem 0; border: 1px solid rgba(0,212,170,0.25); color: #F8FAFC;">
+                margin: 1rem 0; border: 1px solid rgba(0,212,170,0.25); color: var(--ds-text-primary);">
         <h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem; color: {border_color}; font-weight: 700;">{title}</h4>
-        <div style="font-size: 0.92rem; line-height: 1.6; color: #CBD5E1;">{parsed_text}</div>
+        <div class="insight-text" style="font-size: 0.92rem; line-height: 1.6; color: var(--ds-text-secondary);">{parsed_text}</div>
     </div>
     """,
         unsafe_allow_html=True,
@@ -260,18 +260,18 @@ def page_eda(results):
         # Data Summary Card
         st.markdown(
             """
-        <div style="background: #0B1120; border-radius: 12px; padding: 1.25rem 1.5rem;
-                    margin-bottom: 1.5rem; border: 1px solid rgba(0,212,170,0.3); border-left: 5px solid #00D4AA; color: #F8FAFC;">
+        <div style="background: var(--ds-bg-card); border-radius: 12px; padding: 1.25rem 1.5rem;
+                    margin-bottom: 1.5rem; border: 1px solid rgba(0,212,170,0.3); border-left: 5px solid #00D4AA; color: var(--ds-text-primary);">
             <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.8rem; color: #00D4AA;">
                 📋 Tóm Tắt Bộ Dữ Liệu Quan Trắc Môi Trường Không Khí
             </div>
-            <table style="width: 100%; font-size: 0.9rem; color: #F8FAFC; border-collapse: separate; border-spacing: 0 4px;">
-                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8; width: 220px;">🏭 Nguồn</td><td>Trạm cảm biến IoT quan trắc ngoài trời tại Sa Đéc, Đồng Tháp (phân tích dữ liệu môi trường cấp huyện)</td></tr>
-                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">📅 Giai đoạn</td><td><b style="color: #F8FAFC;">16/03/2022 — 11/05/2025</b> (38 tháng, ~3.1 năm liên tục)</td></tr>
-                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">⏱️ Tần suất gốc (Raw IoT)</td><td><b style="color: #F8FAFC;">~2 phút/lần</b> (209.594 bản ghi thô từ cảm biến)</td></tr>
-                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">📊 Tái lấy mẫu (Resample)</td><td><b style="color: #00D4AA;">15 phút</b> (18.355 mẫu sạch) · <b style="color: #00D4AA;">30 phút</b> (8.625 mẫu sạch) · <b style="color: #00D4AA;">1 giờ</b> (6.689 mẫu sạch)</td></tr>
-                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">🧪 Features</td><td>119 đặc trưng thuộc 7 nhóm (anti-leakage, shift(1) strictly enforced)</td></tr>
-                <tr><td style="padding: 4px 8px 4px 0; color: #94A3B8;">✂️ Anchor Test Set</td><td>10% cuối cố định (669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) — 100% dữ liệu thực không nội suy</td></tr>
+            <table style="width: 100%; font-size: 0.9rem; color: var(--ds-text-primary); border-collapse: separate; border-spacing: 0 4px;">
+                <tr><td style="padding: 4px 8px 4px 0; color: var(--ds-text-muted); width: 220px;">🏭 Nguồn</td><td>Trạm cảm biến IoT quan trắc ngoài trời tại Sa Đéc, Đồng Tháp (phân tích dữ liệu môi trường cấp huyện)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: var(--ds-text-muted);">📅 Giai đoạn</td><td><b style="color: var(--ds-text-primary);">16/03/2022 — 11/05/2025</b> (38 tháng, ~3.1 năm liên tục)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: var(--ds-text-muted);">⏱️ Tần suất gốc (Raw IoT)</td><td><b style="color: var(--ds-text-primary);">~2 phút/lần</b> (209.594 bản ghi thô từ cảm biến)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: var(--ds-text-muted);">📊 Tái lấy mẫu (Resample)</td><td><b style="color: #00D4AA;">15 phút</b> (18.355 mẫu sạch) · <b style="color: #00D4AA;">30 phút</b> (8.625 mẫu sạch) · <b style="color: #00D4AA;">1 giờ</b> (6.689 mẫu sạch)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: var(--ds-text-muted);">🧪 Features</td><td>119 đặc trưng thuộc 7 nhóm (anti-leakage, shift(1) strictly enforced)</td></tr>
+                <tr><td style="padding: 4px 8px 4px 0; color: var(--ds-text-muted);">✂️ Anchor Test Set</td><td>10% cuối cố định (669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) — 100% dữ liệu thực không nội suy</td></tr>
             </table>
         </div>
         """,
@@ -303,8 +303,8 @@ def page_eda(results):
             "**1. Khả năng dự báo:** Mô hình hoạt động rất tốt cho dự báo ngắn hạn (1-24h) nhờ chu kỳ ngày (diurnal) liền mạch. "
             "Tuy nhiên, khả năng bắt chu kỳ mùa (seasonality) bị giới hạn do thiếu hụt 89 ngày/năm (mù hoàn toàn tháng 2 và tháng 9).<br>"
             "**2. Nguyên tắc Nội suy (Imputation):** Tuyệt đối KHÔNG dùng Machine Learning để nội suy các khoảng trống (gaps) dài > 1 tuần. "
-            "Việc này gây ra rò rỉ dữ liệu (Data Leakage) và tín hiệu giả (Hallucination). Áp dụng quy tắc cắt bỏ (Drop) cho gap dài.<br>"
-            "**3. Giải pháp Cải thiện:** Dự án đã thử nghiệm kéo dữ liệu ngoại lai từ Open-Meteo API để bổ trợ tín hiệu thời tiết cho các vùng bị khuyết.",
+            "Việc này gây ra rò rỉ dữ liệu (Data Leakage) và sai lệch nội suy (Synthetic Interpolation Bias). Áp dụng quy tắc cắt bỏ (Drop) cho gap dài.<br>"
+            "**3. Giải pháp Cải thiện:** Dự án đã thử nghiệm tích hợp dữ liệu ngoại sinh từ Open-Meteo API để bổ trợ tín hiệu thời tiết cho các vùng bị khuyết.",
         )
 
         # Calendar Heatmap
@@ -543,10 +543,10 @@ def page_eda(results):
         st.markdown("### 2. §4.1.1 Kiểm Định Tính Dừng & Đồ Thị Chẩn Đoán Qua 5 Trạng Thái Biến Đổi")
         st.markdown(
             "Thực thi quy trình kiểm định kép ADF và KPSS trên chuỗi thời gian PM2.5 thực tế quan trắc tại Sa Đéc, "
-            "kết quả thu được trên chuỗi gốc và các dạng biến đổi sai phân được lượng hóa trong Bảng 4.1 của Đề án:"
+            "kết quả thu được trên chuỗi gốc và các dạng biến đổi sai phân được lượng hóa trong Bảng 4.1:"
         )
 
-        # Bảng 4.1 Đề án
+        # Bảng 4.1
         st.markdown("#### 📋 Bảng 4.1: Kết quả kiểm định tính dừng ADF và KPSS trên chuỗi PM2.5 gốc và sai phân")
         df_bang_4_1 = pd.DataFrame(
             [
@@ -637,7 +637,7 @@ def page_eda(results):
             st.image(str(img_f), caption=cap_f, use_container_width=True)
             st.markdown(
                 f"""
-            <div style="background: #0B1120; border-left: 3px solid #00D4AA; border: 1px solid rgba(0,212,170,0.25); padding: 0.8rem 1rem; border-radius: 4px; margin-top: 0.5rem; margin-bottom: 1.5rem; font-size: 0.92rem; line-height: 1.6; color: #CBD5E1;">
+            <div style="background: var(--ds-bg-card); border-left: 3px solid #00D4AA; border: 1px solid rgba(0,212,170,0.25); padding: 0.8rem 1rem; border-radius: 4px; margin-top: 0.5rem; margin-bottom: 1.5rem; font-size: 0.92rem; line-height: 1.6; color: var(--ds-text-secondary);">
                 {desc_f}
             </div>
             """,
@@ -779,7 +779,7 @@ def page_eda(results):
                 )
 
         _insight_card(
-            "🔄 Biện Luận Bẫy Tự Tương Quan (Autocorrelation Trap)",
+            "🔄 Biện Luận Quán Tính Tự Tương Quan Bậc 1 (First-Order Autocorrelation Inertia)",
             "Đồ thị Hình 4.2a chỉ ra rằng hệ số tự tương quan ACF tại trễ 1 giờ đạt mức rất cao (r ≈ 0,86 trên chuỗi giờ và ~0,97 trên chuỗi quan trắc gốc) "
             "và suy giảm tiệm cận hàm mũ khi độ trễ tăng lên 6 giờ và 24 giờ. "
             "Điều này lý giải tại sao mô hình quán tính Persistence đạt hiệu năng vượt trội ở mốc 1 giờ nhưng suy giảm nghiêm trọng khi mở rộng chân trời dự báo. "
@@ -914,10 +914,10 @@ def page_eda(results):
         )
 
         _insight_card(
-            "⚠️ Bẫy Loại Bỏ Ngoại Lai (Outlier Removal Trap)",
+            "⚠️ Sai Lệch Do Lọc Cực Trị Thống Kê (Outlier Removal Bias)",
             "<b>Cảnh báo phương pháp luận:</b> Áp dụng các bộ lọc thống kê tiêu chuẩn (như IQR 1.5 hay Z-Score) để cắt bỏ các giá trị lớn hơn ngưỡng sẽ xóa nhầm chính các đỉnh ô nhiễm cực đoan thật sự. "
-            "Hành động này tạo ra hội chứng 'Độ chính xác giả mạo' (False Sense of Accuracy): mô hình có MAE rất thấp nhưng hoàn toàn bị 'mù' trước các thảm họa môi trường. "
-            "<b>Giải pháp Đề án:</b> Bắt buộc sử dụng <b>Domain Bounds (0 – 500 µg/m³)</b> theo giới hạn vật lý và quy chuẩn kỹ thuật quốc gia, bảo toàn nguyên vẹn 100% các đỉnh bùng phát thực tế.",
+            "Hành động này tạo ra sai lệch đánh giá: mô hình có MAE thấp trên vùng nền nhưng đánh giá thấp nghiêm trọng các đợt ô nhiễm cao điểm. "
+            "<b>Giải pháp kỹ thuật:</b> Bắt buộc sử dụng <b>Domain Bounds (0 – 500 µg/m³)</b> theo giới hạn vật lý và quy chuẩn kỹ thuật, bảo toàn nguyên vẹn 100% các đỉnh bùng phát thực tế.",
             card_type="warning",
         )
 
@@ -1271,11 +1271,11 @@ def page_eda(results):
                 with c_g2:
                     st.markdown(
                         """
-                    <div style="background: #180D10; border: 1px solid rgba(239,68,68,0.35); border-left: 4px solid #EF4444; border-radius: 8px; padding: 1rem; font-size: 0.9rem; line-height: 1.6; color: #F8FAFC;">
+                    <div style="background: var(--ds-bg-danger-soft); border: 1px solid rgba(239,68,68,0.35); border-left: 4px solid #EF4444; border-radius: 8px; padding: 1rem; font-size: 0.9rem; line-height: 1.6; color: var(--ds-text-primary);">
                         <b style="color: #EF4444;">🚨 Điểm Mù Dữ Liệu (Blind Spots):</b><br>
-                        <span style="color: #CBD5E1;">Khi gộp dữ liệu thành một năm tổng hợp điển hình, chuỗi quan trắc vẫn bị mù hoàn toàn <b>89 ngày</b> (~24,3%).<br>
+                        <span style="color: var(--ds-text-secondary);">Khi gộp dữ liệu thành một năm tổng hợp điển hình, chuỗi quan trắc vẫn bị mù hoàn toàn <b>89 ngày</b> (~24,3%).<br>
                         Trong đó <b>Tháng 2 và Tháng 9</b> gần như mất tín hiệu hoàn toàn (tỉ lệ bao phủ ~13%).<br><br>
-                        <b style="color: #F8FAFC;">Khuyến nghị:</b> Không ép mô hình dự báo chu kỳ năm dài hạn trên các tháng mù này, tập trung năng lực dự báo vào các tầm nhìn khả thi (1h - 24h).</span>
+                        <b style="color: var(--ds-text-primary);">Khuyến nghị:</b> Không ép mô hình dự báo chu kỳ năm dài hạn trên các tháng mù này, tập trung năng lực dự báo vào các tầm nhìn khả thi (1h - 24h).</span>
                     </div>
                     """,
                         unsafe_allow_html=True,
@@ -1293,12 +1293,12 @@ def page_eda(results):
 
         st.info(
             "**1. Xử lý Gaps (Chiến lược Tiered Imputation):** Missing data chiếm 74,0% (110 gaps) do sấm sét và gián đoạn nguồn. "
-            "Áp dụng phân tầng: Gaps ngắn ≤ 24h (656 giờ, 3,2%) khôi phục bằng PCHIP/Spline/KNN để giữ chu kỳ ngày; "
+            "Áp dụng phân tầng: Gaps ngắn ≤ 24h (656 giờ, 3,2%) khôi phục bằng Linear/Spline/KNN để giữ chu kỳ ngày; "
             "Gaps dài > 24h (19.810 giờ, 96,8%) bắt buộc cắt bỏ thành các chuỗi liên tục độc lập, "
             "bảo toàn 100% dữ liệu thực cho Anchor Test Set (10% cuối: 669h ở 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m) không bị rò rỉ dữ liệu (Anti-Leakage)."
         )
         st.info(
-            "**2. Xử lý Spikes (Phân phối Fat-Tailed, Skewness = 2,0046):** PM2.5 có các đỉnh đột biến (Max 138,5 µg/m³) tàn phá hàm mất mát MSE. "
+            "**2. Xử lý Spikes (Phân phối Fat-Tailed, Skewness = 2,0046):** PM2.5 có các đỉnh đột biến (Max 138,5 µg/m³) gây nhiễu mạnh cho hàm mất mát MSE. "
             "Dự án áp dụng mô hình phi tuyến (LightGBM, XGBoost, GRU) kết hợp khoảng dự báo Conformalized Quantile Regression (CQR) "
             "và Adaptive Conformal Inference (ACI) để kiểm soát rủi ro cực đoan."
         )
@@ -1309,16 +1309,16 @@ def page_eda(results):
         st.info(
             "**4. Thước đo MASE & Sức mạnh Baseline:** Do tự tương quan lag-1 rất cao (r ≈ 0,86 ở chuỗi giờ 1h và r ≈ 0,97 ở chuỗi 15m), "
             "MASE là metric chuẩn mực (Hyndman & Koehler, 2006). Trên chuỗi 1h, các mô hình tham số đạt MASE = 1,158 ~ 1,236 (> 1,0) "
-            "là hiện tượng kinh tế lượng bình thường do bẫy tự tương quan."
+            "là hệ quả thống kê của quán tính tự tương quan bậc 1."
         )
         st.info(
-            "**5. Sàn Sai Số STL Residual:** Phân tích STL cho thấy phương sai dư σ ≈ 5,2 µg/m³ — "
-            "mô hình đạt MAE gần ngưỡng này phản ánh đã khai thác tối đa tín hiệu có thể dự đoán."
+            "**5. Sàn Sai Số STL Residual:** Phân tích STL cho thấy độ lệch chuẩn phần dư σ ≈ 3,68 µg/m³ (và sai số phần dư LightGBM 6h σ ≈ 5,30 µg/m³) — "
+            "mô hình đạt MAE tiệm cận ngưỡng này phản ánh đã khai thác tối đa tín hiệu có thể dự đoán."
         )
         st.info(
             "**6. Đột phá Đa Phân Giải (Multi-Resolution - v9):** Bằng cách khai thác dữ liệu tần số cao 15m, "
-            "mô hình học sâu GRU 15m thu nhận được vi biến động nội giờ và chính thức đạt MASE = 0,667 (< 1,0), "
-            "đánh bại hoàn toàn Persistence baseline và phá vỡ bẫy tự tương quan."
+            "mô hình học sâu GRU 15m thu nhận được vi biến động nội giờ và đạt MASE = 0,667 (< 1,0), "
+            "vượt qua Persistence baseline ở tầm nhìn 1h."
         )
 
         st.markdown("---")

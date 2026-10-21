@@ -51,7 +51,7 @@ def page_hyperparams(results: dict[str, Any]) -> None:
         f"""
 <div class="kpi-row">
     {kpi_card("Tổng Số Cấu Hình", f"{matrix_info.get('total_configurations', 41)}", "15 ở 15m · 15 ở 30m · 11 ở 1h")}
-    {kpi_card("Mô Hình Có Tham Số", f"{matrix_info.get('parametric_models', 36)}", "Phân tích Bias & Thặng dư chuyên sâu")}
+    {kpi_card("Mô Hình Có Tham Số", f"{matrix_info.get('parametric_models', 36)}", "Phân tích Bias & Phần dư (Residual) chuyên sâu")}
     {kpi_card("Baseline Không Tham Số", "5", "Persistence & Đóng băng lịch sử")}
     {kpi_card("Thời Gian Huấn Luyện", "< 45 phút", "Tối ưu hóa toàn diện trên GPU/CPU")}
 </div>
@@ -85,13 +85,13 @@ def page_hyperparams(results: dict[str, Any]) -> None:
                 "Độ phân giải": "30 phút (30m)",
                 "Số cấu hình": 15,
                 "Nhóm mô hình": "Persistence, ARIMA, SARIMA, LightGBM, RF, ElasticNet, GB, GRU, LSTM, TFT, GRU_Expert, LSTM_Expert, TFT_Expert, Stacking, Weighted Ensemble",
-                "Ghi chú": "Cân bằng vàng: tiết kiệm 50% tính toán, MASE=0,382",
+                "Ghi chú": "Tối ưu chi phí & hiệu năng: giảm 50% tính toán, MASE_unified=0,382",
             },
             {
                 "Độ phân giải": "1 giờ (1h)",
                 "Số cấu hình": 11,
                 "Nhóm mô hình": "Persistence, ARIMA, SARIMA, LightGBM, RF, ElasticNet, GRU, LSTM, TFT, Stacking, Weighted Ensemble",
-                "Ghi chú": "Chu kỳ vĩ mô, bẫy tự tương quan r ≈ 0,86",
+                "Ghi chú": "Chu kỳ vĩ mô, tự tương quan bậc 1 cao r ≈ 0,86",
             },
         ]
         st.dataframe(pd.DataFrame(mat_rows), use_container_width=True, hide_index=True)
@@ -116,7 +116,7 @@ def page_hyperparams(results: dict[str, Any]) -> None:
                 "Tập Val (10%)": "862",
                 "Tập Test mỏ neo (10%)": "863",
                 "Cửa sổ trượt (DL)": "144 bước (72h)",
-                "Đặc điểm tín hiệu & Đánh giá": "Điểm cân bằng vàng: Tiết kiệm 50% chi phí, MASE = 0,382",
+                "Đặc điểm tín hiệu & Đánh giá": "Điểm tối ưu Pareto: Tiết kiệm 50% chi phí, MASE_unified = 0,382",
             },
             {
                 "Độ phân giải": "1 giờ (1h)",
@@ -133,7 +133,7 @@ def page_hyperparams(results: dict[str, Any]) -> None:
         st.caption(
             "*Ghi chú Bảng 3.4: Khoảng chênh lệch giữa lưới lý thuyết và mẫu sạch thực tế là kết quả của chiến lược Tiered Imputation: "
             "loại bỏ hoàn toàn các khoảng mất tín hiệu kéo dài trên 24 giờ (tổng cộng 19.810 giờ khuyết do mất nguồn/bảo trì trạm Sa Đéc) "
-            "nhằm triệt tiêu rủi ro sinh dữ liệu giả mạo (imputation hallucination), bảo toàn tính liêm chính khoa học.*"
+            "nhằm tránh sai lệch nội suy trên chuỗi khuyết dài (Synthetic Interpolation Bias), bảo toàn tính toàn vẹn dữ liệu.*"
         )
 
         section_header("📐", "Bảng 3.5: Khung Ma Trận Tiêu Chí Kiểm Định Tính Dừng & Thiết Kế Pipeline")
@@ -177,9 +177,9 @@ def page_hyperparams(results: dict[str, Any]) -> None:
         st.dataframe(pd.DataFrame(table_3_5_rows), use_container_width=True, hide_index=True)
 
         insight_card(
-            "💡 Phương Pháp Luận Thiết Kế Ma Trận (Chương 3 §3.4, §3.5 & Chương 4 §4.2)",
+            "💡 Phương Pháp Luận Thiết Kế Ma Trận Thực Nghiệm",
             "Nghiên cứu áp dụng quy trình đánh giá công bằng (Fair Benchmark) trên cả 3 độ phân giải không gian thời gian. "
-            "Trong 41 cấu hình thực nghiệm, <b>36 mô hình tham số</b> được huấn luyện và đánh giá chẩn đoán độ lệch (Forecast Bias) độc lập tại các chân trời dự báo 1h, 6h và 24h. "
+            "Trong 41 cấu hình thực nghiệm, <b>36 mô hình tham số</b> được huấn luyện và đánh giá chẩn đoán phần dư (Residual Diagnostics) & độ lệch (Forecast Bias) độc lập tại các chân trời dự báo 1h, 6h và 24h. "
             f"Toàn bộ quy trình tối ưu siêu tham số dựa trên Bayesian Optimization (Optuna) {cite('akiba2019')}, "
             "hoàn tất trong <b>dưới 45 phút</b>, chứng minh tính khả thi cao khi triển khai tại các trạm quan trắc tài nguyên môi trường.",
         )
@@ -269,10 +269,10 @@ def page_hyperparams(results: dict[str, Any]) -> None:
         st.markdown(f"**Mô hình thành phần (Base Models):** {', '.join(ens_cfg.get('base_models', []))}")
         st.markdown(f"**Chiến lược kết hợp:** {ens_cfg.get('combination_strategy', 'Inverse Variance Weighting')}")
         insight_card(
-            "💡 Đỉnh Cao Hiệu Năng ở 30m (MASE = 0,382)",
+            "💡 Hiệu Năng Tối Ưu ở 30m (MASE_unified = 0,382 | MASE_30m = 0,504)",
             f"Mô hình Weighted Ensemble tại độ phân giải 30m vận dụng lý thuyết Stacking Generalization của Wolpert {cite('wolpert1992')} "
             f"và nguyên tắc đa dạng mô hình của Dietterich {cite('dietterich2000')}, kết hợp sức mạnh phi tuyến của LightGBM và khả năng học biểu diễn chuỗi của GRU, "
-            "đạt kỷ lục MASE = 0,382 (giảm 61,8% sai số so với baseline).",
+            "đạt sai số chuẩn hóa MASE_unified = 0,382 (tương ứng MASE_30m = 0,504 — giảm 49,6% sai số MAE so với Persistence_30m tại h=6h).",
         )
 
     with tab_ari:

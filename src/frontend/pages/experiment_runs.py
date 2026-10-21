@@ -17,6 +17,7 @@ from src.info_cards import (
     get_current_version,
     render_version_badge,
 )
+from src.reporting.content import ContentManager
 from src.viz.chart_factory import (
     add_baseline,
     add_simple_bar_labels,
@@ -45,9 +46,9 @@ def page_experiment_runs(results: dict[str, Any]) -> None:
 
     st.markdown(
         f"""
-    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
-                border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
-        <div style="font-size: 0.85rem; opacity: 0.65;">
+    <div style="background: var(--ds-bg-card); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.2); color: var(--ds-text-primary);">
+        <div style="font-size: 0.85rem; color: var(--ds-text-secondary);">
             📌 Pipeline trải qua 9 phiên bản (v1→v9), tuân thủ quy trình nghiên cứu lặp lại {cite("makridakis2020")}.
             Mỗi version snapshot ghi nhận feature set, model configs, và metrics chuẩn hóa MASE {cite("hyndman2006")}.
             So sánh fair giữa các phiên bản sử dụng cùng temporal test set {cite("tashman2000")}.
@@ -137,43 +138,33 @@ def _render_version_comparison() -> None:
         )
     st.dataframe(pd.DataFrame(feat_rows), use_container_width=True, hide_index=True)
 
-    st.markdown("### 📋 Chi Tiết Phiên Bản")
+    st.markdown("### 📋 Chi Tiết Phiên Bản (Hành Trình Nâng Cấp Khoa Học)")
 
-    card_colors = {
-        0: ("#4A90D9", "rgba(74,144,217,0.08)", "rgba(74,144,217,0.03)"),
-        1: ("#00D4AA", "rgba(0,212,170,0.08)", "rgba(78,205,196,0.03)"),
-        2: ("#A78BFA", "rgba(167,139,250,0.08)", "rgba(167,139,250,0.03)"),
-        3: ("#FB923C", "rgba(251,146,60,0.08)", "rgba(251,146,60,0.03)"),
-    }
+    content_mgr = ContentManager()
+    evolution_matrix = content_mgr.get_evolution_matrix()
 
-    for idx, (v_name, v_data) in enumerate(snapshots.items()):
-        changes = v_data.get("changes", {})
-        accent, bg_start, bg_end = card_colors.get(idx, card_colors[0])
-        v_results = v_data.get(
-            "results",
-            v_data.get("metrics", v_data.get("data", {}).get("results", {})),
+    view_mode = st.radio(
+        "Chế độ hiển thị chi tiết phiên bản:",
+        ["🔍 Phân tích chuyên sâu từng phiên bản (5 Trụ cột Thực nghiệm)", "📜 Xem tuần tự tất cả các phiên bản"],
+        horizontal=True,
+        key="exp_runs_version_view_mode",
+    )
+
+    if "từng phiên bản" in view_mode:
+        snap_names = list(snapshots.keys())
+        default_snap_idx = (
+            snap_names.index("v9_multi_resolution") if "v9_multi_resolution" in snap_names else len(snap_names) - 1
         )
-        models_inc = v_data.get("models_included", [])
-        if not models_inc and v_results:
-            models_inc = list({m for h_res in v_results.values() for m in h_res})
-        n_models = len(models_inc)
-        parent = v_data.get(
-            "parent_version",
-            "v8_cqr_aci" if idx == 8 else ("v7_cqr" if idx == 7 else "—"),
+        sel_snap = st.selectbox(
+            "📌 Chọn phiên bản muốn kiểm định chi tiết:",
+            snap_names,
+            index=default_snap_idx,
+            key="exp_runs_sel_snap",
         )
-
-        what = changes.get("what", v_data.get("description", "—"))
-        why = changes.get("why", "—")
-        result = changes.get("result", "—")
-        conclusion = changes.get("conclusion", "")
-
-        html_str = f"""<div style="background: linear-gradient(135deg, {bg_start} 0%, {bg_end} 100%); border-left: 4px solid {accent}; border-radius: 0 12px 12px 0; padding: 1rem 1.2rem; margin: 0.8rem 0;">"""
-        html_str += f"""<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;"><span style="font-size: 1.1rem; font-weight: 700; color: {accent};">{"📌" if idx == 0 else "🆕"} {v_name}</span><span style="font-size: 0.75rem; opacity: 0.75;">{n_models} models · parent: {parent}</span></div>"""
-        html_str += f"""<div style="display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; font-size: 0.88rem;"><span style="opacity: 0.75; font-weight: 600;">📦 What</span><span>{what}</span><span style="opacity: 0.75; font-weight: 600;">💡 Why</span><span>{why}</span><span style="opacity: 0.75; font-weight: 600;">📊 Result</span><span>{result}</span></div>"""
-        if conclusion:
-            html_str += f"""<div style="margin-top:0.4rem; padding-top:0.4rem; border-top:1px solid var(--border-color, rgba(139,149,165,0.2)); font-size:0.88rem;"><span style="color:#00D4AA;">✅ Conclusion</span> {conclusion}</div>"""
-        html_str += """</div>"""
-        st.markdown(html_str, unsafe_allow_html=True)
+        _render_detailed_version_card(sel_snap, snapshots[sel_snap], evolution_matrix.get(sel_snap, {}))
+    else:
+        for v_name, v_data in snapshots.items():
+            _render_detailed_version_card(v_name, v_data, evolution_matrix.get(v_name, {}))
 
     st.markdown(f"### 📊 MASE — So Sánh {v1_name} vs {v2_name}")
 
@@ -431,3 +422,91 @@ def _render_all_runs() -> None:
                 data = json.load(f)
             with st.expander(f"📄 {selected_file}", expanded=True):
                 st.json(data)
+
+
+def _render_detailed_version_card(v_name: str, v_data: dict, evo_info: dict) -> None:
+    """Render a comprehensive version card with 5 academic pillars."""
+    if evo_info:
+        color = evo_info.get("color", "#00D4AA")
+        badge = evo_info.get("badge", v_name)
+        title = evo_info.get("title", v_name)
+        date = evo_info.get("date", "")
+        category = evo_info.get("category", "")
+        models_cnt = evo_info.get("models_count", len(v_data.get("models", [])))
+
+        st.markdown(
+            f"""
+            <div style="background: var(--ds-bg-card); color: var(--ds-text-primary);
+                        border-left: 5px solid {color}; border-radius: 0 14px 14px 0;
+                        border: 1px solid var(--ds-border); border-left-width: 5px;
+                        padding: 1.25rem 1.5rem; margin: 1rem 0; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div>
+                        <span style="background: {color}22; color: {color}; border: 1px solid {color}55;
+                                     padding: 0.25rem 0.7rem; border-radius: 16px; font-size: 0.82rem; font-weight: 700;">
+                            {badge}
+                        </span>
+                        <span style="font-size: 1.15rem; font-weight: 700; color: var(--ds-text-primary); margin-left: 0.6rem;">
+                            {title}
+                        </span>
+                    </div>
+                    <div style="font-size: 0.82rem; color: var(--ds-text-muted);">
+                        📅 <b>{date}</b> · 🏷️ <b>{category}</b> · 🤖 <b>{models_cnt} models</b>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr; gap: 0.6rem; font-size: 0.88rem; line-height: 1.55;">
+                    <div style="background: var(--ds-bg-surface); padding: 0.7rem 0.9rem; border-radius: 6px; border-left: 3px solid #38BDF8;">
+                        <span style="font-weight: 700; color: #38BDF8;">🏛️ 1. Bối cảnh & Giả thuyết:</span>
+                        <span style="color: var(--ds-text-secondary);"> {evo_info.get("hypothesis", "—")}</span>
+                    </div>
+                    <div style="background: var(--ds-bg-surface); padding: 0.7rem 0.9rem; border-radius: 6px; border-left: 3px solid #A855F7;">
+                        <span style="font-weight: 700; color: #A855F7;">⚙️ 2. Kỹ thuật nâng cấp lõi:</span>
+                        <span style="color: var(--ds-text-secondary);"> {evo_info.get("technical_upgrades", "—")}</span>
+                    </div>
+                    <div style="background: var(--ds-bg-surface); padding: 0.7rem 0.9rem; border-radius: 6px; border-left: 3px solid #10B981;">
+                        <span style="font-weight: 700; color: #10B981;">📊 3. Kết quả 3 chân trời:</span>
+                        <span style="color: var(--ds-text-secondary);"> {evo_info.get("results_summary", "—")}</span>
+                    </div>
+                    <div style="background: var(--ds-bg-surface); padding: 0.7rem 0.9rem; border-radius: 6px; border-left: 3px solid #F59E0B;">
+                        <span style="font-weight: 700; color: #F59E0B;">💡 4. Phát hiện chính & Rủi ro kỹ thuật:</span>
+                        <span style="color: var(--ds-text-secondary);"> {evo_info.get("breakthrough_traps", "—")}</span>
+                    </div>
+                    <div style="background: var(--ds-bg-surface); padding: 0.7rem 0.9rem; border-radius: 6px; border-left: 3px solid #EC4899;">
+                        <span style="font-weight: 700; color: #EC4899;">🎯 5. Bài học kế tiếp:</span>
+                        <span style="color: var(--ds-text-secondary);"> {evo_info.get("takeaway_next", "—")}</span>
+                    </div>
+                </div>
+
+                <div style="background: var(--ds-bg-teal-soft); border: 1px solid rgba(0,212,170,0.25); border-radius: 6px; padding: 0.7rem 0.9rem; margin-top: 0.6rem;">
+                    <span style="font-weight: 700; color: #00D4AA; font-size: 0.85rem;">🔬 Đánh giá phương pháp luận:</span>
+                    <span style="color: var(--ds-text-primary); font-size: 0.88rem; font-style: italic;"> "{evo_info.get("council_verdict", "—")}"</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        # Fallback to standard snapshot changes
+        changes = v_data.get("changes", {})
+        what = changes.get("what", v_data.get("description", "—"))
+        why = changes.get("why", "—")
+        result = changes.get("result", "—")
+        conclusion = changes.get("conclusion", "")
+
+        st.markdown(
+            f"""
+            <div style="background: var(--ds-bg-card); color: var(--ds-text-primary); border-left: 4px solid #00D4AA; border: 1px solid var(--ds-border); border-radius: 0 10px 10px 0; padding: 1rem 1.2rem; margin: 0.8rem 0;">
+                <div style="font-size: 1.05rem; font-weight: 700; color: #00D4AA; margin-bottom: 0.4rem;">
+                    📦 {v_name}
+                </div>
+                <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; font-size: 0.88rem; color: var(--ds-text-secondary);">
+                    <span style="color: var(--ds-text-muted); font-weight: 600;">📦 What:</span><span>{what}</span>
+                    <span style="color: var(--ds-text-muted); font-weight: 600;">💡 Why:</span><span>{why}</span>
+                    <span style="color: var(--ds-text-muted); font-weight: 600;">📊 Result:</span><span>{result}</span>
+                </div>
+                {f'<div style="margin-top:0.4rem; padding-top:0.4rem; border-top:1px solid var(--ds-border); font-size:0.88rem; color: var(--ds-text-primary);"><span style="color:#00D4AA; font-weight:600;">✅ Conclusion:</span> {conclusion}</div>' if conclusion else ""}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )

@@ -51,13 +51,13 @@ def page_training(results: dict[str, Any]) -> None:
 
     st.markdown(
         f"""
-    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem;
-                border: 1px solid rgba(0,212,170,0.2); border-left: 4px solid #00D4AA; color: var(--text-color) !important;">
-        <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--text-color);">
-            🔬 Quy Trình Huấn Luyện & Đánh Giá 5 Bước Chuẩn Khoa Học (Chương 3 §3.3–§3.5)
+    <div style="background: var(--ds-bg-card); border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.25); border-left: 4px solid #00D4AA; color: var(--ds-text-primary);">
+        <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--ds-text-primary);">
+            🔬 Quy Trình Huấn Luyện & Đánh Giá 5 Bước Chuẩn Khoa Học
         </div>
-        <div style="font-size: 0.85rem; opacity: 0.85; line-height: 1.6;">
-            <b>1. Tiền xử lý & Điền khuyết phân tầng:</b> Cubic Spline cho gap ≤ 6h, KNN (K=5) cho gap 6–24h, loại bỏ triệt để 19.810h khuyết > 24h.<br>
+        <div style="font-size: 0.85rem; color: var(--ds-text-secondary); line-height: 1.6;">
+            <b>1. Tiền xử lý & Điền khuyết phân tầng:</b> Linear (≤1h), Cubic Spline (1–6h), KNN (K=5) cho gap 6–24h, loại bỏ 19.810h khuyết > 24h.<br>
             <b>2. Kỹ nghệ 119 đặc trưng phi rò rỉ:</b> 100% biến rolling, diff, ewm tuân thủ nghiêm ngặt kỷ luật trễ <code>shift(1)</code>.<br>
             <b>3. Phân chia mỏ neo 80/10/10 & Purging Gap:</b> Tập Train (80%), Val (10% dừng sớm), Test (10% mỏ neo niêm phong) kèm vùng đệm cách ly theo horizon.<br>
             <b>4. Hàm mất mát mục tiêu:</b> LightGBM {cite("ke2017")} tối ưu trực tiếp MAE (L1 loss) qua Optuna TPE {cite("akiba2019")}; GRU {cite("cho2014")} tối ưu MSELoss qua AdamW + ReduceLROnPlateau.<br>
@@ -219,9 +219,9 @@ def page_training(results: dict[str, Any]) -> None:
 
             st.markdown(
                 f"""
-            <div style="background: var(--secondary-background-color); color: var(--text-color) !important; border-radius: 12px; padding: 1rem; margin: 1rem 0;
+            <div style="background: var(--ds-bg-card); color: var(--ds-text-primary); border-radius: 12px; padding: 1rem; margin: 1rem 0;
                         border: 1px solid rgba(0,212,170,0.2);">
-                <div style="font-size: 0.85rem; opacity: 0.65;">
+                <div style="font-size: 0.85rem; color: var(--ds-text-secondary);">
                     📊 Persistence MAE: {metrics["persist_mae"]:.2f} µg/m³ |
                     Test samples: {metrics["n_test"]} |
                     ⏱️ Training time: {metrics["training_time_s"]:.0f}s

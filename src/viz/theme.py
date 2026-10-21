@@ -98,23 +98,23 @@ PALETTE_DOMAIN = {
 THEMES = {
     "dark": {
         "figure_facecolor": "#0E1117",
-        "axes_facecolor": "#1A1D23",
-        "text_color": "#EAEAEA",
-        "text_muted": "#71717A",
-        "grid_color": "#2D3139",
-        "spine_color": "#2D3139",
-        "annotation_bg": "#1A1D23",
-        "annotation_edge": "none",
+        "axes_facecolor": "#111827",
+        "text_color": "#F8FAFC",
+        "text_muted": "#94A3B8",
+        "grid_color": "#1E293B",
+        "spine_color": "#334155",
+        "annotation_bg": "#111827",
+        "annotation_edge": "#334155",
     },
     "light": {
         "figure_facecolor": "#FFFFFF",
-        "axes_facecolor": "#FAFAFA",
-        "text_color": "#373737",
-        "text_muted": "#6B7280",
-        "grid_color": "#E5E7EB",
-        "spine_color": "#D1D5DB",
+        "axes_facecolor": "#F8FAFC",
+        "text_color": "#0F172A",
+        "text_muted": "#475569",
+        "grid_color": "#E2E8F0",
+        "spine_color": "#CBD5E1",
         "annotation_bg": "#FFFFFF",
-        "annotation_edge": "#D1D5DB",
+        "annotation_edge": "#CBD5E1",
     },
 }
 
@@ -225,13 +225,13 @@ def get_plotly_annotation_style(mode: str = "light", overrides: dict | None = No
     font_size = int(str(TOKENS["font_size_annotation"])) + 1
     font_style: dict[str, Any] = {
         "size": font_size,
-        "color": "#111111" if mode == "light" else theme["text_color"],
+        "color": "#0F172A" if mode == "light" else theme["text_color"],
     }
     base_style: dict[str, Any] = {
         "showarrow": False,
         "font": font_style,
-        "bgcolor": "rgba(255, 255, 255, 0.9)" if mode == "light" else "rgba(26, 29, 35, 0.9)",
-        "bordercolor": "rgba(0, 0, 0, 0.2)" if mode == "light" else "rgba(255, 255, 255, 0.2)",
+        "bgcolor": "rgba(255, 255, 255, 0.92)" if mode == "light" else "rgba(17, 24, 39, 0.92)",
+        "bordercolor": "rgba(15, 23, 42, 0.2)" if mode == "light" else "rgba(248, 250, 252, 0.2)",
         "borderwidth": 1,
         "borderpad": 3,
     }
@@ -300,10 +300,13 @@ def get_plotly_template(mode: str = "light") -> dict:
 
 
 def detect_streamlit_mode() -> str:
-    """Detect the current Streamlit theme (light/dark).
+    """Detect the current Streamlit theme ('light' or 'dark').
 
-    Uses st.get_option to check the configured theme base.
-    Falls back to 'dark' if detection fails.
+    Priority order:
+    1. Explicit user selection in sidebar (`st.session_state["ui_theme_mode"]`)
+    2. Live browser theme via `st.context.theme.type` (Streamlit >= 1.40)
+    3. Configured `theme.base` option in `.streamlit/config.toml`
+    4. Default fallback: 'dark'
 
     Returns:
         'light' or 'dark'.
@@ -311,9 +314,23 @@ def detect_streamlit_mode() -> str:
     try:
         import streamlit as st
 
-        base = st.get_option("theme.base")
-        if base == "light":
+        ui_pref = str(st.session_state.get("ui_theme_mode", "")).lower()
+        if "light" in ui_pref or "sáng" in ui_pref:
             return "light"
+        if "dark" in ui_pref or "tối" in ui_pref:
+            return "dark"
+
+        ctx_theme = getattr(getattr(st, "context", None), "theme", None)
+        if ctx_theme is not None:
+            t_type = getattr(ctx_theme, "type", None) or (
+                ctx_theme.get("type") if isinstance(ctx_theme, dict) else None
+            )
+            if t_type in ("light", "dark"):
+                return str(t_type)
+
+        base = st.get_option("theme.base")
+        if base in ("light", "dark"):
+            return str(base)
     except Exception:  # noqa: S110
         pass
     return "dark"
@@ -327,14 +344,20 @@ def apply_plotly_style(fig, height=450):
     """
     mode = detect_streamlit_mode()
     _template = get_plotly_template(mode)
+    theme = get_theme(mode)
     fig.update_layout(
         **_template["layout"],
         margin={"l": 20, "r": 20, "t": 50, "b": 80},
         height=height,
     )
-    # Force text annotations on traces to use the main text color instead of inheriting trace color
-    get_theme(mode)
-    # fig.update_traces(textfont_color="var(--text-color)")
-    fig.update_traces(outsidetextfont_color="#71717A", insidetextfont_color="#71717A", selector={"type": "bar"})
-    fig.update_traces(outsidetextfont_color="#71717A", insidetextfont_color="#71717A", selector={"type": "pie"})
+    fig.update_traces(
+        outsidetextfont_color=theme["text_color"],
+        insidetextfont_color=theme["text_color"],
+        selector={"type": "bar"},
+    )
+    fig.update_traces(
+        outsidetextfont_color=theme["text_color"],
+        insidetextfont_color=theme["text_color"],
+        selector={"type": "pie"},
+    )
     return fig

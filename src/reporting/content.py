@@ -56,6 +56,18 @@ class ContentManager:
         v_data = self.get_version_content(version)
         return v_data.get("overview", {}).get("experiments", [])
 
+    def get_evolution_matrix(self) -> dict[str, dict]:
+        """Get the full 10-version evolution matrix for scientific benchmark."""
+        return self.data.get("evolution_matrix", {})
+
+    def get_version_evolution(self, version: str) -> dict:
+        """Get detailed 5-pillar evolution info for a specific version."""
+        matrix = self.get_evolution_matrix()
+        if version in matrix:
+            return matrix[version]
+        v_data = self.get_version_content(version)
+        return v_data.get("evolution_details", {})
+
     # === Helpers for Multi-Horizon Page ===
     def get_multi_horizon_insight(self) -> dict:
         return self.get_global_content().get("multi_horizon", {}).get("insight_no_single_best", {})

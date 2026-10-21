@@ -122,22 +122,28 @@ def chart(
         "font": {
             "family": _FONT_WEB,
             "size": TOKENS["font_size_base"],
+            "color": theme["text_color"],
         },
-        # Title — suppressed per QĐ 1799 Phụ lục 8
         # Caption goes below chart via figure_caption().
         # Axes
         "xaxis": {
-            "title": {"text": xaxis_title, "font": {"size": TOKENS["font_size_label"]}},
+            "title": {
+                "text": xaxis_title,
+                "font": {"size": TOKENS["font_size_label"], "color": theme["text_color"]},
+            },
             "gridcolor": theme["grid_color"],
             "zerolinecolor": theme["grid_color"],
-            "tickfont": {"size": TOKENS["font_size_tick"]},
+            "tickfont": {"size": TOKENS["font_size_tick"], "color": theme["text_muted"]},
             "showgrid": True,
         },
         "yaxis": {
-            "title": {"text": yaxis_title, "font": {"size": TOKENS["font_size_label"]}},
+            "title": {
+                "text": yaxis_title,
+                "font": {"size": TOKENS["font_size_label"], "color": theme["text_color"]},
+            },
             "gridcolor": theme["grid_color"],
             "zerolinecolor": theme["grid_color"],
-            "tickfont": {"size": TOKENS["font_size_tick"]},
+            "tickfont": {"size": TOKENS["font_size_tick"], "color": theme["text_muted"]},
             "showgrid": True,
         },
         # Legend (IEEE standard: bottom-center, horizontal)
@@ -148,7 +154,7 @@ def chart(
             "y": -0.18,
             "xanchor": "center",
             "x": 0.5,
-            "font": {"size": TOKENS["font_size_legend"]},
+            "font": {"size": TOKENS["font_size_legend"], "color": theme["text_color"]},
         },
         "showlegend": showlegend,
         # Hover
@@ -239,17 +245,14 @@ def render_chart(
 
 
 def figure_caption(text: str) -> None:
-    """Render a figure caption below a chart.
-
-    Per QĐ 1799 Phụ lục 8: "đã có tên hình đầy đủ nghĩa ngay phía
-    dưới hình".  Call this **immediately after** ``render_chart()``.
+    """Render a figure caption below a chart with theme-aware contrast.
 
     Args:
         text: Caption text (e.g. "Phân bổ khoảng gaps theo kích thước").
     """
     st.markdown(
-        f"<div style='text-align:center; margin-top:-10px; margin-bottom:18px;'>"
-        f"<span style='font-size:13px; color:#374151;'>{text}</span>"
+        f"<div style='text-align:center; margin-top:-6px; margin-bottom:18px;'>"
+        f"<span style='font-size:13px; color:var(--ds-text-muted, var(--text-color)); opacity:0.88;'>{text}</span>"
         f"</div>",
         unsafe_allow_html=True,
     )
@@ -260,20 +263,20 @@ def figure_caption_numbered(
     number: int,
     text: str,
 ) -> None:
-    """Render a numbered figure caption per QĐ 1799 format.
+    """Render a numbered figure caption with theme-aware contrast.
 
     Format: "Hình {chapter}.{number}. {text}"
     Example: "Hình 4.1. Bootstrap 95% CI cho MASE"
 
     Args:
-        chapter: Thesis chapter number (e.g. 4 for Results).
-        number: Figure number within the chapter.
+        chapter: Section/chapter number (e.g. 4 for Results).
+        number: Figure number within the section.
         text: Caption description.
     """
     st.markdown(
-        f"<div style='text-align:center; margin-top:-10px; margin-bottom:18px;'>"
-        f"<span style='font-size:13px; color:#374151;'>"
-        f"<b>Hình {chapter}.{number}.</b> {text}"
+        f"<div style='text-align:center; margin-top:-6px; margin-bottom:18px;'>"
+        f"<span style='font-size:13px; color:var(--ds-text-muted, var(--text-color)); opacity:0.88;'>"
+        f"<b style='color:var(--ds-text-primary, var(--text-color));'>Hình {chapter}.{number}.</b> {text}"
         f"</span></div>",
         unsafe_allow_html=True,
     )

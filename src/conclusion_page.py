@@ -1,11 +1,10 @@
-"""Page: Kết Luận & Hướng Phát Triển — Thesis conclusion dashboard.
+"""Page: Kết Luận & Hướng Phát Triển — System technical conclusion and roadmap.
 
-Designed for academic presentation per CTU-QD1799 standards.
 Sections:
-    1. 5.1 Kết luận chính của Đề án
-    2. 5.2 Khả năng ứng dụng thực tế
-    3. 5.3 Hạn chế của nghiên cứu
-    4. 5.4 Hướng phát triển (với ma trận khả thi & tác động)
+    1. 5.1 Kết luận kỹ thuật hệ thống
+    2. 5.2 Khả năng ứng dụng vận hành
+    3. 5.3 Hạn chế kỹ thuật hệ thống
+    4. 5.4 Lộ trình nâng cấp (với ma trận khả thi & tác động)
 """
 
 from __future__ import annotations
@@ -73,8 +72,8 @@ def _render_summary(section_header, insight_card):
 
     st.markdown(
         f"""
-    <div style="background: var(--secondary-background-color); border-radius: 12px;
-                padding: 1.5rem; border-left: 4px solid #00D4AA; margin-bottom: 1.5rem;">
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary); border-radius: 12px;
+                padding: 1.5rem; border: 1px solid var(--ds-border); border-left: 4px solid var(--ds-accent); margin-bottom: 1.5rem;">
         <div style="font-size: 0.95rem; line-height: 1.7;">
             Hệ thống dự báo nồng độ bụi mịn PM2.5 được xây dựng và kiểm chứng trên dữ liệu cảm biến IoT thực tế
             tại Sa Đéc, Đồng Tháp. Quy trình hoàn thiện qua <b>9 phiên bản</b> cải tiến liên tục,
@@ -86,7 +85,7 @@ def _render_summary(section_header, insight_card):
         unsafe_allow_html=True,
     )
 
-    # 6 Quantitative Findings matching Chapter 5.1 verbatim
+    # 6 Quantitative Findings
     section_header("📊", "6 Phát Hiện & Kết Quả Kỹ Thuật Cốt Lõi")
 
     findings = [
@@ -98,7 +97,7 @@ def _render_summary(section_header, insight_card):
                 f"Xây dựng pipeline 7 bước tiền xử lý đạt chuẩn kiểm thử <b>250 bài kiểm thử tự động</b> "
                 f"(unit & integration tests). Việc áp dụng nghiêm ngặt phép trễ <code>shift(1)</code> giúp "
                 f"triệt tiêu hoàn toàn rò rỉ dữ liệu, đưa chỉ số đánh giá về giá trị thực nghiệm trung thực "
-                f"(<b>R² đạt 0,11–0,27</b>), loại bỏ triệt để hiện tượng R² ảo xấp xỉ 1,0 do nhìn trộm tương lai {cite('hyndman2021')}."
+                f"(<b>R² đạt 0,11–0,27</b>), loại bỏ triệt để hiện tượng R² phóng đại xấp xỉ 1,0 do rò rỉ tương lai {cite('hyndman2021')}."
             ),
         },
         {
@@ -114,13 +113,13 @@ def _render_summary(section_header, insight_card):
         },
         {
             "num": "3",
-            "title": "Xác lập điểm ngọt độ phân giải 30 phút (Sweet Spot Resolution)",
+            "title": "Xác lập tần suất lấy mẫu tối ưu 30 phút (Optimal Sampling Resolution)",
             "badge": ">80% Top Cases",
             "detail": (
                 "Chứng minh bằng thực nghiệm: độ phân giải <b>30 phút</b> đạt hiệu năng dự báo tối ưu "
                 "trên <b>> 80% các trường hợp đánh giá</b> ở mốc 6 giờ và 24 giờ. Tần suất 30 phút mang lại "
-                "tỷ lệ tín hiệu trên nhiễu (SNR) lý tưởng, loại bỏ nhiễu ngẫu nhiên vi mô của chuỗi 15 phút, "
-                "vượt thoát bẫy tự tương quan của chuỗi 1 giờ, đồng thời tiết kiệm 50% chi phí tính toán."
+                "tỷ lệ tín hiệu trên nhiễu (SNR) cân bằng, giảm thiểu nhiễu ngẫu nhiên vi mô của chuỗi 15 phút, "
+                "vượt qua quán tính tự tương quan của chuỗi 1 giờ, đồng thời tiết kiệm 50% chi phí tính toán."
             ),
         },
         {
@@ -162,21 +161,21 @@ def _render_summary(section_header, insight_card):
     for f in findings:
         st.markdown(
             f"""
-        <div style="background: var(--secondary-background-color); border-radius: 10px;
+        <div style="background: var(--ds-bg-card); border-radius: 10px;
                     padding: 1.1rem 1.3rem; margin-bottom: 0.9rem;
-                    border-left: 4px solid #00D4AA;">
+                    border: 1px solid var(--ds-border); border-left: 4px solid var(--ds-accent);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                <div style="font-weight: 700; font-size: 1rem; color: var(--text-color);">
-                    <span style="background: rgba(0,212,170,0.15); color: #00D4AA; padding: 0.15rem 0.55rem;
+                <div style="font-weight: 700; font-size: 1rem; color: var(--ds-text-primary);">
+                    <span style="background: rgba(0,212,170,0.15); color: var(--ds-accent); padding: 0.15rem 0.55rem;
                                  border-radius: 4px; margin-right: 0.5rem;">{f["num"]}</span>
                     {f["title"]}
                 </div>
-                <span style="background: rgba(0,212,170,0.12); color: #00D4AA; font-size: 0.78rem;
-                             font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 6px;">
+                <span style="background: rgba(0,212,170,0.12); color: var(--ds-accent); font-size: 0.78rem;
+                             font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px;">
                     {f["badge"]}
                 </span>
             </div>
-            <div style="font-size: 0.88rem; opacity: 0.88; line-height: 1.65; color: var(--text-color);">
+            <div style="font-size: 0.88rem; line-height: 1.65; color: var(--ds-text-secondary);">
                 {f["detail"]}
             </div>
         </div>
@@ -193,7 +192,7 @@ def _render_summary(section_header, insight_card):
             "🔬",
             "Giá Trị Nghiên Cứu",
             "Phương pháp luận Multi-Resolution × Multi-Horizon đầu tiên cho bụi mịn PM2.5 IoT tại ĐBSCL. "
-            "Chứng minh thực nghiệm điểm ngọt 30 phút và cơ chế vượt bẫy tự tương quan.",
+            "Chứng minh thực nghiệm tần suất lấy mẫu tối ưu 30 phút và cơ chế vượt quán tính tự tương quan.",
         ),
         (
             "🛡️",
@@ -212,14 +211,14 @@ def _render_summary(section_header, insight_card):
         with col:
             st.markdown(
                 f"""
-            <div style="background: var(--secondary-background-color); border-radius: 12px;
+            <div style="background: var(--ds-bg-card); border-radius: 12px;
                         padding: 1.3rem; text-align: center; min-height: 200px;
-                        border: 1px solid rgba(0,212,170,0.25);">
+                        border: 1px solid var(--ds-border);">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">{icon}</div>
-                <div style="font-weight: 700; color: #00D4AA; font-size: 1.02rem; margin-bottom: 0.6rem;">
+                <div style="font-weight: 700; color: var(--ds-accent); font-size: 1.02rem; margin-bottom: 0.6rem;">
                     {label}
                 </div>
-                <div style="font-size: 0.85rem; opacity: 0.85; line-height: 1.6; color: var(--text-color);">
+                <div style="font-size: 0.85rem; line-height: 1.6; color: var(--ds-text-secondary);">
                     {desc}
                 </div>
             </div>
@@ -239,9 +238,9 @@ def _render_practical_applications(section_header, insight_card):
 
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); border-radius: 12px;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary); border-radius: 12px;
                 padding: 1.3rem 1.5rem; margin-bottom: 1.5rem;
-                border-left: 4px solid #00D4AA; font-size: 0.92rem; line-height: 1.65;">
+                border: 1px solid var(--ds-border); border-left: 4px solid var(--ds-accent); font-size: 0.92rem; line-height: 1.65;">
         Hệ thống được thiết kế hướng tới <b>3 kịch bản vận hành thực tế</b> phục vụ công tác giám sát chất lượng không khí,
         bảo vệ sức khỏe cộng đồng và sẵn sàng tích hợp trung tâm điều hành đô thị thông minh tại khu vực Đồng bằng sông Cửu Long.
     </div>
@@ -254,13 +253,13 @@ def _render_practical_applications(section_header, insight_card):
     with app_columns[0]:
         st.markdown(
             f"""
-        <div style="background: var(--secondary-background-color); border-radius: 12px;
-                    padding: 1.4rem; border: 1px solid rgba(0,212,170,0.25); height: 100%;">
+        <div style="background: var(--ds-bg-card); border-radius: 12px;
+                    padding: 1.4rem; border: 1px solid var(--ds-border); height: 100%;">
             <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏱️</div>
-            <div style="font-weight: 700; font-size: 1.05rem; color: #00D4AA; margin-bottom: 0.6rem;">
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--ds-accent); margin-bottom: 0.6rem;">
                 1. Cảnh Báo Sớm 6h – 24h
             </div>
-            <div style="font-size: 0.87rem; line-height: 1.6; opacity: 0.9; color: var(--text-color);">
+            <div style="font-size: 0.87rem; line-height: 1.6; color: var(--ds-text-secondary);">
                 <b>Đối tượng hưởng lợi:</b> Chi cục Bảo vệ Môi trường, Sở Nông nghiệp & Môi trường,
                 các cơ quan y tế dự phòng tại Đồng Tháp và ĐBSCL.<br><br>
                 <b>Giá trị nghiệp vụ:</b> Cung cấp dự báo nồng độ bụi trước 6 đến 24 giờ với
@@ -275,13 +274,13 @@ def _render_practical_applications(section_header, insight_card):
     with app_columns[1]:
         st.markdown(
             """
-        <div style="background: var(--secondary-background-color); border-radius: 12px;
-                    padding: 1.4rem; border: 1px solid rgba(0,212,170,0.25); height: 100%;">
+        <div style="background: var(--ds-bg-card); border-radius: 12px;
+                    padding: 1.4rem; border: 1px solid var(--ds-border); height: 100%;">
             <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚨</div>
-            <div style="font-weight: 700; font-size: 1.05rem; color: #00D4AA; margin-bottom: 0.6rem;">
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--ds-accent); margin-bottom: 0.6rem;">
                 2. Cơ Chế 2 Cấp Độ Nền
             </div>
-            <div style="font-size: 0.87rem; line-height: 1.6; opacity: 0.9; color: var(--text-color);">
+            <div style="font-size: 0.87rem; line-height: 1.6; color: var(--ds-text-secondary);">
                 <b>Chỉ báo ra quyết định điều hành:</b><br>
                 • <b>Ngưỡng chuyển pha 14–17 µg/m³:</b> Làm chỉ báo cảnh báo sớm (Early Warning)
                 cho các nhóm dân cư nhạy cảm (trẻ em, người già, người mắc bệnh hô hấp).<br><br>
@@ -296,13 +295,13 @@ def _render_practical_applications(section_header, insight_card):
     with app_columns[2]:
         st.markdown(
             """
-        <div style="background: var(--secondary-background-color); border-radius: 12px;
-                    padding: 1.4rem; border: 1px solid rgba(0,212,170,0.25); height: 100%;">
+        <div style="background: var(--ds-bg-card); border-radius: 12px;
+                    padding: 1.4rem; border: 1px solid var(--ds-border); height: 100%;">
             <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏙️</div>
-            <div style="font-weight: 700; font-size: 1.05rem; color: #00D4AA; margin-bottom: 0.6rem;">
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--ds-accent); margin-bottom: 0.6rem;">
                 3. Tích Hợp Smart City IOC
             </div>
-            <div style="font-size: 0.87rem; line-height: 1.6; opacity: 0.9; color: var(--text-color);">
+            <div style="font-size: 0.87rem; line-height: 1.6; color: var(--ds-text-secondary);">
                 <b>Kiến trúc phần mềm chuẩn hóa:</b><br>
                 Hệ thống phần mềm 3 tầng (FastAPI Backend + Streamlit Dashboard + Supabase/PostgreSQL)
                 đã được <b>đóng gói hoàn chỉnh bằng Docker Compose</b>.<br><br>
@@ -319,9 +318,9 @@ def _render_practical_applications(section_header, insight_card):
 
     st.markdown(
         """
-    <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.5rem;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.5rem; color: var(--ds-text-primary);">
         <thead>
-            <tr style="border-bottom: 2px solid rgba(0,212,170,0.3);">
+            <tr style="border-bottom: 2px solid var(--ds-border-accent);">
                 <th style="text-align: left; padding: 0.7rem;">Cấp độ Nồng độ</th>
                 <th style="text-align: center; padding: 0.7rem;">Khoảng PM2.5</th>
                 <th style="text-align: left; padding: 0.7rem;">Trạng thái Khí quyển</th>
@@ -330,22 +329,22 @@ def _render_practical_applications(section_header, insight_card):
             </tr>
         </thead>
         <tbody>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <td style="padding: 0.6rem; font-weight: 600; color: #10B981;">🟢 Cấp 1: An toàn</td>
+            <tr style="border-bottom: 1px solid var(--ds-border);">
+                <td style="padding: 0.6rem; font-weight: 700; color: var(--ds-accent);">🟢 Cấp 1: An toàn</td>
                 <td style="text-align: center; font-family: monospace;">&lt; 14 µg/m³</td>
                 <td style="padding: 0.6rem;">Khí quyển tự làm sạch hiệu quả (SHAP &lt; 0)</td>
                 <td style="padding: 0.6rem;">Hoạt động ngoài trời bình thường</td>
                 <td style="padding: 0.6rem;">Duy trì giám sát thường quy</td>
             </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(245,158,11,0.05);">
-                <td style="padding: 0.6rem; font-weight: 600; color: #F59E0B;">🟡 Cấp 2: Cảnh báo sớm</td>
+            <tr style="border-bottom: 1px solid var(--ds-border); background: rgba(245,158,11,0.06);">
+                <td style="padding: 0.6rem; font-weight: 700; color: var(--ds-warning);">🟡 Cấp 2: Cảnh báo sớm</td>
                 <td style="text-align: center; font-family: monospace;">14 – 17 µg/m³</td>
                 <td style="padding: 0.6rem;">Vùng chuyển pha (Tipping Point), SHAP đảo chiều</td>
                 <td style="padding: 0.6rem;">Nhóm nhạy cảm hạn chế thể thao ngoài trời</td>
                 <td style="padding: 0.6rem;">Phát cảnh báo sớm trên app đô thị / đài truyền thanh</td>
             </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(239,68,68,0.05);">
-                <td style="padding: 0.6rem; font-weight: 600; color: #EF4444;">🔴 Cấp 3: Can thiệp khẩn</td>
+            <tr style="border-bottom: 1px solid var(--ds-border); background: rgba(239,68,68,0.06);">
+                <td style="padding: 0.6rem; font-weight: 700; color: var(--ds-danger);">🔴 Cấp 3: Can thiệp khẩn</td>
                 <td style="text-align: center; font-family: monospace;">&gt; 17 µg/m³</td>
                 <td style="padding: 0.6rem;">Bùng phát tích tụ phi tuyến, gia tốc khi độ ẩm thấp</td>
                 <td style="padding: 0.6rem;">Toàn dân đeo khẩu trang lọc bụi khi ra ngoài</td>
@@ -378,9 +377,9 @@ def _render_limitations(section_header, insight_card):
 
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); border-radius: 12px;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary); border-radius: 12px;
                 padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
-                border-left: 4px solid #EF4444; font-size: 0.92rem; line-height: 1.65;">
+                border: 1px solid var(--ds-border); border-left: 4px solid var(--ds-danger); font-size: 0.92rem; line-height: 1.65;">
         Để phản ánh trung thực năng lực vận hành thực tế của hệ thống, ghi nhận <b>5 giới hạn kỹ thuật khách quan</b>
         trong quá trình khai thác dữ liệu cảm biến IoT và triển khai mô hình:
     </div>
@@ -398,10 +397,10 @@ def _render_limitations(section_header, insight_card):
             "desc": (
                 "Dữ liệu quan trắc bị gián đoạn trung bình <b>89 ngày/năm</b> do sự cố mất điện, lỗi đường truyền kết nối "
                 "và bảo trì thiết bị cảm biến ngoài trời, đặc biệt tập trung tại <b>tháng 02 và tháng 09</b>. "
-                "Tỷ lệ khuyết thiếu tích lũy lên tới 74%, buộc đề án phải loại bỏ 19.810 giờ khuyết dài >24h, "
+                "Tỷ lệ khuyết thiếu tích lũy lên tới 74%, buộc hệ thống phải loại bỏ 19.810 giờ khuyết dài >24h, "
                 "làm hạn chế khả năng học chu kỳ mùa vụ dài hạn của các mô hình học sâu."
             ),
-            "academic_risk": "Mất 74% chuỗi thời gian, nguy cơ tạo ảo giác nếu gán nhân tạo, khó học mùa vụ liên năm",
+            "academic_risk": "Mất 74% chuỗi thời gian, nguy cơ làm sai lệch phân phối nếu gán nhân tạo, khó học mùa vụ liên năm",
             "sol_title": "Hardware Ring-Buffer (MicroSD/SPI Flash 64MB) + Nguồn LiFePO4/Solar & Thuật Toán Neural ODE",
             "sol_desc": (
                 "<b>Về phần cứng:</b> Trang bị bộ nhớ đệm vòng Hardware Ring-Buffer trên thẻ nhớ MicroSD/SPI Flash 64MB "
@@ -508,29 +507,29 @@ def _render_limitations(section_header, insight_card):
     for lim in official_limitations:
         st.markdown(
             f"""
-        <div style="background: var(--secondary-background-color); border-radius: 10px 10px 0 0;
+        <div style="background: var(--ds-bg-card); border-radius: 10px 10px 0 0;
                     padding: 1.1rem 1.3rem; margin-bottom: 0;
-                    border-left: 4px solid #EF4444; border-bottom: 1px dashed rgba(255,255,255,0.08);">
-            <div style="font-weight: 700; font-size: 0.98rem; margin-bottom: 0.35rem; color: var(--text-color);">
+                    border: 1px solid var(--ds-border); border-left: 4px solid var(--ds-danger); border-bottom: 1px dashed var(--ds-border);">
+            <div style="font-weight: 700; font-size: 0.98rem; margin-bottom: 0.35rem; color: var(--ds-text-primary);">
                 <span style="font-size: 1.1rem; margin-right: 0.4rem;">{lim["icon"]}</span>
-                <span style="background: rgba(239,68,68,0.15); color: #EF4444; padding: 0.15rem 0.5rem;
+                <span style="background: rgba(239,68,68,0.15); color: var(--ds-danger); padding: 0.15rem 0.5rem;
                              border-radius: 4px; font-size: 0.85rem; margin-right: 0.5rem;">Hạn chế #{lim["id"]}</span>
                 {lim["title"]}
             </div>
-            <div style="font-size: 0.88rem; line-height: 1.6; opacity: 0.9; color: var(--text-color); padding-left: 1.8rem;">
+            <div style="font-size: 0.88rem; line-height: 1.6; color: var(--ds-text-secondary); padding-left: 1.8rem;">
                 {lim["desc"]}
             </div>
         </div>
-        <div style="background: rgba(0, 212, 170, 0.05); border-radius: 0 0 10px 10px;
+        <div style="background: var(--ds-bg-elevated); border-radius: 0 0 10px 10px;
                     padding: 1.1rem 1.3rem; margin-bottom: 1.2rem;
-                    border-left: 4px solid #00D4AA; border-top: none;">
-            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.35rem; color: #00D4AA;">
+                    border: 1px solid var(--ds-border); border-left: 4px solid var(--ds-accent); border-top: none;">
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.35rem; color: var(--ds-accent);">
                 <span style="font-size: 1.1rem; margin-right: 0.4rem;">🚀</span>
-                <span style="background: rgba(0,212,170,0.15); color: #00D4AA; padding: 0.15rem 0.5rem;
-                             border-radius: 4px; font-size: 0.85rem; margin-right: 0.5rem;">Giải pháp đột phá #{lim["id"]}</span>
+                <span style="background: rgba(0,212,170,0.15); color: var(--ds-accent); padding: 0.15rem 0.5rem;
+                             border-radius: 4px; font-size: 0.85rem; margin-right: 0.5rem;">Giải pháp kỹ thuật #{lim["id"]}</span>
                 {lim["sol_title"]}
             </div>
-            <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-color); padding-left: 1.8rem;">
+            <div style="font-size: 0.88rem; line-height: 1.6; color: var(--ds-text-secondary); padding-left: 1.8rem;">
                 {lim["sol_desc"]}
             </div>
         </div>
@@ -541,60 +540,60 @@ def _render_limitations(section_header, insight_card):
     # Limitation-to-Solution Roadmap Table
     st.markdown(
         """
-    <div style="font-weight: 700; font-size: 1.02rem; margin: 1.8rem 0 0.8rem 0; color: var(--text-color);">
-        📊 Bảng 5.3b: Ma Trận Đối Ứng Hạn Chế ➔ Giải Pháp Công Nghệ Đột Phá (Limitation-to-Solution Roadmap)
+    <div style="font-weight: 700; font-size: 1.02rem; margin: 1.8rem 0 0.8rem 0; color: var(--ds-text-primary);">
+        📊 Ma Trận Đối Ứng Hạn Chế ➔ Giải Pháp Công Nghệ (Limitation-to-Solution Roadmap)
     </div>
-    <table style="width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-bottom: 1.5rem;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-bottom: 1.5rem; color: var(--ds-text-primary);">
         <thead>
-            <tr style="border-bottom: 2px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.03);">
+            <tr style="border-bottom: 2px solid var(--ds-border); background: var(--ds-bg-elevated);">
                 <th style="text-align: center; padding: 0.6rem; width: 8%;">Mã</th>
                 <th style="text-align: left; padding: 0.6rem; width: 22%;">Hạn Chế Cốt Lõi</th>
-                <th style="text-align: left; padding: 0.6rem; width: 22%;">Rủi Ro Học Thuật</th>
-                <th style="text-align: left; padding: 0.6rem; width: 24%;">Giải Pháp Công Nghệ Đột Phá</th>
+                <th style="text-align: left; padding: 0.6rem; width: 22%;">Rủi Ro Kỹ Thuật</th>
+                <th style="text-align: left; padding: 0.6rem; width: 24%;">Giải Pháp Công Nghệ</th>
                 <th style="text-align: left; padding: 0.6rem; width: 14%;">Tác Động Định Lượng</th>
                 <th style="text-align: center; padding: 0.6rem; width: 10%;">Mức Độ Sẵn Sàng</th>
             </tr>
         </thead>
         <tbody>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(239,68,68,0.02);">
-                <td style="text-align: center; font-weight: 700; color: #EF4444;">H-1</td>
+            <tr style="border-bottom: 1px solid var(--ds-border);">
+                <td style="text-align: center; font-weight: 700; color: var(--ds-danger);">H-1</td>
                 <td style="padding: 0.6rem;">Gián đoạn dữ liệu quan trắc 89 ngày/năm (Drop 19.810h)</td>
                 <td style="padding: 0.6rem;">Mất 74% chuỗi thời gian, khó học mùa vụ dài hạn đa năm</td>
-                <td style="padding: 0.6rem; font-weight: 600; color: #00D4AA;">Hardware Ring-Buffer 64MB + Solar &amp; Neural ODE</td>
+                <td style="padding: 0.6rem; font-weight: 600; color: var(--ds-accent);">Hardware Ring-Buffer 64MB + Solar &amp; Neural ODE</td>
                 <td style="padding: 0.6rem;">Giảm mất mẫu 74% → &lt; 3%; học động lực liên tục không cắt phân đoạn</td>
-                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(0,212,170,0.15); color: #00D4AA; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem;">Sẵn sàng</span></td>
+                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(0,212,170,0.15); color: var(--ds-accent); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem; font-weight: 700;">Sẵn sàng</span></td>
             </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <td style="text-align: center; font-weight: 700; color: #EF4444;">H-2</td>
+            <tr style="border-bottom: 1px solid var(--ds-border);">
+                <td style="text-align: center; font-weight: 700; color: var(--ds-danger);">H-2</td>
                 <td style="padding: 0.6rem;">Trạm quan trắc đơn lẻ tại trung tâm TP. Sa Đéc</td>
                 <td style="padding: 0.6rem;">Chưa bao quát phân hóa không gian vi khí hậu toàn huyện</td>
-                <td style="padding: 0.6rem; font-weight: 600; color: #00D4AA;">Spatial Super-Resolution PINN + Vệ tinh CAMS Reanalysis</td>
+                <td style="padding: 0.6rem; font-weight: 600; color: var(--ds-accent);">Spatial Super-Resolution PINN + Vệ tinh CAMS Reanalysis</td>
                 <td style="padding: 0.6rem;">Downscaling lưới 40 km → vi mô 1 km; Heatmap 2D toàn huyện</td>
-                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(245,158,11,0.15); color: #F59E0B; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem;">Thử nghiệm</span></td>
+                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(245,158,11,0.15); color: var(--ds-warning); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem; font-weight: 700;">Thử nghiệm</span></td>
             </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(239,68,68,0.02);">
-                <td style="text-align: center; font-weight: 700; color: #EF4444;">H-3</td>
+            <tr style="border-bottom: 1px solid var(--ds-border);">
+                <td style="text-align: center; font-weight: 700; color: var(--ds-danger);">H-3</td>
                 <td style="padding: 0.6rem;">Sai số phần cứng cảm biến quang học chi phí thấp (±3 µg/m³)</td>
                 <td style="padding: 0.6rem;">Giới hạn sai số tối thiểu (Error floor) do hạt hơi ẩm tán xạ</td>
-                <td style="padding: 0.6rem; font-weight: 600; color: #00D4AA;">Hiệu chỉnh bẫy ẩm Kohler &amp; Công thức US-EPA</td>
+                <td style="padding: 0.6rem; font-weight: 600; color: var(--ds-accent);">Hiệu chỉnh bẫy ẩm Kohler &amp; Công thức US-EPA</td>
                 <td style="padding: 0.6rem;">Triệt tiêu tán xạ ẩm khi RH &gt; 80%, Error Floor ±3 → ±1,1 µg/m³</td>
-                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(0,212,170,0.15); color: #00D4AA; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem;">Sẵn sàng</span></td>
+                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(0,212,170,0.15); color: var(--ds-accent); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem; font-weight: 700;">Sẵn sàng</span></td>
             </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <td style="text-align: center; font-weight: 700; color: #EF4444;">H-4</td>
+            <tr style="border-bottom: 1px solid var(--ds-border);">
+                <td style="text-align: center; font-weight: 700; color: var(--ds-danger);">H-4</td>
                 <td style="padding: 0.6rem;">Chưa tích hợp biến gió và áp suất khí quyển</td>
                 <td style="padding: 0.6rem;">Thiếu trường động học, phản ứng chậm trước bụi ngoại lai</td>
-                <td style="padding: 0.6rem; font-weight: 600; color: #00D4AA;">Đồng hóa Vector gió ERA5-Land &amp; Ventilation Index</td>
+                <td style="padding: 0.6rem; font-weight: 600; color: var(--ds-accent);">Đồng hóa Vector gió ERA5-Land &amp; Ventilation Index</td>
                 <td style="padding: 0.6rem;">Phát hiện sớm bụi ngoại lai trước 3–6 giờ; tăng 12% MASE tại 6h</td>
-                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(0,212,170,0.15); color: #00D4AA; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem;">Sẵn sàng</span></td>
+                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(0,212,170,0.15); color: var(--ds-accent); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem; font-weight: 700;">Sẵn sàng</span></td>
             </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(239,68,68,0.02);">
-                <td style="text-align: center; font-weight: 700; color: #EF4444;">H-5</td>
+            <tr style="border-bottom: 1px solid var(--ds-border);">
+                <td style="text-align: center; font-weight: 700; color: var(--ds-danger);">H-5</td>
                 <td style="padding: 0.6rem;">Độ lệch dự báo an toàn của Ensemble (Bias = +1,30 µg/m³ tại 6h)</td>
                 <td style="padding: 0.6rem;">Dự báo thiên cao, tiềm ẩn nguy cơ báo động mệt mỏi (Alarm Fatigue)</td>
-                <td style="padding: 0.6rem; font-weight: 600; color: #00D4AA;">Dynamic Conformal Bias Calibration (Isotonic + Kalman)</td>
+                <td style="padding: 0.6rem; font-weight: 600; color: var(--ds-accent);">Dynamic Conformal Bias Calibration (Isotonic + Kalman)</td>
                 <td style="padding: 0.6rem;">Kéo Mean Bias từ +1,30 về ±0,08 µg/m³, triệt tiêu Alarm Fatigue</td>
-                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(0,212,170,0.15); color: #00D4AA; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem;">Sẵn sàng</span></td>
+                <td style="text-align: center; padding: 0.6rem;"><span style="background: rgba(0,212,170,0.15); color: var(--ds-accent); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem; font-weight: 700;">Sẵn sàng</span></td>
             </tr>
         </tbody>
     </table>
@@ -603,7 +602,7 @@ def _render_limitations(section_header, insight_card):
     )
 
     # Ablation Study: Outlier Removal Trap
-    section_header("🧪", "Thực Nghiệm Bóc Tách: Bẫy Cắt Lọc Ngoại Lai (Ablation Study - Hình 4.12)")
+    section_header("🧪", "Thực Nghiệm Bóc Tách: Tác Động Của Cắt Lọc Ngoại Lai (Ablation Study)")
 
     try:
         comp_path = PROJECT_ROOT / "research" / "experiments" / "v10_ablation" / "comparison_table.json"
@@ -613,8 +612,8 @@ def _render_limitations(section_header, insight_card):
 
             st.markdown(
                 """
-                <div style="background: rgba(239, 68, 68, 0.05); padding: 1rem; border-left: 3px solid #EF4444; border-radius: 4px; margin-bottom: 1rem;">
-                    <span style="font-size: 0.95em;"><b>"False Sense of Accuracy" (Ảo giác chính xác):</b> Thực nghiệm bóc tách (Ablation Study) cố tình dùng thuật toán IQR thay cho Domain Bounds. Kết quả: IQR đã cắt mất 66 đợt ô nhiễm nghiêm trọng (> 54 µg/m³). Mô hình trông <b>chính xác hơn (MASE thấp hơn)</b> ở các horizon ngắn, nhưng thực chất đã bị "mù" trước các đợt bùng phát ô nhiễm thật sự.</span>
+                <div style="background: rgba(239, 68, 68, 0.06); color: var(--ds-text-primary); padding: 1rem; border-left: 3px solid var(--ds-danger); border-radius: 4px; margin-bottom: 1rem;">
+                    <span style="font-size: 0.95em;"><b>"False Sense of Accuracy" (Sai lệch giảm sai số giả tạo):</b> Thực nghiệm bóc tách (Ablation Study) sử dụng quy tắc IQR tĩnh thay cho ngưỡng vật lý (Domain Bounds). Kết quả: IQR đã cắt mất 66 đợt ô nhiễm nghiêm trọng (&gt; 54 µg/m³). Mô hình có chỉ số MASE thấp hơn ở các horizon ngắn do phương sai chuỗi bị thu hẹp giả tạo, nhưng mất khả năng cảnh báo các đợt bùng phát ô nhiễm thực tế.</span>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -626,7 +625,7 @@ def _render_limitations(section_header, insight_card):
                     if "v9_mase" in metrics:
                         delta = metrics["delta_mase"]
                         note = metrics.get("note", "")
-                        status = "🚨 Ảo giác (MASE giảm ảo)" if note == "FALSE ACCURACY" else "✅ Domain tốt hơn"
+                        status = "🚨 Sai lệch giảm sai số giả tạo" if note == "FALSE ACCURACY" else "✅ Domain tốt hơn"
 
                         rows.append(
                             {
@@ -719,9 +718,9 @@ def _render_future_work(section_header, insight_card):
 
     st.markdown(
         """
-    <div style="background: var(--secondary-background-color); border-radius: 12px;
+    <div style="background: var(--ds-bg-card); color: var(--ds-text-primary); border-radius: 12px;
                 padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
-                border-left: 4px solid #00D4AA; font-size: 0.92rem; line-height: 1.65;">
+                border: 1px solid var(--ds-border); border-left: 4px solid var(--ds-accent); font-size: 0.92rem; line-height: 1.65;">
         Dựa trên các kết quả thực nghiệm và những giới hạn kỹ thuật đã ghi nhận, hệ thống đề xuất
         <b>4 hướng nâng cấp trọng tâm</b> kết hợp đánh giá tính khả thi và tác động vận hành:
     </div>
@@ -729,7 +728,7 @@ def _render_future_work(section_header, insight_card):
         unsafe_allow_html=True,
     )
 
-    # 4 Core Directions matching Chapter 5.4 verbatim
+    # 4 Core Directions
     core_directions = [
         {
             "id": "FW-1",
@@ -781,20 +780,20 @@ def _render_future_work(section_header, insight_card):
     for cd in core_directions:
         st.markdown(
             f"""
-        <div style="background: var(--secondary-background-color); border-radius: 10px;
+        <div style="background: var(--ds-bg-card); border-radius: 10px;
                     padding: 1.2rem 1.4rem; margin-bottom: 1rem;
-                    border-left: 4px solid #00D4AA;">
+                    border: 1px solid var(--ds-border); border-left: 4px solid var(--ds-accent);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                <div style="font-weight: 700; font-size: 1.02rem; color: var(--text-color);">
+                <div style="font-weight: 700; font-size: 1.02rem; color: var(--ds-text-primary);">
                     <span style="font-size: 1.15rem; margin-right: 0.4rem;">{cd["icon"]}</span>
                     {cd["title"]}
                 </div>
-                <span style="background: rgba(0,212,170,0.15); color: #00D4AA; font-size: 0.8rem;
+                <span style="background: rgba(0,212,170,0.15); color: var(--ds-accent); font-size: 0.8rem;
                              font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px;">
                     {cd["priority"]}
                 </span>
             </div>
-            <div style="font-size: 0.88rem; line-height: 1.65; opacity: 0.88; color: var(--text-color); padding-left: 1.8rem;">
+            <div style="font-size: 0.88rem; line-height: 1.65; color: var(--ds-text-secondary); padding-left: 1.8rem;">
                 {cd["desc"]}
             </div>
         </div>
@@ -866,37 +865,37 @@ def _render_future_work(section_header, insight_card):
     for fd in future_directions:
         f_bar = "█" * fd["f_score"] + "░" * (5 - fd["f_score"])
         i_bar = "█" * fd["i_score"] + "░" * (5 - fd["i_score"])
-        border_color = "#00D4AA" if fd["f_score"] >= 4 else "#F59E0B" if fd["f_score"] >= 3 else "#EF4444"
+        border_color = "var(--ds-accent)" if fd["f_score"] >= 4 else "var(--ds-warning)" if fd["f_score"] >= 3 else "var(--ds-danger)"
 
         st.markdown(
             f"""
-        <div style="background: var(--secondary-background-color); border-radius: 12px;
+        <div style="background: var(--ds-bg-card); color: var(--ds-text-primary); border-radius: 12px;
                     padding: 1.1rem 1.3rem; margin-bottom: 0.9rem;
-                    border-left: 4px solid {border_color};">
+                    border: 1px solid var(--ds-border); border-left: 4px solid {border_color};">
             <div style="display: flex; justify-content: space-between; align-items: center;
                         margin-bottom: 0.4rem;">
                 <div style="font-weight: 700; font-size: 0.95rem;">
                     {fd["icon"]} {fd["id"]}: {fd["title"]}
                 </div>
             </div>
-            <div style="font-size: 0.86rem; line-height: 1.55; opacity: 0.88; margin-bottom: 0.6rem;">
+            <div style="font-size: 0.86rem; line-height: 1.55; color: var(--ds-text-secondary); margin-bottom: 0.6rem;">
                 {fd["desc"]}
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 0.8rem;
                         font-size: 0.8rem;">
                 <div>
-                    <span style="opacity: 0.6;">Khả thi:</span>
+                    <span style="color: var(--ds-text-muted);">Khả thi:</span>
                     <span style="font-family: monospace; color: {border_color};"> {f_bar}</span>
-                    <span style="opacity: 0.5;"> ({fd["feasibility"]})</span>
+                    <span style="color: var(--ds-text-muted);"> ({fd["feasibility"]})</span>
                 </div>
                 <div>
-                    <span style="opacity: 0.6;">Tác động:</span>
-                    <span style="font-family: monospace; color: #00D4AA;"> {i_bar}</span>
-                    <span style="opacity: 0.5;"> ({fd["impact"]})</span>
+                    <span style="color: var(--ds-text-muted);">Tác động:</span>
+                    <span style="font-family: monospace; color: var(--ds-accent);"> {i_bar}</span>
+                    <span style="color: var(--ds-text-muted);"> ({fd["impact"]})</span>
                 </div>
                 <div>
-                    <span style="opacity: 0.6;">Tiền đề:</span>
-                    <span style="opacity: 0.7;"> {fd["prereq"]}</span>
+                    <span style="color: var(--ds-text-muted);">Tiền đề:</span>
+                    <span style="color: var(--ds-text-secondary);"> {fd["prereq"]}</span>
                 </div>
             </div>
         </div>
@@ -906,9 +905,9 @@ def _render_future_work(section_header, insight_card):
 
     st.markdown(
         """
-    <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.5rem;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.5rem; color: var(--ds-text-primary);">
         <thead>
-            <tr style="border-bottom: 2px solid rgba(0,212,170,0.3);">
+            <tr style="border-bottom: 2px solid var(--ds-border-accent);">
                 <th style="text-align: left; padding: 0.6rem;">Mã</th>
                 <th style="text-align: left; padding: 0.6rem;">Hướng phát triển</th>
                 <th style="text-align: center; padding: 0.6rem;">Khả thi</th>
@@ -917,43 +916,43 @@ def _render_future_work(section_header, insight_card):
             </tr>
         </thead>
         <tbody>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <tr style="border-bottom: 1px solid var(--ds-border);">
                 <td style="padding: 0.5rem;">FD-2</td>
                 <td style="padding: 0.5rem;">Bổ sung trạm đo gió tự động</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★★</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
-                <td style="text-align: center;"><span style="background: #00D4AA; color: #0E1117;
+                <td style="text-align: center; color: var(--ds-accent);">★★★★★</td>
+                <td style="text-align: center; color: var(--ds-accent);">★★★★☆</td>
+                <td style="text-align: center;"><span style="background: var(--ds-accent); color: #FFFFFF;
                     padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P1</span></td>
             </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <tr style="border-bottom: 1px solid var(--ds-border);">
                 <td style="padding: 0.5rem;">FD-1</td>
                 <td style="padding: 0.5rem;">Online Learning trên Edge Computing</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
-                <td style="text-align: center;"><span style="background: #00D4AA; color: #0E1117;
+                <td style="text-align: center; color: var(--ds-accent);">★★★★☆</td>
+                <td style="text-align: center; color: var(--ds-accent);">★★★★☆</td>
+                <td style="text-align: center;"><span style="background: var(--ds-accent); color: #FFFFFF;
                     padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P1</span></td>
             </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <tr style="border-bottom: 1px solid var(--ds-border);">
                 <td style="padding: 0.5rem;">FD-3</td>
                 <td style="padding: 0.5rem;">Kiến trúc PatchTST & iTransformer</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★☆</td>
-                <td style="text-align: center; color: #F59E0B;">★★★☆☆</td>
-                <td style="text-align: center;"><span style="background: #00D4AA; color: #0E1117;
+                <td style="text-align: center; color: var(--ds-accent);">★★★★☆</td>
+                <td style="text-align: center; color: var(--ds-warning);">★★★☆☆</td>
+                <td style="text-align: center;"><span style="background: var(--ds-accent); color: #FFFFFF;
                     padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P2</span></td>
             </tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <tr style="border-bottom: 1px solid var(--ds-border);">
                 <td style="padding: 0.5rem;">FD-4</td>
                 <td style="padding: 0.5rem;">Đồng hóa dữ liệu viễn thám vệ tinh CAMS</td>
-                <td style="text-align: center; color: #F59E0B;">★★★☆☆</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★★</td>
-                <td style="text-align: center;"><span style="background: #F59E0B; color: #0E1117;
+                <td style="text-align: center; color: var(--ds-warning);">★★★☆☆</td>
+                <td style="text-align: center; color: var(--ds-accent);">★★★★★</td>
+                <td style="text-align: center;"><span style="background: var(--ds-warning); color: #FFFFFF;
                     padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P2</span></td>
             </tr>
             <tr>
                 <td style="padding: 0.5rem;">FD-5</td>
                 <td style="padding: 0.5rem;">Mạng lưới quan trắc đa điểm ĐBSCL</td>
-                <td style="text-align: center; color: #EF4444;">★★☆☆☆</td>
-                <td style="text-align: center; color: #00D4AA;">★★★★★</td>
+                <td style="text-align: center; color: var(--ds-danger);">★★☆☆☆</td>
+                <td style="text-align: center; color: var(--ds-accent);">★★★★★</td>
                 <td style="text-align: center;"><span style="background: #71717A; color: #FAFAFA;
                     padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">P3</span></td>
             </tr>

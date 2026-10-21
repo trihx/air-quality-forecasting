@@ -53,25 +53,16 @@ def page_scientific_audit(results: dict[str, Any]) -> None:
         pass
 
     if api_available:
-        st.markdown(
-            """
-        <div class="insight-card">
-            <h4>✅ API Backend Connected</h4>
-            <p>Dữ liệu audit được lấy trực tiếp từ FastAPI Backend.</p>
-        </div>
-        """,
-            unsafe_allow_html=True,
+        insight_card(
+            "✅ API Backend Connected",
+            "Dữ liệu kiểm định toàn vẹn (audit) được truy xuất trực tiếp từ FastAPI Backend.",
         )
     else:
         # Fallback: compute hashes locally
-        st.markdown(
-            """
-        <div class="insight-card warning">
-            <h4>⚠️ API Backend Offline — Fallback to Local</h4>
-            <p>Đang tính hash trực tiếp từ file system. Khởi động API server để có đầy đủ audit report.</p>
-        </div>
-        """,
-            unsafe_allow_html=True,
+        insight_card(
+            "⚠️ API Backend Offline — Fallback to Local",
+            "Đang tính toán mã băm (checksum) trực tiếp từ file system cục bộ. Khởi động API server để truy xuất báo cáo đầy đủ từ cơ sở dữ liệu.",
+            warning=True,
         )
 
         def _md5(path: Any) -> str:

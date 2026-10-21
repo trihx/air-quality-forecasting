@@ -42,8 +42,8 @@ def version_selector_sidebar():
 
     st.sidebar.markdown(
         """
-    <div style="font-size: 0.75rem; opacity: 0.6; text-transform: uppercase;
-                letter-spacing: 0.1em; margin: 1rem 0 0.3rem 0; font-weight: 700;">
+    <div style="font-size: 0.74rem; color: var(--ds-text-muted); text-transform: uppercase;
+                letter-spacing: 0.08em; margin: 0.85rem 0 0.3rem 0; font-weight: 700;">
         📦 Phiên bản Pipeline
     </div>
     """,
@@ -97,12 +97,12 @@ def render_version_badge(version: str):
     st.markdown(
         f"""
     <div style="display: inline-flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem;">
-        <span style="background: rgba(0,212,170,0.15); color: #00D4AA; padding: 0.25rem 0.75rem;
-                     border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+        <span style="background: var(--ds-teal-bg); color: var(--ds-teal); border: 1px solid var(--ds-teal-border);
+                     padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
             📦 {version}
         </span>
-        <span style="opacity: 0.6; font-size: 0.8rem;">
-            {n_models} models · {timestamp}
+        <span style="color: var(--ds-text-muted); font-size: 0.8rem;">
+            {n_models} cấu hình · {timestamp}
         </span>
     </div>
     """,
@@ -134,7 +134,25 @@ def cards_overview(version: str):
         collapsed=True,
     )
 
-    if changes:
+    evo_info = content.get_version_evolution(version)
+    if evo_info:
+        evo_md = (
+            f"### 🏛️ {evo_info.get('title', version)} ({evo_info.get('date', '')})\n\n"
+            f"**1. Bối cảnh & Giả thuyết:** {evo_info.get('hypothesis', '—')}\n\n"
+            f"**2. Kỹ thuật nâng cấp:** {evo_info.get('technical_upgrades', '—')}\n\n"
+            f"**3. Kết quả 3 tầm dự báo:** {evo_info.get('results_summary', '—')}\n\n"
+            f"**4. Phát hiện kỹ thuật & Giới hạn:** {evo_info.get('breakthrough_traps', '—')}\n\n"
+            f"**5. Hướng cải tiến kế tiếp:** {evo_info.get('takeaway_next', '—')}\n\n"
+            f'> 🔬 **Đánh giá kỹ thuật:** *"{evo_info.get("council_verdict", "—")}"*'
+        )
+        render_info_card(
+            f"Phân tích kiến trúc & thực nghiệm: {version}",
+            evo_md,
+            icon="🔬",
+            accent=evo_info.get("color", "#00D4AA"),
+            collapsed=False,
+        )
+    elif changes:
         render_info_card(
             f"Phiên bản hiện tại: {version}",
             f"**What:** {changes.get('what', '—')}\n\n"

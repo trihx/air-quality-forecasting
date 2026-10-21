@@ -98,7 +98,7 @@ def page_scientific_benchmark(results: dict[str, Any]) -> None:
             f"{b6['mase']:.3f} ({rpt.version} {b6['model'].split('_')[0]})",
             "N/A (ít báo cáo)",
             "N/A",
-            "⭐ Tiên phong sử dụng MASE",
+            "✅ Tiên phong sử dụng MASE",
             "#F59E0B",
         ),
         _exec_row(
@@ -113,7 +113,7 @@ def page_scientific_benchmark(results: dict[str, Any]) -> None:
             "15m + 30m + 1h",
             "~5% papers",
             "0% papers",
-            "⭐ Đóng góp mới",
+            "✅ Đóng góp mới",
             "#F59E0B",
         ),
         _exec_row(
@@ -125,7 +125,7 @@ def page_scientific_benchmark(results: dict[str, Any]) -> None:
         ),
         _exec_row(
             "Tiered Imputation",
-            "PCHIP/KNN ≤24h, Drop >24h",
+            "Linear/Spline/KNN ≤24h, Drop >24h",
             "Linear / Mean",
             "Drop / Linear",
             "✅ Tiên tiến hơn",
@@ -148,17 +148,17 @@ def page_scientific_benchmark(results: dict[str, Any]) -> None:
 
     st.markdown(
         f"""
-    <div style="background: #0B1120;
-                color: #CBD5E1 !important;
+    <div style="background: var(--ds-bg-card);
+                color: var(--ds-text-secondary);
                 border-radius: 14px; padding: 1.5rem; margin: 0.5rem 0 2rem 0;
                 border: 1px solid rgba(0,212,170,0.3);">
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; color: #CBD5E1;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; color: var(--ds-text-secondary);">
             <tr style="border-bottom: 1px solid rgba(0,212,170,0.3);">
-                <th style="text-align: left; padding: 0.5rem; color: #F8FAFC;">Tiêu chí</th>
+                <th style="text-align: left; padding: 0.5rem; color: var(--ds-text-primary);">Tiêu chí</th>
                 <th style="text-align: center; padding: 0.5rem; color: #00D4AA;">Nghiên cứu này</th>
-                <th style="text-align: center; padding: 0.5rem; color: #94A3B8;">TB Quốc tế</th>
-                <th style="text-align: center; padding: 0.5rem; color: #94A3B8;">TB Việt Nam</th>
-                <th style="text-align: left; padding: 0.5rem; color: #F8FAFC;">Đánh giá</th>
+                <th style="text-align: center; padding: 0.5rem; color: var(--ds-text-muted);">TB Quốc tế</th>
+                <th style="text-align: center; padding: 0.5rem; color: var(--ds-text-muted);">TB Việt Nam</th>
+                <th style="text-align: left; padding: 0.5rem; color: var(--ds-text-primary);">Đánh giá</th>
             </tr>
             {"".join(exec_rows)}
         </table>
@@ -275,26 +275,26 @@ def page_scientific_benchmark(results: dict[str, Any]) -> None:
     insight_card(
         "💡 Lỗ Hổng Của Literature & Lý Do Không Dùng RMSE, R²",
         "<b>1. Tại sao chọn MASE là tiêu chuẩn tối ưu cho nghiên cứu này?</b><br>"
-        "MAE phụ thuộc cực mạnh vào nồng độ PM2.5 nền: Sa Đéc (~10.3 µg/m³) vs Delhi (~150 µg/m³). Khu vực PM2.5 thấp có MAE tuyệt đối nhỏ nhưng relative error lại rất cao. Việc các nghiên cứu trước đây (Literature) chỉ báo cáo MAE gây ra sự thiên lệch (bias) khổng lồ khi so sánh chéo vùng. Nghiên cứu này tiên phong sử dụng MASE (Scale-Independent) để chuẩn hóa đo lường, giải quyết hoàn toàn lỗ hổng phương pháp luận đó.<br><br>"
+        "MAE phụ thuộc cực mạnh vào nồng độ PM2.5 nền: Sa Đéc (Mean 17,46 / Median 13,67 µg/m³) vs Delhi (~150 µg/m³). Khu vực PM2.5 thấp có MAE tuyệt đối nhỏ nhưng relative error lại rất cao. Việc các nghiên cứu trước đây (Literature) chỉ báo cáo MAE gây ra sự thiên lệch (bias) lớn khi so sánh chéo vùng. Nghiên cứu này tiên phong sử dụng MASE (Scale-Independent) để chuẩn hóa đo lường, giải quyết hoàn toàn lỗ hổng phương pháp luận đó.<br><br>"
         "<b>2. Tại sao không dùng RMSE làm tiêu chuẩn chính?</b><br>"
         "RMSE bình phương sai số, phạt rất nặng các gai nồng độ (spikes) ngoại lai do kẹt xe hoặc sự kiện cục bộ. Tối ưu theo RMSE dễ khiến mô hình bị 'ép' dự báo overfit vào nhiễu. MAE/MASE đo lường lỗi tuyến tính, mang lại đánh giá bền vững (robust) và thực tế hơn.<br><br>"
         "<b>3. Tại sao bỏ qua R²?</b><br>"
-        "Dữ liệu PM2.5 có tính tự tương quan rất cao. Một mô hình Persistence (dự báo ngày mai giống hệt hôm nay) cũng dễ dàng đạt R² > 0.85, gây ra 'ảo tưởng' về độ chính xác. MASE trực tiếp giải quyết vấn đề này vì nó phạt mô hình nếu không thắng được Naive Baseline (MASE < 1 mới có giá trị).",
+        "Dữ liệu PM2.5 có tính tự tương quan rất cao. Một mô hình Persistence (dự báo ngày mai giống hệt hôm nay) cũng dễ dàng đạt R² > 0.85 trên bước ngắn, tạo cảm giác độ chính xác cao giả tạo. MASE trực tiếp giải quyết vấn đề này vì nó chuẩn hóa sai số theo Naive Baseline (MASE < 1 mới vượt trội hơn dự báo quán tính).",
     )
 
     # 3. Detailed Literature References
     section_header("📚", "Chi Tiết Nguồn Tham Khảo (2022–2025)")
     st.markdown(
         """
-    <div style="background: #0B1120;
-                color: #CBD5E1 !important;
+    <div style="background: var(--ds-bg-card);
+                color: var(--ds-text-secondary);
                 border-radius: 14px; padding: 1.5rem; margin: 1rem 0;
                 border: 1px solid rgba(0,212,170,0.3);">
-        <div style="font-size: 0.95rem; color: #F8FAFC; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+        <div style="font-size: 0.95rem; color: var(--ds-text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 1.2rem;">🔬</span> <b>Academic Rigor & Auditability</b>
         </div>
-        <div style="font-size: 0.88rem; color: #CBD5E1; opacity: 1; line-height: 1.6;">
-            Danh sách dưới đây bao gồm <strong style="color:#00D4AA; background: rgba(0,212,170,0.1); padding: 2px 6px; border-radius: 4px;">8 nghiên cứu khoa học chất lượng cao</strong> đã được kiểm chứng chéo (peer-reviewed), chọn lọc khắt khe và tải về thành công để đảm bảo tính minh bạch, có thể đối chiếu (audit) chi tiết trong suốt quá trình xây dựng đề án.
+        <div style="font-size: 0.88rem; color: var(--ds-text-secondary); line-height: 1.6;">
+            Danh sách dưới đây bao gồm <strong style="color:#00D4AA; background: rgba(0,212,170,0.1); padding: 2px 6px; border-radius: 4px;">8 nghiên cứu khoa học chất lượng cao</strong> đã được kiểm chứng chéo (peer-reviewed), chọn lọc khắt khe và đối chiếu chi tiết trong suốt quá trình nghiên cứu và phát triển hệ thống.
         </div>
     </div>
     """,

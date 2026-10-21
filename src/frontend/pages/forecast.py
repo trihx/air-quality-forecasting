@@ -310,7 +310,7 @@ def _format_model_label(model_key: str, smart_models: list[tuple[str, float | No
         if key == model_key:
             parts = [key]
             if is_best:
-                parts.append(" ⭐")
+                parts.append(" (Best)")
             if mase is not None:
                 parts.append(f"  (MASE: {mase:.3f})")
             return "".join(parts)
@@ -327,7 +327,7 @@ def _show_smart_ranking_context(smart_models: list[tuple[str, float | None, bool
         if key == selected:
             parts.append(f"**▶ {key} ({mase})**")
         elif i == 0:
-            parts.append(f"⭐ {key} ({mase})")
+            parts.append(f"[{key} ({mase})]")
         else:
             parts.append(f"{key} ({mase})")
 
@@ -351,9 +351,9 @@ def page_forecast(results: dict[str, Any]) -> None:
 
     st.markdown(
         f"""
-    <div style="background: var(--secondary-background-color); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
-                border: 1px solid rgba(0,212,170,0.2); color: var(--text-color) !important;">
-        <div style="font-size: 0.85rem; opacity: 0.65;">
+    <div style="background: var(--ds-bg-card); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;
+                border: 1px solid var(--ds-border); color: var(--ds-text-primary) !important;">
+        <div style="font-size: 0.85rem; color: var(--ds-text-secondary);">
             📌 Mô hình suy luận: LightGBM {cite("ke2017")} (gradient boosting),
             GRU {cite("cho2014")} (recurrent deep learning), và Weighted Ensemble {cite("peixeiro2022")}.
             Khoảng dự báo bằng Conformalized Quantile Regression (CQR) {cite("romano2019")}
@@ -412,49 +412,49 @@ def _forecast_auto(model_type: str, horizon: int) -> None:
 
     st.markdown(
         """
-    <div style="background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--secondary-background-color) 100%);
-                color: var(--text-color) !important;
+    <div style="background: var(--ds-bg-card);
+                color: var(--ds-text-primary) !important;
                 border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1rem 0;
-                border: 1px solid rgba(0,212,170,0.25);">
-        <div style="font-size: 0.95rem; font-weight: 600; color: #00D4AA; margin-bottom: 0.8rem;
+                border: 1px solid var(--ds-border); box-shadow: var(--ds-shadow);">
+        <div style="font-size: 0.95rem; font-weight: 700; color: var(--ds-accent); margin-bottom: 0.8rem;
                     display: flex; align-items: center; gap: 0.5rem;">
             <span>📡</span> Giá Trị Cảm Biến Gần Nhất (Auto-filled từ Dataset)
         </div>
         <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.8rem; text-align: center;">
-            <div style="background: var(--background-color); border-radius: 10px; padding: 0.6rem; border: 1px solid rgba(0,212,170,0.15);">
-                <div style="font-size: 0.75rem; opacity: 0.6;">PM2.5 Hiện Tại</div>
-                <div style="font-size: 1.3rem; font-weight: 700; color: #00D4AA; font-family: 'JetBrains Mono', monospace;">"""
+            <div style="background: var(--ds-bg-elevated); border-radius: 10px; padding: 0.6rem; border: 1px solid var(--ds-border);">
+                <div style="font-size: 0.75rem; color: var(--ds-text-muted); font-weight: 600;">PM2.5 Hiện Tại</div>
+                <div style="font-size: 1.3rem; font-weight: 700; color: var(--ds-accent); font-family: 'JetBrains Mono', monospace;">"""
         + f"{defaults['pm25']:.1f}"
         + """</div>
-                <div style="font-size: 0.7rem; opacity: 0.5;">µg/m³</div>
+                <div style="font-size: 0.7rem; color: var(--ds-text-muted);">µg/m³</div>
             </div>
-            <div style="background: var(--background-color); border-radius: 10px; padding: 0.6rem; border: 1px solid rgba(255,255,255,0.06);">
-                <div style="font-size: 0.75rem; opacity: 0.6;">Nhiệt Độ</div>
-                <div style="font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;">"""
+            <div style="background: var(--ds-bg-elevated); border-radius: 10px; padding: 0.6rem; border: 1px solid var(--ds-border);">
+                <div style="font-size: 0.75rem; color: var(--ds-text-muted); font-weight: 600;">Nhiệt Độ</div>
+                <div style="font-size: 1.3rem; font-weight: 700; color: var(--ds-text-primary); font-family: 'JetBrains Mono', monospace;">"""
         + f"{defaults['nhiet_do']:.1f}"
         + """</div>
-                <div style="font-size: 0.7rem; opacity: 0.5;">°C</div>
+                <div style="font-size: 0.7rem; color: var(--ds-text-muted);">°C</div>
             </div>
-            <div style="background: var(--background-color); border-radius: 10px; padding: 0.6rem; border: 1px solid rgba(255,255,255,0.06);">
-                <div style="font-size: 0.75rem; opacity: 0.6;">Độ Ẩm</div>
-                <div style="font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;">"""
+            <div style="background: var(--ds-bg-elevated); border-radius: 10px; padding: 0.6rem; border: 1px solid var(--ds-border);">
+                <div style="font-size: 0.75rem; color: var(--ds-text-muted); font-weight: 600;">Độ Ẩm</div>
+                <div style="font-size: 1.3rem; font-weight: 700; color: var(--ds-text-primary); font-family: 'JetBrains Mono', monospace;">"""
         + f"{defaults['do_am']:.1f}"
         + """</div>
-                <div style="font-size: 0.7rem; opacity: 0.5;">%</div>
+                <div style="font-size: 0.7rem; color: var(--ds-text-muted);">%</div>
             </div>
-            <div style="background: var(--background-color); border-radius: 10px; padding: 0.6rem; border: 1px solid rgba(255,255,255,0.06);">
-                <div style="font-size: 0.75rem; opacity: 0.6;">Điểm Sương</div>
-                <div style="font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;">"""
+            <div style="background: var(--ds-bg-elevated); border-radius: 10px; padding: 0.6rem; border: 1px solid var(--ds-border);">
+                <div style="font-size: 0.75rem; color: var(--ds-text-muted); font-weight: 600;">Điểm Sương</div>
+                <div style="font-size: 1.3rem; font-weight: 700; color: var(--ds-text-primary); font-family: 'JetBrains Mono', monospace;">"""
         + f"{defaults['diem_suong']:.1f}"
         + """</div>
-                <div style="font-size: 0.7rem; opacity: 0.5;">°C</div>
+                <div style="font-size: 0.7rem; color: var(--ds-text-muted);">°C</div>
             </div>
-            <div style="background: var(--background-color); border-radius: 10px; padding: 0.6rem; border: 1px solid rgba(255,255,255,0.06);">
-                <div style="font-size: 0.75rem; opacity: 0.6;">CO₂</div>
-                <div style="font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;">"""
+            <div style="background: var(--ds-bg-elevated); border-radius: 10px; padding: 0.6rem; border: 1px solid var(--ds-border);">
+                <div style="font-size: 0.75rem; color: var(--ds-text-muted); font-weight: 600;">CO₂</div>
+                <div style="font-size: 1.3rem; font-weight: 700; color: var(--ds-text-primary); font-family: 'JetBrains Mono', monospace;">"""
         + f"{defaults['co2']:.0f}"
         + """</div>
-                <div style="font-size: 0.7rem; opacity: 0.5;">ppm</div>
+                <div style="font-size: 0.7rem; color: var(--ds-text-muted);">ppm</div>
             </div>
         </div>
     </div>
@@ -838,25 +838,24 @@ def _show_forecast_result(result: dict[str, Any], recent_data: pd.DataFrame) -> 
     st.markdown(
         f"""
     <div style="
-        background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
+        background: var(--ds-bg-card);
         border: 2px solid {level_color};
         border-radius: 20px; padding: 2rem; text-align: center;
-        margin: 1.5rem 0;
+        margin: 1.5rem 0; box-shadow: var(--ds-shadow);
     ">
-        <div style="font-size: 0.9rem; opacity: 0.7; text-transform: uppercase;
+        <div style="font-size: 0.9rem; color: var(--ds-text-muted); font-weight: 700; text-transform: uppercase;
                     letter-spacing: 0.1em;">
             Dự Báo PM2.5 — {result["model"]} ({result["horizon"]}h)
         </div>
         <div style="font-size: 3.5rem; font-weight: 700;
                     font-family: 'JetBrains Mono', monospace;
-                    color: {level_color}; margin: 0.5rem 0;
-                    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
+                    color: {level_color}; margin: 0.5rem 0;">
             {pred:.1f} <span style="font-size: 1.2rem;">µg/m³</span>
         </div>
-        <div style="font-size: 1rem; color: {level_color}; font-weight: 600; margin-bottom: 0.5rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+        <div style="font-size: 1rem; color: {level_color}; font-weight: 700; margin-bottom: 0.5rem;">
             {level_label}
         </div>
-        <div style="font-size: 0.85rem; color: var(--text-color); opacity: 0.7; border-top: 1px solid rgba(128,128,128,0.2); padding-top: 0.5rem; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="font-size: 0.85rem; color: var(--ds-text-secondary); border-top: 1px solid var(--ds-border); padding-top: 0.5rem; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 0.5rem;">
             <span>🛡️ Khoảng {method_label} ({coverage_pct}%): <b>{interval_text}</b></span>
             <span>📉 Sai số MAE: <b>{result.get("mae", 0):.2f}</b></span>
         </div>

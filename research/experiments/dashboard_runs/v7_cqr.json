@@ -7,7 +7,7 @@
     "what": "Tích hợp CQR vào quy trình dự báo đa khung giờ (1h, 6h, 24h) để tính toán cận trên/dưới.",
     "why": "Dự báo điểm (point forecast) không đủ tin cậy. CQR cung cấp khoảng tin cậy 90% không cần giả định phân phối.",
     "result": "Các mô hình tốt nhất (GRU 1h, GRU 6h, LSTM 24h) giờ đây cung cấp cả giá trị dự báo điểm và khoảng tin cậy 90% (CQR).",
-    "conclusion": "Hoàn thiện Pipeline theo chuẩn ML. GRU vươn lên dẫn đầu ở 1h (MASE=1.009) và vô địch ở 6h (MASE=0.649). LSTM vô địch ở 24h (MASE=0.663)."
+    "conclusion": "Hoàn thiện Pipeline theo chuẩn ML. GRU vươn lên dẫn đầu ở 1h (MASE=1.009) và đạt sai số thấp ở 6h (MASE=0.649). LSTM ghi nhận sai số thấp nhất ở 24h (MASE=0.663)."
   },
   "feature_set": {
     "lag": true,

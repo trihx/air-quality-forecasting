@@ -31,10 +31,10 @@ COLORS = {
     "secondary": PALETTE_SEMANTIC["secondary"],
     "accent": PALETTE_SEMANTIC["accent"],
     "warning": PALETTE_SEMANTIC["warning"],
-    "bg_dark": "#0E1117",
-    "card_bg": "var(--secondary-background-color)",
-    "text": "#FAFAFA",
-    "text_muted": "#71717A",
+    "bg_dark": "var(--ds-bg-subtle, #0E1117)",
+    "card_bg": "var(--ds-bg-card, var(--secondary-background-color))",
+    "text": "var(--ds-text-primary, var(--text-color))",
+    "text_muted": "var(--ds-text-muted, #64748B)",
     "success": PALETTE_SEMANTIC["success"],
     "danger": PALETTE_SEMANTIC["danger"],
 }
@@ -190,8 +190,14 @@ def section_header(icon: str, title: str) -> None:
 
 
 def insight_card(title: str, text: str, card_type: str = "default") -> None:
-    """Render an insight callout card with markdown parsing."""
-    cls = "warning" if card_type == "warning" else ""
+    """Render an insight callout card with markdown parsing and theme-aware contrast."""
+    cls_map = {
+        "warning": "warning",
+        "info": "info",
+        "success": "success",
+        "danger": "warning",
+    }
+    cls = cls_map.get(card_type, "")
     parsed_text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)
     parsed_text = re.sub(r"\*(.*?)\*", r"<i>\1</i>", parsed_text)
     st.markdown(

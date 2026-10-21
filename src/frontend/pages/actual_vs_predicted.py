@@ -29,7 +29,7 @@ from src.viz.chart_factory import (
 from src.viz.chart_factory import (
     render_chart as _render_chart,
 )
-from src.viz.theme import PALETTE_CATEGORICAL
+from src.viz.theme import PALETTE_CATEGORICAL, detect_streamlit_mode
 
 CACHE_DIR = PROJECT_ROOT / "research" / "cache"
 
@@ -60,8 +60,8 @@ def page_actual_vs_predicted(results: dict[str, Any]) -> None:
 
     st.markdown(
         f"""
-    <div style="background: #0B1120; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem;
-                border: 1px solid rgba(0,212,170,0.3); color: #CBD5E1 !important;">
+    <div style="background: var(--ds-bg-card); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.3); color: var(--ds-text-secondary);">
         <div style="font-size: 0.88rem; line-height: 1.6;">
             📌 Đánh giá trên <b>Anchor Test Set</b> (10% mỏ neo: 669h ở chuỗi 1h, 863 mẫu ở 30m, 1.836 mẫu ở 15m, 100% dữ liệu thực <code>is_imputed == 0</code>) {cite("tashman2000")}.
             Metrics chính: <b>MASE</b> {cite("hyndman2006")} (scale-independent), MAE {cite("willmott2005")},
@@ -130,7 +130,7 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
         is_best = any(m["model"].endswith(suffix) for m in top_models_info[:1])
         label = f"{res} ({n_models} models)"
         if is_best:
-            label += " ⭐ Best"
+            label += " [Best]"
         res_labels.append(label)
 
     selected_res = st.radio(
@@ -180,10 +180,10 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
     n_test = len(test_actuals)
     st.markdown(
         f"""
-    <div style="background: #0B1120;
+    <div style="background: var(--ds-bg-card);
                 border: 1px solid rgba(0,212,170,0.3); border-radius: 12px;
                 padding: 1rem 1.5rem; margin: 1rem 0;">
-        <span style="color: #CBD5E1; font-size: 0.88rem;">
+        <span style="color: var(--ds-text-secondary); font-size: 0.88rem;">
             📊 Test samples: <b style="color:#00D4AA">{n_test}</b> (real data only, {selected_res}) |
             Horizon: <b style="color:#00D4AA">{horizon}h</b> |
             Trực quan hóa: <b style="color:#00D4AA">{len(selected_models)}/{len(filtered_models)}</b> mô hình
@@ -199,12 +199,13 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
         height=520,
     )
 
+    actual_line_color = "#F8FAFC" if detect_streamlit_mode() == "dark" else "#0F172A"
     fig.add_trace(
         go.Scatter(
             x=list(range(n_test)),
             y=test_actuals,
             name=f"Actual ({selected_res})",
-            line={"color": "#1E293B", "width": 2.5},
+            line={"color": actual_line_color, "width": 2.5},
         )
     )
 
@@ -333,12 +334,12 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
                     f"""
                 <style>
                     .avp-tab-unselected {{
-                        background: #0B1120 !important;
-                        border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 0.8rem; text-align: center;
+                        background: var(--ds-bg-card) !important;
+                        border: 1px solid var(--ds-border); border-radius: 10px; padding: 0.8rem; text-align: center;
                     }}
                 </style>
                 <div class="avp-tab-unselected">
-                    <b style="color: var(--text-color); font-size: 1.1rem;">⏱️ {h_col_key}</b>
+                    <b style="color: var(--ds-text-primary); font-size: 1.1rem;">⏱️ {h_col_key}</b>
                 </div>""",
                     unsafe_allow_html=True,
                 )
@@ -356,23 +357,23 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
                         f"""
                     <style>
                         .avp-model-card-{rank} {{
-                            background: #0B1120 !important; border-radius: 8px;
+                            background: var(--ds-bg-card) !important; border-radius: 8px;
                             padding: 0.7rem 0.9rem; margin: 0.4rem 0;
                             border-left: 3px solid {border_color};
-                            border-top: 1px solid rgba(255, 255, 255, 0.08);
-                            border-right: 1px solid rgba(255, 255, 255, 0.08);
-                            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+                            border-top: 1px solid var(--ds-border);
+                            border-right: 1px solid var(--ds-border);
+                            border-bottom: 1px solid var(--ds-border);
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
                         }}
                     </style>
                     <div class="avp-model-card-{rank}">
-                        <div style="font-size: 0.75rem; color: #94A3B8;">{medal} Top {rank + 1}</div>
-                        <div style="font-weight: 600; font-size: 0.95rem; color: #F8FAFC; margin-top: 0.1rem;">{row["model"]}</div>
-                        <div style="font-size: 0.85rem; margin-top: 0.25rem; color: #CBD5E1;">
-                            MAE: <b style="color: #F8FAFC;">{row["mae"]:.2f}</b> · MASE: <b style="color: {mase_color};">{row["mase"]:.2f}</b>
+                        <div style="font-size: 0.75rem; color: var(--ds-text-muted);">{medal} Top {rank + 1}</div>
+                        <div style="font-weight: 600; font-size: 0.95rem; color: var(--ds-text-primary); margin-top: 0.1rem;">{row["model"]}</div>
+                        <div style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--ds-text-secondary);">
+                            MAE: <b style="color: var(--ds-text-primary);">{row["mae"]:.2f}</b> · MASE: <b style="color: {mase_color};">{row["mase"]:.2f}</b>
                         </div>
-                        <div style="font-size: 0.78rem; margin-top: 0.2rem; color: #94A3B8;">
-                            RMSE: <b style="color: #CBD5E1;">{rmse_display}</b> · R²: <b style="color: #CBD5E1;">{r2_display}</b> · DA: <b style="color: #CBD5E1;">{da_display}</b>
+                        <div style="font-size: 0.78rem; margin-top: 0.2rem; color: var(--ds-text-muted);">
+                            RMSE: <b style="color: var(--ds-text-secondary);">{rmse_display}</b> · R²: <b style="color: var(--ds-text-secondary);">{r2_display}</b> · DA: <b style="color: var(--ds-text-secondary);">{da_display}</b>
                         </div>
                     </div>""",
                         unsafe_allow_html=True,
@@ -421,13 +422,13 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
             hide_index=True,
         )
 
-    # ── Chẩn Đoán Thặng Dư & Kiểm Định Ljung-Box (Chương 4 §4.5 Đề Án) ──
+    # ── Chẩn Đoán Phần Dư & Kiểm Định Ljung-Box ──
     st.markdown("---")
-    section_header("🔬", "Chẩn Đoán Thặng Dư & Kiểm Định Tự Tương Quan Ljung-Box (Chương 4 §4.5)")
+    section_header("🔬", "Chẩn Đoán Phần Dư (Residual Diagnostics) & Kiểm Định Tự Tương Quan Ljung-Box")
     st.markdown(
         f"""
-    <div style="background: #0B1120; border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem;
-                border: 1px solid rgba(0,212,170,0.25); border-left: 4px solid #00D4AA; font-size: 0.88rem; line-height: 1.65; color: #CBD5E1 !important;">
+    <div style="background: var(--ds-bg-card); border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem;
+                border: 1px solid rgba(0,212,170,0.25); border-left: 4px solid #00D4AA; font-size: 0.88rem; line-height: 1.65; color: var(--ds-text-secondary);">
         Phân tích chẩn đoán phần dư ($e_t = y_t - \\hat{{y}}_t$) là bước bắt buộc trong kinh tế lượng chuỗi thời gian
         nhằm kiểm tra các giả định kinh điển về <b>nhiễu trắng (White Noise)</b> {cite("ljung1978")},
         tính đối xứng sai số và độ bất định của dự báo.
@@ -457,11 +458,11 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
         )
 
     insight_card(
-        "💡 3 Đặc Tính Thống Kê Nổi Bật Của Phần Dư (Chương 4.5 Đề Án)",
+        "💡 3 Đặc Tính Thống Kê Nổi Bật Của Phần Dư (Residual Analysis)",
         f"<b>1. Đánh đổi Độ chệch - Phương sai (Bias-Variance Tradeoff):</b><br>"
         f"Các mô hình học máy (LightGBM) và học sâu (GRU) có Mean bias mang dấu âm nhẹ (-0,329 đến -2,350 µg/m³), "
         f"thể hiện xu hướng dự báo an toàn (hơi cao hơn thực tế nhằm tránh bỏ sót đỉnh ô nhiễm). "
-        f"Trong khi đó, Persistence tại 6h có Mean gần bằng 0 (+0,029 µg/m³) nhưng phương sai cực lớn (<b>Std = 8,272</b>). "
+        f"Trong khi đó, Persistence tại 6h có Mean gần bằng 0 (+0,029 µg/m³) nhưng phương sai rất lớn (<b>Std = 8,272</b>). "
         f"LightGBM 6h chấp nhận Mean = -1,656 µg/m³ nhưng <b>giảm 36,0% độ phân tán</b> (Std = 5,296), "
         f"khẳng định khả năng kiểm soát phương sai vượt trội của Machine Learning {cite('ke2017')}.<br><br>"
         f"<b>2. Phân phối lệch phải rõ rệt (Right-skewed Distribution & Fat Tails):</b><br>"
@@ -471,36 +472,36 @@ def _render_avp_chart(data: dict[str, Any], horizon: int, ver: str) -> None:
         f"<b>3. Bác bỏ giả thuyết nhiễu trắng & Nhu cầu Conformal Prediction:</b><br>"
         f"Kiểm định Ljung-Box tại độ trễ $k=6$ đều cho giá trị <b>p < 0,05</b>, chính thức bác bỏ giả thuyết $H_0$ rằng phần dư là nhiễu trắng thuần túy {cite('ljung1978')}. "
         f"Hệ quả phương pháp luận: <b>Các khoảng tin cậy truyền thống dựa trên giả định phân phối chuẩn đối xứng ($\\hat{{y}} \\pm 1,96\\sigma$) là hoàn toàn không hợp lệ</b>. "
-        f"Đây là minh chứng khoa học đanh thép đòi hỏi phải áp dụng phương pháp <b>Conformalized Quantile Regression (CQR)</b> {cite('romano2019')} "
-        f"và <b>Adaptive Conformal Inference (ACI)</b> {cite('gibbs2021')} trong Đề án.",
+        f"Đây là cơ sở thực nghiệm đòi hỏi phải áp dụng phương pháp <b>Conformalized Quantile Regression (CQR)</b> {cite('romano2019')} "
+        f"và <b>Adaptive Conformal Inference (ACI)</b> {cite('gibbs2021')}.",
     )
 
-    # ── Hiển thị 7 Hình ảnh Chẩn Đoán Thặng Dư Chuẩn Đề Án (Hình 4.6a-g) ──
-    with st.expander("🖼️ Xem Biểu đồ Chẩn Đoán Thặng Dư Chuẩn Đề Án (Hình 4.6a–g)", expanded=False):
+    # ── Hiển thị 7 Hình ảnh Chẩn Đoán Phần Dư (Hình 4.6a-g) ──
+    with st.expander("🖼️ Xem Biểu đồ Chẩn Đoán Phần Dư (Residual Diagnostics — Hình 4.6a–g)", expanded=False):
         diag_choice = st.selectbox(
-            "Chọn biểu đồ chẩn đoán thặng dư:",
+            "Chọn biểu đồ chẩn đoán phần dư:",
             [
-                ("Hinh_4.6a_Diagnostics_GRU_1h.png", "Hình 4.6a: Phân tích thặng dư mô hình GRU tại mốc dự báo 1 giờ"),
+                ("Hinh_4.6a_Diagnostics_GRU_1h.png", "Hình 4.6a: Phân tích phần dư mô hình GRU tại mốc dự báo 1 giờ"),
                 (
                     "Hinh_4.6b_Diagnostics_LightGBM_1h.png",
-                    "Hình 4.6b: Phân tích thặng dư mô hình LightGBM tại mốc dự báo 1 giờ",
+                    "Hình 4.6b: Phân tích phần dư mô hình LightGBM tại mốc dự báo 1 giờ",
                 ),
-                ("Hinh_4.6c_Diagnostics_GRU_6h.png", "Hình 4.6c: Phân tích thặng dư mô hình GRU tại mốc dự báo 6 giờ"),
+                ("Hinh_4.6c_Diagnostics_GRU_6h.png", "Hình 4.6c: Phân tích phần dư mô hình GRU tại mốc dự báo 6 giờ"),
                 (
                     "Hinh_4.6d_Diagnostics_LightGBM_6h.png",
-                    "Hình 4.6d: Phân tích thặng dư mô hình LightGBM tại mốc dự báo 6 giờ",
+                    "Hình 4.6d: Phân tích phần dư mô hình LightGBM tại mốc dự báo 6 giờ",
                 ),
                 (
                     "Hinh_4.6e_Diagnostics_Persistence_6h.png",
-                    "Hình 4.6e: Phân tích thặng dư mô hình Baseline Persistence tại mốc 6 giờ",
+                    "Hình 4.6e: Phân tích phần dư mô hình Baseline Persistence tại mốc 6 giờ",
                 ),
                 (
                     "Hinh_4.6f_Diagnostics_GRU_24h.png",
-                    "Hình 4.6f: Phân tích thặng dư mô hình GRU tại mốc dự báo 24 giờ",
+                    "Hình 4.6f: Phân tích phần dư mô hình GRU tại mốc dự báo 24 giờ",
                 ),
                 (
                     "Hinh_4.6g_Diagnostics_LightGBM_24h.png",
-                    "Hình 4.6g: Phân tích thặng dư mô hình LightGBM tại mốc dự báo 24 giờ",
+                    "Hình 4.6g: Phân tích phần dư mô hình LightGBM tại mốc dự báo 24 giờ",
                 ),
             ],
             format_func=lambda x: x[1],
