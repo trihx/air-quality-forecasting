@@ -1,8 +1,8 @@
 # 🏆 BẢNG ĐIỂM BẢO MẬT & PHÁN QUYẾT ĐỒNG THUẬN (SECURITY SCORECARD)
-> **Phiên Đối Kháng:** Red Team (DeepSeek-R1) ⚔️ Blue Team (Gemini 3.8 Flash High)  
-> **Tổng Chỉ Huy & Thẩm Định:** Codex (Claude 3.7 Sonnet / Opus 4.6)  
-> **Giám Sát Mã Nguồn:** Copilot CLI (Prompt-Only Reviewer)  
-> **Ngày:** 2026-10-03  
+> **Phiên Đối Kháng:** Red Team (DeepSeek-R1) ⚔️ Blue Team (Gemini 3.8 Flash High)
+> **Tổng Chỉ Huy & Thẩm Định:** Codex (Claude 3.7 Sonnet / Opus 4.6)
+> **Giám Sát Mã Nguồn:** Copilot CLI (Prompt-Only Reviewer)
+> **Ngày:** 2026-10-03
 
 ---
 

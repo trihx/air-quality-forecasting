@@ -1,8 +1,8 @@
 # 🛡️ BÁO CÁO PHÒNG THỦ & VÁ LỖ HỔNG (BLUE TEAM REMEDIATION REPORT)
-> **Dự án:** PM2.5 Multi-Resolution Forecasting Dashboard  
-> **Tác tử thực thi:** Blue Team (Gemini 3.8 Flash High Effort / TDD Discipline)  
-> **Mục tiêu:** Vá triệt để 100% các lỗ hổng VULN-01 đến VULN-07 do Red Team phát hiện  
-> **Phương pháp luận:** Test-Driven Defense (Red $\to$ Green $\to$ Refactor) & Surgical Coding  
+> **Dự án:** PM2.5 Multi-Resolution Forecasting Dashboard
+> **Tác tử thực thi:** Blue Team (Gemini 3.8 Flash High Effort / TDD Discipline)
+> **Mục tiêu:** Vá triệt để 100% các lỗ hổng VULN-01 đến VULN-07 do Red Team phát hiện
+> **Phương pháp luận:** Test-Driven Defense (Red $\to$ Green $\to$ Refactor) & Surgical Coding
 
 ---
 

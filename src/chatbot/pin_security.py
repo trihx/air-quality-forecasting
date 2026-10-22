@@ -207,8 +207,7 @@ def render_pin_security_gate() -> None:
         col_left, col_right = st.columns([1, 1])
         with col_left, st.expander("🔑 Mở Khóa Cứu Hộ Bằng Mã PUK (Master Recovery Key)", expanded=True):
             st.caption(
-                "Nếu bạn là quản trị viên hệ thống và cần truy cập khẩn cấp, "
-                "vui lòng nhập mã PUK bảo mật cấp cao:"
+                "Nếu bạn là quản trị viên hệ thống và cần truy cập khẩn cấp, vui lòng nhập mã PUK bảo mật cấp cao:"
             )
             puk_input = st.text_input(
                 "Mã PUK Cứu Hộ",

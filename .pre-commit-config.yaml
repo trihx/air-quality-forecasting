@@ -1,0 +1,31 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+default_language_version:
+  python: python3
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(models/exported/|research/|docs/|\.agents/|dataset/|.*\.log$|.*\.html$|.*\.csv$)
+      - id: end-of-file-fixer
+        exclude: ^(models/exported/|research/|docs/|\.agents/|dataset/|.*\.log$|.*\.html$|.*\.csv$)
+      - id: check-yaml
+        exclude: ^(\.agents/|docs/|research/)
+      - id: check-added-large-files
+        args: ['--maxkb=50000']
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.10
+    hooks:
+      - id: ruff
+        args: [--fix, --ignore=UP038]
+        exclude: ^(research/|docs/|\.agents/)
+      - id: ruff-format
+        exclude: ^(research/|docs/|\.agents/)
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.0
+    hooks:
+      - id: gitleaks

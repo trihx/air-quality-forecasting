@@ -29,7 +29,7 @@ trong đó $\hat{V}(\b\bar{d})$ là ước lượng phương sai tự tương qu
 
 ### Hiệu chỉnh mẫu hữu hạn Harvey, Leybourne & Newbold (HLN, 1997):
 Khi chân trời dự báo $h > 1$, kiểm định DM gốc bị sai lệch kích thước (size distortion) trên các mẫu hữu hạn. Công thức hiệu chỉnh HLN:
-$$DM^* = DM 	imes \l\left[ \f\frac{T + 1 - 2h + h(h-1)/T}{T} 
+$$DM^* = DM 	imes \l\left[ \f\frac{T + 1 - 2h + h(h-1)/T}{T}
 \right]^{1/2}$$
 Đề án áp dụng 100% chuẩn hiệu chỉnh $DM^*$ này.
 

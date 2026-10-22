@@ -155,5 +155,3 @@ if __name__ == "__main__":
     test_sticky_version_cell_rendering_and_links()
     test_clean_text_removes_raw_latex_and_markdown()
     print("All 7 evolution matrix tests passed successfully!")
-
-

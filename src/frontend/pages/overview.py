@@ -6,7 +6,6 @@ import html
 import re
 from typing import Any
 
-import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -574,22 +573,18 @@ def _format_metric_cell(m_info: dict) -> str:
 
     if mase_float is not None:
         if mase_float < 0.500:
-            badge_style = (
-                "background: var(--ds-teal-bg); border: 1px solid var(--ds-teal-border); color: var(--ds-teal); font-weight: 800;"
-            )
+            badge_style = "background: var(--ds-teal-bg); border: 1px solid var(--ds-teal-border); color: var(--ds-teal); font-weight: 800;"
             mase_text = f"{mase_float:.3f}"
         elif mase_float < 1.000:
-            badge_style = (
-                "background: var(--ds-blue-bg); border: 1px solid var(--ds-blue-border); color: var(--ds-blue); font-weight: 700;"
-            )
+            badge_style = "background: var(--ds-blue-bg); border: 1px solid var(--ds-blue-border); color: var(--ds-blue); font-weight: 700;"
             mase_text = f"{mase_float:.3f}"
         else:
-            badge_style = (
-                "background: var(--ds-rose-bg); border: 1px solid var(--ds-rose-border); color: var(--ds-rose); font-weight: 600;"
-            )
+            badge_style = "background: var(--ds-rose-bg); border: 1px solid var(--ds-rose-border); color: var(--ds-rose); font-weight: 600;"
             mase_text = f"⚠️ {mase_float:.3f}"
     else:
-        badge_style = "background: var(--ds-bg-subtle); border: 1px solid var(--ds-border); color: var(--ds-text-muted);"
+        badge_style = (
+            "background: var(--ds-bg-subtle); border: 1px solid var(--ds-border); color: var(--ds-text-muted);"
+        )
         mase_text = _clean_text(mase_val)
 
     try:
@@ -605,16 +600,16 @@ def _format_metric_cell(m_info: dict) -> str:
         f'<div style="display: flex; flex-direction: column; gap: 0.3rem; min-width: 145px;">'
         f'<div style="font-weight: 700; color: var(--ds-text-primary); font-size: 0.84rem; display: flex; align-items: center; gap: 0.3rem;">'
         f'<span style="background: var(--ds-bg-surface); padding: 0.15rem 0.45rem; border-radius: 4px; border: 1px solid var(--ds-border); font-size: 0.78rem; color: var(--ds-text-primary);">'
-        f'{model}'
-        f'</span>'
-        f'</div>'
+        f"{model}"
+        f"</span>"
+        f"</div>"
         f'<div style="display: flex; align-items: center; gap: 0.4rem; font-family: monospace; font-size: 0.8rem;">'
         f'<span style="color: var(--ds-text-muted);">MAE <b style="color: var(--ds-text-primary);">{mae_disp}</b></span>'
         f'<span style="{badge_style} padding: 0.1rem 0.45rem; border-radius: 4px; font-size: 0.76rem; letter-spacing: 0.02em;">'
-        f'MASE {mase_text}'
-        f'</span>'
-        f'</div>'
-        f'</div>'
+        f"MASE {mase_text}"
+        f"</span>"
+        f"</div>"
+        f"</div>"
     )
 
 
@@ -632,19 +627,19 @@ def _render_sticky_version_cell(vkey: str, info: dict) -> str:
         f'<div style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0.1rem 0;">'
         f'<div style="display: flex; align-items: center; justify-content: space-between; gap: 0.3rem;">'
         f'<span style="background: {color}20; color: {color}; border: 1px solid {color}55; padding: 0.2rem 0.5rem; border-radius: 10px; font-weight: 800; font-size: 0.8rem; white-space: nowrap;">'
-        f'{badge}'
-        f'</span>'
+        f"{badge}"
+        f"</span>"
         f'<span style="font-size: 0.82rem; opacity: 0.85;" title="Xem chi tiết 5 trụ cột">🔍</span>'
-        f'</div>'
+        f"</div>"
         f'<div style="font-size: 0.82rem; font-weight: 700; color: var(--ds-text-primary); line-height: 1.35; margin-top: 0.2rem;">'
-        f'{title}'
-        f'</div>'
+        f"{title}"
+        f"</div>"
         f'<div style="font-size: 0.74rem; color: var(--ds-text-muted); margin-top: 0.1rem;">'
-        f'📅 {date} · 🤖 {models_count} mô hình'
-        f'</div>'
-        f'</div>'
-        f'</a>'
-        f'</td>'
+        f"📅 {date} · 🤖 {models_count} mô hình"
+        f"</div>"
+        f"</div>"
+        f"</a>"
+        f"</td>"
     )
 
 
@@ -856,10 +851,10 @@ def _render_benchmark_matrix_table(matrix: dict, ver_keys: list[str]) -> None:
     table_html = (
         f'<div class="matrix-container">'
         f'<table class="matrix-table">'
-        f'<thead>{headers_html}</thead>'
-        f'<tbody>{"".join(rows_html)}</tbody>'
-        f'</table>'
-        f'</div>'
+        f"<thead>{headers_html}</thead>"
+        f"<tbody>{''.join(rows_html)}</tbody>"
+        f"</table>"
+        f"</div>"
     )
     full_html = f"{css_style}{table_html}"
 
@@ -868,7 +863,9 @@ def _render_benchmark_matrix_table(matrix: dict, ver_keys: list[str]) -> None:
     else:
         st.markdown(full_html, unsafe_allow_html=True)
 
-    st.caption("*(Bảng đối chuẩn độc lập 10 phiên bản với cột đầu tiên cố định. Kéo thanh cuộn ngang để xem toàn bộ thông số)*")
+    st.caption(
+        "*(Bảng đối chuẩn độc lập 10 phiên bản với cột đầu tiên cố định. Kéo thanh cuộn ngang để xem toàn bộ thông số)*"
+    )
 
 
 def _render_single_version_card(v_info: dict) -> None:

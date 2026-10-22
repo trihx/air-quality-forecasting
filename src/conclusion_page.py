@@ -865,7 +865,13 @@ def _render_future_work(section_header, insight_card):
     for fd in future_directions:
         f_bar = "█" * fd["f_score"] + "░" * (5 - fd["f_score"])
         i_bar = "█" * fd["i_score"] + "░" * (5 - fd["i_score"])
-        border_color = "var(--ds-accent)" if fd["f_score"] >= 4 else "var(--ds-warning)" if fd["f_score"] >= 3 else "var(--ds-danger)"
+        border_color = (
+            "var(--ds-accent)"
+            if fd["f_score"] >= 4
+            else "var(--ds-warning)"
+            if fd["f_score"] >= 3
+            else "var(--ds-danger)"
+        )
 
         st.markdown(
             f"""

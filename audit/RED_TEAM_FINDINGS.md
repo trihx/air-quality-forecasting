@@ -1,7 +1,7 @@
 # 🔴 BÁO CÁO RÀ SOÁT LỖ HỔNG BẢO MẬT (RED TEAM AUDIT FINDINGS)
-> **Dự án:** PM2.5 Multi-Resolution Forecasting Dashboard  
-> **Tác tử thực thi:** Red Team (DeepSeek-R1 / Reasoning High)  
-> **Thời gian:** 2026-10-03  
+> **Dự án:** PM2.5 Multi-Resolution Forecasting Dashboard
+> **Tác tử thực thi:** Red Team (DeepSeek-R1 / Reasoning High)
+> **Thời gian:** 2026-10-03
 > **Tiêu chuẩn kiểm định:** OWASP Top 10, CWE / SANS Top 25, Nghị định 327-333/2026/NĐ-CP & Luật An ninh mạng Việt Nam.
 
 ---

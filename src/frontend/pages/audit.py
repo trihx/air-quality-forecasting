@@ -62,7 +62,7 @@ def page_scientific_audit(results: dict[str, Any]) -> None:
         insight_card(
             "⚠️ API Backend Offline — Fallback to Local",
             "Đang tính toán mã băm (checksum) trực tiếp từ file system cục bộ. Khởi động API server để truy xuất báo cáo đầy đủ từ cơ sở dữ liệu.",
-            warning=True,
+            card_type="warning",
         )
 
         def _md5(path: Any) -> str:

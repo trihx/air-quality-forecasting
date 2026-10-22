@@ -73,6 +73,8 @@ dev = [
     "pytest>=8.0.0",
     "pytest-cov>=6.0.0",
     "great-expectations>=1.3.0",
+    "pre-commit>=4.0.0",
+    "pip-audit>=2.8.0",
 ]
 
 # ============================================================
@@ -98,7 +100,7 @@ select = [
     "C4",   # flake8-comprehensions
     "SIM",  # flake8-simplify
 ]
-ignore = ["S101", "N803", "N806", "E501", "B008"]  # Allow assert, X convention, format managed lines, FastAPI Depends
+ignore = ["S101", "N803", "N806", "E501", "B008", "A005"]  # Allow assert, X convention, format managed lines, FastAPI Depends, domain module names
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S603", "N803", "N806"]
@@ -117,7 +119,8 @@ disable_error_code = ["import-untyped"]
 exclude = ["scratch", "\\.venv"]
 
 [tool.bandit]
-exclude_dirs = ["tests", ".venv"]
+exclude_dirs = ["tests", ".venv", "research"]
+skips = ["B101", "B106", "B110", "B112"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

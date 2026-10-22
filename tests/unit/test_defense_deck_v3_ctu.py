@@ -41,7 +41,9 @@ class TestDefenseDeckV3Structure:
     """Kiểm tra cấu trúc 04 phần chuẩn Quyết định 1799/QĐ-ĐHCT và thời lượng 5–10 phút."""
 
     def test_slide_counts(self, prs: Presentation) -> None:
-        assert len(prs.slides) == 27, "Bộ slide phải gồm đúng 27 slide (12 chính + 1 mục lục dự phòng + 14 dự phòng B1–B14)"
+        assert len(prs.slides) == 27, (
+            "Bộ slide phải gồm đúng 27 slide (12 chính + 1 mục lục dự phòng + 14 dự phòng B1–B14)"
+        )
 
     def test_four_part_qd1799_structure(self, prs: Presentation) -> None:
         s2_text = _slide_text(prs.slides[1])
@@ -136,11 +138,12 @@ class TestDefenseDeckV3ContentAndAntiSlop:
             assert f"### SLIDE {i}:" in content, f"Kịch bản thiếu phần trình bày cho SLIDE {i}"
         for idx in range(1, 15):
             slide_no = 13 + idx
-            assert f"### SLIDE {slide_no} (`B{idx}`):" in content, f"Kịch bản thiếu phần giải thích cho SLIDE {slide_no} (B{idx})"
+            assert f"### SLIDE {slide_no} (`B{idx}`):" in content, (
+                f"Kịch bản thiếu phần giải thích cho SLIDE {slide_no} (B{idx})"
+            )
         assert "Lời thoại Bản Chuẩn" in content
         assert "Lời thoại Bản Cô Đọng" in content
         assert "Kịch bản trả lời 30 giây" in content
         assert "Kịch bản giải thích chi tiết" in content
         assert "luận văn" not in content.lower(), "Kịch bản dùng từ 'luận văn' thay vì 'đề án'"
         assert "CHỜ XÁC MINH" not in content
-

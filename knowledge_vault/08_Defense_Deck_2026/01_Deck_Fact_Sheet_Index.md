@@ -9,9 +9,9 @@ status: completed
 
 # 🧠 Chỉ Mục Tri Thức Cốt Lõi (Fact Sheet Index): Bảo Vệ Đề Án Thạc Sĩ 2026
 
-> **Đề tài:** Ứng dụng Business Intelligence để phân tích dữ liệu môi trường cho một huyện (Dự báo nồng độ bụi mịn PM2.5 bằng máy học và học sâu đa mô hình dựa trên dữ liệu cảm biến IoT đa độ phân giải)  
-> **Học viên:** Hoàng Xuân Trí (trihx) — MSHV: M2522016 | **CBHD:** TS. Nguyễn Minh Khiêm  
-> **Chuyên ngành:** Hệ thống Thông tin (8480104) — Trường CNTT&TT, ĐH Cần Thơ (QĐ 1799)  
+> **Đề tài:** Ứng dụng Business Intelligence để phân tích dữ liệu môi trường cho một huyện (Dự báo nồng độ bụi mịn PM2.5 bằng máy học và học sâu đa mô hình dựa trên dữ liệu cảm biến IoT đa độ phân giải)
+> **Học viên:** Hoàng Xuân Trí (trihx) — MSHV: M2522016 | **CBHD:** TS. Nguyễn Minh Khiêm
+> **Chuyên ngành:** Hệ thống Thông tin (8480104) — Trường CNTT&TT, ĐH Cần Thơ (QĐ 1799)
 > **Tài liệu nguồn gốc (SSOT):** [`docs/defense-2026/01_SECOND_BRAIN_FACTSHEET.md`](file:///Users/trihx/Desktop/time-series-forecasting/docs/defense-2026/01_SECOND_BRAIN_FACTSHEET.md)
 
 ---
@@ -29,7 +29,7 @@ status: completed
 ```mermaid
 graph TD
     SSOT["Fact Sheet Cốt Lõi 2026<br/>(docs/defense-2026/01_SECOND_BRAIN_FACTSHEET.md)"]
-    
+
     subgraph DataEngineering ["1. Kỹ Nghệ & Dữ Liệu"]
         P1["[[01_Pipeline_7_Steps]]"]
         P2["[[02_Tiered_Imputation_and_Data_Sparsity]]"]

@@ -9,7 +9,7 @@ status: completed
 
 # ⚖️ Bảng Đăng Ký Sai Lệch (Discrepancy Register) & Chuẩn Hóa Phát Biểu Hội Đồng 2026
 
-> **Mục tiêu:** Nhận diện toàn bộ các điểm không đồng nhất về số liệu giữa **Báo cáo Luận văn chính thức đã nộp** (`docs/THESIS_DRAFT_CTU_1799.md`), **Playbook cũ 24 slide** (`docs/SLIDES_DEFENSE_PLAYBOOK.md`), và **Mã nguồn Dashboard/Test suite hiện hành** (`app.py`, `tests/`).  
+> **Mục tiêu:** Nhận diện toàn bộ các điểm không đồng nhất về số liệu giữa **Báo cáo Luận văn chính thức đã nộp** (`docs/THESIS_DRAFT_CTU_1799.md`), **Playbook cũ 24 slide** (`docs/SLIDES_DEFENSE_PLAYBOOK.md`), và **Mã nguồn Dashboard/Test suite hiện hành** (`app.py`, `tests/`).
 > **Nguyên tắc phân xử:** Ưu tiên số 1 tuyệt đối cho Báo cáo Luận văn chính thức (`THESIS_DRAFT_CTU_1799.md`). Với mỗi điểm lệch, tài liệu này cung cấp **Số liệu chuẩn**, **Cơ sở đối chiếu** và **Kịch bản giải trình mẫu cho học viên Hoàng Xuân Trí**.
 
 ---

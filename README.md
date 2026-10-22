@@ -7,7 +7,7 @@
 [![Database](https://img.shields.io/badge/PostgreSQL-Supabase-3ECF8E.svg)](https://supabase.com)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-> **Hệ thống Dự báo Chuỗi thời gian Nồng độ Bụi mịn PM2.5 Đa Bước từ Dữ liệu Cảm biến IoT.**  
+> **Hệ thống Dự báo Chuỗi thời gian Nồng độ Bụi mịn PM2.5 Đa Bước từ Dữ liệu Cảm biến IoT.**
 > Nghiên cứu kết hợp kỹ nghệ đặc trưng chống rò rỉ dữ liệu (*Anti-Leakage Discipline*), chiến lược nội suy phân tầng (*Tiered Imputation*), học sâu (*Deep Learning*), giải thích mô hình (*XAI SHAP*) và triển khai ứng dụng thực tế (*FastAPI + Streamlit + Supabase + Render.com*).
 
 ---
@@ -73,7 +73,7 @@ uv run pytest tests/ -v
 # Chạy đồng thời FastAPI (port 8000) và Streamlit Dashboard (port 7860)
 make dev
 ```
-Truy cập giao diện tại: `http://localhost:7860`  
+Truy cập giao diện tại: `http://localhost:7860`
 Truy cập tài liệu API Swagger tại: `http://localhost:8000/docs`
 
 ---
@@ -113,4 +113,3 @@ Hệ thống được thiết kế theo kiến trúc Microservices đám mây:
 
 ## 📜 Giấy Phép (License)
 Dự án được phân phối dưới giấy phép **MIT License**. Mọi đóng góp học thuật và mã nguồn đều tuân thủ các quy định về liêm chính học thuật.
-

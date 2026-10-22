@@ -61,7 +61,6 @@ class TestPollutionEventF1:
 
 class TestMAE:
     def test_perfect_predictions(self):
-
         y = np.array([1.0, 2.0, 3.0])
         assert mae(y, y) == 0.0
 

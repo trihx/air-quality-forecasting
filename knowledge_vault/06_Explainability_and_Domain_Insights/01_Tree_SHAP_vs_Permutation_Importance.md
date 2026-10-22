@@ -16,7 +16,7 @@ status: completed
 graph LR
     A[Mô Hình Dự Báo Cần Giải Thích] --> B[Mô hình Cây: LightGBM]
     A --> C[Mô hình Nơ-ron: GRU / LSTM / TFT]
-    
+
     B --> D[Tree SHAP - Lundberg et al. 2020
 Chính xác 100% Shapley Values, tính trong <100ms]
     C --> E[Permutation Feature Importance - Breiman 2001

@@ -50,7 +50,6 @@ def _load_standardized_metrics() -> dict:
 
 @st.cache_data(ttl=3600)
 def _get_pipeline_metrics() -> dict:
-
     processed = PROJECT_ROOT / "dataset" / "processed"
     datasets = [
         ("marts_features.csv", "1h"),

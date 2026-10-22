@@ -9,8 +9,8 @@ status: completed
 
 # 🧠 Bản Đồ Tri Thức Thứ Hai (Second Brain MOC): Hệ Thống Dự Báo PM2.5 Đa Độ Phân Giải
 
-> **Đề án Thạc sĩ:** Ứng dụng Business Intelligence để phân tích dữ liệu môi trường cho một huyện (TP. Sa Đéc, Đồng Tháp)  
-> **Tác giả:** Hoàng Xuân Trí (trihx) — M2522016 | **CBHD:** TS. Nguyễn Minh Khiêm  
+> **Đề án Thạc sĩ:** Ứng dụng Business Intelligence để phân tích dữ liệu môi trường cho một huyện (TP. Sa Đéc, Đồng Tháp)
+> **Tác giả:** Hoàng Xuân Trí (trihx) — M2522016 | **CBHD:** TS. Nguyễn Minh Khiêm
 > **Ngành:** Hệ thống Thông tin (Mã ngành: 8480104) — Trường ĐH Cần Thơ (QĐ 1799/QĐ-ĐHCT)
 
 ---

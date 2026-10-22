@@ -140,3 +140,9 @@ CLAUDE.md
 
 # Private skill approval receipts
 /.ai-dev-toolkit/skillsets/
+
+# Local MemOS data
+/.memos/
+
+# Local agent scratch workspace
+/.scratch/

@@ -21,7 +21,7 @@ Mã nguồn ban đầu tính toán đặc trưng cửa sổ trượt như sau:
 df["pm25_roll_mean_6h"] = df["pm25"].rolling(window=6).mean()
 ```
 Tại thời điểm $t$, giá trị của `pm25_roll_mean_6h` được tính từ:
-$$\f\frac{1}{6} \l\left( y_{t-5} + y_{t-4} + y_{t-3} + y_{t-2} + y_{t-1} + \mathbf{y_t} 
+$$\f\frac{1}{6} \l\left( y_{t-5} + y_{t-4} + y_{t-3} + y_{t-2} + y_{t-1} + \mathbf{y_t}
 \right)$$
 Nghĩa là **giá trị mục tiêu $y_t$ đã vô tình bị nhét vào đặc trưng đầu vào**! Khi mô hình dự báo nồng độ tại thời điểm $t$, nó chỉ cần giải phương trình đại số để suy ngược $y_t$ từ đặc trưng trượt, tạo ra điểm số $R^2 = 1.000$ hoàn toàn giả tạo.
 

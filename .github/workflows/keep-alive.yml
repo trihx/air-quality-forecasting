@@ -30,7 +30,7 @@ jobs:
           for URL in "${TARGET_URLS[@]}"; do
             echo "🏓 Pinging target: $URL ..."
             HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 "$URL" || echo "000")
-            
+
             if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 400 ]; then
               echo "✅ $URL is active! (HTTP $HTTP_CODE)"
             else
@@ -40,6 +40,3 @@ jobs:
               echo "🔄 Retry result for $URL: HTTP $RETRY_CODE"
             fi
           done
-
-
-

@@ -38,7 +38,7 @@ CQR lý thuyết dựa trên giả định các mẫu dữ liệu có tính ch�
 ACI cập nhật động ngưỡng phủ sai số trực tuyến theo công thức phản hồi:
 $$\alpha_{t+1} = \alpha_t + \gamma (\alpha - \text{err}_t)$$
 với:
-- $\text{err}_t = 1$ nếu $y_t 
+- $\text{err}_t = 1$ nếu $y_t
 otin C_t(x_t)$ (bị lọt ra ngoài khoảng dự báo).
 - $\text{err}_t = 0$ nếu $y_t \in C_t(x_t)$ (nằm trọn trong khoảng dự báo).
 - $\gamma = 0.01$ là tốc độ học thích ứng.

@@ -16,7 +16,7 @@ Mô hình kết hợp trọng số tối ưu (Weighted Optimization Ensemble) l�
 3. **Random Forest:** Tạo sự ổn định, làm mượt các dự báo cực đoan.
 
 Công thức tối ưu hóa trọng số lồi:
-$$\min_{\mathbf{w}} \sum_{t} \l\left| y_t - \sum_{i=1}^M w_i \hat{y}_{i,t} 
+$$\min_{\mathbf{w}} \sum_{t} \l\left| y_t - \sum_{i=1}^M w_i \hat{y}_{i,t}
 \right| \quad \text{s.t.} \quad \sum_{i=1}^M w_i = 1, \quad w_i \ge 0$$
 được giải bằng quy hoạch tuyến tính (Linear Programming) trên tập Validation.
 
